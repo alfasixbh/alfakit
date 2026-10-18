@@ -11,8 +11,8 @@ permissions:
 
 jobs:
   release:
-    # Off until the repository variable RELEASES_ENABLED is "true" and NPM_TOKEN is set.
-    if: vars.RELEASES_ENABLED == 'true'
+    # Off until the repository variable NPM_RELEASES_ENABLED is "true" and NPM_TOKEN is set.
+    if: vars.NPM_RELEASES_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

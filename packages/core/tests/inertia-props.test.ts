@@ -84,6 +84,21 @@ describe('resolveNavigation', () => {
     expect(loaded[0]?.items[1]?.children?.[0]?.badge).toBe(7)
     expect(loaded[0]?.items[0]?.icon).toBe('home')
   })
+
+  it('clears the placeholder once the badges arrive, even when an item has none or zero', () => {
+    // An empty PHP array arrives as `[]`; items whose badge resolved to null are left out.
+    const empty = resolveNavigation(navigation, undefined, [] as unknown as Record<string, never>)
+
+    expect(empty[0]?.items[1]?.badgePending).toBeUndefined()
+    expect(empty[0]?.items[1]?.children?.[0]?.badgePending).toBeUndefined()
+    expect(empty[0]?.items[1]?.deferredBadge).toBeUndefined()
+
+    const zero = resolveNavigation(navigation, undefined, { '0.1': { badge: 0 } })
+
+    expect(zero[0]?.items[1]).toMatchObject({ badge: 0 })
+    expect(zero[0]?.items[1]?.badgePending).toBeUndefined()
+    expect(zero[0]?.items[1]?.children?.[0]?.badgePending).toBeUndefined()
+  })
 })
 
 describe('resolvePanelNavigation', () => {

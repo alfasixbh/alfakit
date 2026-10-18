@@ -98,6 +98,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed (beyond Filament)
 
+- Deferred navigation badges on tenancy panels: the badges prop was decided before the tenant was identified, so it was never sent and the sidebar kept its placeholders. It is now resolved with the response.
 - Svelte Select, Tooltip and DropdownMenu (sub)content follow the panel direction (bits-ui defaults to left to right), like Popover.
 - the panel's toasts (including the PWA "new version" toast) start below the sticky top bar instead of covering the breadcrumbs, search and switchers, on phones too (`PANEL_TOAST_OFFSET` in `@alfakit/core`).
 - right to left, FullCalendar's list view no longer gives the whole page a 10,000 px horizontal scroll (its screen-reader-only column headers are clipped in place, `packages/core/themes.css`); the top bar no longer slides under the sidebar on dashboards with a calendar widget.

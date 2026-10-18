@@ -16,8 +16,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.3', '8.4']
-        stability: [prefer-lowest, prefer-stable]
+        # Pest 5 needs PHP 8.4, so PHP 8.3 can't be tested here.
+        php: ['8.4', '8.5']
+        stability: [lowest, highest]
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -25,6 +26,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl, gd
           coverage: pcov
+          ini-values: memory_limit=-1
       - uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.stability }}
