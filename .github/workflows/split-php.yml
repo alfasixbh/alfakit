@@ -4,6 +4,7 @@ name: Split PHP package
 # push to main and on every tag:
 #   packages/alfakit      -> alfasixbh/alfakit-php
 #   packages/translations -> alfasixbh/alfakit-translations
+#   packages/plugins/<name> -> alfasixbh/alfakit-<name>
 #
 # Runs only once the repository variable RELEASES_ENABLED is "true" and the SPLIT_TOKEN
 # secret can push to those repositories.
@@ -18,10 +19,38 @@ jobs:
     if: vars.RELEASES_ENABLED == 'true'
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         package:
           - { directory: packages/alfakit, repository: alfakit-php }
           - { directory: packages/translations, repository: alfakit-translations }
+          - { directory: packages/plugins/activity-log, repository: alfakit-activity-log }
+          - { directory: packages/plugins/ai, repository: alfakit-ai }
+          - { directory: packages/plugins/analytics, repository: alfakit-analytics }
+          - { directory: packages/plugins/api, repository: alfakit-api }
+          - { directory: packages/plugins/backup, repository: alfakit-backup }
+          - { directory: packages/plugins/billing, repository: alfakit-billing }
+          - { directory: packages/plugins/calendar, repository: alfakit-calendar }
+          - { directory: packages/plugins/cms, repository: alfakit-cms }
+          - { directory: packages/plugins/comments, repository: alfakit-comments }
+          - { directory: packages/plugins/feature-flags, repository: alfakit-feature-flags }
+          - { directory: packages/plugins/file-manager, repository: alfakit-file-manager }
+          - { directory: packages/plugins/forms, repository: alfakit-forms }
+          - { directory: packages/plugins/health, repository: alfakit-health }
+          - { directory: packages/plugins/helpdesk, repository: alfakit-helpdesk }
+          - { directory: packages/plugins/invoices, repository: alfakit-invoices }
+          - { directory: packages/plugins/kanban, repository: alfakit-kanban }
+          - { directory: packages/plugins/mail-templates, repository: alfakit-mail-templates }
+          - { directory: packages/plugins/media-library, repository: alfakit-media-library }
+          - { directory: packages/plugins/ops, repository: alfakit-ops }
+          - { directory: packages/plugins/settings, repository: alfakit-settings }
+          - { directory: packages/plugins/shield, repository: alfakit-shield }
+          - { directory: packages/plugins/tags, repository: alfakit-tags }
+          - { directory: packages/plugins/teams, repository: alfakit-teams }
+          - { directory: packages/plugins/translation-manager, repository: alfakit-translation-manager }
+          - { directory: packages/plugins/tree, repository: alfakit-tree }
+          - { directory: packages/plugins/webhooks, repository: alfakit-webhooks }
+          - { directory: packages/plugins/workflows, repository: alfakit-workflows }
     steps:
       - uses: actions/checkout@v4
         with:
