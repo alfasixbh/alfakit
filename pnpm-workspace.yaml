@@ -1,0 +1,17 @@
+packages:
+  - packages/*
+  - playground/*
+  - docs
+  - demo
+  - e2e
+
+publicHoistPattern:
+  - '@inertiajs/core'
+
+onlyBuiltDependencies:
+  - esbuild
+  - '@tailwindcss/oxide'
+  - '@rolldown/binding-darwin-arm64'
+
+minimumReleaseAgeExclude:
+  - '@lucide/svelte@1.53.0'

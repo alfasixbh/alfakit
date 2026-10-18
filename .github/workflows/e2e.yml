@@ -1,0 +1,94 @@
+name: End-to-end
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright:
+    name: Playwright (${{ matrix.renderer }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        renderer: [react, vue, svelte]
+    env:
+      PLAYGROUND: playground/${{ matrix.renderer }}
+      PORT: 8000
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl, gd
+          coverage: none
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the packages
+        run: pnpm build
+
+      - name: Install PHP dependencies
+        working-directory: ${{ env.PLAYGROUND }}
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare the playground
+        working-directory: ${{ env.PLAYGROUND }}
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+          php artisan key:generate --force
+          php artisan migrate:fresh --seed --force
+          php artisan storage:link
+
+      - name: Build the playground assets
+        run: pnpm --filter @alfakit/playground-${{ matrix.renderer }} build
+
+      - name: Install the Playwright browser
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Serve the playground
+        working-directory: ${{ env.PLAYGROUND }}
+        run: |
+          php artisan serve --host=127.0.0.1 --port=${{ env.PORT }} > ../../storage-serve.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -fsS -o /dev/null http://127.0.0.1:${{ env.PORT }}/admin/login && break
+            sleep 1
+          done
+
+      - name: Run the suite
+        working-directory: e2e
+        env:
+          CI: true
+          E2E_RENDERERS: ${{ matrix.renderer }}
+          E2E_BROWSER_CHANNEL: chromium
+          E2E_REACT_URL: http://127.0.0.1:${{ env.PORT }}
+          E2E_VUE_URL: http://127.0.0.1:${{ env.PORT }}
+          E2E_SVELTE_URL: http://127.0.0.1:${{ env.PORT }}
+        run: pnpm exec playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-${{ matrix.renderer }}
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+            storage-serve.log
+          retention-days: 7

@@ -1,0 +1,150 @@
+/*
+ * Brand fonts and colour tokens of the live examples (resources/views/examples.blade.php),
+ * the same as resources/css/app.css, imported by examples-{react,vue,svelte}.css.
+ */
+/* AlfaKit brand fonts (SIL OFL, from the brand kit): Inter for body and UI, Montserrat
+   for headings. */
+@font-face {
+    font-family: 'Inter';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/inter-400.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Inter';
+    font-weight: 500 700;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/inter-500.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/montserrat-600.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 700 900;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/montserrat-700.ttf') format('truetype');
+}
+
+@theme {
+    --font-sans:
+        'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-heading: 'Montserrat', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --color-brand-navy: #073b78;
+    --color-brand-orange: #f47a22;
+    --color-brand-cream: #fff4e4;
+
+    /*
+     * The example iframe is a miniature application window (about 700 px wide in the docs
+     * column), so the responsive breakpoints are scaled down with it: `columns(2)` is
+     * `lg:grid-cols-2`, which would otherwise need a 1024 px wide frame and show one column.
+     * Phones (under 384 px) still get the stacked layout.
+     */
+    --breakpoint-sm: 24rem;
+    --breakpoint-md: 32rem;
+    --breakpoint-lg: 40rem;
+    --breakpoint-xl: 48rem;
+    --breakpoint-2xl: 56rem;
+}
+
+/*
+ * Brand palette mapped onto the shadcn tokens. Navy anchors the light theme, cream gives
+ * soft surfaces, and Fox Orange is decoration (2.74:1 on white, so never small text).
+ * In dark mode orange becomes the primary, with ink text on it (5.57:1).
+ */
+:root {
+    --background: #ffffff;
+    --foreground: #14263d;
+    --card: #ffffff;
+    --card-foreground: #14263d;
+    --popover: #ffffff;
+    --popover-foreground: #14263d;
+    --primary: #073b78;
+    --primary-foreground: #ffffff;
+    --secondary: #fff4e4;
+    --secondary-foreground: #073b78;
+    --muted: #f6f1ea;
+    --muted-foreground: #536579;
+    --accent: #fff4e4;
+    --accent-foreground: #073b78;
+    --border: #e4dccf;
+    --input: #cfc4b4;
+    --ring: #073b78;
+}
+.dark {
+    --background: #0b1a2e;
+    --foreground: #f5f7fa;
+    --card: #10233b;
+    --card-foreground: #f5f7fa;
+    --popover: #10233b;
+    --popover-foreground: #f5f7fa;
+    --primary: #f47a22;
+    --primary-foreground: #14263d;
+    --secondary: #17304f;
+    --secondary-foreground: #f5f7fa;
+    --muted: #142a45;
+    --muted-foreground: #9db9de;
+    --accent: #17304f;
+    --accent-foreground: #f5f7fa;
+    --border: #22406a;
+    --input: #2c4d7a;
+    --ring: #f47a22;
+}
+
+/* The shadcn colour utilities (an app's own stylesheet defines them for standalone components). */
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+    --destructive: #c2410c;
+    --destructive-foreground: #ffffff;
+    --radius: 0.625rem;
+}
+.dark {
+    --destructive: #f87171;
+    --destructive-foreground: #14263d;
+}
+
+@layer base {
+    * {
+        border-color: var(--border);
+    }
+    html,
+    body {
+        background: transparent;
+    }
+    body {
+        padding: 1.25rem;
+    }
+}

@@ -1,0 +1,1499 @@
+{
+  "component": "Alfakit/Page",
+  "props": {
+    "errors": {},
+    "name": "Alfakit React",
+    "auth": {
+      "user": {
+        "id": 1,
+        "name": "Alfa Admin",
+        "email": "admin@example.com",
+        "email_verified_at": "2026-10-08T08:30:19.000000Z",
+        "created_at": "2026-10-08T08:30:19.000000Z",
+        "updated_at": "2026-10-08T13:08:19.000000Z",
+        "two_factor_confirmed_at": null,
+        "locale": "en",
+        "timezone": null
+      }
+    },
+    "sidebarOpen": true,
+    "alfakit": {
+      "id": "admin",
+      "path": "admin",
+      "url": "http://localhost/admin",
+      "brandName": "Alfakit React",
+      "theme": {
+        "name": "alfakit",
+        "attribute": "alfakit",
+        "sidebar": "floating",
+        "density": "comfortable",
+        "radius": "0.875rem",
+        "font": "Plus Jakarta Sans",
+        "fontCss": "'Plus Jakarta Sans'",
+        "headingFontCss": null,
+        "fontUrl": "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap",
+        "fontUrls": [
+          "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap"
+        ],
+        "design": {
+          "layout": "sidebar",
+          "nav": "pill",
+          "header": "banner",
+          "surfaces": "elevated",
+          "inputs": "filled",
+          "buttons": "pill",
+          "tables": "minimal"
+        }
+      },
+      "slots": {
+        "topbar.end": [
+          {
+            "type": "html",
+            "html": "<label class=\"hidden items-center gap-2 text-xs text-muted-foreground sm:flex\">\n    <span>Theme</span>\n    <select\n        class=\"h-8 rounded-md border border-input bg-background px-2 text-sm text-foreground\"\n        onchange=\"window.location.href = '/demo/theme/' + this.value\"\n        aria-label=\"Theme\"\n    >\n                    <option value=\"neutral\" >Neutral</option>\n                    <option value=\"alfakit\" selected>Alfakit</option>\n                    <option value=\"minimal\" >Minimal</option>\n                    <option value=\"soft\" >Soft</option>\n                    <option value=\"corporate\" >Corporate</option>\n                    <option value=\"filament\" >Filament style</option>\n            </select>\n</label>\n"
+          }
+        ]
+      },
+      "darkMode": {
+        "enabled": true,
+        "forced": false
+      },
+      "sidebarCollapsibleOnDesktop": true,
+      "breadcrumbs": true,
+      "navigation": [
+        {
+          "collapsible": true,
+          "items": [
+            {
+              "label": "Dashboard",
+              "icon": "layout-dashboard",
+              "url": "http://localhost/admin"
+            }
+          ]
+        },
+        {
+          "label": "Blog",
+          "collapsible": true,
+          "items": [
+            {
+              "label": "Categories",
+              "icon": "folder",
+              "url": "http://localhost/admin/categories"
+            },
+            {
+              "label": "Posts",
+              "icon": "file-text",
+              "url": "http://localhost/admin/posts",
+              "active": true
+            },
+            {
+              "label": "Tags",
+              "icon": "tag",
+              "url": "http://localhost/admin/tags"
+            }
+          ]
+        }
+      ],
+      "user": {
+        "id": 1,
+        "name": "Alfa Admin",
+        "email": "admin@example.com",
+        "avatar": null
+      },
+      "userMenu": {
+        "items": [],
+        "profileUrl": "http://localhost/admin/profile",
+        "logoutUrl": "http://localhost/admin/logout"
+      },
+      "databaseNotifications": {
+        "pollingInterval": "30s",
+        "unreadCount": 0
+      },
+      "globalSearch": {
+        "keyBindings": ["mod+k"],
+        "placeholder": "Search…"
+      },
+      "endpoints": {
+        "action": "http://localhost/admin/_alfakit/actions",
+        "modal": "http://localhost/admin/_alfakit/actions/modal",
+        "schemaRefresh": "http://localhost/admin/_alfakit/schema/refresh",
+        "schemaOptions": "http://localhost/admin/_alfakit/schema/options",
+        "tableCell": "http://localhost/admin/_alfakit/table/cell",
+        "tableReorder": "http://localhost/admin/_alfakit/table/reorder",
+        "locale": "http://localhost/admin/_alfakit/locale",
+        "upload": "http://localhost/admin/_alfakit/uploads",
+        "uploadDestroy": "http://localhost/admin/_alfakit/uploads",
+        "globalSearch": "http://localhost/admin/_alfakit/global-search",
+        "notifications": "http://localhost/admin/_alfakit/notifications",
+        "notificationsReadAll": "http://localhost/admin/_alfakit/notifications/read-all",
+        "notificationsDestroyAll": "http://localhost/admin/_alfakit/notifications",
+        "logout": "http://localhost/admin/logout"
+      },
+      "auth": {
+        "login": "http://localhost/admin/login",
+        "register": null,
+        "passwordReset": "http://localhost/admin/password-reset/request"
+      },
+      "flashKey": "alfakitNotifications",
+      "localization": {
+        "code": "en",
+        "tag": "en",
+        "label": "English",
+        "direction": "ltr",
+        "fallbackLocale": "en",
+        "firstDayOfWeek": 0,
+        "currency": "USD",
+        "timezone": "UTC",
+        "switcher": true,
+        "locales": [
+          {
+            "code": "en",
+            "tag": "en",
+            "label": "English",
+            "direction": "ltr"
+          },
+          {
+            "code": "ar",
+            "tag": "ar",
+            "label": "العربية",
+            "direction": "rtl"
+          },
+          {
+            "code": "fr",
+            "tag": "fr",
+            "label": "Français",
+            "direction": "ltr"
+          },
+          {
+            "code": "de",
+            "tag": "de",
+            "label": "Deutsch",
+            "direction": "ltr"
+          },
+          {
+            "code": "ja",
+            "tag": "ja",
+            "label": "日本語",
+            "direction": "ltr"
+          }
+        ]
+      },
+      "csrf": "test-token",
+      "translations": {
+        "actions": "Actions",
+        "cancel": "Cancel",
+        "close": "Close",
+        "confirm": "Confirm",
+        "save": "Save",
+        "search": "Search",
+        "loading": "Loading…",
+        "no_results": "No results.",
+        "select_option": "Select an option",
+        "clear": "Clear",
+        "remove": "Remove",
+        "add": "Add",
+        "copy": "Copy",
+        "copied": "Copied",
+        "toggle_sidebar": "Toggle sidebar",
+        "toggle_theme": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System",
+        "logout": "Sign out",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "mark_all_read": "Mark all as read",
+        "clear_notifications": "Clear notifications",
+        "no_notifications": "You have no notifications.",
+        "unsaved_changes": "You have unsaved changes. Leave anyway?",
+        "language": "Language",
+        "navigation": "Navigation",
+        "more": "More",
+        "sidebar": "Sidebar",
+        "open": "Open",
+        "download": "Download",
+        "toggle": "Toggle",
+        "toggle_section": "Toggle section",
+        "steps": "Steps",
+        "pagination": "Pagination",
+        "mark_as_read": "Mark as read",
+        "mobile_sidebar": "Displays the mobile sidebar.",
+        "chart": "Chart",
+        "command_palette": "Command palette",
+        "command_palette_description": "Search for a command to run…",
+        "load_more": "Load more",
+        "widget_not_registered": "Widget component :component is not registered.",
+        "table": {
+          "filters": "Filters",
+          "reset_filters": "Reset",
+          "columns": "Columns",
+          "per_page": "Per page",
+          "showing": "Showing :first–:last of :total",
+          "selected": ":count selected",
+          "select_all": "Select all",
+          "deselect_all": "Deselect all",
+          "bulk_actions": "Bulk actions",
+          "empty": "No records found.",
+          "previous": "Previous",
+          "next": "Next",
+          "all": "All",
+          "select_page": "Select page",
+          "select_row": "Select row",
+          "remove_filter": "Remove filter",
+          "reorder_start": "Reorder",
+          "reorder_stop": "Done"
+        },
+        "form": {
+          "required": "Required",
+          "drop_files": "Drop files here or click to browse",
+          "uploading": "Uploading…",
+          "add_row": "Add row",
+          "add_item": "Add item",
+          "remove_item": "Remove",
+          "move_up": "Move up",
+          "move_down": "Move down",
+          "search_placeholder": "Type to search…",
+          "next_step": "Next",
+          "previous_step": "Back",
+          "file_too_large": "This file is too large.",
+          "file_too_small": "This file is too small.",
+          "min_files": "At least :count file|At least :count files",
+          "clone": "Clone",
+          "remove_row": "Remove row",
+          "pick_color": "Pick a colour",
+          "link_prompt": "Link URL",
+          "pick_date": "Pick a date",
+          "show_password": "Show password",
+          "hide_password": "Hide password"
+        },
+        "editor": {
+          "bold": "Bold",
+          "italic": "Italic",
+          "underline": "Underline",
+          "strike": "Strikethrough",
+          "link": "Link",
+          "h2": "Heading 2",
+          "h3": "Heading 3",
+          "heading": "Heading",
+          "blockquote": "Quote",
+          "code_block": "Code block",
+          "bullet_list": "Bullet list",
+          "ordered_list": "Numbered list",
+          "divider": "Divider",
+          "image": "Insert image",
+          "undo": "Undo",
+          "redo": "Redo"
+        },
+        "tenancy": {
+          "switch": "Switch",
+          "register": "New",
+          "profile": "Settings"
+        }
+      }
+    },
+    "alfakitAppearance": "system",
+    "page": {
+      "class": "App\\Alfakit\\Resources\\PostResource\\Pages\\ListPosts",
+      "layout": "app",
+      "title": "Posts",
+      "heading": "Posts",
+      "breadcrumbs": [
+        {
+          "label": "Posts",
+          "url": "http://localhost/admin/posts"
+        },
+        {
+          "label": "List"
+        }
+      ],
+      "headerActions": [
+        {
+          "type": "Action",
+          "name": "create",
+          "label": "New post",
+          "color": "primary",
+          "variant": "button",
+          "url": "http://localhost/admin/posts/create"
+        }
+      ],
+      "content": [
+        {
+          "key": "table",
+          "component": "table",
+          "type": "Table",
+          "modelLabel": "post",
+          "pluralModelLabel": "posts",
+          "columns": [
+            {
+              "type": "TextColumn",
+              "name": "title",
+              "label": "Title",
+              "sortable": true,
+              "wrap": true,
+              "descriptionPosition": "below"
+            },
+            {
+              "type": "TextColumn",
+              "name": "author.name",
+              "label": "Author",
+              "sortable": true,
+              "toggleable": true
+            },
+            {
+              "type": "TextColumn",
+              "name": "category.name",
+              "label": "Category",
+              "sortable": true,
+              "toggleable": true,
+              "badge": true
+            },
+            {
+              "type": "TextColumn",
+              "name": "status",
+              "label": "Status",
+              "sortable": true,
+              "badge": true
+            },
+            {
+              "type": "ToggleColumn",
+              "name": "is_featured",
+              "label": "Featured",
+              "editable": true
+            },
+            {
+              "type": "TextColumn",
+              "name": "views",
+              "label": "Views",
+              "sortable": true,
+              "alignment": "end"
+            },
+            {
+              "type": "TextColumn",
+              "name": "sponsorship_fee",
+              "label": "Sponsorship",
+              "sortable": true,
+              "toggleable": true,
+              "alignment": "end"
+            },
+            {
+              "type": "TextColumn",
+              "name": "published_at",
+              "label": "Published at",
+              "sortable": true,
+              "toggleable": true
+            },
+            {
+              "type": "TextColumn",
+              "name": "created_at",
+              "label": "Created at",
+              "sortable": true,
+              "toggleable": true,
+              "toggledHiddenByDefault": true
+            }
+          ],
+          "visibleColumns": [
+            "title",
+            "author.name",
+            "category.name",
+            "status",
+            "is_featured",
+            "views",
+            "sponsorship_fee",
+            "published_at"
+          ],
+          "toggleableColumns": true,
+          "filters": [
+            {
+              "type": "SelectFilter",
+              "name": "status",
+              "label": "Status",
+              "schema": [
+                {
+                  "type": "Select",
+                  "key": "status.values",
+                  "label": "Status",
+                  "options": [
+                    {
+                      "value": "draft",
+                      "label": "Draft"
+                    },
+                    {
+                      "value": "review",
+                      "label": "In review"
+                    },
+                    {
+                      "value": "published",
+                      "label": "Published"
+                    }
+                  ],
+                  "multiple": true,
+                  "selectablePlaceholder": true,
+                  "name": "values",
+                  "statePath": "status.values",
+                  "placeholder": "All"
+                }
+              ],
+              "multiple": true
+            },
+            {
+              "type": "SelectFilter",
+              "name": "category_id",
+              "label": "Category",
+              "schema": [
+                {
+                  "type": "Select",
+                  "key": "category_id.value",
+                  "label": "Category",
+                  "options": [
+                    {
+                      "value": "17",
+                      "label": "Ad Iste"
+                    },
+                    {
+                      "value": "43",
+                      "label": "Aliquid Enim"
+                    },
+                    {
+                      "value": "58",
+                      "label": "Aut Sit"
+                    },
+                    {
+                      "value": "49",
+                      "label": "Aut Sunt"
+                    },
+                    {
+                      "value": "8",
+                      "label": "Beatae Ipsam"
+                    },
+                    {
+                      "value": "59",
+                      "label": "Culpa Hic"
+                    },
+                    {
+                      "value": "23",
+                      "label": "Deleniti Quia"
+                    },
+                    {
+                      "value": "13",
+                      "label": "Deserunt Dolor"
+                    },
+                    {
+                      "value": "44",
+                      "label": "Dignissimos Quod"
+                    },
+                    {
+                      "value": "41",
+                      "label": "Dolorem Ipsam"
+                    },
+                    {
+                      "value": "18",
+                      "label": "Dolorum Doloribus"
+                    },
+                    {
+                      "value": "21",
+                      "label": "Ducimus Ratione"
+                    },
+                    {
+                      "value": "33",
+                      "label": "Ea Dolorum"
+                    },
+                    {
+                      "value": "57",
+                      "label": "Ea Est"
+                    },
+                    {
+                      "value": "34",
+                      "label": "Ea Omnis"
+                    },
+                    {
+                      "value": "25",
+                      "label": "Eos Autem"
+                    },
+                    {
+                      "value": "36",
+                      "label": "Eos Eveniet"
+                    },
+                    {
+                      "value": "12",
+                      "label": "Eos Ut"
+                    },
+                    {
+                      "value": "5",
+                      "label": "Error Itaque"
+                    },
+                    {
+                      "value": "15",
+                      "label": "Est Reprehenderit"
+                    },
+                    {
+                      "value": "40",
+                      "label": "Et Autem"
+                    },
+                    {
+                      "value": "3",
+                      "label": "Et In"
+                    },
+                    {
+                      "value": "51",
+                      "label": "Et Omnis"
+                    },
+                    {
+                      "value": "61",
+                      "label": "Eum Vitae"
+                    },
+                    {
+                      "value": "32",
+                      "label": "Eveniet Voluptatem"
+                    },
+                    {
+                      "value": "62",
+                      "label": "Facilis Atque"
+                    },
+                    {
+                      "value": "39",
+                      "label": "Fugit Et"
+                    },
+                    {
+                      "value": "27",
+                      "label": "Harum Explicabo"
+                    },
+                    {
+                      "value": "42",
+                      "label": "Harum Occaecati"
+                    },
+                    {
+                      "value": "29",
+                      "label": "Illum Commodi"
+                    },
+                    {
+                      "value": "11",
+                      "label": "Illum Quaerat"
+                    },
+                    {
+                      "value": "26",
+                      "label": "Ipsa Aut"
+                    },
+                    {
+                      "value": "35",
+                      "label": "Iste Qui"
+                    },
+                    {
+                      "value": "30",
+                      "label": "Molestiae Sed"
+                    },
+                    {
+                      "value": "52",
+                      "label": "Molestiae Ut"
+                    },
+                    {
+                      "value": "20",
+                      "label": "Molestias Sint"
+                    },
+                    {
+                      "value": "6",
+                      "label": "Nemo Voluptatem"
+                    },
+                    {
+                      "value": "14",
+                      "label": "Nisi Vitae"
+                    },
+                    {
+                      "value": "56",
+                      "label": "Non Autem"
+                    },
+                    {
+                      "value": "63",
+                      "label": "Occaecati Earum"
+                    },
+                    {
+                      "value": "10",
+                      "label": "Porro Quasi"
+                    },
+                    {
+                      "value": "54",
+                      "label": "Provident Saepe"
+                    },
+                    {
+                      "value": "9",
+                      "label": "Quae Eos"
+                    },
+                    {
+                      "value": "31",
+                      "label": "Qui Ipsa"
+                    },
+                    {
+                      "value": "24",
+                      "label": "Qui Minima"
+                    },
+                    {
+                      "value": "28",
+                      "label": "Qui Odit"
+                    },
+                    {
+                      "value": "4",
+                      "label": "Quo Libero"
+                    },
+                    {
+                      "value": "64",
+                      "label": "Quod Ea"
+                    },
+                    {
+                      "value": "53",
+                      "label": "Ratione A"
+                    },
+                    {
+                      "value": "38",
+                      "label": "Ratione Ex"
+                    },
+                    {
+                      "value": "7",
+                      "label": "Ratione Velit"
+                    },
+                    {
+                      "value": "66",
+                      "label": "Reiciendis Minus"
+                    },
+                    {
+                      "value": "45",
+                      "label": "Repudiandae Mollitia"
+                    },
+                    {
+                      "value": "50",
+                      "label": "Repudiandae Voluptates"
+                    },
+                    {
+                      "value": "47",
+                      "label": "Rerum Labore"
+                    },
+                    {
+                      "value": "2",
+                      "label": "Sequi Consectetur"
+                    },
+                    {
+                      "value": "46",
+                      "label": "Similique Deleniti"
+                    },
+                    {
+                      "value": "67",
+                      "label": "Test"
+                    },
+                    {
+                      "value": "65",
+                      "label": "Totam Modi"
+                    },
+                    {
+                      "value": "22",
+                      "label": "Unde Eveniet"
+                    },
+                    {
+                      "value": "60",
+                      "label": "Unde Nemo"
+                    },
+                    {
+                      "value": "16",
+                      "label": "Ut Eaque"
+                    },
+                    {
+                      "value": "48",
+                      "label": "Ut Et"
+                    },
+                    {
+                      "value": "1",
+                      "label": "Ut Magnam"
+                    },
+                    {
+                      "value": "19",
+                      "label": "Ut Qui"
+                    },
+                    {
+                      "value": "55",
+                      "label": "Velit Et"
+                    },
+                    {
+                      "value": "37",
+                      "label": "Veniam Amet"
+                    }
+                  ],
+                  "selectablePlaceholder": true,
+                  "name": "value",
+                  "statePath": "category_id.value",
+                  "placeholder": "All"
+                }
+              ]
+            },
+            {
+              "type": "TernaryFilter",
+              "name": "is_featured",
+              "label": "Featured",
+              "schema": [
+                {
+                  "type": "Select",
+                  "key": "is_featured.value",
+                  "label": "Featured",
+                  "options": [
+                    {
+                      "value": "1",
+                      "label": "Yes"
+                    },
+                    {
+                      "value": "0",
+                      "label": "No"
+                    }
+                  ],
+                  "selectablePlaceholder": true,
+                  "name": "value",
+                  "statePath": "is_featured.value",
+                  "placeholder": "All"
+                }
+              ]
+            },
+            {
+              "type": "TrashedFilter",
+              "name": "trashed",
+              "label": "Deleted records",
+              "schema": [
+                {
+                  "type": "Select",
+                  "key": "trashed.value",
+                  "label": "Deleted records",
+                  "options": [
+                    {
+                      "value": "1",
+                      "label": "With deleted records"
+                    },
+                    {
+                      "value": "0",
+                      "label": "Only deleted records"
+                    }
+                  ],
+                  "selectablePlaceholder": true,
+                  "name": "value",
+                  "statePath": "trashed.value",
+                  "placeholder": "Without deleted records"
+                }
+              ]
+            }
+          ],
+          "filtersLayout": "dropdown",
+          "bulkActions": [
+            {
+              "type": "Action",
+              "name": "delete",
+              "label": "Delete",
+              "icon": "trash-2",
+              "iconPosition": "before",
+              "color": "danger",
+              "hasModal": true,
+              "hasAction": true
+            },
+            {
+              "type": "Action",
+              "name": "restore",
+              "label": "Restore",
+              "icon": "rotate-ccw",
+              "iconPosition": "before",
+              "color": "gray",
+              "hasModal": true,
+              "hasAction": true
+            },
+            {
+              "type": "Action",
+              "name": "forceDelete",
+              "label": "Force delete",
+              "icon": "trash-2",
+              "iconPosition": "before",
+              "color": "danger",
+              "hasModal": true,
+              "hasAction": true
+            }
+          ],
+          "recordActionsPosition": "after-columns",
+          "records": [
+            {
+              "key": 1,
+              "url": "http://localhost/admin/posts/1/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Adipisci quos ut aperiam",
+                  "description": "Nulla corrupti explicabo doloribus quod aut voluptate vitae..."
+                },
+                "author.name": {
+                  "state": "Mrs. Layla Effertz"
+                },
+                "category.name": {
+                  "state": "Ut Magnam",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "draft",
+                  "color": "gray"
+                },
+                "is_featured": {
+                  "state": true
+                },
+                "views": {
+                  "state": "16,039"
+                },
+                "sponsorship_fee": {
+                  "state": "BHD 106.236"
+                },
+                "published_at": []
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/1",
+                  "record": 1
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/1/edit",
+                  "record": 1
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 1
+                }
+              ]
+            },
+            {
+              "key": 2,
+              "url": "http://localhost/admin/posts/2/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Quod possimus qui voluptas veniam vero et",
+                  "description": "Quos iusto aut explicabo laborum est nobis minima sapiente d..."
+                },
+                "author.name": {
+                  "state": "Alfa Admin"
+                },
+                "category.name": {
+                  "state": "Et In",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "draft",
+                  "color": "gray"
+                },
+                "is_featured": {
+                  "state": false
+                },
+                "views": {
+                  "state": "18,126"
+                },
+                "sponsorship_fee": [],
+                "published_at": []
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/2",
+                  "record": 2
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/2/edit",
+                  "record": 2
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 2
+                }
+              ]
+            },
+            {
+              "key": 3,
+              "url": "http://localhost/admin/posts/3/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Odit quidem cupiditate",
+                  "description": "Rerum minus provident eos perferendis ut culpa natus placeat..."
+                },
+                "author.name": {
+                  "state": "Alfa Admin"
+                },
+                "category.name": {
+                  "state": "Ut Magnam",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "draft",
+                  "color": "gray"
+                },
+                "is_featured": {
+                  "state": false
+                },
+                "views": {
+                  "state": "2,620"
+                },
+                "sponsorship_fee": [],
+                "published_at": {
+                  "state": "5 months ago"
+                }
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/3",
+                  "record": 3
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/3/edit",
+                  "record": 3
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 3
+                }
+              ]
+            },
+            {
+              "key": 4,
+              "url": "http://localhost/admin/posts/4/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Ipsam repudiandae facere nemo",
+                  "description": "Repudiandae laboriosam ex aut suscipit eaque dolor blanditii..."
+                },
+                "author.name": {
+                  "state": "Alice Hayes"
+                },
+                "category.name": {
+                  "state": "Et In",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "draft",
+                  "color": "gray"
+                },
+                "is_featured": {
+                  "state": false
+                },
+                "views": {
+                  "state": "12,338"
+                },
+                "sponsorship_fee": {
+                  "state": "€1,905.27"
+                },
+                "published_at": {
+                  "state": "3 months ago"
+                }
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/4",
+                  "record": 4
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/4/edit",
+                  "record": 4
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 4
+                }
+              ]
+            },
+            {
+              "key": 5,
+              "url": "http://localhost/admin/posts/5/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Non impedit ab harum et voluptas",
+                  "description": "Ullam sunt reprehenderit id dolore est similique cumque aliq..."
+                },
+                "author.name": {
+                  "state": "Sheila Harris"
+                },
+                "category.name": {
+                  "state": "Quo Libero",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "draft",
+                  "color": "gray"
+                },
+                "is_featured": {
+                  "state": true
+                },
+                "views": {
+                  "state": "17,896"
+                },
+                "sponsorship_fee": {
+                  "state": "BHD 176.945"
+                },
+                "published_at": {
+                  "state": "4 weeks ago"
+                }
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/5",
+                  "record": 5
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/5/edit",
+                  "record": 5
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 5
+                }
+              ]
+            },
+            {
+              "key": 6,
+              "url": "http://localhost/admin/posts/6/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Quisquam maiores facere",
+                  "description": "Reprehenderit doloribus quae illo aperiam nisi consequatur n..."
+                },
+                "author.name": {
+                  "state": "Alice Hayes"
+                },
+                "category.name": {
+                  "state": "Quo Libero",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "review",
+                  "color": "warning"
+                },
+                "is_featured": {
+                  "state": false
+                },
+                "views": {
+                  "state": "850"
+                },
+                "sponsorship_fee": {
+                  "state": "$1,458.90"
+                },
+                "published_at": []
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/6",
+                  "record": 6
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/6/edit",
+                  "record": 6
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 6
+                }
+              ]
+            },
+            {
+              "key": 7,
+              "url": "http://localhost/admin/posts/7/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Nihil saepe nemo ex quae ut laboriosam voluptates",
+                  "description": "Accusantium maiores facere illum provident dolorem sit quaer..."
+                },
+                "author.name": {
+                  "state": "Sheila Harris"
+                },
+                "category.name": {
+                  "state": "Ut Magnam",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "published",
+                  "color": "success"
+                },
+                "is_featured": {
+                  "state": false
+                },
+                "views": {
+                  "state": "4,801"
+                },
+                "sponsorship_fee": {
+                  "state": "£2,315.98"
+                },
+                "published_at": {
+                  "state": "9 months ago"
+                }
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/7",
+                  "record": 7
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/7/edit",
+                  "record": 7
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 7
+                }
+              ]
+            },
+            {
+              "key": 8,
+              "url": "http://localhost/admin/posts/8/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Dicta fugiat quia numquam",
+                  "description": "Et quia facere corporis dolor laudantium sint facere est vol..."
+                },
+                "author.name": {
+                  "state": "Mrs. Layla Effertz"
+                },
+                "category.name": {
+                  "state": "Et In",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "review",
+                  "color": "warning"
+                },
+                "is_featured": {
+                  "state": false
+                },
+                "views": {
+                  "state": "1,790"
+                },
+                "sponsorship_fee": [],
+                "published_at": {
+                  "state": "8 months ago"
+                }
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/8",
+                  "record": 8
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/8/edit",
+                  "record": 8
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 8
+                }
+              ]
+            },
+            {
+              "key": 9,
+              "url": "http://localhost/admin/posts/9/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Aut dolor sit",
+                  "description": "Est omnis nam ut ratione ipsa repudiandae corrupti labore po..."
+                },
+                "author.name": {
+                  "state": "Alfa Admin"
+                },
+                "category.name": {
+                  "state": "Sequi Consectetur",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "published",
+                  "color": "success"
+                },
+                "is_featured": {
+                  "state": false
+                },
+                "views": {
+                  "state": "9,135"
+                },
+                "sponsorship_fee": [],
+                "published_at": {
+                  "state": "3 months ago"
+                }
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/9",
+                  "record": 9
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/9/edit",
+                  "record": 9
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 9
+                }
+              ]
+            },
+            {
+              "key": 10,
+              "url": "http://localhost/admin/posts/10/edit",
+              "selectable": true,
+              "cells": {
+                "title": {
+                  "state": "Et officia ut dignissimos",
+                  "description": "Nihil incidunt eum neque qui iusto aliquam dolores deleniti."
+                },
+                "author.name": {
+                  "state": "Alfa Admin"
+                },
+                "category.name": {
+                  "state": "Error Itaque",
+                  "color": "info"
+                },
+                "status": {
+                  "state": "published",
+                  "color": "success"
+                },
+                "is_featured": {
+                  "state": true
+                },
+                "views": {
+                  "state": "2,435"
+                },
+                "sponsorship_fee": [],
+                "published_at": {
+                  "state": "2 months ago"
+                }
+              },
+              "actions": [
+                {
+                  "type": "Action",
+                  "name": "view",
+                  "label": "View",
+                  "icon": "eye",
+                  "iconPosition": "before",
+                  "color": "gray",
+                  "url": "http://localhost/admin/posts/10",
+                  "record": 10
+                },
+                {
+                  "type": "Action",
+                  "name": "edit",
+                  "label": "Edit",
+                  "icon": "pencil",
+                  "iconPosition": "before",
+                  "color": "primary",
+                  "url": "http://localhost/admin/posts/10/edit",
+                  "record": 10
+                },
+                {
+                  "type": "Action",
+                  "name": "delete",
+                  "label": "Delete",
+                  "icon": "trash-2",
+                  "iconPosition": "before",
+                  "color": "danger",
+                  "hasModal": true,
+                  "hasAction": true,
+                  "record": 10
+                }
+              ]
+            }
+          ],
+          "pagination": {
+            "currentPage": 1,
+            "lastPage": 6,
+            "perPage": 10,
+            "total": 60,
+            "from": 1,
+            "to": 10,
+            "pageOptions": [10, 25, 50, 100],
+            "simple": null
+          },
+          "sort": {
+            "column": "created_at",
+            "direction": "desc"
+          },
+          "searchable": true,
+          "searchPlaceholder": "Search",
+          "searchDebounce": 500,
+          "striped": true,
+          "selectable": true,
+          "emptyState": {
+            "heading": "No posts",
+            "description": null,
+            "icon": "inbox",
+            "actions": null
+          }
+        }
+      ],
+      "token": "test-token"
+    }
+  },
+  "url": "/admin/posts",
+  "version": null,
+  "sharedProps": ["errors", "name", "auth", "sidebarOpen", "alfakit", "alfakitAppearance"]
+}

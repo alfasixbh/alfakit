@@ -1,0 +1,1340 @@
+/*
+ * Alfakit themes. Shared by every renderer and imported by their `styles.css`.
+ *
+ * The panel puts `data-alfakit-theme="<base> <custom>"`, `data-sidebar-variant` and
+ * `data-density` on <html>. The neutral theme is the base token set in `styles.css`; each
+ * theme below only overrides what it changes. Colours keep the `var(--alfakit-*, …)`
+ * fallbacks so `->colors([...])` on a panel still wins.
+ *
+ * Write your own theme the same way:
+ *   :root[data-alfakit-theme~='acme'] { --primary: var(--alfakit-primary, oklch(0.6 0.2 30)); }
+ *   :root.dark[data-alfakit-theme~='acme'] { … }
+ */
+
+/* ------------------------------------------------------------------ AlfaKit */
+
+/*
+ * The AlfaKit brand (brand kit v1.0): Alfa Navy anchors the light theme on a warm cream
+ * canvas, Fox Orange is an accent (never small text on light surfaces, 2.74:1 on white),
+ * and in dark mode orange becomes the primary on deep navy with ink text on it.
+ */
+:root[data-alfakit-theme~='alfakit'] {
+  --background: oklch(0.987 0.011 76.6);
+  --foreground: oklch(0.266 0.05 255.2);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.266 0.05 255.2);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.266 0.05 255.2);
+  --primary: var(--alfakit-primary, oklch(0.359 0.116 256.3));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(1 0 0));
+  --secondary: oklch(0.971 0.024 77.5);
+  --secondary-foreground: oklch(0.359 0.116 256.3);
+  --muted: oklch(0.96 0.014 78.3);
+  --muted-foreground: oklch(0.5 0.039 251.3);
+  --accent: oklch(0.971 0.024 77.5);
+  --accent-foreground: oklch(0.359 0.116 256.3);
+  --border: oklch(0.907 0.021 79.1);
+  --input: oklch(0.603 0.03 74.6);
+  --ring: oklch(0.359 0.116 256.3);
+  --chart-1: oklch(0.359 0.116 256.3);
+  --chart-2: oklch(0.709 0.175 50.2);
+  --chart-3: oklch(0.6 0.1 220);
+  --chart-4: oklch(0.8 0.12 75);
+  --chart-5: oklch(0.55 0.12 160);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.266 0.05 255.2);
+  --sidebar-accent: oklch(0.971 0.024 77.5);
+  --sidebar-accent-foreground: oklch(0.359 0.116 256.3);
+  --sidebar-border: oklch(0.907 0.021 79.1);
+  --sidebar-ring: oklch(0.359 0.116 256.3);
+  --sidebar-primary: oklch(0.359 0.116 256.3);
+  --sidebar-primary-foreground: oklch(1 0 0);
+}
+
+:root.dark[data-alfakit-theme~='alfakit'] {
+  --background: oklch(0.216 0.045 256.2);
+  --foreground: oklch(0.975 0.005 258.3);
+  --card: oklch(0.254 0.052 255.1);
+  --card-foreground: oklch(0.975 0.005 258.3);
+  --popover: oklch(0.254 0.052 255.1);
+  --popover-foreground: oklch(0.975 0.005 258.3);
+  --primary: var(--alfakit-primary, oklch(0.709 0.175 50.2));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.266 0.05 255.2));
+  --secondary: oklch(0.306 0.064 254.8);
+  --secondary-foreground: oklch(0.975 0.005 258.3);
+  --muted: oklch(0.282 0.057 254.6);
+  --muted-foreground: oklch(0.778 0.061 255.5);
+  --accent: oklch(0.306 0.064 254.8);
+  --accent-foreground: oklch(0.975 0.005 258.3);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 38%);
+  --ring: oklch(0.709 0.175 50.2);
+  --chart-1: oklch(0.709 0.175 50.2);
+  --chart-2: oklch(0.778 0.061 255.5);
+  --sidebar: oklch(0.241 0.049 254.5);
+  --sidebar-foreground: oklch(0.975 0.005 258.3);
+  --sidebar-accent: oklch(0.306 0.064 254.8);
+  --sidebar-accent-foreground: oklch(0.975 0.005 258.3);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.709 0.175 50.2);
+  --sidebar-primary: oklch(0.709 0.175 50.2);
+  --sidebar-primary-foreground: oklch(0.266 0.05 255.2);
+}
+
+/* Montserrat titles, as in the brand guide (the theme sets it as the heading font). */
+:root[data-alfakit-theme~='alfakit'] :is([data-slot='page-header'] h1, [data-slot='card-title']) {
+  letter-spacing: -0.01em;
+}
+
+:root[data-alfakit-theme~='alfakit'] [data-slot='topbar'] {
+  border-color: transparent;
+}
+
+/* ------------------------------------------------------------------ Minimal */
+
+:root[data-alfakit-theme~='minimal'] {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0 0);
+  --card: oklch(1 0 0);
+  --popover: oklch(1 0 0);
+  --primary: var(--alfakit-primary, oklch(0.15 0 0));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.99 0 0));
+  --secondary: oklch(0.965 0 0);
+  --secondary-foreground: oklch(0.15 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.15 0 0);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.64 0 0);
+  --ring: oklch(0.4 0 0);
+  --chart-1: oklch(0.25 0 0);
+  --chart-2: oklch(0.45 0 0);
+  --chart-3: oklch(0.6 0 0);
+  --chart-4: oklch(0.75 0 0);
+  --chart-5: oklch(0.85 0 0);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.2 0 0);
+  --sidebar-accent: oklch(0.955 0 0);
+  --sidebar-accent-foreground: oklch(0.15 0 0);
+  --sidebar-border: oklch(0.9 0 0);
+}
+
+:root.dark[data-alfakit-theme~='minimal'] {
+  --background: oklch(0.13 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.13 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.17 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: var(--alfakit-primary, oklch(0.96 0 0));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.13 0 0));
+  --secondary: oklch(0.22 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.68 0 0);
+  --accent: oklch(0.22 0 0);
+  --accent-foreground: oklch(0.96 0 0);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 38%);
+  --ring: oklch(0.7 0 0);
+  --sidebar: oklch(0.13 0 0);
+  --sidebar-foreground: oklch(0.92 0 0);
+  --sidebar-accent: oklch(0.22 0 0);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(1 0 0 / 12%);
+}
+
+/* --------------------------------------------------------------------- Soft */
+
+:root[data-alfakit-theme~='soft'] {
+  --background: oklch(0.99 0.004 85);
+  --foreground: oklch(0.25 0.02 60);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.02 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.25 0.02 60);
+  --primary: var(--alfakit-primary, oklch(0.52 0.13 165));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.99 0 0));
+  --secondary: oklch(0.95 0.02 165);
+  --secondary-foreground: oklch(0.32 0.07 165);
+  --muted: oklch(0.96 0.01 85);
+  --muted-foreground: oklch(0.53 0.02 60);
+  --accent: oklch(0.94 0.03 165);
+  --accent-foreground: oklch(0.35 0.08 165);
+  --border: oklch(0.92 0.012 85);
+  --input: oklch(0.64 0.014 85);
+  --ring: oklch(0.65 0.11 165);
+  --chart-1: oklch(0.6 0.13 165);
+  --chart-2: oklch(0.72 0.13 60);
+  --chart-3: oklch(0.65 0.12 25);
+  --chart-4: oklch(0.6 0.1 250);
+  --chart-5: oklch(0.75 0.12 120);
+  --sidebar: oklch(0.95 0.018 80);
+  --sidebar-foreground: oklch(0.3 0.02 60);
+  --sidebar-accent: oklch(0.93 0.025 165);
+  --sidebar-accent-foreground: oklch(0.38 0.09 165);
+  --sidebar-border: oklch(0.91 0.014 85);
+  --sidebar-ring: oklch(0.65 0.11 165);
+}
+
+:root.dark[data-alfakit-theme~='soft'] {
+  --background: oklch(0.19 0.012 60);
+  --foreground: oklch(0.95 0.01 85);
+  --card: oklch(0.23 0.012 60);
+  --card-foreground: oklch(0.95 0.01 85);
+  --popover: oklch(0.23 0.012 60);
+  --popover-foreground: oklch(0.95 0.01 85);
+  --primary: var(--alfakit-primary, oklch(0.72 0.12 165));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.18 0.03 165));
+  --secondary: oklch(0.28 0.03 165);
+  --secondary-foreground: oklch(0.92 0.03 165);
+  --muted: oklch(0.27 0.012 60);
+  --muted-foreground: oklch(0.72 0.015 70);
+  --accent: oklch(0.3 0.04 165);
+  --accent-foreground: oklch(0.92 0.04 165);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 38%);
+  --ring: oklch(0.62 0.1 165);
+  --sidebar: oklch(0.16 0.012 60);
+  --sidebar-foreground: oklch(0.92 0.01 85);
+  --sidebar-accent: oklch(0.27 0.035 165);
+  --sidebar-accent-foreground: oklch(0.9 0.06 165);
+  --sidebar-border: oklch(1 0 0 / 8%);
+}
+
+/* ---------------------------------------------------------------- Corporate */
+
+:root[data-alfakit-theme~='corporate'] {
+  --background: oklch(0.975 0.004 250);
+  --foreground: oklch(0.2 0.03 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.03 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.03 255);
+  --primary: var(--alfakit-primary, oklch(0.49 0.2 262));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.99 0 0));
+  --secondary: oklch(0.95 0.01 255);
+  --secondary-foreground: oklch(0.25 0.04 255);
+  --muted: oklch(0.955 0.008 255);
+  --muted-foreground: oklch(0.5 0.03 255);
+  --accent: oklch(0.94 0.02 255);
+  --accent-foreground: oklch(0.3 0.08 262);
+  --border: oklch(0.9 0.01 255);
+  --input: oklch(0.64 0.012 255);
+  --ring: oklch(0.55 0.16 262);
+  --chart-1: oklch(0.49 0.2 262);
+  --chart-2: oklch(0.62 0.13 220);
+  --chart-3: oklch(0.7 0.1 180);
+  --chart-4: oklch(0.75 0.12 85);
+  --chart-5: oklch(0.6 0.03 255);
+  --sidebar: oklch(0.24 0.05 262);
+  --sidebar-foreground: oklch(0.93 0.015 255);
+  --sidebar-primary: oklch(0.72 0.13 250);
+  --sidebar-primary-foreground: oklch(0.18 0.04 262);
+  --sidebar-accent: oklch(0.32 0.06 262);
+  --sidebar-accent-foreground: oklch(0.99 0 0);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.72 0.13 250);
+}
+
+:root.dark[data-alfakit-theme~='corporate'] {
+  --background: oklch(0.17 0.025 260);
+  --foreground: oklch(0.96 0.008 255);
+  --card: oklch(0.21 0.03 260);
+  --card-foreground: oklch(0.96 0.008 255);
+  --popover: oklch(0.21 0.03 260);
+  --popover-foreground: oklch(0.96 0.008 255);
+  --primary: var(--alfakit-primary, oklch(0.66 0.16 258));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.16 0.03 262));
+  --secondary: oklch(0.27 0.03 260);
+  --secondary-foreground: oklch(0.95 0.01 255);
+  --muted: oklch(0.26 0.03 260);
+  --muted-foreground: oklch(0.72 0.03 255);
+  --accent: oklch(0.3 0.05 262);
+  --accent-foreground: oklch(0.95 0.02 255);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 38%);
+  --ring: oklch(0.6 0.13 258);
+  --sidebar: oklch(0.14 0.03 262);
+  --sidebar-accent: oklch(0.24 0.05 262);
+  --sidebar-border: oklch(1 0 0 / 7%);
+}
+
+/* The navy sidebar needs light text for everything rendered inside it. */
+:root[data-alfakit-theme~='corporate'] [data-sidebar='sidebar'] {
+  --foreground: var(--sidebar-foreground);
+  --muted: var(--sidebar-accent);
+  --muted-foreground: oklch(0.75 0.03 255);
+  --accent: var(--sidebar-accent);
+  --accent-foreground: var(--sidebar-accent-foreground);
+  --border: var(--sidebar-border);
+}
+
+/* ----------------------------------------------------------------- Filament */
+
+:root[data-alfakit-theme~='filament'] {
+  --background: oklch(0.985 0.002 247.839);
+  --foreground: oklch(0.21 0.034 264.665);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.034 264.665);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.034 264.665);
+  --primary: var(--alfakit-primary, oklch(0.56 0.179 58.318));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(1 0 0));
+  --secondary: oklch(0.967 0.003 264.542);
+  --secondary-foreground: oklch(0.21 0.034 264.665);
+  --muted: oklch(0.967 0.003 264.542);
+  --muted-foreground: oklch(0.551 0.027 264.364);
+  --accent: oklch(0.967 0.003 264.542);
+  --accent-foreground: oklch(0.21 0.034 264.665);
+  --border: oklch(0.928 0.006 264.531);
+  --input: oklch(0.64 0.01 258.338);
+  --ring: oklch(0.769 0.188 70.08);
+  --chart-1: oklch(0.769 0.188 70.08);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.696 0.17 162.48);
+  --chart-4: oklch(0.637 0.237 25.331);
+  --chart-5: oklch(0.551 0.027 264.364);
+  --sidebar: oklch(0.985 0.002 247.839);
+  --sidebar-foreground: oklch(0.373 0.034 259.733);
+  --sidebar-primary: var(--primary);
+  --sidebar-accent: oklch(0.967 0.003 264.542);
+  --sidebar-accent-foreground: oklch(0.52 0.16 58.318);
+  --sidebar-border: oklch(0.13 0.028 261.692 / 0.05);
+  --sidebar-ring: oklch(0.769 0.188 70.08);
+}
+
+:root.dark[data-alfakit-theme~='filament'] {
+  --background: oklch(0.13 0.028 261.692);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.21 0.034 264.665);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.21 0.034 264.665);
+  --popover-foreground: oklch(1 0 0);
+  --primary: var(--alfakit-primary, oklch(0.769 0.188 70.08));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.13 0.028 261.692));
+  --secondary: oklch(0.278 0.033 256.848);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.278 0.033 256.848);
+  --muted-foreground: oklch(0.707 0.022 261.325);
+  --accent: oklch(1 0 0 / 5%);
+  --accent-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 38%);
+  --sidebar: oklch(0.13 0.028 261.692);
+  --sidebar-foreground: oklch(0.872 0.01 258.338);
+  --sidebar-accent: oklch(1 0 0 / 5%);
+  --sidebar-accent-foreground: oklch(0.828 0.189 84.429);
+  --sidebar-border: oklch(1 0 0 / 5%);
+}
+
+:root[data-alfakit-theme~='filament'] [data-slot='topbar'] {
+  background: var(--card);
+  backdrop-filter: none;
+}
+
+:root[data-alfakit-theme~='filament'] [data-sidebar='menu-button'][data-active='true'] {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ Density */
+
+:root[data-density='compact'] [data-slot='content'] {
+  gap: 1rem;
+}
+
+:root[data-density='compact'] :is([data-slot='table-cell'], [data-slot='table-head']) {
+  padding-block: 0.375rem;
+}
+
+:root[data-density='compact'] [data-slot='table-head'] {
+  height: 2.25rem;
+}
+
+:root[data-density='compact'] [data-slot='card'] {
+  gap: 1rem;
+  padding-block: 1rem;
+}
+
+:root[data-density='compact'] [data-slot='topbar'] {
+  height: 3rem;
+}
+
+/* =====================================================================================
+ * Design dimensions. Each is a `data-*` attribute on <html> chosen by the theme and
+ * overridable with `$panel->design(...)`. They restyle the same components into
+ * different designs, independent of colour.
+ * ===================================================================================== */
+
+:root {
+  --alfakit-content-pad: 1rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --alfakit-content-pad: 1.5rem;
+  }
+}
+
+/* ------------------------------------------------------------- Navigation items */
+
+/* Pill: fully rounded items with a tinted active state in the primary colour. */
+:root[data-nav='pill']
+  :is([data-sidebar='menu-button'], [data-sidebar='menu-sub-button'], [data-slot='topnav-link']) {
+  border-radius: 9999px;
+}
+
+:root[data-nav='pill']
+  :is(
+    [data-sidebar='menu-button'],
+    [data-sidebar='menu-sub-button'],
+    [data-slot='topnav-link']
+  )[data-active='true'] {
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+:root.dark[data-nav='pill']
+  :is(
+    [data-sidebar='menu-button'],
+    [data-sidebar='menu-sub-button'],
+    [data-slot='topnav-link']
+  )[data-active='true'] {
+  background: color-mix(in oklch, var(--primary) 22%, transparent);
+  color: color-mix(in oklch, var(--primary) 70%, white);
+}
+
+/* Bar: an accent bar on the reading-start edge marks the active item. */
+:root[data-nav='bar'] [data-sidebar='menu-button'] {
+  position: relative;
+  border-radius: calc(var(--radius) - 4px);
+}
+
+:root[data-nav='bar'] [data-sidebar='menu-button'][data-active='true'] {
+  background: color-mix(in oklch, var(--sidebar-accent) 70%, transparent);
+  font-weight: 600;
+}
+
+:root[data-nav='bar'] [data-sidebar='menu-button'][data-active='true']::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.375rem;
+  inset-inline-start: -0.5rem;
+  width: 3px;
+  border-radius: 9999px;
+  background: var(--sidebar-primary);
+}
+
+/* Underline (and bar in the top navigation): tabs with an underline. */
+:root:is([data-nav='underline'], [data-nav='bar']) [data-slot='topnav-link'] {
+  height: 3.5rem;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  padding-inline: 0.75rem;
+}
+
+:root:is([data-nav='underline'], [data-nav='bar']) [data-slot='topnav-link']:hover {
+  background: transparent;
+  border-bottom-color: var(--border);
+}
+
+:root:is([data-nav='underline'], [data-nav='bar']) [data-slot='topnav-link'][data-active='true'] {
+  background: transparent;
+  border-bottom-color: var(--primary);
+  color: var(--foreground);
+}
+
+:root[data-nav='underline'] [data-sidebar='menu-button'][data-active='true'] {
+  background: transparent;
+  text-decoration: underline;
+  text-decoration-color: var(--sidebar-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------- Page header */
+
+:root
+  :is([data-slot='page-header'] h1, [data-slot='section'] :is(h2, h3), [data-slot='card-title']) {
+  font-family: var(--alfakit-heading-font, inherit);
+}
+
+/* Banner: a tinted hero card behind the page title. */
+:root[data-header='banner'] [data-slot='page-header'] {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem 1.75rem;
+  border-radius: calc(var(--radius) + 6px);
+  border: 1px solid color-mix(in oklch, var(--primary) 14%, var(--border));
+  background:
+    radial-gradient(
+      120% 140% at 100% 0%,
+      color-mix(in oklch, var(--primary) 16%, transparent) 0%,
+      transparent 55%
+    ),
+    linear-gradient(135deg, color-mix(in oklch, var(--primary) 7%, var(--card)) 0%, var(--card) 70%);
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.04);
+}
+
+:root[data-header='banner'] [data-slot='page-header'] h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Band: a full-width strip across the top of the content area. */
+:root[data-header='band'] [data-slot='page-header'] {
+  margin: calc(-1 * var(--alfakit-content-pad)) calc(-1 * var(--alfakit-content-pad)) 0;
+  padding: 1.25rem var(--alfakit-content-pad);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+:root[data-header='band'] [data-slot='page-header'] h1 {
+  font-size: 1.375rem;
+}
+
+/* Compact: a small title for dense screens. */
+:root[data-header='compact'] [data-slot='page-header'] h1 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+:root[data-header='compact'] [data-slot='page-header'] {
+  align-items: center;
+}
+
+/* -------------------------------------------------------------------- Surfaces */
+
+/* Elevated: no border, a soft shadow. */
+:root[data-surfaces='elevated'] :is([data-surface], [data-slot='card']) {
+  border-color: transparent;
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 0.04),
+    0 8px 24px -12px oklch(0 0 0 / 0.14);
+}
+
+:root.dark[data-surfaces='elevated'] :is([data-surface], [data-slot='card']) {
+  border-color: oklch(1 0 0 / 7%);
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.4);
+}
+
+/* Flat: no border or shadow; a tint separates surfaces from the page. */
+:root[data-surfaces='flat'] :is([data-surface], [data-slot='card']) {
+  border-color: transparent;
+  box-shadow: none;
+  background: color-mix(in oklch, var(--muted) 65%, var(--card));
+}
+
+/* Ring: a hairline ring with a small shadow (Filament-like). */
+:root[data-surfaces='ring'] :is([data-surface], [data-slot='card'], [data-slot='topbar']) {
+  border-color: oklch(0.13 0.028 261.692 / 0.06);
+  box-shadow: 0 1px 2px 0 oklch(0 0 0 / 0.05);
+}
+
+:root.dark[data-surfaces='ring'] :is([data-surface], [data-slot='card'], [data-slot='topbar']) {
+  border-color: oklch(1 0 0 / 10%);
+}
+
+/* ---------------------------------------------------------------------- Inputs */
+
+:root[data-inputs='filled']
+  :is(
+    [data-slot='input']:not([data-slot='input-group'] *),
+    [data-slot='textarea'],
+    [data-slot='select-trigger']:not([data-slot='input-group'] *),
+    [data-input]:not([data-slot='input-group'] *),
+    [data-slot='input-group']
+  ) {
+  background: var(--muted);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+:root[data-inputs='filled']
+  :is(
+    [data-slot='input']:not([data-slot='input-group'] *),
+    [data-slot='textarea'],
+    [data-slot='select-trigger']:not([data-slot='input-group'] *),
+    [data-input]:not([data-slot='input-group'] *)
+  ):focus-visible,
+:root[data-inputs='filled'] [data-slot='input-group']:focus-within {
+  background: var(--card);
+  border-color: var(--ring);
+}
+
+:root[data-inputs='underline']
+  :is(
+    [data-slot='input']:not([data-slot='input-group'] *),
+    [data-slot='textarea'],
+    [data-slot='select-trigger']:not([data-slot='input-group'] *),
+    [data-input]:not([data-slot='input-group'] *),
+    [data-slot='input-group']
+  ) {
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-inputs='underline']
+  :is(
+    [data-slot='input']:not([data-slot='input-group'] *),
+    [data-slot='textarea'],
+    [data-slot='select-trigger']:not([data-slot='input-group'] *),
+    [data-input]:not([data-slot='input-group'] *)
+  ):focus-visible,
+:root[data-inputs='underline'] [data-slot='input-group']:focus-within {
+  border-bottom-color: var(--primary);
+  box-shadow: 0 1px 0 0 var(--primary);
+}
+
+/* --------------------------------------------------------------------- Buttons */
+
+:root[data-buttons='pill'] [data-slot='button']:not([data-input]) {
+  border-radius: 9999px;
+}
+
+:root[data-buttons='square'] [data-slot='button']:not([data-input]) {
+  border-radius: calc(var(--radius) * 0.5);
+}
+
+/* ---------------------------------------------------------------------- Tables */
+
+:root[data-tables='striped'] [data-slot='table-body'] [data-slot='table-row']:nth-child(even) {
+  background: color-mix(in oklch, var(--muted) 60%, transparent);
+}
+
+:root[data-tables='striped'] [data-slot='table-header'] {
+  background: color-mix(in oklch, var(--muted) 80%, transparent);
+}
+
+:root[data-tables='minimal'] [data-slot='table-body'] [data-slot='table-row'] {
+  border-bottom-color: transparent;
+}
+
+:root[data-tables='minimal'] [data-slot='table-body'] [data-slot='table-cell'] {
+  padding-block: 0.75rem;
+}
+
+/* -------------------------------------------------------------- Mobile preset */
+
+/*
+ * `$panel->mobile()` (design `mobile: 'bottom'`). Everything below the md breakpoint:
+ * a bottom navigation bar ([data-slot='bottom-nav'], rendered by the renderers), tables as
+ * stacked cards (the renderers switch the layout), slide-over modals, 44px touch targets
+ * on primary controls and sticky form actions. Logical properties keep it RTL-safe.
+ */
+
+:root {
+  --alfakit-bottom-nav-height: 3.75rem;
+}
+
+@media (max-width: 767px) {
+  :root[data-mobile='bottom'] [data-slot='bottom-nav'] {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    height: calc(var(--alfakit-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: color-mix(in oklch, var(--background) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+  }
+
+  :root[data-mobile='bottom'] [data-slot='bottom-nav-item'] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    min-height: 2.75rem;
+    padding-block: 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root[data-mobile='bottom'] [data-slot='bottom-nav-item'] svg {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+
+  :root[data-mobile='bottom'] [data-slot='bottom-nav-item'][data-active='true'] {
+    color: var(--primary);
+  }
+
+  /* Room for the bar, sticky actions sit right above it. */
+  :root[data-mobile='bottom'] [data-slot='content'] {
+    padding-bottom: calc(
+      var(--alfakit-bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 1rem
+    );
+  }
+
+  :root[data-mobile='bottom'] [data-slot='form-actions'] {
+    position: sticky;
+    bottom: calc(var(--alfakit-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+    z-index: 30;
+    margin-inline: calc(var(--alfakit-content-pad) * -1);
+    padding-inline: var(--alfakit-content-pad);
+    padding-block: 0.75rem;
+    background: color-mix(in oklch, var(--background) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+  }
+
+  :root[data-mobile='bottom'] [data-slot='form-actions'] [data-slot='button'] {
+    flex: 1 1 auto;
+  }
+
+  /* 44px touch targets on primary controls (WCAG 2.5.5); icon buttons grow to a 44px square. */
+  :root[data-mobile='bottom']
+    :is(
+      [data-slot='form-actions'],
+      [data-slot='page-header'],
+      [data-slot='table-block'] > :first-child,
+      [data-slot='dialog-footer'],
+      [data-slot='sheet-footer']
+    )
+    [data-slot='button'] {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
+  :root[data-mobile='bottom']
+    :is([data-slot='input'], [data-slot='select-trigger'], [data-input]):not(
+      [data-slot='input-group'] *
+    ) {
+    min-height: 2.75rem;
+  }
+
+  :root[data-mobile='bottom'] [data-slot='input-group'] {
+    min-height: 2.75rem;
+  }
+
+  /* Centred dialogs become slide-overs from the reading-end edge. */
+  :root[data-mobile='bottom'] [data-slot='dialog-content'] {
+    top: 0;
+    bottom: 0;
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    left: auto;
+    height: 100dvh;
+    max-height: none;
+    width: 100%;
+    max-width: 100%;
+    translate: none;
+    transform: none;
+    border-radius: 0;
+    border-block: 0;
+    border-inline-end: 0;
+    overflow-y: auto;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    animation-name: alfakit-slide-over-in;
+    animation-duration: 0.25s;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  :root[data-mobile='bottom'] [data-slot='dialog-content'][data-state='closed'] {
+    animation-name: alfakit-slide-over-out;
+  }
+
+  :root[data-mobile='bottom'] [data-slot='sheet-content'] {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  :root[data-mobile='bottom'] [data-slot='table-content'] [data-slot='table-record'] {
+    padding-block: 0.875rem;
+  }
+}
+
+/* The slide-over enters from the reading-end edge: the right in LTR, the left in RTL. */
+:root[data-mobile='bottom'] [data-slot='dialog-content'] {
+  --alfakit-slide-from: 100%;
+}
+
+:root[dir='rtl'][data-mobile='bottom'] [data-slot='dialog-content'] {
+  --alfakit-slide-from: -100%;
+}
+
+@keyframes alfakit-slide-over-in {
+  from {
+    transform: translateX(var(--alfakit-slide-from, 100%));
+    opacity: 0.6;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes alfakit-slide-over-out {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translateX(var(--alfakit-slide-from, 100%));
+    opacity: 0.6;
+  }
+}
+
+/* ---------------------------------------------------------- Theme personalities */
+
+/* Sortable headers are buttons, which browsers reset to normal case. */
+[data-slot='table-head'] :is(button, a) {
+  text-transform: inherit;
+  letter-spacing: inherit;
+  font-size: inherit;
+}
+
+/* AlfaKit: small-caps table headers, bold titles, airy page. */
+:root[data-alfakit-theme~='alfakit'] [data-slot='table-head'] {
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+}
+
+:root[data-alfakit-theme~='alfakit'] [data-slot='content'] {
+  gap: 1.75rem;
+}
+
+/* Minimal: hairline surfaces on a white page, no tint. */
+:root[data-alfakit-theme~='minimal'] :is([data-surface], [data-slot='card']) {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+:root[data-alfakit-theme~='minimal'] [data-slot='topbar'] {
+  background: var(--background);
+  backdrop-filter: none;
+}
+
+/* Soft: large serif titles. */
+:root[data-alfakit-theme~='soft'] [data-slot='page-header'] h1 {
+  font-size: 2.125rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+/* Corporate: uppercase table headers and a crisp white top bar. */
+:root[data-alfakit-theme~='corporate'] [data-slot='table-head'] {
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+}
+
+:root[data-alfakit-theme~='corporate'] [data-slot='topbar'] {
+  background: var(--card);
+  backdrop-filter: none;
+}
+
+/* ------------------------------------------------------------------ Credit */
+
+/* "Developed by Alfa Six" in the footer slot of every panel; removed with
+   `$panel->credit(false)`. */
+[data-slot='credit'] {
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 1rem 1rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+}
+
+[data-slot='credit'] a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: inherit;
+  text-decoration: none;
+  transition: color 150ms;
+}
+
+/* The Alfa Six emblem: Alfa Navy on light backgrounds, white on dark (brand kit v3). */
+[data-slot='credit'] svg {
+  width: auto;
+  height: 1.125rem;
+  flex-shrink: 0;
+  color: #073b78;
+}
+
+.dark [data-slot='credit'] svg {
+  color: #ffffff;
+}
+
+[data-slot='credit'] a:hover,
+[data-slot='credit'] a:focus-visible {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+[data-slot='credit'] strong {
+  font-weight: 600;
+}
+
+/* "Powered by AlfaKit · Alfa Six" on customer-facing pages (opt-in, `Credit::poweredBy()`).
+   The markup carries its own layout styles; the theme adds colours and focus states. */
+[data-slot='powered-by'] {
+  color: var(--muted-foreground);
+}
+
+.dark [data-slot='powered-by'],
+.dark[data-slot='powered-by'] {
+  --alfakit-credit-emblem: #ffffff;
+}
+
+[data-slot='powered-by'] a:hover,
+[data-slot='powered-by'] a:focus-visible {
+  color: var(--foreground);
+  text-decoration: underline !important;
+  text-underline-offset: 4px;
+}
+
+/* --------------------------------------------------------------------- Colours */
+
+/*
+ * `colors(['gray' => '#71717a'])` tints the neutral tokens of every theme. The panel sets
+ * `data-alfakit-gray` when gray is configured; the repeated attribute outranks the
+ * themes' own `:root.dark[data-alfakit-theme~='…']` rules in light and dark mode.
+ */
+:root[data-alfakit-gray][data-alfakit-gray][data-alfakit-gray] {
+  --muted: color-mix(in oklab, var(--alfakit-gray) 8%, var(--background));
+  --accent: color-mix(in oklab, var(--alfakit-gray) 8%, var(--background));
+  --secondary: color-mix(in oklab, var(--alfakit-gray) 8%, var(--background));
+  --muted-foreground: var(--alfakit-gray);
+  --border: color-mix(in oklab, var(--alfakit-gray) 18%, var(--background));
+  --sidebar-accent: color-mix(in oklab, var(--alfakit-gray) 8%, var(--sidebar));
+  --sidebar-border: color-mix(in oklab, var(--alfakit-gray) 18%, var(--sidebar));
+}
+
+/*
+ * Custom colour names (`colors(['brand' => '#4f46e5'])` and `->color('brand')`). The server
+ * emits `.alfakit-color-brand { --alfakit-c: var(--alfakit-brand); --alfakit-c-foreground: … }`;
+ * renderers add it with one of these utilities when a colour name has no built-in classes.
+ * Names without a rule fall back to the gray tokens.
+ */
+.alfakit-solid {
+  background-color: var(--alfakit-c, var(--muted));
+  color: var(--alfakit-c-foreground, var(--foreground));
+}
+
+.alfakit-solid:hover {
+  background-color: color-mix(in oklab, var(--alfakit-c, var(--muted)) 90%, transparent);
+}
+
+.alfakit-soft {
+  border-color: transparent;
+  background-color: color-mix(in oklab, var(--alfakit-c, var(--muted-foreground)) 12%, transparent);
+  color: var(--alfakit-c, var(--muted-foreground));
+}
+
+.alfakit-outline {
+  border-color: color-mix(in oklab, var(--alfakit-c, var(--border)) 40%, transparent);
+  color: var(--alfakit-c, var(--foreground));
+}
+
+.alfakit-ghost,
+.alfakit-text {
+  color: var(--alfakit-c, var(--muted-foreground));
+}
+
+.alfakit-outline:hover,
+.alfakit-ghost:hover {
+  background-color: color-mix(in oklab, var(--alfakit-c, var(--muted-foreground)) 10%, transparent);
+}
+
+.alfakit-switch-on[data-state='checked'],
+.alfakit-switch-off[data-state='unchecked'] {
+  background-color: var(--alfakit-c, var(--muted-foreground));
+}
+
+/*
+ * `FusedGroup`: the group draws one border (and the focus ring); the fields inside lose
+ * their own border, radius, shadow and ring, separated by 1px gaps showing the border colour.
+ */
+[data-slot='fused-group-controls'] {
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md, 0.375rem);
+  background-color: var(--input);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+[data-slot='fused-group-controls']:has(:focus-visible) {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+[data-slot='fused-group-controls'][data-invalid] {
+  border-color: var(--destructive);
+}
+
+[data-slot='fused-group-controls'] > [data-slot='schema-item'] {
+  background-color: var(--background);
+}
+
+[data-slot='fused-group-controls']
+  :is(
+    input:not([type='checkbox'], [type='radio']),
+    textarea,
+    select,
+    button[data-input],
+    [role='combobox'],
+    [data-slot='select-trigger'],
+    [data-slot='input-group']
+  ) {
+  border-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+/* ------------------------------------------------------------------ Charts */
+
+/*
+ * Chart.js paints axes, legends and tooltips on the canvas, so chart widgets read these
+ * properties from <html> (re-read when the theme or dark mode changes). Colours take any
+ * CSS colour; the widths and radius are unitless numbers. Override them in a theme:
+ *   :root[data-alfakit-theme~='acme'] { --chart-tooltip-bg: oklch(0.2 0 0); }
+ * Stat sparklines (`[data-slot='stat-chart']`) use the `--stat-chart-*` properties.
+ */
+:root {
+  --chart-text: var(--muted-foreground);
+  --chart-grid: var(--border);
+  --chart-legend-foreground: var(--muted-foreground);
+  --chart-tooltip-bg: var(--popover);
+  --chart-tooltip-foreground: var(--popover-foreground);
+  --chart-tooltip-border: var(--border);
+  --chart-tooltip-border-width: 1;
+  --chart-tooltip-radius: 6;
+  --stat-chart-stroke-width: 2;
+  --stat-chart-fill-opacity: 0.12;
+}
+
+/*
+ * RichEditor `grid` column blocks and `lead` / `small` text, in the editor and in rendered
+ * content (`RichContentRenderer`). Columns stack on small screens. Stored as
+ * `<div data-type="grid" class="alfakit-grid alfakit-grid-cols-2"><div data-type="gridColumn">`
+ * and `<p class="alfakit-lead">`; copy these rules when showing content outside a panel.
+ */
+:where(.alfakit-grid) {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  margin-block: 0.5rem;
+}
+:where(.alfakit-grid-column) {
+  min-width: 0;
+}
+:where(.alfakit-grid-column) > :first-child {
+  margin-block-start: 0;
+}
+@media (min-width: 768px) {
+  :where(.alfakit-grid-cols-2) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-3) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-4) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-5) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-6) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+:where([contenteditable] .alfakit-grid-column) {
+  border: 1px dashed var(--border);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+}
+:where(.alfakit-lead) {
+  font-size: 1.125em;
+  line-height: 1.6;
+}
+:where(.alfakit-prose small) {
+  font-size: 0.8125em;
+}
+
+/* ---------------------------------------------------------- Calendar and tree */
+
+/*
+ * The calendar widget (alfasix/alfakit-calendar) draws FullCalendar inside
+ * `[data-slot="calendar"]`; FullCalendar reads these `--fc-*` variables, so every theme's
+ * tokens (and dark mode) apply. Override them on the slot to restyle one calendar.
+ */
+:where(.fc[data-slot='calendar']) {
+  --fc-small-font-size: 0.75rem;
+  --fc-page-bg-color: var(--card);
+  --fc-neutral-bg-color: var(--muted);
+  --fc-neutral-text-color: var(--muted-foreground);
+  --fc-border-color: var(--border);
+  --fc-button-text-color: var(--foreground);
+  --fc-button-bg-color: var(--background);
+  --fc-button-border-color: var(--border);
+  --fc-button-hover-bg-color: var(--accent);
+  --fc-button-hover-border-color: var(--border);
+  --fc-button-active-bg-color: var(--secondary);
+  --fc-button-active-border-color: var(--border);
+  --fc-event-bg-color: var(--primary);
+  --fc-event-border-color: var(--primary);
+  --fc-event-text-color: var(--primary-foreground);
+  --fc-event-selected-overlay-color: color-mix(in oklab, var(--foreground) 25%, transparent);
+  --fc-more-link-bg-color: var(--muted);
+  --fc-more-link-text-color: var(--foreground);
+  --fc-non-business-color: color-mix(in oklab, var(--muted) 60%, transparent);
+  --fc-bg-event-color: var(--primary);
+  --fc-bg-event-opacity: 0.2;
+  --fc-highlight-color: color-mix(in oklab, var(--primary) 15%, transparent);
+  --fc-today-bg-color: color-mix(in oklab, var(--primary) 6%, transparent);
+  --fc-now-indicator-color: var(--destructive);
+  --fc-list-event-hover-bg-color: var(--accent);
+  color: var(--card-foreground);
+}
+/*
+ * FullCalendar puts its `fc` class on the slot element itself and injects its own CSS
+ * (`.fc .fc-button`, two classes), so these rules are plain selectors anchored on
+ * `.fc[data-slot='calendar']` (three) rather than `:where()`, which would always lose.
+ * Restyle one calendar with a more specific selector or with the `--fc-*` variables.
+ */
+.fc[data-slot='calendar'] .fc-toolbar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+  color: var(--foreground);
+}
+.fc[data-slot='calendar'] .fc-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  box-shadow: none;
+  text-transform: capitalize;
+}
+.fc[data-slot='calendar'] .fc-button .fc-icon {
+  font-size: 1.125rem;
+}
+.fc[data-slot='calendar'] .fc-button-group > .fc-button:not(:first-child) {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.fc[data-slot='calendar'] .fc-button-group > .fc-button:not(:last-child) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.fc[data-slot='calendar'] .fc-button-primary:disabled {
+  opacity: 0.5;
+}
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled).fc-button-active,
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled):active {
+  color: var(--secondary-foreground);
+}
+.fc[data-slot='calendar'] .fc-button-primary:focus,
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled).fc-button-active:focus,
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled):active:focus {
+  box-shadow: none;
+}
+.fc[data-slot='calendar'] .fc-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  z-index: 2;
+}
+.fc[data-slot='calendar'] a {
+  color: inherit;
+}
+.fc[data-slot='calendar'] .fc-daygrid-day-number,
+.fc[data-slot='calendar'] .fc-col-header-cell-cushion {
+  text-decoration: none;
+}
+.fc[data-slot='calendar'] .fc-col-header-cell-cushion {
+  padding-block: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+.fc[data-slot='calendar'] .fc-daygrid-day-number {
+  font-size: 0.875rem;
+}
+.fc[data-slot='calendar'] .fc-day-other .fc-daygrid-day-number {
+  color: var(--muted-foreground);
+}
+/* Today: a tinted cell (`--fc-today-bg-color`) and the date in a primary pill. */
+.fc[data-slot='calendar'] .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  margin: 0.25rem;
+  padding: 0 0.375rem;
+  border-radius: 9999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 600;
+}
+.fc[data-slot='calendar'] .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
+  color: var(--primary);
+  font-weight: 600;
+}
+.fc[data-slot='calendar'] .fc-event {
+  border-radius: min(var(--radius), 0.375rem);
+}
+.fc[data-slot='calendar'] .fc-daygrid-event,
+.fc[data-slot='calendar'] .fc-timegrid-event .fc-event-main,
+.fc[data-slot='calendar'] .fc-list-event td {
+  font-size: 0.75rem;
+}
+.fc[data-slot='calendar'] .fc-daygrid-dot-event:hover,
+.fc[data-slot='calendar'] .fc-daygrid-dot-event.fc-event-mirror {
+  background: var(--accent);
+}
+.fc[data-slot='calendar'] .fc-list-day-cushion,
+.fc[data-slot='calendar'] .fc-popover-header {
+  color: var(--foreground);
+}
+.fc[data-slot='calendar'] .fc-popover {
+  border-radius: var(--radius);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+}
+.fc[data-slot='calendar'] .fc-timegrid-slot-label,
+.fc[data-slot='calendar'] .fc-timegrid-axis,
+.fc[data-slot='calendar'] .fc-list-event-time {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+/*
+ * The list view hides its column headers for screen readers with `left: -10000px`. Right to
+ * left that is scrollable overflow: the whole page gains a 10 000 px horizontal scroll and the
+ * top bar slides under the sidebar. Clip it in place instead (still read by screen readers).
+ */
+.fc[data-slot='calendar'] .fc-list-table thead {
+  left: auto;
+  inset-inline-start: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * Fields contain what they position. Headless switches, checkboxes and radios render a
+ * visually hidden native input beside the control, absolutely positioned (and shifted by
+ * -100%); without a positioned field it lands at the page edge and, right to left, widens
+ * the page on phones.
+ */
+:where([data-slot='field']) {
+  position: relative;
+}
+
+/*
+ * Narrow screens: FullCalendar keeps its header toolbar on one row, wider than a phone.
+ * Its chunks (navigation, title, views) wrap instead, and the title shrinks. Flex gaps and
+ * `justify-content` follow the writing direction, so this works right to left too. (Plain
+ * selectors: FullCalendar injects its own CSS, which would beat `:where()`; the slot is
+ * the `.fc` element itself.)
+ */
+@media (max-width: 39.99rem) {
+  [data-slot='calendar'] .fc-toolbar.fc-header-toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  [data-slot='calendar'] .fc-toolbar .fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+  [data-slot='calendar'] .fc-toolbar .fc-toolbar-title {
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+  [data-slot='calendar'] .fc-toolbar .fc-button {
+    font-size: 0.8125rem;
+  }
+}
+
+/*
+ * The tree (alfasix/alfakit-tree): the drop indicator while dragging. Rows carry
+ * `data-drop="before|after|inside"`; lines are drawn above or below the row, so they
+ * need no direction.
+ */
+:where([data-slot='tree-item'][data-drop='before']) {
+  box-shadow: inset 0 2px 0 0 var(--primary);
+}
+:where([data-slot='tree-item'][data-drop='after']) {
+  box-shadow: inset 0 -2px 0 0 var(--primary);
+}
+:where([data-slot='tree-item'][data-drop='inside']) {
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  outline: 1px dashed var(--primary);
+  outline-offset: -1px;
+}
+
+/*
+ * The Kanban board (alfasix/alfakit-kanban). A card being dragged leaves a dashed
+ * placeholder (`data-picked="pointer"`) while a copy follows the pointer
+ * (`data-slot="kanban-ghost"`); a card picked up with the keyboard is lifted
+ * (`data-picked="keyboard"`). A list the picked card may not enter has `data-refused`.
+ */
+:where([data-slot='kanban-card'][data-picked='pointer']) {
+  opacity: 0.45;
+}
+:where([data-slot='kanban-card'][data-picked='pointer'] > [data-slot='kanban-card-body']) {
+  border-style: dashed;
+  box-shadow: none;
+}
+:where([data-slot='kanban-card'][data-picked='keyboard'] > [data-slot='kanban-card-body']) {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: 0 10px 24px -12px color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+:where([data-slot='kanban-card'][data-saving]) {
+  opacity: 0.7;
+}
+:where([data-slot='kanban-ghost']) {
+  cursor: grabbing;
+  list-style: none;
+  box-shadow: 0 18px 40px -16px color-mix(in oklab, var(--foreground) 55%, transparent);
+}
+:where([data-slot='kanban-dropzone'][data-refused]) {
+  background-color: color-mix(in oklab, var(--destructive) 8%, transparent);
+  outline: 1px dashed var(--destructive);
+  outline-offset: -1px;
+}
+:where(body[data-kanban-dragging]) {
+  cursor: grabbing;
+  user-select: none;
+  -webkit-user-select: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where([data-slot='kanban-card'] > [data-slot='kanban-card-body']) {
+    transition: none;
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "name": "alfasix/alfakit-activity-log",
+  "description": "Browse spatie/laravel-activitylog activities in an AlfaKit panel: an activity resource, a relation manager, a timeline entry and action logging.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "activity-log",
+    "audit",
+    "spatie"
+  ],
+  "homepage": "https://alfakit.dev/docs/plugins/activity-log",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit"
+  },
+  "require": {
+    "php": "^8.4",
+    "alfasix/alfakit": "^0.1|@dev",
+    "spatie/laravel-activitylog": "^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitActivityLog\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\AlfakitActivityLog\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AlfaSix\\AlfakitActivityLog\\AlfakitActivityLogServiceProvider"
+      ]
+    },
+    "alfakit": {
+      "version": "^0.1",
+      "frontend": null,
+      "showcase": {
+        "demoPath": "activity-log",
+        "tour": [
+          "Open Settings > Activity log",
+          "Filter activities by event or causer",
+          "Open an activity to compare old and new values"
+        ],
+        "clips": [
+          "react-light",
+          "react-dark",
+          "vue-light",
+          "vue-dark",
+          "svelte-light",
+          "svelte-dark"
+        ],
+        "worksWith": [
+          "shield",
+          "comments",
+          "workflows"
+        ],
+        "highlights": [
+          "Activity resource with filters by log, event, subject and causer",
+          "Old and new values side by side",
+          "Relation manager for any model's activities",
+          "Timeline infolist entry",
+          "Logs AlfaKit actions automatically",
+          "Per-user authorisation"
+        ]
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

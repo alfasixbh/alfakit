@@ -1,0 +1,633 @@
+{
+  "meta": {
+    "date": "2026-10-15T14:38:00.786Z",
+    "label": "search-probe",
+    "runs": 5,
+    "warmup": 2,
+    "hardware": {
+      "cpu": "Apple M5",
+      "cores": 10,
+      "coreTypes": {
+        "performance": 4,
+        "efficiency": 6
+      },
+      "physicalCores": 10,
+      "memoryGb": 16,
+      "os": "macOS 27.0 (26A428)",
+      "arch": "arm64",
+      "machine": "Mac17,2",
+      "php": "8.4.23",
+      "phpCliOpcache": false,
+      "node": "v22.23.0",
+      "herd": "Herd 1.30.2"
+    },
+    "loadAverage": {
+      "start": [
+        9.84,
+        9.15,
+        8.45
+      ],
+      "end": [
+        10.45,
+        9.26,
+        8.51
+      ]
+    },
+    "browser": "Chrome 155.0.8059.40 (headless, 1440×900, Playwright)",
+    "searchTerm": "SKU-04242",
+    "searchResult": "Juliet valve 578",
+    "scenarios": [
+      {
+        "id": "search",
+        "label": "Global search",
+        "path": "/admin/benchmark-records?perPage=10",
+        "interaction": "global-search",
+        "interactionLabel": "type a SKU until results show"
+      }
+    ],
+    "targets": [
+      {
+        "name": "react",
+        "label": "AlfaKit (React)",
+        "kind": "alfakit",
+        "url": "http://alfakit-react.localhost",
+        "server": {
+          "php": "8.4.23",
+          "sapi": "fpm-fcgi",
+          "laravel": "13.35.0",
+          "opcache": true,
+          "jit": false,
+          "debug": false,
+          "environment": "local",
+          "configCached": false,
+          "routesCached": false,
+          "database": "sqlite",
+          "packages": {
+            "alfasix/alfakit": "dev-main",
+            "inertiajs/inertia-laravel": "v3.5.1"
+          },
+          "ssr": false
+        }
+      },
+      {
+        "name": "svelte",
+        "label": "AlfaKit (Svelte)",
+        "kind": "alfakit",
+        "url": "http://alfakit-svelte.localhost",
+        "server": {
+          "php": "8.4.23",
+          "sapi": "fpm-fcgi",
+          "laravel": "13.35.0",
+          "opcache": true,
+          "jit": false,
+          "debug": false,
+          "environment": "local",
+          "configCached": false,
+          "routesCached": false,
+          "database": "sqlite",
+          "packages": {
+            "alfasix/alfakit": "dev-main",
+            "inertiajs/inertia-laravel": "v3.5.1"
+          },
+          "ssr": false
+        }
+      },
+      {
+        "name": "filament",
+        "label": "Filament v5",
+        "kind": "filament",
+        "url": "http://filament-bench.localhost",
+        "server": {
+          "php": "8.4.23",
+          "sapi": "fpm-fcgi",
+          "laravel": "13.35.0",
+          "opcache": true,
+          "jit": false,
+          "debug": false,
+          "environment": "local",
+          "configCached": false,
+          "routesCached": false,
+          "database": "sqlite",
+          "packages": {
+            "filament/filament": "v5.10.1",
+            "livewire/livewire": "v4.4.7"
+          }
+        }
+      }
+    ],
+    "notes": [
+      "Server times are measured over loopback with one sequential client (TTFB for pages, full response time for interaction requests).",
+      "Time to interactive is when the page is usable (rows rendered, 100 fields mounted, all six widgets loaded, including the deferred widget data) and the main thread has been free of long tasks for 500 ms.",
+      "Interaction latency is timed from the Playwright input until the change is painted and includes each stack’s default debounce: AlfaKit debounces typed `live()` fields by 150 ms (choices such as selects and toggles refresh at once) and global search by 250 ms; Filament’s global search field debounces by 500 ms and its `live()` fields use Livewire’s `wire:model.live` default.",
+      "AlfaKit table rows and repeater items are virtualised, so the DOM holds the visible window of a 500-row table."
+    ],
+    "durationSeconds": 34,
+    "file": "2026-10-15-search-probe.json"
+  },
+  "results": [
+    {
+      "target": "react",
+      "scenario": "search",
+      "server": {
+        "page": {
+          "ttfb": {
+            "n": 5,
+            "min": 39.3,
+            "median": 40.6,
+            "p95": 43.7,
+            "max": 44.3
+          },
+          "total": {
+            "n": 5,
+            "min": 41.7,
+            "median": 43.3,
+            "p95": 47.2,
+            "max": 48.1
+          },
+          "bytes": {
+            "n": 5,
+            "min": 70618,
+            "median": 70618,
+            "p95": 70618,
+            "max": 70618
+          },
+          "gzipBytes": {
+            "n": 5,
+            "min": 18750,
+            "median": 18752,
+            "p95": 18757.2,
+            "max": 18758
+          }
+        },
+        "interaction": {
+          "ttfb": {
+            "n": 5,
+            "min": 62.1,
+            "median": 64.1,
+            "p95": 64.9,
+            "max": 65
+          },
+          "total": {
+            "n": 5,
+            "min": 62.2,
+            "median": 64.2,
+            "p95": 65,
+            "max": 65.2
+          },
+          "bytes": {
+            "n": 5,
+            "min": 162,
+            "median": 162,
+            "p95": 162,
+            "max": 162
+          },
+          "gzipBytes": {
+            "n": 5,
+            "min": 149,
+            "median": 149,
+            "p95": 149,
+            "max": 149
+          }
+        },
+        "deferred": null
+      },
+      "browserRetries": 0,
+      "browser": {
+        "ttfb": {
+          "n": 5,
+          "min": 46.2,
+          "median": 72.2,
+          "p95": 84.1,
+          "max": 86
+        },
+        "domContentLoaded": {
+          "n": 5,
+          "min": 84.1,
+          "median": 112.4,
+          "p95": 133.2,
+          "max": 134.4
+        },
+        "load": {
+          "n": 5,
+          "min": 84.5,
+          "median": 112.8,
+          "p95": 133.6,
+          "max": 134.8
+        },
+        "fcp": {
+          "n": 5,
+          "min": 156,
+          "median": 184,
+          "p95": 216,
+          "max": 220
+        },
+        "lcp": {
+          "n": 5,
+          "min": 156,
+          "median": 184,
+          "p95": 216,
+          "max": 220
+        },
+        "ready": {
+          "n": 5,
+          "min": 137.5,
+          "median": 173.5,
+          "p95": 210.5,
+          "max": 215.7
+        },
+        "tti": {
+          "n": 5,
+          "min": 137.5,
+          "median": 173.5,
+          "p95": 210.5,
+          "max": 215.7
+        },
+        "totalBlockingTime": {
+          "n": 5,
+          "min": 0,
+          "median": 0,
+          "p95": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "n": 5,
+          "min": 0,
+          "median": 0,
+          "p95": 1,
+          "max": 1
+        },
+        "domNodes": {
+          "n": 5,
+          "min": 1568,
+          "median": 1568,
+          "p95": 1568,
+          "max": 1568
+        },
+        "jsHeap": {
+          "n": 5,
+          "min": 11932215,
+          "median": 11957401,
+          "p95": 12075805.8,
+          "max": 12076705
+        },
+        "transferBytes": {
+          "n": 5,
+          "min": 70918,
+          "median": 70918,
+          "p95": 70918,
+          "max": 70918
+        },
+        "requests": {
+          "n": 5,
+          "min": 137,
+          "median": 137,
+          "p95": 137,
+          "max": 137
+        },
+        "interaction": {
+          "n": 5,
+          "min": 341.2,
+          "median": 375.8,
+          "p95": 538.7,
+          "max": 572
+        }
+      }
+    },
+    {
+      "target": "svelte",
+      "scenario": "search",
+      "server": {
+        "page": {
+          "ttfb": {
+            "n": 5,
+            "min": 82.5,
+            "median": 84.1,
+            "p95": 87.1,
+            "max": 87.4
+          },
+          "total": {
+            "n": 5,
+            "min": 86,
+            "median": 87,
+            "p95": 90.6,
+            "max": 90.7
+          },
+          "bytes": {
+            "n": 5,
+            "min": 68166,
+            "median": 68166,
+            "p95": 68166,
+            "max": 68166
+          },
+          "gzipBytes": {
+            "n": 5,
+            "min": 18409,
+            "median": 18412,
+            "p95": 18415.4,
+            "max": 18416
+          }
+        },
+        "interaction": {
+          "ttfb": {
+            "n": 5,
+            "min": 62.7,
+            "median": 65.6,
+            "p95": 67.2,
+            "max": 67.5
+          },
+          "total": {
+            "n": 5,
+            "min": 63,
+            "median": 65.7,
+            "p95": 67.4,
+            "max": 67.6
+          },
+          "bytes": {
+            "n": 5,
+            "min": 163,
+            "median": 163,
+            "p95": 163,
+            "max": 163
+          },
+          "gzipBytes": {
+            "n": 5,
+            "min": 150,
+            "median": 150,
+            "p95": 150,
+            "max": 150
+          }
+        },
+        "deferred": null
+      },
+      "browserRetries": 0,
+      "browser": {
+        "ttfb": {
+          "n": 5,
+          "min": 96.8,
+          "median": 118.1,
+          "p95": 164.8,
+          "max": 168.2
+        },
+        "domContentLoaded": {
+          "n": 5,
+          "min": 212.8,
+          "median": 235.2,
+          "p95": 300.1,
+          "max": 305.4
+        },
+        "load": {
+          "n": 5,
+          "min": 221.9,
+          "median": 243.9,
+          "p95": 309.4,
+          "max": 314.7
+        },
+        "fcp": {
+          "n": 5,
+          "min": 232,
+          "median": 252,
+          "p95": 320.8,
+          "max": 324
+        },
+        "lcp": {
+          "n": 5,
+          "min": 232,
+          "median": 252,
+          "p95": 320.8,
+          "max": 324
+        },
+        "ready": {
+          "n": 5,
+          "min": 225.2,
+          "median": 244.6,
+          "p95": 340.1,
+          "max": 347.1
+        },
+        "tti": {
+          "n": 5,
+          "min": 225.2,
+          "median": 244.6,
+          "p95": 340.1,
+          "max": 347.1
+        },
+        "totalBlockingTime": {
+          "n": 5,
+          "min": 0,
+          "median": 0,
+          "p95": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "n": 5,
+          "min": 1,
+          "median": 1,
+          "p95": 1,
+          "max": 1
+        },
+        "domNodes": {
+          "n": 5,
+          "min": 1562,
+          "median": 1562,
+          "p95": 1562,
+          "max": 1562
+        },
+        "jsHeap": {
+          "n": 5,
+          "min": 19563458,
+          "median": 19564590,
+          "p95": 27373298.8,
+          "max": 29321855
+        },
+        "transferBytes": {
+          "n": 5,
+          "min": 68466,
+          "median": 68466,
+          "p95": 68466,
+          "max": 68466
+        },
+        "requests": {
+          "n": 5,
+          "min": 115,
+          "median": 115,
+          "p95": 115,
+          "max": 115
+        },
+        "interaction": {
+          "n": 5,
+          "min": 343.9,
+          "median": 373.5,
+          "p95": 430.1,
+          "max": 441.1
+        }
+      }
+    },
+    {
+      "target": "filament",
+      "scenario": "search",
+      "server": {
+        "page": {
+          "ttfb": {
+            "n": 5,
+            "min": 128.9,
+            "median": 129.3,
+            "p95": 131.6,
+            "max": 132
+          },
+          "total": {
+            "n": 5,
+            "min": 129.5,
+            "median": 130,
+            "p95": 133,
+            "max": 133.6
+          },
+          "bytes": {
+            "n": 5,
+            "min": 419220,
+            "median": 419220,
+            "p95": 419220,
+            "max": 419220
+          },
+          "gzipBytes": {
+            "n": 5,
+            "min": 23752,
+            "median": 23762,
+            "p95": 23763.8,
+            "max": 23764
+          }
+        },
+        "interaction": {
+          "ttfb": {
+            "n": 5,
+            "min": 116.2,
+            "median": 118.3,
+            "p95": 121,
+            "max": 121.6
+          },
+          "total": {
+            "n": 5,
+            "min": 116.3,
+            "median": 118.5,
+            "p95": 121.1,
+            "max": 121.7
+          },
+          "bytes": {
+            "n": 5,
+            "min": 7272,
+            "median": 7272,
+            "p95": 7272,
+            "max": 7272
+          },
+          "gzipBytes": {
+            "n": 5,
+            "min": 1918,
+            "median": 1918,
+            "p95": 1918,
+            "max": 1918
+          }
+        },
+        "deferred": null
+      },
+      "browserRetries": 0,
+      "browser": {
+        "ttfb": {
+          "n": 5,
+          "min": 138.4,
+          "median": 188.8,
+          "p95": 265.4,
+          "max": 279.8
+        },
+        "domContentLoaded": {
+          "n": 5,
+          "min": 199.7,
+          "median": 266.4,
+          "p95": 340.1,
+          "max": 354.9
+        },
+        "load": {
+          "n": 5,
+          "min": 200.5,
+          "median": 267.2,
+          "p95": 340.9,
+          "max": 355.7
+        },
+        "fcp": {
+          "n": 5,
+          "min": 212,
+          "median": 244,
+          "p95": 305.6,
+          "max": 320
+        },
+        "lcp": {
+          "n": 5,
+          "min": 212,
+          "median": 288,
+          "p95": 349.6,
+          "max": 364
+        },
+        "ready": {
+          "n": 5,
+          "min": 211.2,
+          "median": 287,
+          "p95": 348.8,
+          "max": 363.8
+        },
+        "tti": {
+          "n": 5,
+          "min": 211.2,
+          "median": 287,
+          "p95": 348.8,
+          "max": 363.8
+        },
+        "totalBlockingTime": {
+          "n": 5,
+          "min": 0,
+          "median": 0,
+          "p95": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "n": 5,
+          "min": 0,
+          "median": 0,
+          "p95": 0.8,
+          "max": 1
+        },
+        "domNodes": {
+          "n": 5,
+          "min": 1022,
+          "median": 1022,
+          "p95": 1022,
+          "max": 1022
+        },
+        "jsHeap": {
+          "n": 5,
+          "min": 6558764,
+          "median": 6588364,
+          "p95": 6616478.4,
+          "max": 6618184
+        },
+        "transferBytes": {
+          "n": 5,
+          "min": 26276,
+          "median": 26284,
+          "p95": 26287.4,
+          "max": 26288
+        },
+        "requests": {
+          "n": 5,
+          "min": 15,
+          "median": 15,
+          "p95": 15,
+          "max": 15
+        },
+        "interaction": {
+          "n": 5,
+          "min": 681.5,
+          "median": 725.7,
+          "p95": 827.4,
+          "max": 849.1
+        }
+      }
+    }
+  ]
+}

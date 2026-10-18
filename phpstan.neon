@@ -1,0 +1,48 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - packages/alfakit/src
+        - packages/plugins
+    tmpDir: .phpstan.cache
+    # Pest closures type `$this` as TestCall; plugin tests are covered by Pest itself.
+    excludePaths:
+        - packages/plugins/*/tests/*
+        - packages/plugins/*Test.php
+    checkOctaneCompatibility: true
+    checkModelProperties: true
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Fluent API: component classes have final constructors or well-known signatures.
+        - identifier: new.static
+        # Traits are reused across unrelated classes; method_exists guards are intentional.
+        - identifier: function.alreadyNarrowedType
+        # SoftDeletes adds these scopes dynamically; callers check class_uses_recursive first.
+        - message: '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder(<[^>]+>)?::(withTrashed|onlyTrashed|withoutTrashed)\(\)#'
+        - message: '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model::(restore|trashed)\(\)#'
+        - message: '#Call to an undefined method Illuminate\\Database\\ConnectionInterface::getDriverName\(\)#'
+        # Generic option/column arrays are documented at the trait level.
+        - identifier: missingType.iterableValue
+        - identifier: missingType.generics
+        - identifier: argument.templateType
+        - identifier: arrayValues.list
+        - message: '#Parameter \#1 \$values of method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::update\(\)#'
+        # Traits for the application's classes (User model, dashboards, widgets); nothing inside the package uses them.
+        - identifier: trait.unused
+          paths:
+            - packages/plugins/*/src/Traits/*
+            - packages/plugins/*/src/Concerns/*
+            - packages/plugins/*/src/*/Concerns/*
+            - packages/alfakit/src/Auth/MultiFactor/Concerns/*
+            - packages/alfakit/src/Pages/Dashboard/Concerns/HasFiltersForm.php
+            - packages/alfakit/src/Widgets/Concerns/InteractsWithPageFilters.php
+            - packages/alfakit/src/Widgets/Concerns/InteractsWithPageTable.php
+            - packages/alfakit/src/Pages/Concerns/ExposesTableToWidgets.php
+            - packages/alfakit/src/Resources/Pages/CreateRecord/Concerns/HasWizard.php
+            - packages/alfakit/src/Widgets/ChartWidget/Concerns/HasFiltersSchema.php
+            - packages/alfakit/src/Pages/Dashboard/Concerns/HasFiltersAction.php
+            - packages/alfakit/src/Forms/Components/RichEditor/Models/Concerns/*
+            - packages/alfakit/src/Versions/HasRecordVersions.php
+            - packages/alfakit/src/Realtime/BroadcastsToAlfakit.php

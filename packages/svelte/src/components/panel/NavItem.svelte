@@ -1,0 +1,90 @@
+<script lang="ts">
+  import { uniqueKey, navigationKey } from '../../lib/keys'
+  import { navigationItemText, type NavigationItemSchema } from '@alfakit/core'
+  import ChevronRightIcon from '@lucide/svelte/icons/chevron-right'
+  import { untrack } from 'svelte'
+  import { badgeColorClasses, colorClass } from '../../lib/colors'
+  import Icon from '../../lib/Icon.svelte'
+  import { cn } from '../../lib/utils'
+  import { Badge } from '../ui/badge'
+  import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible'
+  import { SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from '../ui/sidebar'
+  import NavSubItem from './NavSubItem.svelte'
+  import NewTabHint from '../../lib/NewTabHint.svelte'
+  import { extraProps } from '../../lib/attributes'
+  import NavLabel from './NavLabel.svelte'
+  import { useT } from '../../context.svelte'
+
+  let { item }: { item: NavigationItemSchema } = $props()
+  const t = useT()
+
+  let open = $state(untrack(() => Boolean(item.active)))
+  const hasBadge = $derived(item.badge !== undefined && item.badge !== null)
+</script>
+
+{#snippet badge()}
+  {#if hasBadge}
+    <Badge
+      variant="outline"
+      class={cn('ms-auto px-1.5 py-0', colorClass(badgeColorClasses, item.badgeColor, 'gray'))}
+      title={item.badgeTooltip}>{item.badge}</Badge
+    >
+  {:else if item.badgePending}
+    <!-- `deferNavigationBadges()`: a placeholder until the deferred badges arrive. -->
+    <span
+      data-slot="badge"
+      aria-busy="true"
+      aria-label={t('loading', {}, 'Loading')}
+      class="bg-muted-foreground/20 ms-auto inline-block h-4 w-5 animate-pulse rounded-md"
+    ></span>
+  {/if}
+{/snippet}
+
+{#if item.children && item.children.length > 0}
+  <Collapsible bind:open class="group/collapsible">
+    {#snippet child({ props })}
+      <SidebarMenuItem {...props}>
+        <CollapsibleTrigger>
+          {#snippet child({ props: triggerProps })}
+            <SidebarMenuButton
+              tooltip={navigationItemText(item)}
+              isActive={item.active}
+              {...extraProps(item.extraAttributes)}
+              {...triggerProps}
+            >
+              {#if item.icon}<Icon name={item.icon} />{/if}
+              <NavLabel text={item.label} html={item.labelHtml} />
+              {@render badge()}
+              <ChevronRightIcon
+                class="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 rtl:rotate-180 rtl:group-data-[state=open]/collapsible:rotate-90"
+              />
+            </SidebarMenuButton>
+          {/snippet}
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {#each item.children ?? [] as child, childIndex (uniqueKey(item.children ?? [], childIndex, navigationKey))}
+              <NavSubItem item={child} />
+            {/each}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    {/snippet}
+  </Collapsible>
+{:else}
+  <SidebarMenuItem>
+    <SidebarMenuButton
+      {...extraProps(item.extraAttributes)}
+      href={item.url ?? '#'}
+      external={item.openInNewTab}
+      prefetch={!item.openInNewTab}
+      isActive={item.active}
+      tooltip={navigationItemText(item)}
+    >
+      {#if item.icon}<Icon name={item.icon} />{/if}
+      <NavLabel text={item.label} html={item.labelHtml} />
+      {#if item.openInNewTab}<NewTabHint />{/if}
+      {@render badge()}
+    </SidebarMenuButton>
+  </SidebarMenuItem>
+{/if}

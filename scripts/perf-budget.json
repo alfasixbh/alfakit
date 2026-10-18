@@ -1,0 +1,12 @@
+{
+  "package": "@alfakit/playground-react",
+  "playground": "playground/react",
+  "entry": "resources/js/alfakit/app.tsx",
+  "headroomPercent": 10,
+  "limitGzipBytes": 410693,
+  "baseline": {
+    "gzipBytes": 373357,
+    "chunks": 4,
+    "measuredAt": "2026-10-11T09:59:41.365Z"
+  }
+}

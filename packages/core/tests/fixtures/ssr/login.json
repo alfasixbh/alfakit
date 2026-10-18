@@ -1,0 +1,316 @@
+{
+  "component": "Alfakit/Page",
+  "props": {
+    "errors": {},
+    "name": "Alfakit React",
+    "auth": {
+      "user": null
+    },
+    "sidebarOpen": true,
+    "alfakit": {
+      "id": "admin",
+      "path": "admin",
+      "url": "http://localhost/admin",
+      "brandName": "Alfakit React",
+      "theme": {
+        "name": "alfakit",
+        "attribute": "alfakit",
+        "sidebar": "floating",
+        "density": "comfortable",
+        "radius": "0.875rem",
+        "font": "Plus Jakarta Sans",
+        "fontCss": "'Plus Jakarta Sans'",
+        "headingFontCss": null,
+        "fontUrl": "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap",
+        "fontUrls": [
+          "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap"
+        ],
+        "design": {
+          "layout": "sidebar",
+          "nav": "pill",
+          "header": "banner",
+          "surfaces": "elevated",
+          "inputs": "filled",
+          "buttons": "pill",
+          "tables": "minimal"
+        }
+      },
+      "slots": {
+        "topbar.end": [
+          {
+            "type": "html",
+            "html": "<label class=\"hidden items-center gap-2 text-xs text-muted-foreground sm:flex\">\n    <span>Theme</span>\n    <select\n        class=\"h-8 rounded-md border border-input bg-background px-2 text-sm text-foreground\"\n        onchange=\"window.location.href = '/demo/theme/' + this.value\"\n        aria-label=\"Theme\"\n    >\n                    <option value=\"neutral\" >Neutral</option>\n                    <option value=\"alfakit\" selected>Alfakit</option>\n                    <option value=\"minimal\" >Minimal</option>\n                    <option value=\"soft\" >Soft</option>\n                    <option value=\"corporate\" >Corporate</option>\n                    <option value=\"filament\" >Filament style</option>\n            </select>\n</label>\n"
+          }
+        ]
+      },
+      "darkMode": {
+        "enabled": true,
+        "forced": false
+      },
+      "sidebarCollapsibleOnDesktop": true,
+      "breadcrumbs": true,
+      "navigation": [],
+      "endpoints": {
+        "action": "http://localhost/admin/_alfakit/actions",
+        "modal": "http://localhost/admin/_alfakit/actions/modal",
+        "schemaRefresh": "http://localhost/admin/_alfakit/schema/refresh",
+        "schemaOptions": "http://localhost/admin/_alfakit/schema/options",
+        "tableCell": "http://localhost/admin/_alfakit/table/cell",
+        "tableReorder": "http://localhost/admin/_alfakit/table/reorder",
+        "locale": "http://localhost/admin/_alfakit/locale",
+        "upload": "http://localhost/admin/_alfakit/uploads",
+        "uploadDestroy": "http://localhost/admin/_alfakit/uploads",
+        "globalSearch": "http://localhost/admin/_alfakit/global-search",
+        "notifications": "http://localhost/admin/_alfakit/notifications",
+        "notificationsReadAll": "http://localhost/admin/_alfakit/notifications/read-all",
+        "notificationsDestroyAll": "http://localhost/admin/_alfakit/notifications",
+        "logout": "http://localhost/admin/logout"
+      },
+      "auth": {
+        "login": "http://localhost/admin/login",
+        "register": null,
+        "passwordReset": "http://localhost/admin/password-reset/request"
+      },
+      "flashKey": "alfakitNotifications",
+      "localization": {
+        "code": "en",
+        "tag": "en",
+        "label": "English",
+        "direction": "ltr",
+        "fallbackLocale": "en",
+        "firstDayOfWeek": 0,
+        "currency": "USD",
+        "timezone": "UTC",
+        "switcher": true,
+        "locales": [
+          {
+            "code": "en",
+            "tag": "en",
+            "label": "English",
+            "direction": "ltr"
+          },
+          {
+            "code": "ar",
+            "tag": "ar",
+            "label": "العربية",
+            "direction": "rtl"
+          },
+          {
+            "code": "fr",
+            "tag": "fr",
+            "label": "Français",
+            "direction": "ltr"
+          },
+          {
+            "code": "de",
+            "tag": "de",
+            "label": "Deutsch",
+            "direction": "ltr"
+          },
+          {
+            "code": "ja",
+            "tag": "ja",
+            "label": "日本語",
+            "direction": "ltr"
+          }
+        ]
+      },
+      "csrf": "test-token",
+      "translations": {
+        "actions": "Actions",
+        "cancel": "Cancel",
+        "close": "Close",
+        "confirm": "Confirm",
+        "save": "Save",
+        "search": "Search",
+        "loading": "Loading…",
+        "no_results": "No results.",
+        "select_option": "Select an option",
+        "clear": "Clear",
+        "remove": "Remove",
+        "add": "Add",
+        "copy": "Copy",
+        "copied": "Copied",
+        "toggle_sidebar": "Toggle sidebar",
+        "toggle_theme": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System",
+        "logout": "Sign out",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "mark_all_read": "Mark all as read",
+        "clear_notifications": "Clear notifications",
+        "no_notifications": "You have no notifications.",
+        "unsaved_changes": "You have unsaved changes. Leave anyway?",
+        "language": "Language",
+        "navigation": "Navigation",
+        "more": "More",
+        "sidebar": "Sidebar",
+        "open": "Open",
+        "download": "Download",
+        "toggle": "Toggle",
+        "toggle_section": "Toggle section",
+        "steps": "Steps",
+        "pagination": "Pagination",
+        "mark_as_read": "Mark as read",
+        "mobile_sidebar": "Displays the mobile sidebar.",
+        "chart": "Chart",
+        "command_palette": "Command palette",
+        "command_palette_description": "Search for a command to run…",
+        "load_more": "Load more",
+        "widget_not_registered": "Widget component :component is not registered.",
+        "table": {
+          "filters": "Filters",
+          "reset_filters": "Reset",
+          "columns": "Columns",
+          "per_page": "Per page",
+          "showing": "Showing :first–:last of :total",
+          "selected": ":count selected",
+          "select_all": "Select all",
+          "deselect_all": "Deselect all",
+          "bulk_actions": "Bulk actions",
+          "empty": "No records found.",
+          "previous": "Previous",
+          "next": "Next",
+          "all": "All",
+          "select_page": "Select page",
+          "select_row": "Select row",
+          "remove_filter": "Remove filter",
+          "reorder_start": "Reorder",
+          "reorder_stop": "Done"
+        },
+        "form": {
+          "required": "Required",
+          "drop_files": "Drop files here or click to browse",
+          "uploading": "Uploading…",
+          "add_row": "Add row",
+          "add_item": "Add item",
+          "remove_item": "Remove",
+          "move_up": "Move up",
+          "move_down": "Move down",
+          "search_placeholder": "Type to search…",
+          "next_step": "Next",
+          "previous_step": "Back",
+          "file_too_large": "This file is too large.",
+          "file_too_small": "This file is too small.",
+          "min_files": "At least :count file|At least :count files",
+          "clone": "Clone",
+          "remove_row": "Remove row",
+          "pick_color": "Pick a colour",
+          "link_prompt": "Link URL",
+          "pick_date": "Pick a date",
+          "show_password": "Show password",
+          "hide_password": "Hide password"
+        },
+        "editor": {
+          "bold": "Bold",
+          "italic": "Italic",
+          "underline": "Underline",
+          "strike": "Strikethrough",
+          "link": "Link",
+          "h2": "Heading 2",
+          "h3": "Heading 3",
+          "heading": "Heading",
+          "blockquote": "Quote",
+          "code_block": "Code block",
+          "bullet_list": "Bullet list",
+          "ordered_list": "Numbered list",
+          "divider": "Divider",
+          "image": "Insert image",
+          "undo": "Undo",
+          "redo": "Redo"
+        },
+        "tenancy": {
+          "switch": "Switch",
+          "register": "New",
+          "profile": "Settings"
+        }
+      }
+    },
+    "alfakitAppearance": "system",
+    "page": {
+      "class": "AlfaSix\\Alfakit\\Auth\\Pages\\Login",
+      "layout": "auth",
+      "title": "Sign in",
+      "heading": "Sign in to your account",
+      "content": [
+        {
+          "type": "Form",
+          "key": "form",
+          "component": "form",
+          "components": [
+            {
+              "type": "TextInput",
+              "key": "email",
+              "label": "Email address",
+              "inputType": "email",
+              "autocomplete": "email",
+              "name": "email",
+              "statePath": "email",
+              "required": true,
+              "autofocus": true,
+              "extraInputAttributes": {
+                "tabindex": 1
+              }
+            },
+            {
+              "type": "TextInput",
+              "key": "password",
+              "label": "Password",
+              "meta": {
+                "hintUrl": "http://localhost/admin/password-reset/request"
+              },
+              "inputType": "password",
+              "revealable": true,
+              "autocomplete": "current-password",
+              "name": "password",
+              "statePath": "password",
+              "required": true,
+              "hint": "Forgot your password?",
+              "extraInputAttributes": {
+                "tabindex": 2
+              }
+            },
+            {
+              "type": "Checkbox",
+              "key": "remember",
+              "label": "Remember me",
+              "inline": true,
+              "name": "remember",
+              "statePath": "remember"
+            }
+          ],
+          "state": {
+            "email": null,
+            "password": null,
+            "remember": false
+          },
+          "columns": {
+            "default": 1,
+            "lg": 1
+          },
+          "actions": [
+            {
+              "type": "Action",
+              "name": "authenticate",
+              "label": "Sign in",
+              "color": "primary",
+              "variant": "button",
+              "hasModal": true,
+              "hasAction": true,
+              "extraAttributes": {
+                "class": "w-full"
+              }
+            }
+          ],
+          "operation": "create"
+        }
+      ],
+      "token": "test-token"
+    }
+  },
+  "url": "/admin/login",
+  "version": null,
+  "sharedProps": ["errors", "name", "auth", "sidebarOpen", "alfakit", "alfakitAppearance"]
+}

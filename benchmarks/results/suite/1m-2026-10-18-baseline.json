@@ -1,0 +1,2658 @@
+{
+    "meta": {
+        "date": "2026-10-18T11:34:53.398Z",
+        "runs": 5,
+        "rows": 1000000,
+        "perPage": 25,
+        "hardware": {
+            "cpu": "Apple M5",
+            "cores": 10,
+            "coreTypes": {
+                "performance": 4,
+                "efficiency": 6
+            },
+            "physicalCores": 10,
+            "memoryGb": 16,
+            "os": "macOS 27.0 (26A428)",
+            "arch": "arm64",
+            "machine": "Mac17,2",
+            "php": "8.4.23",
+            "phpCliOpcache": false,
+            "node": "v22.23.0",
+            "herd": "Herd 1.30.2"
+        },
+        "loadBefore": [
+            2.6,
+            3.96,
+            7.37
+        ],
+        "loadAfter": [
+            2.52,
+            3.81,
+            7.19
+        ]
+    },
+    "results": [
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records",
+            "ttfb": {
+                "n": 5,
+                "min": 30.2,
+                "median": 31.9,
+                "p95": 33.1,
+                "max": 33.2
+            },
+            "total": {
+                "n": 5,
+                "min": 33,
+                "median": 37.3,
+                "p95": 39.8,
+                "max": 40.3
+            },
+            "bytes": 67976,
+            "gzipBytes": 18689
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 29.8,
+                "median": 30.1,
+                "p95": 31,
+                "max": 31.2
+            },
+            "total": {
+                "n": 5,
+                "min": 32.8,
+                "median": 32.9,
+                "p95": 36.1,
+                "max": 36.4
+            },
+            "bytes": 68008,
+            "gzipBytes": 18712
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 34.6,
+                "median": 36,
+                "p95": 37.9,
+                "max": 38.1
+            },
+            "total": {
+                "n": 5,
+                "min": 39.3,
+                "median": 40.7,
+                "p95": 42.7,
+                "max": 43.2
+            },
+            "bytes": 68210,
+            "gzipBytes": 18712
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 29.5,
+                "median": 30.2,
+                "p95": 30.9,
+                "max": 31
+            },
+            "total": {
+                "n": 5,
+                "min": 34.1,
+                "median": 35.1,
+                "p95": 35.6,
+                "max": 35.7
+            },
+            "bytes": 68222,
+            "gzipBytes": 18592
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 70.1,
+                "median": 73.1,
+                "p95": 79,
+                "max": 80.3
+            },
+            "total": {
+                "n": 5,
+                "min": 74.3,
+                "median": 75.5,
+                "p95": 81.3,
+                "max": 82.3
+            },
+            "bytes": 68165,
+            "gzipBytes": 18318
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 27.9,
+                "median": 29.9,
+                "p95": 34.4,
+                "max": 35.6
+            },
+            "total": {
+                "n": 5,
+                "min": 32.3,
+                "median": 33.8,
+                "p95": 39.4,
+                "max": 40.6
+            },
+            "bytes": 68079,
+            "gzipBytes": 18661
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 23.7,
+                "median": 24.6,
+                "p95": 25.2,
+                "max": 25.2
+            },
+            "total": {
+                "n": 5,
+                "min": 28.3,
+                "median": 29.3,
+                "p95": 29.6,
+                "max": 29.6
+            },
+            "bytes": 68170,
+            "gzipBytes": 18709
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=deferred",
+            "ttfb": {
+                "n": 5,
+                "min": 23.7,
+                "median": 24,
+                "p95": 24.3,
+                "max": 24.3
+            },
+            "total": {
+                "n": 5,
+                "min": 27.1,
+                "median": 28.4,
+                "p95": 29.1,
+                "max": 29.2
+            },
+            "bytes": 68071,
+            "gzipBytes": 18731
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=deferred&page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 23.6,
+                "median": 23.9,
+                "p95": 24.3,
+                "max": 24.3
+            },
+            "total": {
+                "n": 5,
+                "min": 28.2,
+                "median": 28.6,
+                "p95": 29,
+                "max": 29.1
+            },
+            "bytes": 68103,
+            "gzipBytes": 18756
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?mode=deferred&page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 28.6,
+                "median": 29,
+                "p95": 55.9,
+                "max": 62.6
+            },
+            "total": {
+                "n": 5,
+                "min": 33.4,
+                "median": 33.7,
+                "p95": 60.6,
+                "max": 64.3
+            },
+            "bytes": 68305,
+            "gzipBytes": 18765
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=deferred&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 26.6,
+                "median": 27.5,
+                "p95": 37.9,
+                "max": 38.4
+            },
+            "total": {
+                "n": 5,
+                "min": 31.3,
+                "median": 32.6,
+                "p95": 40.8,
+                "max": 41.5
+            },
+            "bytes": 68317,
+            "gzipBytes": 18633
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=deferred&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 71.4,
+                "median": 74.3,
+                "p95": 96.4,
+                "max": 99.2
+            },
+            "total": {
+                "n": 5,
+                "min": 73.8,
+                "median": 77.9,
+                "p95": 98.6,
+                "max": 101.1
+            },
+            "bytes": 68260,
+            "gzipBytes": 18372
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=deferred&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 27.4,
+                "median": 28.8,
+                "p95": 38,
+                "max": 40.2
+            },
+            "total": {
+                "n": 5,
+                "min": 31.7,
+                "median": 31.9,
+                "p95": 40.2,
+                "max": 42.3
+            },
+            "bytes": 68175,
+            "gzipBytes": 18714
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=deferred&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 25.8,
+                "median": 26.2,
+                "p95": 29.8,
+                "max": 30.3
+            },
+            "total": {
+                "n": 5,
+                "min": 28.3,
+                "median": 30.2,
+                "p95": 34.1,
+                "max": 35
+            },
+            "bytes": 68273,
+            "gzipBytes": 18758
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=simple",
+            "ttfb": {
+                "n": 5,
+                "min": 25.1,
+                "median": 26.5,
+                "p95": 28,
+                "max": 28.2
+            },
+            "total": {
+                "n": 5,
+                "min": 28.5,
+                "median": 30.5,
+                "p95": 31.6,
+                "max": 31.8
+            },
+            "bytes": 68005,
+            "gzipBytes": 18699
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=simple&page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 26.4,
+                "median": 27.5,
+                "p95": 27.8,
+                "max": 27.9
+            },
+            "total": {
+                "n": 5,
+                "min": 29.9,
+                "median": 31.4,
+                "p95": 32.1,
+                "max": 32.1
+            },
+            "bytes": 68037,
+            "gzipBytes": 18728
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?mode=simple&page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 32.6,
+                "median": 33.5,
+                "p95": 34,
+                "max": 34.1
+            },
+            "total": {
+                "n": 5,
+                "min": 34.7,
+                "median": 37.1,
+                "p95": 38.4,
+                "max": 38.4
+            },
+            "bytes": 68239,
+            "gzipBytes": 18731
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=simple&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 25,
+                "median": 25.7,
+                "p95": 26.4,
+                "max": 26.5
+            },
+            "total": {
+                "n": 5,
+                "min": 26.8,
+                "median": 30.2,
+                "p95": 30.9,
+                "max": 31
+            },
+            "bytes": 68251,
+            "gzipBytes": 18604
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=simple&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 65.3,
+                "median": 69.5,
+                "p95": 80.5,
+                "max": 80.9
+            },
+            "total": {
+                "n": 5,
+                "min": 68.9,
+                "median": 73.3,
+                "p95": 82.7,
+                "max": 83.1
+            },
+            "bytes": 68194,
+            "gzipBytes": 18339
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=simple&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 25.7,
+                "median": 26.4,
+                "p95": 33.8,
+                "max": 33.9
+            },
+            "total": {
+                "n": 5,
+                "min": 28.4,
+                "median": 30,
+                "p95": 36.2,
+                "max": 36.2
+            },
+            "bytes": 68109,
+            "gzipBytes": 18680
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=simple&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 25.2,
+                "median": 26.8,
+                "p95": 56.1,
+                "max": 63.4
+            },
+            "total": {
+                "n": 5,
+                "min": 28.6,
+                "median": 30.6,
+                "p95": 59.3,
+                "max": 66
+            },
+            "bytes": 68207,
+            "gzipBytes": 18717
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=cursor",
+            "ttfb": {
+                "n": 5,
+                "min": 24.3,
+                "median": 25.9,
+                "p95": 26.5,
+                "max": 26.6
+            },
+            "total": {
+                "n": 5,
+                "min": 29.9,
+                "median": 30.6,
+                "p95": 31.6,
+                "max": 31.7
+            },
+            "bytes": 68084,
+            "gzipBytes": 18762
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=cursor&cursor=eyJiZW5jaF9iaWdfcmVjb3Jkcy5pZCI6MjUsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0",
+            "ttfb": {
+                "n": 5,
+                "min": 27.4,
+                "median": 39.3,
+                "p95": 49,
+                "max": 50.3
+            },
+            "total": {
+                "n": 5,
+                "min": 30.2,
+                "median": 41.3,
+                "p95": 51.2,
+                "max": 52.2
+            },
+            "bytes": 68257,
+            "gzipBytes": 18809
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "skipped": "cursor pagination has no page numbers"
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 27.4,
+                "median": 28.5,
+                "p95": 31.2,
+                "max": 31.8
+            },
+            "total": {
+                "n": 5,
+                "min": 30.4,
+                "median": 32.2,
+                "p95": 34.3,
+                "max": 34.5
+            },
+            "bytes": 68406,
+            "gzipBytes": 18733
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 67.8,
+                "median": 76.6,
+                "p95": 119.7,
+                "max": 127.9
+            },
+            "total": {
+                "n": 5,
+                "min": 72.5,
+                "median": 81.8,
+                "p95": 123,
+                "max": 130.9
+            },
+            "bytes": 68326,
+            "gzipBytes": 18428
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=cursor&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 25.2,
+                "median": 25.5,
+                "p95": 26.2,
+                "max": 26.3
+            },
+            "total": {
+                "n": 5,
+                "min": 28.6,
+                "median": 29.7,
+                "p95": 31.2,
+                "max": 31.3
+            },
+            "bytes": 68188,
+            "gzipBytes": 18750
+        },
+        {
+            "target": "react",
+            "label": "AlfaKit (React)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=cursor&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 23.8,
+                "median": 24.8,
+                "p95": 25.4,
+                "max": 25.5
+            },
+            "total": {
+                "n": 5,
+                "min": 28.9,
+                "median": 29.7,
+                "p95": 30.5,
+                "max": 30.5
+            },
+            "bytes": 68290,
+            "gzipBytes": 18797
+        },
+        {
+            "target": "react",
+            "info": {
+                "php": "8.4.23",
+                "sapi": "fpm-fcgi",
+                "laravel": "13.35.0",
+                "opcache": true,
+                "jit": false,
+                "debug": false,
+                "environment": "local",
+                "configCached": false,
+                "routesCached": false,
+                "database": "sqlite",
+                "packages": {
+                    "alfasix/alfakit": "dev-main",
+                    "inertiajs/inertia-laravel": "v3.5.1"
+                }
+            }
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records",
+            "ttfb": {
+                "n": 5,
+                "min": 27.9,
+                "median": 28.3,
+                "p95": 31.7,
+                "max": 32.5
+            },
+            "total": {
+                "n": 5,
+                "min": 32.6,
+                "median": 32.9,
+                "p95": 36.7,
+                "max": 37.5
+            },
+            "bytes": 64406,
+            "gzipBytes": 18340
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 27.9,
+                "median": 28.3,
+                "p95": 28.6,
+                "max": 28.7
+            },
+            "total": {
+                "n": 5,
+                "min": 31.5,
+                "median": 32.8,
+                "p95": 33.2,
+                "max": 33.2
+            },
+            "bytes": 64438,
+            "gzipBytes": 18361
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 32.1,
+                "median": 34.6,
+                "p95": 35.7,
+                "max": 35.8
+            },
+            "total": {
+                "n": 5,
+                "min": 35.3,
+                "median": 38.6,
+                "p95": 39.6,
+                "max": 39.7
+            },
+            "bytes": 64640,
+            "gzipBytes": 18365
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 30.9,
+                "median": 31.7,
+                "p95": 33.1,
+                "max": 33.4
+            },
+            "total": {
+                "n": 5,
+                "min": 35.3,
+                "median": 35.5,
+                "p95": 36.5,
+                "max": 36.7
+            },
+            "bytes": 64652,
+            "gzipBytes": 18237
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 67,
+                "median": 68.2,
+                "p95": 68.3,
+                "max": 68.3
+            },
+            "total": {
+                "n": 5,
+                "min": 71.5,
+                "median": 72.4,
+                "p95": 72.6,
+                "max": 72.6
+            },
+            "bytes": 64595,
+            "gzipBytes": 17969
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 25.5,
+                "median": 26.5,
+                "p95": 27.5,
+                "max": 27.5
+            },
+            "total": {
+                "n": 5,
+                "min": 30.7,
+                "median": 31,
+                "p95": 31.6,
+                "max": 31.7
+            },
+            "bytes": 64509,
+            "gzipBytes": 18307
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 22.1,
+                "median": 22.5,
+                "p95": 25.9,
+                "max": 26.5
+            },
+            "total": {
+                "n": 5,
+                "min": 26.4,
+                "median": 26.9,
+                "p95": 30.5,
+                "max": 31.1
+            },
+            "bytes": 64600,
+            "gzipBytes": 18359
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=deferred",
+            "ttfb": {
+                "n": 5,
+                "min": 22.4,
+                "median": 22.7,
+                "p95": 22.9,
+                "max": 22.9
+            },
+            "total": {
+                "n": 5,
+                "min": 26.8,
+                "median": 27.3,
+                "p95": 27.4,
+                "max": 27.4
+            },
+            "bytes": 64501,
+            "gzipBytes": 18387
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=deferred&page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 21.7,
+                "median": 22.6,
+                "p95": 22.8,
+                "max": 22.8
+            },
+            "total": {
+                "n": 5,
+                "min": 24.9,
+                "median": 26.8,
+                "p95": 29.4,
+                "max": 29.9
+            },
+            "bytes": 64533,
+            "gzipBytes": 18410
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?mode=deferred&page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 26.8,
+                "median": 27.2,
+                "p95": 27.4,
+                "max": 27.4
+            },
+            "total": {
+                "n": 5,
+                "min": 28.8,
+                "median": 29.2,
+                "p95": 31.2,
+                "max": 31.6
+            },
+            "bytes": 64735,
+            "gzipBytes": 18416
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=deferred&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 22.2,
+                "median": 22.3,
+                "p95": 22.7,
+                "max": 22.8
+            },
+            "total": {
+                "n": 5,
+                "min": 24.3,
+                "median": 25.9,
+                "p95": 28,
+                "max": 28.1
+            },
+            "bytes": 64747,
+            "gzipBytes": 18278
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=deferred&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 62.1,
+                "median": 63.6,
+                "p95": 65.5,
+                "max": 65.9
+            },
+            "total": {
+                "n": 5,
+                "min": 66.6,
+                "median": 68,
+                "p95": 69.8,
+                "max": 70.3
+            },
+            "bytes": 64690,
+            "gzipBytes": 18017
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=deferred&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 20.9,
+                "median": 22.1,
+                "p95": 22.4,
+                "max": 22.5
+            },
+            "total": {
+                "n": 5,
+                "min": 24.5,
+                "median": 25.3,
+                "p95": 26.3,
+                "max": 26.4
+            },
+            "bytes": 64605,
+            "gzipBytes": 18363
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=deferred&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 20.6,
+                "median": 22.7,
+                "p95": 22.9,
+                "max": 22.9
+            },
+            "total": {
+                "n": 5,
+                "min": 25.3,
+                "median": 26.7,
+                "p95": 27.7,
+                "max": 27.7
+            },
+            "bytes": 64703,
+            "gzipBytes": 18407
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=simple",
+            "ttfb": {
+                "n": 5,
+                "min": 21.4,
+                "median": 22,
+                "p95": 22.6,
+                "max": 22.7
+            },
+            "total": {
+                "n": 5,
+                "min": 25.2,
+                "median": 26.1,
+                "p95": 27.3,
+                "max": 27.4
+            },
+            "bytes": 64435,
+            "gzipBytes": 18355
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=simple&page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 21.7,
+                "median": 21.8,
+                "p95": 22.5,
+                "max": 22.5
+            },
+            "total": {
+                "n": 5,
+                "min": 24.5,
+                "median": 25,
+                "p95": 26.8,
+                "max": 26.9
+            },
+            "bytes": 64467,
+            "gzipBytes": 18373
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?mode=simple&page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 26.7,
+                "median": 26.9,
+                "p95": 27.4,
+                "max": 27.5
+            },
+            "total": {
+                "n": 5,
+                "min": 31.3,
+                "median": 31.4,
+                "p95": 31.6,
+                "max": 31.6
+            },
+            "bytes": 64669,
+            "gzipBytes": 18383
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=simple&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 21.5,
+                "median": 22.4,
+                "p95": 23,
+                "max": 23.2
+            },
+            "total": {
+                "n": 5,
+                "min": 25.9,
+                "median": 26.8,
+                "p95": 27.6,
+                "max": 27.8
+            },
+            "bytes": 64681,
+            "gzipBytes": 18251
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=simple&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 63.4,
+                "median": 63.8,
+                "p95": 64,
+                "max": 64
+            },
+            "total": {
+                "n": 5,
+                "min": 68,
+                "median": 68.3,
+                "p95": 68.5,
+                "max": 68.5
+            },
+            "bytes": 64624,
+            "gzipBytes": 17993
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=simple&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 21.7,
+                "median": 22.9,
+                "p95": 23.3,
+                "max": 23.4
+            },
+            "total": {
+                "n": 5,
+                "min": 23.9,
+                "median": 26.1,
+                "p95": 27.6,
+                "max": 27.6
+            },
+            "bytes": 64539,
+            "gzipBytes": 18326
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=simple&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 23.9,
+                "median": 25.7,
+                "p95": 28.2,
+                "max": 28.8
+            },
+            "total": {
+                "n": 5,
+                "min": 27.9,
+                "median": 30.2,
+                "p95": 32.6,
+                "max": 33.2
+            },
+            "bytes": 64637,
+            "gzipBytes": 18375
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=cursor",
+            "ttfb": {
+                "n": 5,
+                "min": 24.6,
+                "median": 25.4,
+                "p95": 25.6,
+                "max": 25.6
+            },
+            "total": {
+                "n": 5,
+                "min": 28.5,
+                "median": 29.3,
+                "p95": 29.8,
+                "max": 29.9
+            },
+            "bytes": 64514,
+            "gzipBytes": 18411
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=cursor&cursor=eyJiZW5jaF9iaWdfcmVjb3Jkcy5pZCI6MjUsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0",
+            "ttfb": {
+                "n": 5,
+                "min": 22,
+                "median": 22.5,
+                "p95": 22.6,
+                "max": 22.7
+            },
+            "total": {
+                "n": 5,
+                "min": 23.7,
+                "median": 26.8,
+                "p95": 27.3,
+                "max": 27.4
+            },
+            "bytes": 64687,
+            "gzipBytes": 18462
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "skipped": "cursor pagination has no page numbers"
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 22,
+                "median": 22.2,
+                "p95": 22.5,
+                "max": 22.6
+            },
+            "total": {
+                "n": 5,
+                "min": 25.1,
+                "median": 26.5,
+                "p95": 26.9,
+                "max": 26.9
+            },
+            "bytes": 64836,
+            "gzipBytes": 18389
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 63.3,
+                "median": 63.4,
+                "p95": 66.2,
+                "max": 66.8
+            },
+            "total": {
+                "n": 5,
+                "min": 67.2,
+                "median": 67.8,
+                "p95": 70.5,
+                "max": 71.2
+            },
+            "bytes": 64756,
+            "gzipBytes": 18084
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=cursor&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 21.8,
+                "median": 22.1,
+                "p95": 22.7,
+                "max": 22.7
+            },
+            "total": {
+                "n": 5,
+                "min": 26.1,
+                "median": 26.3,
+                "p95": 26.9,
+                "max": 26.9
+            },
+            "bytes": 64618,
+            "gzipBytes": 18407
+        },
+        {
+            "target": "vue",
+            "label": "AlfaKit (Vue)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=cursor&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 21.8,
+                "median": 22.2,
+                "p95": 22.5,
+                "max": 22.5
+            },
+            "total": {
+                "n": 5,
+                "min": 26.2,
+                "median": 26.6,
+                "p95": 27,
+                "max": 27.1
+            },
+            "bytes": 64720,
+            "gzipBytes": 18445
+        },
+        {
+            "target": "vue",
+            "info": {
+                "php": "8.4.23",
+                "sapi": "fpm-fcgi",
+                "laravel": "13.35.0",
+                "opcache": true,
+                "jit": false,
+                "debug": false,
+                "environment": "local",
+                "configCached": false,
+                "routesCached": false,
+                "database": "sqlite",
+                "packages": {
+                    "alfasix/alfakit": "dev-main",
+                    "inertiajs/inertia-laravel": "v3.5.1"
+                }
+            }
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records",
+            "ttfb": {
+                "n": 5,
+                "min": 30,
+                "median": 30.7,
+                "p95": 32.4,
+                "max": 32.6
+            },
+            "total": {
+                "n": 5,
+                "min": 33.7,
+                "median": 35.4,
+                "p95": 37.1,
+                "max": 37.3
+            },
+            "bytes": 68011,
+            "gzipBytes": 18710
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 30.1,
+                "median": 30.7,
+                "p95": 31.1,
+                "max": 31.2
+            },
+            "total": {
+                "n": 5,
+                "min": 34.1,
+                "median": 35.1,
+                "p95": 35.8,
+                "max": 35.9
+            },
+            "bytes": 68043,
+            "gzipBytes": 18736
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 34.5,
+                "median": 34.6,
+                "p95": 35.3,
+                "max": 35.5
+            },
+            "total": {
+                "n": 5,
+                "min": 39.1,
+                "median": 39.1,
+                "p95": 40.1,
+                "max": 40.2
+            },
+            "bytes": 68245,
+            "gzipBytes": 18738
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 30,
+                "median": 30.3,
+                "p95": 30.6,
+                "max": 30.6
+            },
+            "total": {
+                "n": 5,
+                "min": 34.3,
+                "median": 34.7,
+                "p95": 35.1,
+                "max": 35.1
+            },
+            "bytes": 68257,
+            "gzipBytes": 18622
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 69.5,
+                "median": 70.4,
+                "p95": 72.7,
+                "max": 73.2
+            },
+            "total": {
+                "n": 5,
+                "min": 72.9,
+                "median": 75,
+                "p95": 77.2,
+                "max": 77.7
+            },
+            "bytes": 68200,
+            "gzipBytes": 18352
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 27.5,
+                "median": 28.7,
+                "p95": 28.9,
+                "max": 28.9
+            },
+            "total": {
+                "n": 5,
+                "min": 30.2,
+                "median": 33,
+                "p95": 33.6,
+                "max": 33.6
+            },
+            "bytes": 68114,
+            "gzipBytes": 18685
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 24.7,
+                "median": 25.3,
+                "p95": 30,
+                "max": 31.1
+            },
+            "total": {
+                "n": 5,
+                "min": 27,
+                "median": 30.2,
+                "p95": 35.3,
+                "max": 36.5
+            },
+            "bytes": 68205,
+            "gzipBytes": 18727
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=deferred",
+            "ttfb": {
+                "n": 5,
+                "min": 24.1,
+                "median": 25.7,
+                "p95": 25.9,
+                "max": 25.9
+            },
+            "total": {
+                "n": 5,
+                "min": 26.9,
+                "median": 28.8,
+                "p95": 30.2,
+                "max": 30.6
+            },
+            "bytes": 68106,
+            "gzipBytes": 18758
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=deferred&page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 24.4,
+                "median": 25,
+                "p95": 25.3,
+                "max": 25.3
+            },
+            "total": {
+                "n": 5,
+                "min": 28,
+                "median": 29.9,
+                "p95": 30.4,
+                "max": 30.5
+            },
+            "bytes": 68138,
+            "gzipBytes": 18781
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?mode=deferred&page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 29.5,
+                "median": 29.8,
+                "p95": 30.3,
+                "max": 30.4
+            },
+            "total": {
+                "n": 5,
+                "min": 31.7,
+                "median": 33.5,
+                "p95": 35,
+                "max": 35.2
+            },
+            "bytes": 68340,
+            "gzipBytes": 18786
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=deferred&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 24.8,
+                "median": 25,
+                "p95": 25.5,
+                "max": 25.6
+            },
+            "total": {
+                "n": 5,
+                "min": 27.5,
+                "median": 30,
+                "p95": 30.3,
+                "max": 30.3
+            },
+            "bytes": 68352,
+            "gzipBytes": 18666
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=deferred&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 65.4,
+                "median": 66.7,
+                "p95": 91.3,
+                "max": 97.3
+            },
+            "total": {
+                "n": 5,
+                "min": 70.1,
+                "median": 71.4,
+                "p95": 93.8,
+                "max": 99.2
+            },
+            "bytes": 68295,
+            "gzipBytes": 18395
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=deferred&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 26,
+                "median": 26.6,
+                "p95": 28.2,
+                "max": 28.6
+            },
+            "total": {
+                "n": 5,
+                "min": 27.9,
+                "median": 28.7,
+                "p95": 31.1,
+                "max": 31.5
+            },
+            "bytes": 68210,
+            "gzipBytes": 18731
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "deferred",
+            "modeLabel": "numbered + deferTotals()",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=deferred&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 26.5,
+                "median": 27,
+                "p95": 27.5,
+                "max": 27.5
+            },
+            "total": {
+                "n": 5,
+                "min": 30.1,
+                "median": 31.1,
+                "p95": 31.9,
+                "max": 32
+            },
+            "bytes": 68308,
+            "gzipBytes": 18785
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=simple",
+            "ttfb": {
+                "n": 5,
+                "min": 25.4,
+                "median": 26.9,
+                "p95": 27.6,
+                "max": 27.8
+            },
+            "total": {
+                "n": 5,
+                "min": 28.3,
+                "median": 30.5,
+                "p95": 31.7,
+                "max": 31.8
+            },
+            "bytes": 68040,
+            "gzipBytes": 18730
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=simple&page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 24.9,
+                "median": 25.2,
+                "p95": 27.5,
+                "max": 27.8
+            },
+            "total": {
+                "n": 5,
+                "min": 28,
+                "median": 30,
+                "p95": 31.6,
+                "max": 31.7
+            },
+            "bytes": 68072,
+            "gzipBytes": 18749
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?mode=simple&page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 29.7,
+                "median": 30.1,
+                "p95": 30.9,
+                "max": 31.1
+            },
+            "total": {
+                "n": 5,
+                "min": 34.4,
+                "median": 34.9,
+                "p95": 37.5,
+                "max": 37.9
+            },
+            "bytes": 68274,
+            "gzipBytes": 18749
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=simple&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 25.1,
+                "median": 25.9,
+                "p95": 26.3,
+                "max": 26.3
+            },
+            "total": {
+                "n": 5,
+                "min": 26.8,
+                "median": 28.6,
+                "p95": 30.6,
+                "max": 30.9
+            },
+            "bytes": 68286,
+            "gzipBytes": 18633
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=simple&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 66,
+                "median": 66.3,
+                "p95": 67.7,
+                "max": 68
+            },
+            "total": {
+                "n": 5,
+                "min": 69.9,
+                "median": 71.2,
+                "p95": 72.3,
+                "max": 72.5
+            },
+            "bytes": 68229,
+            "gzipBytes": 18365
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=simple&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 24.1,
+                "median": 25.1,
+                "p95": 25.9,
+                "max": 26
+            },
+            "total": {
+                "n": 5,
+                "min": 26.6,
+                "median": 27.9,
+                "p95": 30,
+                "max": 30.3
+            },
+            "bytes": 68144,
+            "gzipBytes": 18701
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "simple",
+            "modeLabel": "simple",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=simple&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 24.8,
+                "median": 25.8,
+                "p95": 28.6,
+                "max": 29.1
+            },
+            "total": {
+                "n": 5,
+                "min": 29.3,
+                "median": 30.3,
+                "p95": 33.1,
+                "max": 33.8
+            },
+            "bytes": 68242,
+            "gzipBytes": 18751
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=cursor",
+            "ttfb": {
+                "n": 5,
+                "min": 23.8,
+                "median": 25.2,
+                "p95": 25.8,
+                "max": 25.9
+            },
+            "total": {
+                "n": 5,
+                "min": 27.8,
+                "median": 28.5,
+                "p95": 30.2,
+                "max": 30.4
+            },
+            "bytes": 68119,
+            "gzipBytes": 18791
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=cursor&cursor=eyJiZW5jaF9iaWdfcmVjb3Jkcy5pZCI6MjUsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0",
+            "ttfb": {
+                "n": 5,
+                "min": 23.6,
+                "median": 24.9,
+                "p95": 26.1,
+                "max": 26.3
+            },
+            "total": {
+                "n": 5,
+                "min": 28.4,
+                "median": 29.7,
+                "p95": 31.1,
+                "max": 31.4
+            },
+            "bytes": 68292,
+            "gzipBytes": 18831
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "skipped": "cursor pagination has no page numbers"
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=created_at&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 25.5,
+                "median": 26.2,
+                "p95": 26.8,
+                "max": 26.9
+            },
+            "total": {
+                "n": 5,
+                "min": 27.9,
+                "median": 30.3,
+                "p95": 31.7,
+                "max": 31.8
+            },
+            "bytes": 68441,
+            "gzipBytes": 18763
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=unit_price&direction=asc",
+            "ttfb": {
+                "n": 5,
+                "min": 66.2,
+                "median": 67.8,
+                "p95": 69.5,
+                "max": 69.9
+            },
+            "total": {
+                "n": 5,
+                "min": 68.3,
+                "median": 70.5,
+                "p95": 72.7,
+                "max": 73.1
+            },
+            "bytes": 68361,
+            "gzipBytes": 18452
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=cursor&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 25.9,
+                "median": 26.6,
+                "p95": 27.2,
+                "max": 27.4
+            },
+            "total": {
+                "n": 5,
+                "min": 28.5,
+                "median": 31.4,
+                "p95": 32,
+                "max": 32.2
+            },
+            "bytes": 68223,
+            "gzipBytes": 18771
+        },
+        {
+            "target": "svelte",
+            "label": "AlfaKit (Svelte)",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=cursor&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 25.1,
+                "median": 25.4,
+                "p95": 26.6,
+                "max": 26.9
+            },
+            "total": {
+                "n": 5,
+                "min": 28.5,
+                "median": 30,
+                "p95": 30.2,
+                "max": 30.2
+            },
+            "bytes": 68325,
+            "gzipBytes": 18819
+        },
+        {
+            "target": "svelte",
+            "info": {
+                "php": "8.4.23",
+                "sapi": "fpm-fcgi",
+                "laravel": "13.35.0",
+                "opcache": true,
+                "jit": false,
+                "debug": false,
+                "environment": "local",
+                "configCached": false,
+                "routesCached": false,
+                "database": "sqlite",
+                "packages": {
+                    "alfasix/alfakit": "dev-main",
+                    "inertiajs/inertia-laravel": "v3.5.1"
+                }
+            }
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records",
+            "ttfb": {
+                "n": 5,
+                "min": 30.9,
+                "median": 32.3,
+                "p95": 33.2,
+                "max": 33.4
+            },
+            "total": {
+                "n": 5,
+                "min": 31.9,
+                "median": 33.4,
+                "p95": 34.8,
+                "max": 35.1
+            },
+            "bytes": 313290,
+            "gzipBytes": 18684
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 30.8,
+                "median": 31.8,
+                "p95": 32.7,
+                "max": 32.8
+            },
+            "total": {
+                "n": 5,
+                "min": 32.5,
+                "median": 33.6,
+                "p95": 34.4,
+                "max": 34.7
+            },
+            "bytes": 316144,
+            "gzipBytes": 18803
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 33.4,
+                "median": 35.7,
+                "p95": 36.6,
+                "max": 36.6
+            },
+            "total": {
+                "n": 5,
+                "min": 34.4,
+                "median": 37.2,
+                "p95": 37.9,
+                "max": 38
+            },
+            "bytes": 317387,
+            "gzipBytes": 18829
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?sort=created_at%3Aasc",
+            "ttfb": {
+                "n": 5,
+                "min": 29.1,
+                "median": 32,
+                "p95": 32.3,
+                "max": 32.3
+            },
+            "total": {
+                "n": 5,
+                "min": 30.7,
+                "median": 33.5,
+                "p95": 34.1,
+                "max": 34.1
+            },
+            "bytes": 314281,
+            "gzipBytes": 18562
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?sort=unit_price%3Aasc",
+            "ttfb": {
+                "n": 5,
+                "min": 70.4,
+                "median": 73.5,
+                "p95": 78.6,
+                "max": 79.7
+            },
+            "total": {
+                "n": 5,
+                "min": 72.1,
+                "median": 75.2,
+                "p95": 80.5,
+                "max": 81.6
+            },
+            "bytes": 314231,
+            "gzipBytes": 18129
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 29.7,
+                "median": 30.4,
+                "p95": 30.8,
+                "max": 30.9
+            },
+            "total": {
+                "n": 5,
+                "min": 31.3,
+                "median": 31.9,
+                "p95": 32.3,
+                "max": 32.4
+            },
+            "bytes": 318226,
+            "gzipBytes": 18906
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "default",
+            "modeLabel": "numbered (default)",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 25,
+                "median": 25.2,
+                "p95": 26.6,
+                "max": 26.9
+            },
+            "total": {
+                "n": 5,
+                "min": 25.7,
+                "median": 26.1,
+                "p95": 27.5,
+                "max": 27.7
+            },
+            "bytes": 316810,
+            "gzipBytes": 19046
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "simple",
+            "modeLabel": "simplePagination",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=simple",
+            "ttfb": {
+                "n": 5,
+                "min": 24.9,
+                "median": 25.7,
+                "p95": 26.6,
+                "max": 26.7
+            },
+            "total": {
+                "n": 5,
+                "min": 25.7,
+                "median": 27.1,
+                "p95": 28.2,
+                "max": 28.4
+            },
+            "bytes": 307248,
+            "gzipBytes": 18193
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "simple",
+            "modeLabel": "simplePagination",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "path": "/admin/bench-big-records?mode=simple&page=2",
+            "ttfb": {
+                "n": 5,
+                "min": 22.8,
+                "median": 25.7,
+                "p95": 26.2,
+                "max": 26.3
+            },
+            "total": {
+                "n": 5,
+                "min": 23.5,
+                "median": 27,
+                "p95": 27.3,
+                "max": 27.3
+            },
+            "bytes": 309148,
+            "gzipBytes": 18256
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "simple",
+            "modeLabel": "simplePagination",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "path": "/admin/bench-big-records?mode=simple&page=10000",
+            "ttfb": {
+                "n": 5,
+                "min": 30,
+                "median": 31.8,
+                "p95": 32.3,
+                "max": 32.3
+            },
+            "total": {
+                "n": 5,
+                "min": 30.8,
+                "median": 33.2,
+                "p95": 34.1,
+                "max": 34.2
+            },
+            "bytes": 310038,
+            "gzipBytes": 18283
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "simple",
+            "modeLabel": "simplePagination",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=simple&sort=created_at%3Aasc",
+            "ttfb": {
+                "n": 5,
+                "min": 23.4,
+                "median": 27,
+                "p95": 27.1,
+                "max": 27.1
+            },
+            "total": {
+                "n": 5,
+                "min": 24.5,
+                "median": 28.4,
+                "p95": 28.6,
+                "max": 28.6
+            },
+            "bytes": 308239,
+            "gzipBytes": 18072
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "simple",
+            "modeLabel": "simplePagination",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=simple&sort=unit_price%3Aasc",
+            "ttfb": {
+                "n": 5,
+                "min": 67.1,
+                "median": 68.1,
+                "p95": 69.3,
+                "max": 69.6
+            },
+            "total": {
+                "n": 5,
+                "min": 68.6,
+                "median": 69.8,
+                "p95": 72,
+                "max": 72.2
+            },
+            "bytes": 308189,
+            "gzipBytes": 17644
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "simple",
+            "modeLabel": "simplePagination",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=simple&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 24.8,
+                "median": 26.1,
+                "p95": 27.8,
+                "max": 28
+            },
+            "total": {
+                "n": 5,
+                "min": 25.8,
+                "median": 27.5,
+                "p95": 28.8,
+                "max": 28.8
+            },
+            "bytes": 312191,
+            "gzipBytes": 18413
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "simple",
+            "modeLabel": "simplePagination",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=simple&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 23.1,
+                "median": 27.9,
+                "p95": 50.7,
+                "max": 54.2
+            },
+            "total": {
+                "n": 5,
+                "min": 24,
+                "median": 29.4,
+                "p95": 52.1,
+                "max": 55.7
+            },
+            "bytes": 312879,
+            "gzipBytes": 18658
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "first",
+            "scenarioLabel": "First page",
+            "path": "/admin/bench-big-records?mode=cursor",
+            "ttfb": {
+                "n": 5,
+                "min": 24.4,
+                "median": 25.5,
+                "p95": 26.3,
+                "max": 26.3
+            },
+            "total": {
+                "n": 5,
+                "min": 25.1,
+                "median": 27.7,
+                "p95": 28.2,
+                "max": 28.3
+            },
+            "bytes": 307419,
+            "gzipBytes": 18252
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "page-2",
+            "scenarioLabel": "Page 2",
+            "skipped": "next cursor not found in the first page response"
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "deep",
+            "scenarioLabel": "Deep page (10,000)",
+            "skipped": "cursor pagination has no page numbers"
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-indexed",
+            "scenarioLabel": "Sort, indexed (created_at)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=created_at%3Aasc",
+            "ttfb": {
+                "n": 5,
+                "min": 26,
+                "median": 26.4,
+                "p95": 26.8,
+                "max": 26.9
+            },
+            "total": {
+                "n": 5,
+                "min": 27.4,
+                "median": 27.5,
+                "p95": 29.8,
+                "max": 30.3
+            },
+            "bytes": 308566,
+            "gzipBytes": 18192
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "sort-unindexed",
+            "scenarioLabel": "Sort, unindexed (unit_price)",
+            "path": "/admin/bench-big-records?mode=cursor&sort=unit_price%3Aasc",
+            "ttfb": {
+                "n": 5,
+                "min": 67.3,
+                "median": 67.7,
+                "p95": 68.5,
+                "max": 68.5
+            },
+            "total": {
+                "n": 5,
+                "min": 68.8,
+                "median": 69.4,
+                "p95": 70,
+                "max": 70.1
+            },
+            "bytes": 308447,
+            "gzipBytes": 17742
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "filter",
+            "scenarioLabel": "Select filter (status)",
+            "path": "/admin/bench-big-records?mode=cursor&filters%5Bstatus%5D%5Bvalue%5D=active",
+            "ttfb": {
+                "n": 5,
+                "min": 24.2,
+                "median": 24.8,
+                "p95": 29,
+                "max": 29.3
+            },
+            "total": {
+                "n": 5,
+                "min": 25.1,
+                "median": 26.1,
+                "p95": 30.4,
+                "max": 30.7
+            },
+            "bytes": 312362,
+            "gzipBytes": 18481
+        },
+        {
+            "target": "filament",
+            "label": "Filament v5",
+            "mode": "cursor",
+            "modeLabel": "cursor",
+            "scenario": "search",
+            "scenarioLabel": "Search, indexed prefix (sku)",
+            "path": "/admin/bench-big-records?mode=cursor&search=BIG-00424",
+            "ttfb": {
+                "n": 5,
+                "min": 26.4,
+                "median": 26.7,
+                "p95": 27.2,
+                "max": 27.3
+            },
+            "total": {
+                "n": 5,
+                "min": 27.8,
+                "median": 28.1,
+                "p95": 28.7,
+                "max": 28.7
+            },
+            "bytes": 313062,
+            "gzipBytes": 18725
+        },
+        {
+            "target": "filament",
+            "info": {
+                "php": "8.4.23",
+                "sapi": "fpm-fcgi",
+                "laravel": "13.35.0",
+                "opcache": true,
+                "jit": false,
+                "debug": false,
+                "environment": "local",
+                "configCached": false,
+                "routesCached": false,
+                "database": "sqlite",
+                "packages": {
+                    "filament/filament": "v5.10.1",
+                    "livewire/livewire": "v4.4.7"
+                }
+            }
+        }
+    ]
+}

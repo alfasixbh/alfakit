@@ -1,0 +1,84 @@
+{
+  "name": "alfasix/alfakit-backup",
+  "description": "Manage spatie/laravel-backup backups from an AlfaKit panel: list backups per disk with their health, create, download and delete them.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "backup",
+    "spatie"
+  ],
+  "homepage": "https://alfakit.dev/docs/plugins/backup",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit"
+  },
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "^0.1|@dev",
+    "spatie/laravel-backup": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitBackup\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\AlfakitBackup\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AlfaSix\\AlfakitBackup\\AlfakitBackupServiceProvider"
+      ]
+    },
+    "alfakit": {
+      "version": "^0.1",
+      "frontend": null,
+      "showcase": {
+        "demoPath": "backups",
+        "tour": [
+          "Open System > Backups",
+          "Check the health of each disk",
+          "Create or download a backup"
+        ],
+        "clips": [
+          "react-light",
+          "react-dark",
+          "vue-light",
+          "vue-dark",
+          "svelte-light",
+          "svelte-dark"
+        ],
+        "worksWith": [
+          "ops",
+          "health",
+          "activity-log"
+        ],
+        "highlights": [
+          "Backups per disk with size and age",
+          "Health status per destination",
+          "Create backups on the queue",
+          "Signed downloads",
+          "Delete old backups",
+          "Use your own page class"
+        ]
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

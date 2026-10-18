@@ -1,0 +1,63 @@
+{
+  "name": "@alfakit/core",
+  "version": "0.1.0",
+  "description": "Framework-agnostic schema types and state management for Alfakit, the Laravel admin panel builder by Alfa Six.",
+  "license": "MIT",
+  "author": "Alfa Six (https://alfasixbh.com)",
+  "homepage": "https://alfakit.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alfasixbh/alfakit",
+    "directory": "packages/core"
+  },
+  "bugs": "https://github.com/alfasixbh/alfakit/issues",
+  "keywords": [
+    "laravel",
+    "inertia",
+    "admin",
+    "panel",
+    "alfakit",
+    "schema"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "import": "./dist/schema/index.js"
+    },
+    "./package.json": "./package.json",
+    "./themes.css": "./themes.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "themes.css"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@inertiajs/core": "^3.8.0"
+  },
+  "devDependencies": {
+    "tsdown": "^0.23.0",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

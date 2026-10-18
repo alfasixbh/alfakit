@@ -1,0 +1,131 @@
+{
+  "name": "@alfakit/react",
+  "version": "0.1.0",
+  "description": "React + shadcn/ui renderer for Alfakit, the Laravel admin panel builder by Alfa Six.",
+  "license": "MIT",
+  "author": "Alfa Six (https://alfasixbh.com)",
+  "homepage": "https://alfakit.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alfasixbh/alfakit",
+    "directory": "packages/react"
+  },
+  "bugs": "https://github.com/alfasixbh/alfakit/issues",
+  "keywords": [
+    "laravel",
+    "inertia",
+    "react",
+    "shadcn",
+    "admin",
+    "panel",
+    "alfakit"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./starter-kit": {
+      "types": "./dist/starter-kit/index.d.ts",
+      "import": "./dist/starter-kit/index.js"
+    },
+    "./kanban": {
+      "types": "./dist/components/kanban/index.d.ts",
+      "import": "./dist/components/kanban/index.js"
+    },
+    "./cms": {
+      "types": "./dist/components/cms/index.d.ts",
+      "import": "./dist/components/cms/index.js"
+    },
+    "./translation-manager": {
+      "types": "./dist/components/translation-manager/index.d.ts",
+      "import": "./dist/components/translation-manager/index.js"
+    },
+    "./ai": {
+      "types": "./dist/components/ai/index.d.ts",
+      "import": "./dist/components/ai/index.js"
+    },
+    "./tree": {
+      "types": "./dist/components/tree/index.d.ts",
+      "import": "./dist/components/tree/index.js"
+    },
+    "./realtime": {
+      "types": "./dist/components/realtime/index.d.ts",
+      "import": "./dist/components/realtime/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./standalone.css": "./dist/standalone.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsdown && node ../../scripts/eject-manifest.mjs .",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@alfakit/core": "workspace:*",
+    "@fullcalendar/core": "^6.1.21",
+    "@fullcalendar/daygrid": "^6.1.21",
+    "@fullcalendar/interaction": "^6.1.21",
+    "@fullcalendar/list": "^6.1.21",
+    "@fullcalendar/timegrid": "^6.1.21",
+    "@tiptap/extension-image": "^3.31.4",
+    "@tiptap/extension-link": "^3.31.4",
+    "@tiptap/extension-placeholder": "^3.31.4",
+    "@tiptap/extension-table": "^3.31.4",
+    "@tiptap/react": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
+    "chart.js": "^4.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.4.0",
+    "lucide-react": "^1.52.0",
+    "radix-ui": "^1.7.0",
+    "react-day-picker": "^10.0.2",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0"
+  },
+  "peerDependencies": {
+    "@inertiajs/react": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@inertiajs/react": "^3.8.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^30.1.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tsdown": "^0.23.0",
+    "typescript": "^5.9.0",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

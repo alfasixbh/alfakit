@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose an addition or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that Alfakit makes hard today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: Sketch the PHP and/or frontend API you have in mind.
+      render: php
+  - type: checkboxes
+    id: adapters
+    attributes:
+      label: Adapters affected
+      options:
+        - label: React
+        - label: Vue
+        - label: Svelte
+        - label: PHP only

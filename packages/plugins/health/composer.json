@@ -1,0 +1,83 @@
+{
+  "name": "alfasix/alfakit-health",
+  "description": "Show spatie/laravel-health check results in an AlfaKit panel: a health page, a refresh action and a dashboard widget.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "health",
+    "monitoring",
+    "spatie"
+  ],
+  "homepage": "https://alfakit.dev/docs/plugins/health",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit"
+  },
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "^0.1|@dev",
+    "spatie/laravel-health": "^1.30"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitHealth\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\AlfakitHealth\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AlfaSix\\AlfakitHealth\\AlfakitHealthServiceProvider"
+      ]
+    },
+    "alfakit": {
+      "version": "^0.1",
+      "frontend": null,
+      "showcase": {
+        "demoPath": "health",
+        "tour": [
+          "Open System > Health",
+          "Read each check's status",
+          "Refresh the results"
+        ],
+        "clips": [
+          "react-light",
+          "react-dark",
+          "vue-light",
+          "vue-dark",
+          "svelte-light",
+          "svelte-dark"
+        ],
+        "worksWith": [
+          "ops",
+          "backup"
+        ],
+        "highlights": [
+          "spatie/laravel-health results page",
+          "Status per check",
+          "Refresh action",
+          "Dashboard widget",
+          "Owner-only access"
+        ]
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

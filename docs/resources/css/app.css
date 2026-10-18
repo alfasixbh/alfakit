@@ -1,0 +1,358 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@alfakit/react/styles.css';
+
+@source '../views';
+@source '../../node_modules/@alfakit/react/dist';
+
+/* AlfaKit brand fonts (SIL OFL, from the brand kit): Inter for body and UI, Montserrat
+   for headings. */
+@font-face {
+    font-family: 'Inter';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/inter-400.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Inter';
+    font-weight: 500 700;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/inter-500.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/montserrat-600.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 700 900;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/montserrat-700.ttf') format('truetype');
+}
+
+@theme {
+    --font-sans:
+        'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-heading: 'Montserrat', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --color-brand-navy: #073b78;
+    --color-brand-orange: #f47a22;
+    --color-brand-cream: #fff4e4;
+}
+
+/*
+ * Brand palette mapped onto the shadcn tokens. Navy anchors the light theme, cream gives
+ * soft surfaces, and Fox Orange is decoration (2.74:1 on white, so never small text).
+ * In dark mode orange becomes the primary, with ink text on it (5.57:1).
+ */
+:root {
+    --background: #ffffff;
+    --foreground: #14263d;
+    --card: #ffffff;
+    --card-foreground: #14263d;
+    --popover: #ffffff;
+    --popover-foreground: #14263d;
+    --primary: #073b78;
+    --primary-foreground: #ffffff;
+    --secondary: #fff4e4;
+    --secondary-foreground: #073b78;
+    --muted: #f6f1ea;
+    --muted-foreground: #536579;
+    --accent: #fff4e4;
+    --accent-foreground: #073b78;
+    --border: #e4dccf;
+    --input: #cfc4b4;
+    --ring: #073b78;
+}
+.dark {
+    --background: #0b1a2e;
+    --foreground: #f5f7fa;
+    --card: #10233b;
+    --card-foreground: #f5f7fa;
+    --popover: #10233b;
+    --popover-foreground: #f5f7fa;
+    --primary: #f47a22;
+    --primary-foreground: #14263d;
+    --secondary: #17304f;
+    --secondary-foreground: #f5f7fa;
+    --muted: #142a45;
+    --muted-foreground: #9db9de;
+    --accent: #17304f;
+    --accent-foreground: #f5f7fa;
+    --border: #22406a;
+    --input: #2c4d7a;
+    --ring: #f47a22;
+}
+
+h1,
+h2,
+h3,
+.font-heading {
+    font-family: var(--font-heading);
+}
+
+/* Headings in Alfa Navy on light backgrounds (11:1 on white), as in the brand guide. */
+:root:not(.dark) :is(h1, h2, h3) {
+    color: var(--color-brand-navy);
+}
+
+/* Documentation prose */
+.docs-prose {
+    @apply text-base leading-[1.7];
+}
+.docs-prose h1 {
+    @apply mb-4 text-3xl font-bold tracking-tight;
+}
+.docs-prose h2 {
+    @apply mt-10 mb-4 scroll-mt-20 border-b pb-2 text-2xl font-semibold tracking-tight;
+}
+.docs-prose h3 {
+    @apply mt-8 mb-3 scroll-mt-20 text-xl font-semibold;
+}
+.docs-prose p {
+    @apply my-4;
+}
+.docs-prose a:not(.heading-anchor) {
+    @apply text-primary underline underline-offset-4;
+}
+.docs-prose .heading-anchor {
+    @apply text-muted-foreground ms-2 no-underline opacity-0 transition-opacity;
+}
+.docs-prose h2:hover .heading-anchor,
+.docs-prose h3:hover .heading-anchor {
+    @apply opacity-100;
+}
+.docs-prose ul {
+    @apply my-4 list-disc ps-6;
+}
+.docs-prose ol {
+    @apply my-4 list-decimal ps-6;
+}
+.docs-prose li {
+    @apply my-1;
+}
+.docs-prose li > ul,
+.docs-prose li > ol {
+    @apply my-1;
+}
+.docs-prose code {
+    @apply bg-muted rounded px-1.5 py-0.5 font-mono text-[0.85em];
+}
+.docs-prose pre {
+    @apply bg-muted relative my-5 overflow-x-auto rounded-lg border p-4 text-sm leading-6;
+}
+/* Copy button injected by highlightCodeBlocks(); shown on hover/focus, always on touch. */
+.docs-prose pre .copy-button {
+    @apply bg-background text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute end-2 top-2 inline-flex items-center gap-1 rounded-md border px-2 py-1 font-sans text-xs opacity-0 transition-opacity focus-visible:opacity-100 focus-visible:ring-2 focus-visible:outline-none;
+}
+.docs-prose pre:hover .copy-button,
+.docs-prose pre .copy-button.is-copied {
+    @apply opacity-100;
+}
+.docs-prose pre .copy-button.is-copied {
+    @apply text-primary;
+}
+@media (hover: none) {
+    .docs-prose pre .copy-button {
+        @apply opacity-100;
+    }
+}
+.docs-prose pre code {
+    @apply bg-transparent p-0 text-[0.9em];
+}
+/* Code windows inside the prose (live examples) keep their own dark frame. */
+.docs-prose .code-window pre {
+    @apply my-0 rounded-none border-0 bg-transparent;
+}
+.docs-prose table {
+    @apply my-5 w-full border-collapse text-sm;
+}
+.docs-prose th {
+    @apply bg-muted/60 border px-3 py-2 text-start font-semibold;
+}
+.docs-prose td {
+    @apply border px-3 py-2 align-top;
+}
+.docs-prose blockquote {
+    @apply text-muted-foreground my-4 border-s-4 ps-4 italic;
+}
+.docs-prose kbd {
+    @apply bg-muted rounded border px-1.5 py-0.5 font-mono text-xs;
+}
+.docs-prose hr {
+    @apply my-8;
+}
+.docs-prose img {
+    @apply my-4 rounded-lg border;
+}
+
+/* highlight.js theme on top of the design tokens */
+.hljs {
+    color: var(--foreground);
+    background: transparent;
+}
+.hljs-comment,
+.hljs-quote {
+    color: var(--muted-foreground);
+    font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-meta,
+.hljs-doctag {
+    color: oklch(0.55 0.2 300);
+}
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-meta,
+.dark .hljs-doctag {
+    color: oklch(0.78 0.14 300);
+}
+.hljs-string,
+.hljs-attr,
+.hljs-template-tag,
+.hljs-regexp {
+    color: oklch(0.5 0.15 150);
+}
+.dark .hljs-string,
+.dark .hljs-attr,
+.dark .hljs-template-tag,
+.dark .hljs-regexp {
+    color: oklch(0.8 0.14 150);
+}
+.hljs-number,
+.hljs-literal,
+.hljs-symbol,
+.hljs-bullet {
+    color: oklch(0.55 0.18 40);
+}
+.dark .hljs-number,
+.dark .hljs-literal,
+.dark .hljs-symbol,
+.dark .hljs-bullet {
+    color: oklch(0.8 0.14 60);
+}
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-built_in,
+.hljs-type,
+.hljs-class .hljs-title,
+.hljs-title.class_,
+.hljs-title.function_ {
+    color: oklch(0.5 0.17 260);
+}
+.dark .hljs-title,
+.dark .hljs-section,
+.dark .hljs-name,
+.dark .hljs-built_in,
+.dark .hljs-type,
+.dark .hljs-title.class_,
+.dark .hljs-title.function_ {
+    color: oklch(0.78 0.13 250);
+}
+.hljs-variable,
+.hljs-template-variable,
+.hljs-property {
+    color: var(--foreground);
+}
+.hljs-emphasis {
+    font-style: italic;
+}
+.hljs-strong {
+    font-weight: 600;
+}
+
+/* Website (resources/js/components/site): body copy of marketing sections. */
+.site-prose {
+    @apply text-base leading-7;
+}
+.site-prose p + p,
+.site-prose p + ul {
+    @apply mt-4;
+}
+.site-prose ul {
+    @apply mt-4 flex flex-col gap-1.5;
+}
+.site-prose li {
+    @apply relative ps-6;
+}
+.site-prose li::before {
+    content: '';
+    @apply bg-brand-orange absolute start-1 top-[0.6em] size-2 rounded-full;
+}
+.site-prose :not(pre) > code {
+    @apply bg-muted text-foreground rounded px-1.5 py-0.5 font-mono text-[0.85em];
+}
+.site-prose a:not([data-slot='button']) {
+    @apply text-primary font-medium underline underline-offset-4;
+}
+
+/* Visible keyboard focus for links and custom controls (component classes override it). */
+@layer base {
+    a:focus-visible,
+    [role='tab']:focus-visible,
+    summary:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+    }
+}
+
+/*
+ * Website chrome on Alfa Navy (header, home hero): white headings in both modes and a
+ * cream focus ring that stays visible on navy (13.9:1).
+ */
+.on-brand {
+    --ring: #fff4e4;
+}
+:root .on-brand :is(h1, h2, h3) {
+    color: #ffffff;
+}
+
+/* Code windows of the website: always dark, so the highlight.js tokens use the dark palette. */
+.code-window {
+    --foreground: #e6edf7;
+    --muted-foreground: #9db9de;
+    color: #e6edf7;
+}
+.code-window .hljs-keyword,
+.code-window .hljs-meta,
+.code-window .hljs-doctag {
+    color: oklch(0.8 0.12 300);
+}
+.code-window .hljs-string,
+.code-window .hljs-attr,
+.code-window .hljs-regexp {
+    color: oklch(0.82 0.13 150);
+}
+.code-window .hljs-number,
+.code-window .hljs-literal {
+    color: oklch(0.82 0.13 60);
+}
+.code-window .hljs-title,
+.code-window .hljs-built_in,
+.code-window .hljs-type,
+.code-window .hljs-title.class_,
+.code-window .hljs-title.function_ {
+    color: oklch(0.8 0.11 240);
+}
+.code-window .hljs-variable,
+.code-window .hljs-property,
+.code-window .hljs-params {
+    color: #f5c79f;
+}
+.code-window .hljs-comment {
+    color: #9db9de;
+    font-style: italic;
+}
+
+/* Long inline code (fluent chains) wraps instead of widening the page on phones. */
+.docs-prose :not(pre) > code {
+    overflow-wrap: anywhere;
+}

@@ -1,0 +1,79 @@
+{
+  "name": "alfasix/alfakit-tags",
+  "description": "Spatie Laravel Tags input, column and entry for AlfaKit panels.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "tags",
+    "spatie",
+    "taxonomy"
+  ],
+  "homepage": "https://alfakit.dev/docs/plugins/tags",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/tags"
+  },
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "^0.1|@dev",
+    "spatie/laravel-tags": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitTags\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\AlfakitTags\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "alfakit": {
+      "version": "^0.1",
+      "frontend": null,
+      "showcase": {
+        "demoPath": "customers",
+        "tour": [
+          "Open Sales > Customers",
+          "Filter by a segment tag",
+          "Edit a customer's segments"
+        ],
+        "clips": [
+          "react-light",
+          "react-dark",
+          "vue-light",
+          "vue-dark",
+          "svelte-light",
+          "svelte-dark"
+        ],
+        "worksWith": [
+          "media-library",
+          "helpdesk",
+          "cms"
+        ],
+        "highlights": [
+          "Tags input with suggestions",
+          "Tag types",
+          "Saved with syncTagsWithType()",
+          "Badge column",
+          "Infolist entry"
+        ]
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

@@ -1,0 +1,7 @@
+/* A live example rendered by @alfakit/vue (see resources/views/examples.blade.php). */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './examples-base.css';
+@import '../../../packages/vue/dist/standalone.css';
+
+@source '../../../packages/vue/dist';

@@ -1,0 +1,150 @@
+/*
+ * Alfakit outside panels. Import it after Tailwind in the stylesheet of the application
+ * that renders `<AlfakitComponent>`, and point Tailwind at the renderer's compiled
+ * components so their classes are generated:
+ *
+ *   @import 'tailwindcss';
+ *   @import '@alfakit/react/standalone.css';
+ *   @source '../../node_modules/@alfakit/react/dist';
+ *
+ * Unlike `styles.css` (the panel stylesheet) it defines no shadcn palette: components
+ * inherit your application's `--primary`, `--border`, `--radius`… and only the status
+ * colours Alfakit adds (`success`, `warning`, `info`) get defaults here. Override them in
+ * your own `:root`. Shared by the React, Vue and Svelte renderers (copied into each dist).
+ */
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Grid classes are composed at runtime from schema breakpoints (`columns`, `columnSpan`),
+ * so force Tailwind to generate every variant the renderers can produce.
+ */
+@source inline('{,sm:,md:,lg:,xl:,2xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,full}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:}col-start-{1,2,3,4,5,6,7,8,9,10,11,12}');
+@source inline('line-clamp-{1,2,3,4,5,6}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:}{flex,hidden,flex-row,flex-col,items-center}');
+@source inline(
+  '{@3xs:,@2xs:,@xs:,@sm:,@md:,@lg:,@xl:,@2xl:,@3xl:,@4xl:,@5xl:,@6xl:,@7xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12}'
+);
+@source inline(
+  '{@3xs:,@2xs:,@xs:,@sm:,@md:,@lg:,@xl:,@2xl:,@3xl:,@4xl:,@5xl:,@6xl:,@7xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,full}'
+);
+@source inline('{,sm:,md:,lg:,xl:,2xl:}{flex-row,items-start,items-center,items-end}');
+
+/* Status colours used by badges, buttons, notifications and stats; shadcn has no defaults for them. */
+@theme inline {
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-danger: var(--destructive);
+  --color-danger-foreground: var(--destructive-foreground);
+  --color-gray: var(--muted-foreground);
+}
+
+:root {
+  --success: var(--alfakit-success, oklch(0.627 0.194 149.214));
+  --success-foreground: oklch(0.985 0 0);
+  --warning: var(--alfakit-warning, oklch(0.769 0.188 70.08));
+  --warning-foreground: oklch(0.145 0 0);
+  --info: var(--alfakit-info, oklch(0.623 0.214 259.815));
+  --info-foreground: oklch(0.985 0 0);
+}
+
+.dark {
+  --success: var(--alfakit-success, oklch(0.723 0.219 149.579));
+  --warning: var(--alfakit-warning, oklch(0.828 0.189 84.429));
+  --info: var(--alfakit-info, oklch(0.707 0.165 254.624));
+}
+
+/*
+ * Text on solid danger buttons and badges. The Laravel starter kits set
+ * `--destructive-foreground` to the same red as `--destructive` (their own buttons use
+ * `text-white`), which would hide the label of every danger button. Only AlfaKit's views
+ * (`data-alfakit-embedded` in starter kit pages, `data-alfakit-component` for standalone
+ * components) and the dialogs, sheets and menus they open while one is on the page get a
+ * readable foreground; the host's own components keep theirs. Override it with
+ * `--alfakit-danger-foreground`.
+ */
+:where([data-alfakit-embedded], [data-alfakit-component]),
+:where(body:has([data-alfakit-embedded], [data-alfakit-component]))
+  :where(
+    [data-slot='dialog-content'],
+    [data-slot='sheet-content'],
+    [data-slot='alert-dialog-content'],
+    [data-slot='dropdown-menu-content'],
+    [data-slot='popover-content']
+  ) {
+  --destructive-foreground: var(--alfakit-danger-foreground, oklch(0.985 0 0));
+  /* A non-inline `@theme` (the starter kits) resolves the colour on :root, so set it here too. */
+  --color-destructive-foreground: var(--destructive-foreground);
+}
+
+/* Rich editor content and extensions (same rules as the panel stylesheet). */
+.alfakit-prose :where(h2) {
+  @apply mt-4 mb-2 text-xl font-semibold;
+}
+.alfakit-prose :where(h3) {
+  @apply mt-3 mb-1 text-lg font-semibold;
+}
+.alfakit-prose :where(p) {
+  @apply my-2 leading-relaxed;
+}
+.alfakit-prose :where(ul) {
+  @apply my-2 list-disc ps-6;
+}
+.alfakit-prose :where(ol) {
+  @apply my-2 list-decimal ps-6;
+}
+.alfakit-prose :where(blockquote) {
+  @apply text-muted-foreground my-2 border-s-2 ps-4 italic;
+}
+.alfakit-prose :where(pre) {
+  @apply bg-muted my-2 overflow-x-auto rounded-md p-3 text-sm;
+}
+.alfakit-prose :where(code) {
+  @apply bg-muted rounded px-1 py-0.5 text-sm;
+}
+.alfakit-prose :where(a) {
+  @apply text-primary underline underline-offset-4;
+}
+.alfakit-prose :where(img) {
+  @apply my-2 max-w-full rounded-md;
+}
+.alfakit-prose :where(table) {
+  @apply my-2 w-full border-collapse text-sm;
+}
+.alfakit-prose :where(td, th) {
+  @apply border px-2 py-1;
+}
+.alfakit-prose :where(.alfakit-mention) {
+  @apply bg-primary/10 text-primary rounded px-1 font-medium;
+}
+.alfakit-prose :where(.alfakit-merge-tag) {
+  @apply bg-muted text-muted-foreground rounded px-1 font-mono text-xs;
+}
+.alfakit-prose :where(.alfakit-custom-block) {
+  @apply bg-card my-2 overflow-hidden rounded-md border;
+}
+.alfakit-prose :where(.alfakit-custom-block.ProseMirror-selectednode) {
+  @apply ring-ring/50 ring-[3px];
+}
+.alfakit-prose :where(.alfakit-custom-block-header) {
+  @apply text-muted-foreground bg-muted/40 flex items-center justify-between gap-2 border-b px-2 py-1 text-xs font-medium;
+}
+.alfakit-prose :where(.alfakit-custom-block-controls) {
+  @apply flex items-center gap-1;
+}
+.alfakit-prose :where(.alfakit-custom-block-controls button) {
+  @apply hover:bg-accent hover:text-accent-foreground rounded px-1.5 py-0.5;
+}
+.alfakit-prose :where(.alfakit-custom-block-preview) {
+  @apply p-3;
+}
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply text-muted-foreground pointer-events-none float-left;
+}

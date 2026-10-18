@@ -1,0 +1,83 @@
+{
+  "name": "alfasix/alfakit-tree",
+  "description": "Drag-and-drop, keyboard-accessible tree pages and widgets for hierarchical Eloquent models in AlfaKit panels.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "tree",
+    "nested",
+    "hierarchy",
+    "sortable"
+  ],
+  "homepage": "https://alfakit.dev/docs/plugins/tree",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/tree"
+  },
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "^0.1|@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitTree\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\AlfakitTree\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AlfaSix\\AlfakitTree\\AlfakitTreeServiceProvider"
+      ]
+    },
+    "alfakit": {
+      "version": "^0.1",
+      "frontend": null,
+      "showcase": {
+        "demoPath": "categories/tree",
+        "tour": [
+          "Open Catalog > Categories > Tree",
+          "Drag a category under another",
+          "Move it with the keyboard"
+        ],
+        "clips": [
+          "react-light",
+          "react-dark",
+          "vue-light",
+          "vue-dark",
+          "svelte-light",
+          "svelte-dark"
+        ],
+        "worksWith": [
+          "cms",
+          "kanban"
+        ],
+        "highlights": [
+          "Tree pages and widgets",
+          "Drag and drop",
+          "Keyboard and screen reader support",
+          "Max depth and ordering",
+          "Themed with your panel"
+        ]
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

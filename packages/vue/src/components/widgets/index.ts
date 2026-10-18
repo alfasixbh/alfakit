@@ -1,0 +1,6 @@
+export { CalendarWidget } from './calendar-lazy'
+export { ChartWidget } from './chart-lazy'
+export { default as DashboardCustomizer } from './DashboardCustomizer.vue'
+export { default as StatsOverviewWidget } from './StatsOverviewWidget.vue'
+export { default as WidgetGrid } from './WidgetGrid.vue'
+export { default as WidgetRenderer } from './WidgetRenderer.vue'

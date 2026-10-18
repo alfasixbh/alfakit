@@ -1,0 +1,27 @@
+name: Bug report
+description: Something is not working as documented
+labels: [bug]
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Alfakit, Laravel, PHP, and the frontend adapter + version
+      placeholder: alfasix/alfakit 1.2.0, Laravel 13.35, PHP 8.4, @alfakit/react 1.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal code, a failing Pest test, or a link to a reproduction repository.
+      render: php
+    validations:
+      required: true

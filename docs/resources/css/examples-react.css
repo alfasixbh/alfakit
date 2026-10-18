@@ -1,0 +1,7 @@
+/* A live example rendered by @alfakit/react (see resources/views/examples.blade.php). */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './examples-base.css';
+@import '@alfakit/react/standalone.css';
+
+@source '../../node_modules/@alfakit/react/dist';

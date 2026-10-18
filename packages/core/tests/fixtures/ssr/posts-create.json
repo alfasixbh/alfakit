@@ -1,0 +1,1774 @@
+{
+  "component": "Alfakit/Page",
+  "props": {
+    "errors": {},
+    "name": "Alfakit React",
+    "auth": {
+      "user": {
+        "id": 1,
+        "name": "Alfa Admin",
+        "email": "admin@example.com",
+        "email_verified_at": "2026-10-08T08:30:19.000000Z",
+        "created_at": "2026-10-08T08:30:19.000000Z",
+        "updated_at": "2026-10-08T13:08:19.000000Z",
+        "two_factor_confirmed_at": null,
+        "locale": "en",
+        "timezone": null
+      }
+    },
+    "sidebarOpen": true,
+    "alfakit": {
+      "id": "admin",
+      "path": "admin",
+      "url": "http://localhost/admin",
+      "brandName": "Alfakit React",
+      "theme": {
+        "name": "alfakit",
+        "attribute": "alfakit",
+        "sidebar": "floating",
+        "density": "comfortable",
+        "radius": "0.875rem",
+        "font": "Plus Jakarta Sans",
+        "fontCss": "'Plus Jakarta Sans'",
+        "headingFontCss": null,
+        "fontUrl": "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap",
+        "fontUrls": [
+          "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap"
+        ],
+        "design": {
+          "layout": "sidebar",
+          "nav": "pill",
+          "header": "banner",
+          "surfaces": "elevated",
+          "inputs": "filled",
+          "buttons": "pill",
+          "tables": "minimal"
+        }
+      },
+      "slots": {
+        "topbar.end": [
+          {
+            "type": "html",
+            "html": "<label class=\"hidden items-center gap-2 text-xs text-muted-foreground sm:flex\">\n    <span>Theme</span>\n    <select\n        class=\"h-8 rounded-md border border-input bg-background px-2 text-sm text-foreground\"\n        onchange=\"window.location.href = '/demo/theme/' + this.value\"\n        aria-label=\"Theme\"\n    >\n                    <option value=\"neutral\" >Neutral</option>\n                    <option value=\"alfakit\" selected>Alfakit</option>\n                    <option value=\"minimal\" >Minimal</option>\n                    <option value=\"soft\" >Soft</option>\n                    <option value=\"corporate\" >Corporate</option>\n                    <option value=\"filament\" >Filament style</option>\n            </select>\n</label>\n"
+          }
+        ]
+      },
+      "darkMode": {
+        "enabled": true,
+        "forced": false
+      },
+      "sidebarCollapsibleOnDesktop": true,
+      "breadcrumbs": true,
+      "navigation": [
+        {
+          "collapsible": true,
+          "items": [
+            {
+              "label": "Dashboard",
+              "icon": "layout-dashboard",
+              "url": "http://localhost/admin"
+            }
+          ]
+        },
+        {
+          "label": "Blog",
+          "collapsible": true,
+          "items": [
+            {
+              "label": "Categories",
+              "icon": "folder",
+              "url": "http://localhost/admin/categories"
+            },
+            {
+              "label": "Posts",
+              "icon": "file-text",
+              "url": "http://localhost/admin/posts",
+              "active": true
+            },
+            {
+              "label": "Tags",
+              "icon": "tag",
+              "url": "http://localhost/admin/tags"
+            }
+          ]
+        }
+      ],
+      "user": {
+        "id": 1,
+        "name": "Alfa Admin",
+        "email": "admin@example.com",
+        "avatar": null
+      },
+      "userMenu": {
+        "items": [],
+        "profileUrl": "http://localhost/admin/profile",
+        "logoutUrl": "http://localhost/admin/logout"
+      },
+      "databaseNotifications": {
+        "pollingInterval": "30s",
+        "unreadCount": 0
+      },
+      "globalSearch": {
+        "keyBindings": ["mod+k"],
+        "placeholder": "Search…"
+      },
+      "endpoints": {
+        "action": "http://localhost/admin/_alfakit/actions",
+        "modal": "http://localhost/admin/_alfakit/actions/modal",
+        "schemaRefresh": "http://localhost/admin/_alfakit/schema/refresh",
+        "schemaOptions": "http://localhost/admin/_alfakit/schema/options",
+        "tableCell": "http://localhost/admin/_alfakit/table/cell",
+        "tableReorder": "http://localhost/admin/_alfakit/table/reorder",
+        "locale": "http://localhost/admin/_alfakit/locale",
+        "upload": "http://localhost/admin/_alfakit/uploads",
+        "uploadDestroy": "http://localhost/admin/_alfakit/uploads",
+        "globalSearch": "http://localhost/admin/_alfakit/global-search",
+        "notifications": "http://localhost/admin/_alfakit/notifications",
+        "notificationsReadAll": "http://localhost/admin/_alfakit/notifications/read-all",
+        "notificationsDestroyAll": "http://localhost/admin/_alfakit/notifications",
+        "logout": "http://localhost/admin/logout"
+      },
+      "auth": {
+        "login": "http://localhost/admin/login",
+        "register": null,
+        "passwordReset": "http://localhost/admin/password-reset/request"
+      },
+      "flashKey": "alfakitNotifications",
+      "localization": {
+        "code": "en",
+        "tag": "en",
+        "label": "English",
+        "direction": "ltr",
+        "fallbackLocale": "en",
+        "firstDayOfWeek": 0,
+        "currency": "USD",
+        "timezone": "UTC",
+        "switcher": true,
+        "locales": [
+          {
+            "code": "en",
+            "tag": "en",
+            "label": "English",
+            "direction": "ltr"
+          },
+          {
+            "code": "ar",
+            "tag": "ar",
+            "label": "العربية",
+            "direction": "rtl"
+          },
+          {
+            "code": "fr",
+            "tag": "fr",
+            "label": "Français",
+            "direction": "ltr"
+          },
+          {
+            "code": "de",
+            "tag": "de",
+            "label": "Deutsch",
+            "direction": "ltr"
+          },
+          {
+            "code": "ja",
+            "tag": "ja",
+            "label": "日本語",
+            "direction": "ltr"
+          }
+        ]
+      },
+      "csrf": "test-token",
+      "translations": {
+        "actions": "Actions",
+        "cancel": "Cancel",
+        "close": "Close",
+        "confirm": "Confirm",
+        "save": "Save",
+        "search": "Search",
+        "loading": "Loading…",
+        "no_results": "No results.",
+        "select_option": "Select an option",
+        "clear": "Clear",
+        "remove": "Remove",
+        "add": "Add",
+        "copy": "Copy",
+        "copied": "Copied",
+        "toggle_sidebar": "Toggle sidebar",
+        "toggle_theme": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System",
+        "logout": "Sign out",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "mark_all_read": "Mark all as read",
+        "clear_notifications": "Clear notifications",
+        "no_notifications": "You have no notifications.",
+        "unsaved_changes": "You have unsaved changes. Leave anyway?",
+        "language": "Language",
+        "navigation": "Navigation",
+        "more": "More",
+        "sidebar": "Sidebar",
+        "open": "Open",
+        "download": "Download",
+        "toggle": "Toggle",
+        "toggle_section": "Toggle section",
+        "steps": "Steps",
+        "pagination": "Pagination",
+        "mark_as_read": "Mark as read",
+        "mobile_sidebar": "Displays the mobile sidebar.",
+        "chart": "Chart",
+        "command_palette": "Command palette",
+        "command_palette_description": "Search for a command to run…",
+        "load_more": "Load more",
+        "widget_not_registered": "Widget component :component is not registered.",
+        "table": {
+          "filters": "Filters",
+          "reset_filters": "Reset",
+          "columns": "Columns",
+          "per_page": "Per page",
+          "showing": "Showing :first–:last of :total",
+          "selected": ":count selected",
+          "select_all": "Select all",
+          "deselect_all": "Deselect all",
+          "bulk_actions": "Bulk actions",
+          "empty": "No records found.",
+          "previous": "Previous",
+          "next": "Next",
+          "all": "All",
+          "select_page": "Select page",
+          "select_row": "Select row",
+          "remove_filter": "Remove filter",
+          "reorder_start": "Reorder",
+          "reorder_stop": "Done"
+        },
+        "form": {
+          "required": "Required",
+          "drop_files": "Drop files here or click to browse",
+          "uploading": "Uploading…",
+          "add_row": "Add row",
+          "add_item": "Add item",
+          "remove_item": "Remove",
+          "move_up": "Move up",
+          "move_down": "Move down",
+          "search_placeholder": "Type to search…",
+          "next_step": "Next",
+          "previous_step": "Back",
+          "file_too_large": "This file is too large.",
+          "file_too_small": "This file is too small.",
+          "min_files": "At least :count file|At least :count files",
+          "clone": "Clone",
+          "remove_row": "Remove row",
+          "pick_color": "Pick a colour",
+          "link_prompt": "Link URL",
+          "pick_date": "Pick a date",
+          "show_password": "Show password",
+          "hide_password": "Hide password"
+        },
+        "editor": {
+          "bold": "Bold",
+          "italic": "Italic",
+          "underline": "Underline",
+          "strike": "Strikethrough",
+          "link": "Link",
+          "h2": "Heading 2",
+          "h3": "Heading 3",
+          "heading": "Heading",
+          "blockquote": "Quote",
+          "code_block": "Code block",
+          "bullet_list": "Bullet list",
+          "ordered_list": "Numbered list",
+          "divider": "Divider",
+          "image": "Insert image",
+          "undo": "Undo",
+          "redo": "Redo"
+        },
+        "tenancy": {
+          "switch": "Switch",
+          "register": "New",
+          "profile": "Settings"
+        }
+      }
+    },
+    "alfakitAppearance": "system",
+    "page": {
+      "class": "App\\Alfakit\\Resources\\PostResource\\Pages\\CreatePost",
+      "layout": "app",
+      "title": "Create post",
+      "heading": "Create post",
+      "breadcrumbs": [
+        {
+          "label": "Posts",
+          "url": "http://localhost/admin/posts"
+        },
+        {
+          "label": "Create"
+        }
+      ],
+      "content": [
+        {
+          "type": "Form",
+          "key": "form",
+          "component": "form",
+          "components": [
+            {
+              "type": "Group",
+              "key": "group-0",
+              "columns": {
+                "default": 1
+              },
+              "columnSpan": {
+                "default": 1,
+                "lg": 2
+              },
+              "schema": [
+                {
+                  "type": "Section",
+                  "key": "group-0.section-0",
+                  "label": "Content",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "columnSpan": {
+                    "default": "full"
+                  },
+                  "schema": [
+                    {
+                      "type": "TextInput",
+                      "key": "title",
+                      "label": "Title",
+                      "inputType": "text",
+                      "maxLength": 255,
+                      "name": "title",
+                      "statePath": "title",
+                      "required": true,
+                      "live": {
+                        "onBlur": false,
+                        "debounce": null
+                      }
+                    },
+                    {
+                      "type": "TextInput",
+                      "key": "slug",
+                      "label": "Slug",
+                      "inputType": "text",
+                      "maxLength": 255,
+                      "prefix": "/blog/",
+                      "name": "slug",
+                      "statePath": "slug",
+                      "required": true
+                    },
+                    {
+                      "type": "Textarea",
+                      "key": "excerpt",
+                      "label": "Excerpt",
+                      "columnSpan": {
+                        "default": "full"
+                      },
+                      "rows": 2,
+                      "maxLength": 255,
+                      "name": "excerpt",
+                      "statePath": "excerpt"
+                    },
+                    {
+                      "type": "RichEditor",
+                      "key": "content",
+                      "label": "Content",
+                      "columnSpan": {
+                        "default": "full"
+                      },
+                      "toolbarButtons": [
+                        "bold",
+                        "italic",
+                        "underline",
+                        "strike",
+                        "link",
+                        "|",
+                        "h2",
+                        "h3",
+                        "blockquote",
+                        "codeBlock",
+                        "|",
+                        "bulletList",
+                        "orderedList",
+                        "|",
+                        "attachFiles",
+                        "undo",
+                        "redo"
+                      ],
+                      "fileAttachments": {
+                        "disk": "local",
+                        "directory": null
+                      },
+                      "name": "content",
+                      "statePath": "content"
+                    }
+                  ],
+                  "heading": "Content"
+                },
+                {
+                  "type": "Section",
+                  "key": "group-0.section-1",
+                  "label": "SEO",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "columnSpan": {
+                    "default": "full"
+                  },
+                  "schema": [
+                    {
+                      "type": "KeyValue",
+                      "key": "meta",
+                      "label": "Meta",
+                      "columnSpan": {
+                        "default": "full"
+                      },
+                      "keyLabel": "Property",
+                      "valueLabel": "Value",
+                      "addActionLabel": "Add row",
+                      "addable": true,
+                      "deletable": true,
+                      "reorderable": false,
+                      "editableKeys": true,
+                      "editableValues": true,
+                      "name": "meta",
+                      "statePath": "meta"
+                    }
+                  ],
+                  "heading": "SEO",
+                  "collapsible": true,
+                  "collapsed": true
+                }
+              ]
+            },
+            {
+              "type": "Group",
+              "key": "group-1",
+              "columns": {
+                "default": 1
+              },
+              "columnSpan": {
+                "default": 1,
+                "lg": 1
+              },
+              "schema": [
+                {
+                  "type": "Section",
+                  "key": "group-1.section-0",
+                  "label": "Publishing",
+                  "columns": {
+                    "default": 1,
+                    "lg": 1
+                  },
+                  "columnSpan": {
+                    "default": "full"
+                  },
+                  "schema": [
+                    {
+                      "type": "Select",
+                      "key": "status",
+                      "label": "Status",
+                      "options": [
+                        {
+                          "value": "draft",
+                          "label": "Draft"
+                        },
+                        {
+                          "value": "review",
+                          "label": "In review"
+                        },
+                        {
+                          "value": "published",
+                          "label": "Published"
+                        }
+                      ],
+                      "selectablePlaceholder": true,
+                      "name": "status",
+                      "statePath": "status",
+                      "required": true
+                    },
+                    {
+                      "type": "Toggle",
+                      "key": "is_featured",
+                      "label": "Featured",
+                      "inline": true,
+                      "name": "is_featured",
+                      "statePath": "is_featured"
+                    },
+                    {
+                      "type": "DateTimePicker",
+                      "key": "published_at",
+                      "label": "Published at",
+                      "format": "Y-m-d H:i",
+                      "hasDate": true,
+                      "hasTime": true,
+                      "native": true,
+                      "timezone": "UTC",
+                      "firstDayOfWeek": 1,
+                      "closeOnDateSelection": true,
+                      "name": "published_at",
+                      "statePath": "published_at"
+                    },
+                    {
+                      "type": "Select",
+                      "key": "author_id",
+                      "label": "Author",
+                      "options": [
+                        {
+                          "value": "36",
+                          "label": "Abbie Schuppe PhD"
+                        },
+                        {
+                          "value": "45",
+                          "label": "Adalberto Abbott Sr."
+                        },
+                        {
+                          "value": "56",
+                          "label": "Alanis Wyman"
+                        },
+                        {
+                          "value": "26",
+                          "label": "Alexandrea Kiehn"
+                        },
+                        {
+                          "value": "1",
+                          "label": "Alfa Admin"
+                        },
+                        {
+                          "value": "3",
+                          "label": "Alice Hayes"
+                        },
+                        {
+                          "value": "33",
+                          "label": "Aron Harris"
+                        },
+                        {
+                          "value": "22",
+                          "label": "Ashtyn Daniel"
+                        },
+                        {
+                          "value": "6",
+                          "label": "Carson Schimmel III"
+                        },
+                        {
+                          "value": "43",
+                          "label": "Chandler Schmitt"
+                        },
+                        {
+                          "value": "27",
+                          "label": "Clemmie VonRueden"
+                        },
+                        {
+                          "value": "46",
+                          "label": "Cleora Hayes II"
+                        },
+                        {
+                          "value": "20",
+                          "label": "Darius Brekke"
+                        },
+                        {
+                          "value": "35",
+                          "label": "Delpha Lang"
+                        },
+                        {
+                          "value": "40",
+                          "label": "Dr. Darrel Flatley DDS"
+                        },
+                        {
+                          "value": "19",
+                          "label": "Dr. Elody Lebsack"
+                        },
+                        {
+                          "value": "65",
+                          "label": "Dr. Joannie Lakin V"
+                        },
+                        {
+                          "value": "8",
+                          "label": "Dr. Thelma Shanahan PhD"
+                        },
+                        {
+                          "value": "54",
+                          "label": "Dr. Toney Kessler"
+                        },
+                        {
+                          "value": "60",
+                          "label": "Eden Douglas"
+                        },
+                        {
+                          "value": "57",
+                          "label": "Graham Robel MD"
+                        },
+                        {
+                          "value": "50",
+                          "label": "Hosea Kirlin"
+                        },
+                        {
+                          "value": "29",
+                          "label": "Irma Mohr"
+                        },
+                        {
+                          "value": "51",
+                          "label": "Jessica Hoppe"
+                        },
+                        {
+                          "value": "53",
+                          "label": "Jessie Kirlin"
+                        },
+                        {
+                          "value": "2",
+                          "label": "Josefa Gislason"
+                        },
+                        {
+                          "value": "21",
+                          "label": "Kacie Kihn"
+                        },
+                        {
+                          "value": "42",
+                          "label": "Kamille Berge"
+                        },
+                        {
+                          "value": "47",
+                          "label": "Kamren Wisozk"
+                        },
+                        {
+                          "value": "23",
+                          "label": "Kane Simonis"
+                        },
+                        {
+                          "value": "34",
+                          "label": "Kole Erdman"
+                        },
+                        {
+                          "value": "17",
+                          "label": "Larry Monahan"
+                        },
+                        {
+                          "value": "55",
+                          "label": "Larue Goyette III"
+                        },
+                        {
+                          "value": "62",
+                          "label": "Laurence Hagenes"
+                        },
+                        {
+                          "value": "37",
+                          "label": "Leola Bergnaum"
+                        },
+                        {
+                          "value": "12",
+                          "label": "Mae Emmerich"
+                        },
+                        {
+                          "value": "30",
+                          "label": "Magnolia DuBuque"
+                        },
+                        {
+                          "value": "24",
+                          "label": "Marco Swift IV"
+                        },
+                        {
+                          "value": "48",
+                          "label": "Marta Hahn"
+                        },
+                        {
+                          "value": "32",
+                          "label": "Miss Chasity Smitham PhD"
+                        },
+                        {
+                          "value": "41",
+                          "label": "Miss Jayne Jacobi"
+                        },
+                        {
+                          "value": "25",
+                          "label": "Mitchel Baumbach"
+                        },
+                        {
+                          "value": "15",
+                          "label": "Mose Murphy"
+                        },
+                        {
+                          "value": "14",
+                          "label": "Mr. Arjun Feeney Sr."
+                        },
+                        {
+                          "value": "44",
+                          "label": "Mr. Enrico Ritchie III"
+                        },
+                        {
+                          "value": "13",
+                          "label": "Mr. Santos Kuvalis III"
+                        },
+                        {
+                          "value": "11",
+                          "label": "Mrs. Cathrine Tremblay"
+                        },
+                        {
+                          "value": "38",
+                          "label": "Mrs. Jaida Rutherford IV"
+                        },
+                        {
+                          "value": "4",
+                          "label": "Mrs. Layla Effertz"
+                        },
+                        {
+                          "value": "28",
+                          "label": "Mrs. Mandy Zboncak Sr."
+                        }
+                      ],
+                      "selectedLabels": [],
+                      "searchable": true,
+                      "selectablePlaceholder": true,
+                      "searchDebounce": 300,
+                      "name": "author_id",
+                      "statePath": "author_id",
+                      "required": true
+                    },
+                    {
+                      "type": "Select",
+                      "key": "category_id",
+                      "label": "Category",
+                      "options": [
+                        {
+                          "value": "17",
+                          "label": "Ad Iste"
+                        },
+                        {
+                          "value": "43",
+                          "label": "Aliquid Enim"
+                        },
+                        {
+                          "value": "58",
+                          "label": "Aut Sit"
+                        },
+                        {
+                          "value": "49",
+                          "label": "Aut Sunt"
+                        },
+                        {
+                          "value": "8",
+                          "label": "Beatae Ipsam"
+                        },
+                        {
+                          "value": "59",
+                          "label": "Culpa Hic"
+                        },
+                        {
+                          "value": "23",
+                          "label": "Deleniti Quia"
+                        },
+                        {
+                          "value": "13",
+                          "label": "Deserunt Dolor"
+                        },
+                        {
+                          "value": "44",
+                          "label": "Dignissimos Quod"
+                        },
+                        {
+                          "value": "41",
+                          "label": "Dolorem Ipsam"
+                        },
+                        {
+                          "value": "18",
+                          "label": "Dolorum Doloribus"
+                        },
+                        {
+                          "value": "21",
+                          "label": "Ducimus Ratione"
+                        },
+                        {
+                          "value": "33",
+                          "label": "Ea Dolorum"
+                        },
+                        {
+                          "value": "57",
+                          "label": "Ea Est"
+                        },
+                        {
+                          "value": "34",
+                          "label": "Ea Omnis"
+                        },
+                        {
+                          "value": "25",
+                          "label": "Eos Autem"
+                        },
+                        {
+                          "value": "36",
+                          "label": "Eos Eveniet"
+                        },
+                        {
+                          "value": "12",
+                          "label": "Eos Ut"
+                        },
+                        {
+                          "value": "5",
+                          "label": "Error Itaque"
+                        },
+                        {
+                          "value": "15",
+                          "label": "Est Reprehenderit"
+                        },
+                        {
+                          "value": "40",
+                          "label": "Et Autem"
+                        },
+                        {
+                          "value": "3",
+                          "label": "Et In"
+                        },
+                        {
+                          "value": "51",
+                          "label": "Et Omnis"
+                        },
+                        {
+                          "value": "61",
+                          "label": "Eum Vitae"
+                        },
+                        {
+                          "value": "32",
+                          "label": "Eveniet Voluptatem"
+                        },
+                        {
+                          "value": "62",
+                          "label": "Facilis Atque"
+                        },
+                        {
+                          "value": "39",
+                          "label": "Fugit Et"
+                        },
+                        {
+                          "value": "27",
+                          "label": "Harum Explicabo"
+                        },
+                        {
+                          "value": "42",
+                          "label": "Harum Occaecati"
+                        },
+                        {
+                          "value": "29",
+                          "label": "Illum Commodi"
+                        },
+                        {
+                          "value": "11",
+                          "label": "Illum Quaerat"
+                        },
+                        {
+                          "value": "26",
+                          "label": "Ipsa Aut"
+                        },
+                        {
+                          "value": "35",
+                          "label": "Iste Qui"
+                        },
+                        {
+                          "value": "30",
+                          "label": "Molestiae Sed"
+                        },
+                        {
+                          "value": "52",
+                          "label": "Molestiae Ut"
+                        },
+                        {
+                          "value": "20",
+                          "label": "Molestias Sint"
+                        },
+                        {
+                          "value": "6",
+                          "label": "Nemo Voluptatem"
+                        },
+                        {
+                          "value": "14",
+                          "label": "Nisi Vitae"
+                        },
+                        {
+                          "value": "56",
+                          "label": "Non Autem"
+                        },
+                        {
+                          "value": "63",
+                          "label": "Occaecati Earum"
+                        },
+                        {
+                          "value": "10",
+                          "label": "Porro Quasi"
+                        },
+                        {
+                          "value": "54",
+                          "label": "Provident Saepe"
+                        },
+                        {
+                          "value": "9",
+                          "label": "Quae Eos"
+                        },
+                        {
+                          "value": "31",
+                          "label": "Qui Ipsa"
+                        },
+                        {
+                          "value": "24",
+                          "label": "Qui Minima"
+                        },
+                        {
+                          "value": "28",
+                          "label": "Qui Odit"
+                        },
+                        {
+                          "value": "4",
+                          "label": "Quo Libero"
+                        },
+                        {
+                          "value": "64",
+                          "label": "Quod Ea"
+                        },
+                        {
+                          "value": "53",
+                          "label": "Ratione A"
+                        },
+                        {
+                          "value": "38",
+                          "label": "Ratione Ex"
+                        }
+                      ],
+                      "selectedLabels": [],
+                      "searchable": true,
+                      "selectablePlaceholder": true,
+                      "searchDebounce": 300,
+                      "name": "category_id",
+                      "statePath": "category_id"
+                    },
+                    {
+                      "type": "Select",
+                      "key": "tags",
+                      "label": "Tags",
+                      "options": [
+                        {
+                          "value": "8",
+                          "label": "amet"
+                        },
+                        {
+                          "value": "6",
+                          "label": "blanditiis"
+                        },
+                        {
+                          "value": "7",
+                          "label": "distinctio"
+                        },
+                        {
+                          "value": "5",
+                          "label": "et"
+                        },
+                        {
+                          "value": "2",
+                          "label": "inventore"
+                        },
+                        {
+                          "value": "1",
+                          "label": "nulla"
+                        },
+                        {
+                          "value": "9",
+                          "label": "placeat"
+                        },
+                        {
+                          "value": "12",
+                          "label": "provident"
+                        },
+                        {
+                          "value": "11",
+                          "label": "quo"
+                        },
+                        {
+                          "value": "3",
+                          "label": "sed"
+                        },
+                        {
+                          "value": "4",
+                          "label": "tempore"
+                        },
+                        {
+                          "value": "13",
+                          "label": "test"
+                        },
+                        {
+                          "value": "10",
+                          "label": "veniam"
+                        }
+                      ],
+                      "multiple": true,
+                      "selectablePlaceholder": true,
+                      "name": "tags",
+                      "statePath": "tags"
+                    }
+                  ],
+                  "heading": "Publishing"
+                },
+                {
+                  "type": "Section",
+                  "key": "group-1.section-1",
+                  "label": "Media",
+                  "columns": {
+                    "default": 1,
+                    "lg": 1
+                  },
+                  "columnSpan": {
+                    "default": "full"
+                  },
+                  "schema": [
+                    {
+                      "type": "FileUpload",
+                      "key": "cover_image",
+                      "label": "Cover image",
+                      "image": true,
+                      "acceptedFileTypes": ["image/*"],
+                      "maxFiles": 1,
+                      "previewable": true,
+                      "deletable": true,
+                      "panelLayout": "compact",
+                      "imagePreviewHeight": 160,
+                      "files": [],
+                      "name": "cover_image",
+                      "statePath": "cover_image"
+                    },
+                    {
+                      "type": "TextInput",
+                      "key": "rating",
+                      "label": "Rating",
+                      "inputType": "number",
+                      "min": 0,
+                      "max": 5,
+                      "step": 0.1,
+                      "name": "rating",
+                      "statePath": "rating"
+                    }
+                  ],
+                  "heading": "Media"
+                },
+                {
+                  "type": "Section",
+                  "key": "group-1.section-2",
+                  "label": "Sponsorship",
+                  "columns": {
+                    "default": 1,
+                    "lg": 1
+                  },
+                  "columnSpan": {
+                    "default": "full"
+                  },
+                  "schema": [
+                    {
+                      "type": "Select",
+                      "key": "currency",
+                      "label": "Currency",
+                      "options": [
+                        {
+                          "value": "AFN",
+                          "label": "Afghan Afghani (AFN)"
+                        },
+                        {
+                          "value": "ALL",
+                          "label": "Albanian Lek (ALL)"
+                        },
+                        {
+                          "value": "DZD",
+                          "label": "Algerian Dinar (DZD)"
+                        },
+                        {
+                          "value": "AOA",
+                          "label": "Angolan Kwanza (AOA)"
+                        },
+                        {
+                          "value": "ARS",
+                          "label": "Argentine Peso (ARS)"
+                        },
+                        {
+                          "value": "AMD",
+                          "label": "Armenian Dram (AMD)"
+                        },
+                        {
+                          "value": "AWG",
+                          "label": "Aruban Florin (AWG)"
+                        },
+                        {
+                          "value": "AUD",
+                          "label": "Australian Dollar (AUD)"
+                        },
+                        {
+                          "value": "AZN",
+                          "label": "Azerbaijani Manat (AZN)"
+                        },
+                        {
+                          "value": "BSD",
+                          "label": "Bahamian Dollar (BSD)"
+                        },
+                        {
+                          "value": "BHD",
+                          "label": "Bahraini Dinar (BHD)"
+                        },
+                        {
+                          "value": "BDT",
+                          "label": "Bangladeshi Taka (BDT)"
+                        },
+                        {
+                          "value": "BBD",
+                          "label": "Barbadian Dollar (BBD)"
+                        },
+                        {
+                          "value": "BYN",
+                          "label": "Belarusian Ruble (BYN)"
+                        },
+                        {
+                          "value": "BZD",
+                          "label": "Belize Dollar (BZD)"
+                        },
+                        {
+                          "value": "BMD",
+                          "label": "Bermudan Dollar (BMD)"
+                        },
+                        {
+                          "value": "BTN",
+                          "label": "Bhutanese Ngultrum (BTN)"
+                        },
+                        {
+                          "value": "BOB",
+                          "label": "Bolivian Boliviano (BOB)"
+                        },
+                        {
+                          "value": "BAM",
+                          "label": "Bosnia-Herzegovina Convertible Mark (BAM)"
+                        },
+                        {
+                          "value": "BWP",
+                          "label": "Botswanan Pula (BWP)"
+                        },
+                        {
+                          "value": "BRL",
+                          "label": "Brazilian Real (BRL)"
+                        },
+                        {
+                          "value": "GBP",
+                          "label": "British Pound (GBP)"
+                        },
+                        {
+                          "value": "BND",
+                          "label": "Brunei Dollar (BND)"
+                        },
+                        {
+                          "value": "BGN",
+                          "label": "Bulgarian Lev (BGN)"
+                        },
+                        {
+                          "value": "BIF",
+                          "label": "Burundian Franc (BIF)"
+                        },
+                        {
+                          "value": "KHR",
+                          "label": "Cambodian Riel (KHR)"
+                        },
+                        {
+                          "value": "CAD",
+                          "label": "Canadian Dollar (CAD)"
+                        },
+                        {
+                          "value": "CVE",
+                          "label": "Cape Verdean Escudo (CVE)"
+                        },
+                        {
+                          "value": "XCG",
+                          "label": "Caribbean guilder (XCG)"
+                        },
+                        {
+                          "value": "KYD",
+                          "label": "Cayman Islands Dollar (KYD)"
+                        },
+                        {
+                          "value": "XAF",
+                          "label": "Central African CFA Franc (XAF)"
+                        },
+                        {
+                          "value": "XPF",
+                          "label": "CFP Franc (XPF)"
+                        },
+                        {
+                          "value": "CLP",
+                          "label": "Chilean Peso (CLP)"
+                        },
+                        {
+                          "value": "CNY",
+                          "label": "Chinese Yuan (CNY)"
+                        },
+                        {
+                          "value": "COP",
+                          "label": "Colombian Peso (COP)"
+                        },
+                        {
+                          "value": "KMF",
+                          "label": "Comorian Franc (KMF)"
+                        },
+                        {
+                          "value": "CDF",
+                          "label": "Congolese Franc (CDF)"
+                        },
+                        {
+                          "value": "CRC",
+                          "label": "Costa Rican Colón (CRC)"
+                        },
+                        {
+                          "value": "CUP",
+                          "label": "Cuban Peso (CUP)"
+                        },
+                        {
+                          "value": "CZK",
+                          "label": "Czech Koruna (CZK)"
+                        },
+                        {
+                          "value": "DKK",
+                          "label": "Danish Krone (DKK)"
+                        },
+                        {
+                          "value": "DJF",
+                          "label": "Djiboutian Franc (DJF)"
+                        },
+                        {
+                          "value": "DOP",
+                          "label": "Dominican Peso (DOP)"
+                        },
+                        {
+                          "value": "XCD",
+                          "label": "East Caribbean Dollar (XCD)"
+                        },
+                        {
+                          "value": "EGP",
+                          "label": "Egyptian Pound (EGP)"
+                        },
+                        {
+                          "value": "ERN",
+                          "label": "Eritrean Nakfa (ERN)"
+                        },
+                        {
+                          "value": "ETB",
+                          "label": "Ethiopian Birr (ETB)"
+                        },
+                        {
+                          "value": "EUR",
+                          "label": "Euro (EUR)"
+                        },
+                        {
+                          "value": "FKP",
+                          "label": "Falkland Islands Pound (FKP)"
+                        },
+                        {
+                          "value": "FJD",
+                          "label": "Fijian Dollar (FJD)"
+                        },
+                        {
+                          "value": "GMD",
+                          "label": "Gambian Dalasi (GMD)"
+                        },
+                        {
+                          "value": "GEL",
+                          "label": "Georgian Lari (GEL)"
+                        },
+                        {
+                          "value": "GHS",
+                          "label": "Ghanaian Cedi (GHS)"
+                        },
+                        {
+                          "value": "GIP",
+                          "label": "Gibraltar Pound (GIP)"
+                        },
+                        {
+                          "value": "GTQ",
+                          "label": "Guatemalan Quetzal (GTQ)"
+                        },
+                        {
+                          "value": "GNF",
+                          "label": "Guinean Franc (GNF)"
+                        },
+                        {
+                          "value": "GYD",
+                          "label": "Guyanaese Dollar (GYD)"
+                        },
+                        {
+                          "value": "HTG",
+                          "label": "Haitian Gourde (HTG)"
+                        },
+                        {
+                          "value": "HNL",
+                          "label": "Honduran Lempira (HNL)"
+                        },
+                        {
+                          "value": "HKD",
+                          "label": "Hong Kong Dollar (HKD)"
+                        },
+                        {
+                          "value": "HUF",
+                          "label": "Hungarian Forint (HUF)"
+                        },
+                        {
+                          "value": "ISK",
+                          "label": "Icelandic Króna (ISK)"
+                        },
+                        {
+                          "value": "INR",
+                          "label": "Indian Rupee (INR)"
+                        },
+                        {
+                          "value": "IDR",
+                          "label": "Indonesian Rupiah (IDR)"
+                        },
+                        {
+                          "value": "IRR",
+                          "label": "Iranian Rial (IRR)"
+                        },
+                        {
+                          "value": "IQD",
+                          "label": "Iraqi Dinar (IQD)"
+                        },
+                        {
+                          "value": "ILS",
+                          "label": "Israeli New Shekel (ILS)"
+                        },
+                        {
+                          "value": "JMD",
+                          "label": "Jamaican Dollar (JMD)"
+                        },
+                        {
+                          "value": "JPY",
+                          "label": "Japanese Yen (JPY)"
+                        },
+                        {
+                          "value": "JOD",
+                          "label": "Jordanian Dinar (JOD)"
+                        },
+                        {
+                          "value": "KZT",
+                          "label": "Kazakhstani Tenge (KZT)"
+                        },
+                        {
+                          "value": "KES",
+                          "label": "Kenyan Shilling (KES)"
+                        },
+                        {
+                          "value": "KWD",
+                          "label": "Kuwaiti Dinar (KWD)"
+                        },
+                        {
+                          "value": "KGS",
+                          "label": "Kyrgystani Som (KGS)"
+                        },
+                        {
+                          "value": "LAK",
+                          "label": "Laotian Kip (LAK)"
+                        },
+                        {
+                          "value": "LBP",
+                          "label": "Lebanese Pound (LBP)"
+                        },
+                        {
+                          "value": "LSL",
+                          "label": "Lesotho Loti (LSL)"
+                        },
+                        {
+                          "value": "LRD",
+                          "label": "Liberian Dollar (LRD)"
+                        },
+                        {
+                          "value": "LYD",
+                          "label": "Libyan Dinar (LYD)"
+                        },
+                        {
+                          "value": "MOP",
+                          "label": "Macanese Pataca (MOP)"
+                        },
+                        {
+                          "value": "MKD",
+                          "label": "Macedonian Denar (MKD)"
+                        },
+                        {
+                          "value": "MGA",
+                          "label": "Malagasy Ariary (MGA)"
+                        },
+                        {
+                          "value": "MWK",
+                          "label": "Malawian Kwacha (MWK)"
+                        },
+                        {
+                          "value": "MYR",
+                          "label": "Malaysian Ringgit (MYR)"
+                        },
+                        {
+                          "value": "MVR",
+                          "label": "Maldivian Rufiyaa (MVR)"
+                        },
+                        {
+                          "value": "MRU",
+                          "label": "Mauritanian Ouguiya (MRU)"
+                        },
+                        {
+                          "value": "MUR",
+                          "label": "Mauritian Rupee (MUR)"
+                        },
+                        {
+                          "value": "MXN",
+                          "label": "Mexican Peso (MXN)"
+                        },
+                        {
+                          "value": "MDL",
+                          "label": "Moldovan Leu (MDL)"
+                        },
+                        {
+                          "value": "MNT",
+                          "label": "Mongolian Tugrik (MNT)"
+                        },
+                        {
+                          "value": "MAD",
+                          "label": "Moroccan Dirham (MAD)"
+                        },
+                        {
+                          "value": "MZN",
+                          "label": "Mozambican Metical (MZN)"
+                        },
+                        {
+                          "value": "MMK",
+                          "label": "Myanmar Kyat (MMK)"
+                        },
+                        {
+                          "value": "NAD",
+                          "label": "Namibian Dollar (NAD)"
+                        },
+                        {
+                          "value": "NPR",
+                          "label": "Nepalese Rupee (NPR)"
+                        },
+                        {
+                          "value": "TWD",
+                          "label": "New Taiwan Dollar (TWD)"
+                        },
+                        {
+                          "value": "NZD",
+                          "label": "New Zealand Dollar (NZD)"
+                        },
+                        {
+                          "value": "NIO",
+                          "label": "Nicaraguan Córdoba (NIO)"
+                        },
+                        {
+                          "value": "NGN",
+                          "label": "Nigerian Naira (NGN)"
+                        },
+                        {
+                          "value": "KPW",
+                          "label": "North Korean Won (KPW)"
+                        },
+                        {
+                          "value": "NOK",
+                          "label": "Norwegian Krone (NOK)"
+                        },
+                        {
+                          "value": "OMR",
+                          "label": "Omani Rial (OMR)"
+                        },
+                        {
+                          "value": "PKR",
+                          "label": "Pakistani Rupee (PKR)"
+                        },
+                        {
+                          "value": "PAB",
+                          "label": "Panamanian Balboa (PAB)"
+                        },
+                        {
+                          "value": "PGK",
+                          "label": "Papua New Guinean Kina (PGK)"
+                        },
+                        {
+                          "value": "PYG",
+                          "label": "Paraguayan Guarani (PYG)"
+                        },
+                        {
+                          "value": "PEN",
+                          "label": "Peruvian Sol (PEN)"
+                        },
+                        {
+                          "value": "PHP",
+                          "label": "Philippine Peso (PHP)"
+                        },
+                        {
+                          "value": "PLN",
+                          "label": "Polish Zloty (PLN)"
+                        },
+                        {
+                          "value": "QAR",
+                          "label": "Qatari Riyal (QAR)"
+                        },
+                        {
+                          "value": "RON",
+                          "label": "Romanian Leu (RON)"
+                        },
+                        {
+                          "value": "RUB",
+                          "label": "Russian Ruble (RUB)"
+                        },
+                        {
+                          "value": "RWF",
+                          "label": "Rwandan Franc (RWF)"
+                        },
+                        {
+                          "value": "WST",
+                          "label": "Samoan Tala (WST)"
+                        },
+                        {
+                          "value": "SAR",
+                          "label": "Saudi Riyal (SAR)"
+                        },
+                        {
+                          "value": "RSD",
+                          "label": "Serbian Dinar (RSD)"
+                        },
+                        {
+                          "value": "SCR",
+                          "label": "Seychellois Rupee (SCR)"
+                        },
+                        {
+                          "value": "SLE",
+                          "label": "Sierra Leonean Leone (SLE)"
+                        },
+                        {
+                          "value": "SGD",
+                          "label": "Singapore Dollar (SGD)"
+                        },
+                        {
+                          "value": "SBD",
+                          "label": "Solomon Islands Dollar (SBD)"
+                        },
+                        {
+                          "value": "SOS",
+                          "label": "Somali Shilling (SOS)"
+                        },
+                        {
+                          "value": "ZAR",
+                          "label": "South African Rand (ZAR)"
+                        },
+                        {
+                          "value": "KRW",
+                          "label": "South Korean Won (KRW)"
+                        },
+                        {
+                          "value": "SSP",
+                          "label": "South Sudanese Pound (SSP)"
+                        },
+                        {
+                          "value": "LKR",
+                          "label": "Sri Lankan Rupee (LKR)"
+                        },
+                        {
+                          "value": "SHP",
+                          "label": "St. Helena Pound (SHP)"
+                        },
+                        {
+                          "value": "SDG",
+                          "label": "Sudanese Pound (SDG)"
+                        },
+                        {
+                          "value": "SRD",
+                          "label": "Surinamese Dollar (SRD)"
+                        },
+                        {
+                          "value": "SZL",
+                          "label": "Swazi Lilangeni (SZL)"
+                        },
+                        {
+                          "value": "SEK",
+                          "label": "Swedish Krona (SEK)"
+                        },
+                        {
+                          "value": "CHF",
+                          "label": "Swiss Franc (CHF)"
+                        },
+                        {
+                          "value": "SYP",
+                          "label": "Syrian Pound (SYP)"
+                        },
+                        {
+                          "value": "STN",
+                          "label": "São Tomé & Príncipe Dobra (STN)"
+                        },
+                        {
+                          "value": "TJS",
+                          "label": "Tajikistani Somoni (TJS)"
+                        },
+                        {
+                          "value": "TZS",
+                          "label": "Tanzanian Shilling (TZS)"
+                        },
+                        {
+                          "value": "THB",
+                          "label": "Thai Baht (THB)"
+                        },
+                        {
+                          "value": "TOP",
+                          "label": "Tongan Paʻanga (TOP)"
+                        },
+                        {
+                          "value": "TTD",
+                          "label": "Trinidad & Tobago Dollar (TTD)"
+                        },
+                        {
+                          "value": "TND",
+                          "label": "Tunisian Dinar (TND)"
+                        },
+                        {
+                          "value": "TRY",
+                          "label": "Turkish Lira (TRY)"
+                        },
+                        {
+                          "value": "TMT",
+                          "label": "Turkmenistani Manat (TMT)"
+                        },
+                        {
+                          "value": "UGX",
+                          "label": "Ugandan Shilling (UGX)"
+                        },
+                        {
+                          "value": "UAH",
+                          "label": "Ukrainian Hryvnia (UAH)"
+                        },
+                        {
+                          "value": "AED",
+                          "label": "United Arab Emirates Dirham (AED)"
+                        },
+                        {
+                          "value": "UYU",
+                          "label": "Uruguayan Peso (UYU)"
+                        },
+                        {
+                          "value": "USD",
+                          "label": "US Dollar (USD)"
+                        },
+                        {
+                          "value": "UZS",
+                          "label": "Uzbekistani Som (UZS)"
+                        },
+                        {
+                          "value": "VUV",
+                          "label": "Vanuatu Vatu (VUV)"
+                        },
+                        {
+                          "value": "VES",
+                          "label": "Venezuelan Bolívar (VES)"
+                        },
+                        {
+                          "value": "VND",
+                          "label": "Vietnamese Dong (VND)"
+                        },
+                        {
+                          "value": "XOF",
+                          "label": "West African CFA Franc (XOF)"
+                        },
+                        {
+                          "value": "YER",
+                          "label": "Yemeni Rial (YER)"
+                        },
+                        {
+                          "value": "ZMW",
+                          "label": "Zambian Kwacha (ZMW)"
+                        },
+                        {
+                          "value": "ZWG",
+                          "label": "Zimbabwean Gold (ZWG)"
+                        }
+                      ],
+                      "selectedLabels": {
+                        "USD": "US Dollar (USD)"
+                      },
+                      "searchable": true,
+                      "selectablePlaceholder": true,
+                      "searchDebounce": 300,
+                      "name": "currency",
+                      "statePath": "currency",
+                      "required": true,
+                      "live": {
+                        "onBlur": false,
+                        "debounce": null
+                      }
+                    },
+                    {
+                      "type": "MoneyInput",
+                      "key": "sponsorship_fee",
+                      "label": "Sponsorship fee",
+                      "currency": "USD",
+                      "decimals": 2,
+                      "min": 0,
+                      "name": "sponsorship_fee",
+                      "statePath": "sponsorship_fee"
+                    }
+                  ],
+                  "heading": "Sponsorship"
+                }
+              ]
+            }
+          ],
+          "state": {
+            "title": null,
+            "slug": null,
+            "excerpt": null,
+            "content": null,
+            "meta": [],
+            "status": null,
+            "is_featured": false,
+            "published_at": null,
+            "author_id": null,
+            "category_id": null,
+            "tags": [],
+            "cover_image": [],
+            "rating": null,
+            "currency": "USD",
+            "sponsorship_fee": null
+          },
+          "columns": {
+            "default": 1,
+            "lg": 3
+          },
+          "actions": [
+            {
+              "type": "Action",
+              "name": "create",
+              "label": "Create",
+              "color": "primary",
+              "variant": "button",
+              "hasModal": true,
+              "hasAction": true,
+              "keyBindings": ["mod+s"]
+            },
+            {
+              "type": "Action",
+              "name": "createAnother",
+              "label": "Create & create another",
+              "color": "gray",
+              "variant": "button",
+              "outlined": true,
+              "hasModal": true,
+              "hasAction": true,
+              "keyBindings": ["mod+shift+s"]
+            },
+            {
+              "type": "Action",
+              "name": "cancel",
+              "label": "Cancel",
+              "color": "gray",
+              "variant": "button",
+              "url": "http://localhost/admin/posts"
+            }
+          ],
+          "operation": "create"
+        }
+      ],
+      "token": "test-token"
+    }
+  },
+  "url": "/admin/posts/create",
+  "version": null,
+  "sharedProps": ["errors", "name", "auth", "sidebarOpen", "alfakit", "alfakitAppearance"]
+}

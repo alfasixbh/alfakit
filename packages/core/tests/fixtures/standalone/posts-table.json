@@ -1,0 +1,319 @@
+{
+  "alfakit": "standalone",
+  "class": "AlfaSix\\Alfakit\\Tests\\Fixtures\\Standalone\\PostsTable",
+  "content": [
+    {
+      "key": "table",
+      "component": "table",
+      "type": "Table",
+      "modelLabel": "post",
+      "pluralModelLabel": "posts",
+      "columns": [
+        {
+          "type": "TextColumn",
+          "name": "title",
+          "label": "Title",
+          "sortable": true
+        },
+        {
+          "type": "TextColumn",
+          "name": "status",
+          "label": "Status"
+        }
+      ],
+      "visibleColumns": ["title", "status"],
+      "filtersLayout": "dropdown",
+      "bulkActions": [
+        {
+          "type": "Action",
+          "name": "archive",
+          "label": "Archive",
+          "hasAction": true
+        }
+      ],
+      "recordActionsPosition": "after-columns",
+      "records": [
+        {
+          "key": 2,
+          "selectable": true,
+          "cells": {
+            "title": {
+              "state": "Bravo"
+            },
+            "status": {
+              "state": "published"
+            }
+          },
+          "actions": [
+            {
+              "type": "Action",
+              "name": "publish",
+              "label": "Publish",
+              "hasAction": true,
+              "record": 2
+            }
+          ]
+        },
+        {
+          "key": 1,
+          "selectable": true,
+          "cells": {
+            "title": {
+              "state": "Alpha"
+            },
+            "status": {
+              "state": "draft"
+            }
+          },
+          "actions": [
+            {
+              "type": "Action",
+              "name": "publish",
+              "label": "Publish",
+              "hasAction": true,
+              "record": 1
+            }
+          ]
+        }
+      ],
+      "pagination": {
+        "currentPage": 1,
+        "lastPage": 1,
+        "perPage": 10,
+        "total": 2,
+        "from": 1,
+        "to": 2,
+        "pageOptions": [10, 25, 50, 100]
+      },
+      "searchable": true,
+      "searchPlaceholder": "Search",
+      "searchDebounce": 500,
+      "selectable": true,
+      "emptyState": {
+        "heading": "No posts",
+        "description": null,
+        "icon": "inbox",
+        "actions": null
+      }
+    }
+  ],
+  "token": "test-token-posts-table",
+  "endpoints": {
+    "action": "http://localhost/_alfakit/actions",
+    "modal": "http://localhost/_alfakit/actions/modal",
+    "schemaRefresh": "http://localhost/_alfakit/schema/refresh",
+    "schemaOptions": "http://localhost/_alfakit/schema/options",
+    "tableCell": "http://localhost/_alfakit/table/cell",
+    "tableReorder": "http://localhost/_alfakit/table/reorder",
+    "tableColumns": "http://localhost/_alfakit/table/columns",
+    "upload": "http://localhost/_alfakit/uploads",
+    "uploadDestroy": "http://localhost/_alfakit/uploads",
+    "components": "http://localhost/_alfakit/standalone/components"
+  },
+  "localization": {
+    "code": "en",
+    "tag": "en",
+    "label": "English",
+    "direction": "ltr",
+    "fallbackLocale": "en",
+    "firstDayOfWeek": 0,
+    "currency": "USD",
+    "timezone": "UTC",
+    "switcher": false,
+    "locales": []
+  },
+  "translations": {
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "save": "Save",
+    "submit": "Submit",
+    "search": "Search",
+    "loading": "Loading\u2026",
+    "no_results": "No results.",
+    "select_option": "Select an option",
+    "clear": "Clear",
+    "remove": "Remove",
+    "add": "Add",
+    "copy": "Copy",
+    "copied": "Copied",
+    "toggle_sidebar": "Toggle sidebar",
+    "toggle_theme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "logout": "Sign out",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "clear_notifications": "Clear notifications",
+    "no_notifications": "You have no notifications.",
+    "unsaved_changes": "You have unsaved changes. Leave anyway?",
+    "language": "Language",
+    "navigation": "Navigation",
+    "more": "More",
+    "sidebar": "Sidebar",
+    "open": "Open",
+    "download": "Download",
+    "toggle": "Toggle",
+    "toggle_section": "Toggle section",
+    "steps": "Steps",
+    "pagination": "Pagination",
+    "mark_as_read": "Mark as read",
+    "mobile_sidebar": "Displays the mobile sidebar.",
+    "chart": "Chart",
+    "command_palette": "Command palette",
+    "command_palette_description": "Search for a command to run\u2026",
+    "load_more": "Load more",
+    "widget_not_registered": "Widget component :component is not registered.",
+    "component_not_registered": "Component :component is not registered.",
+    "opens_in_new_tab": "(opens in a new tab)",
+    "chart_filter": "Chart filter",
+    "table": {
+      "filters": "Filters",
+      "reset_filters": "Reset",
+      "columns": "Columns",
+      "per_page": "Per page",
+      "showing": "Showing :first\u2013:last of :total",
+      "selected": ":count selected",
+      "select_all": "Select all",
+      "deselect_all": "Deselect all",
+      "bulk_actions": "Bulk actions",
+      "empty": "No records found.",
+      "previous": "Previous",
+      "next": "Next",
+      "all": "All",
+      "select_page": "Select page",
+      "select_row": "Select row",
+      "remove_filter": "Remove filter",
+      "reorder_start": "Reorder",
+      "reorder_stop": "Done",
+      "row_moved": "Row moved to position :position of :total",
+      "reorder_failed": "Couldn't save the new order",
+      "showing_range": "Showing :first\u2013:last",
+      "move_column_up": "Move :column up",
+      "move_column_down": "Move :column down",
+      "reset_column_order": "Reset column order",
+      "column_order_failed": "Couldn't save the column order",
+      "show_details": "Show details",
+      "hide_details": "Hide details",
+      "sort_by": "Sort by",
+      "sort_ascending": "Ascending",
+      "sort_descending": "Descending",
+      "loading_more": "Loading more\u2026"
+    },
+    "form": {
+      "required": "Required",
+      "drop_files": "Drop files here or click to browse",
+      "uploading": "Uploading\u2026",
+      "add_row": "Add row",
+      "add_item": "Add item",
+      "remove_item": "Remove",
+      "move_up": "Move up",
+      "move_down": "Move down",
+      "search_placeholder": "Type to search\u2026",
+      "next_step": "Next",
+      "previous_step": "Back",
+      "file_too_large": "This file is too large.",
+      "file_too_small": "This file is too small.",
+      "min_files": "At least :count file|At least :count files",
+      "clone": "Clone",
+      "remove_row": "Remove row",
+      "pick_color": "Pick a colour",
+      "link_prompt": "Link URL",
+      "pick_date": "Pick a date",
+      "show_password": "Show password",
+      "hide_password": "Hide password",
+      "tag_moved": ":tag moved to position :position of :total",
+      "reorder_tags_hint": "Press Alt with an arrow key to move this tag.",
+      "remove_tag": "Remove :tag"
+    },
+    "editor": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "strike": "Strikethrough",
+      "link": "Link",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "heading": "Heading",
+      "blockquote": "Quote",
+      "code_block": "Code block",
+      "bullet_list": "Bullet list",
+      "ordered_list": "Numbered list",
+      "divider": "Divider",
+      "image": "Insert image",
+      "undo": "Undo",
+      "redo": "Redo",
+      "custom_blocks": "Insert block",
+      "merge_tags": "Insert merge tag",
+      "edit_block": "Edit block",
+      "remove_block": "Remove block",
+      "suggestions": "Suggestions"
+    },
+    "tenancy": {
+      "switch": "Switch",
+      "register": "New",
+      "profile": "Settings"
+    },
+    "builder": {
+      "pick_block": "Choose a block",
+      "empty": "No blocks yet."
+    },
+    "slider": {
+      "thumb": "Value :number",
+      "minimum": "Minimum",
+      "maximum": "Maximum"
+    },
+    "code_editor": {
+      "tab_hint": "Tab indents. Press Escape, then Tab, to leave the editor."
+    },
+    "table_select": {
+      "change": "Change",
+      "clear": "Clear selection",
+      "remove": "Remove :label",
+      "confirm": "Select",
+      "none": "Nothing selected",
+      "load_failed": "Couldn't load the records.",
+      "select_record": "Select :label",
+      "max_reached": "You can select up to :count record.|You can select up to :count records."
+    },
+    "confirm_password": "Confirm your password to continue",
+    "current_password": "Current password",
+    "sub_navigation": "Page navigation",
+    "table_grouping": {
+      "group_by": "Group by",
+      "none": "No grouping",
+      "direction": "Group direction",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "collapse": "Collapse group",
+      "expand": "Expand group"
+    },
+    "table_filters": {
+      "apply": "Apply",
+      "cancel": "Cancel"
+    },
+    "query_builder": {
+      "add_rule": "Add rule",
+      "add_group": "Add group",
+      "remove_rule": "Remove rule",
+      "remove_group": "Remove group",
+      "and": "and",
+      "or": "or",
+      "combinator": "Combine rules with",
+      "constraint": "Field",
+      "operator": "Operator",
+      "value": "Value",
+      "empty": "No rules yet.",
+      "select_placeholder": "Select\u2026"
+    },
+    "translatable": {
+      "languages": "Translations of :field",
+      "has_errors": "has errors"
+    }
+  },
+  "csrf": "csrf",
+  "flashKey": "alfakitNotifications"
+}

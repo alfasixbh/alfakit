@@ -1,0 +1,11 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.3/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "alfasix/alfakit" }],
+  "commit": false,
+  "fixed": [["@alfakit/core", "@alfakit/react", "@alfakit/vue", "@alfakit/svelte"]],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["alfakit-monorepo", "@alfakit/playground-*", "@alfakit/docs"]
+}

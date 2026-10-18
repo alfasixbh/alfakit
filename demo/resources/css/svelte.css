@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@alfakit/svelte/styles.css';
+@import './storefront.css';
+
+/*
+ * Scan AlfaKit's compiled components, the svelte entry (panel and storefront pages), the PHP
+ * that passes classes (extraAttributes, recordClasses, …) and the Blade slot views.
+ */
+@source '../../node_modules/@alfakit/svelte/dist';
+@source '../js/svelte';
+@source '../js/shared';
+@source '../../app/**/*.php';
+@source '../views/demo';
+@source '../views/storefront';

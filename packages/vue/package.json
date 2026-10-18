@@ -1,0 +1,127 @@
+{
+  "name": "@alfakit/vue",
+  "version": "0.1.0",
+  "description": "Vue 3 + shadcn-vue renderer for Alfakit, the Laravel admin panel builder by Alfa Six.",
+  "license": "MIT",
+  "author": "Alfa Six (https://alfasixbh.com)",
+  "homepage": "https://alfakit.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alfasixbh/alfakit",
+    "directory": "packages/vue"
+  },
+  "bugs": "https://github.com/alfasixbh/alfakit/issues",
+  "keywords": [
+    "laravel",
+    "inertia",
+    "vue",
+    "shadcn-vue",
+    "admin",
+    "panel",
+    "alfakit"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./starter-kit": {
+      "types": "./dist/starter-kit/index.d.ts",
+      "import": "./dist/starter-kit/index.js"
+    },
+    "./kanban": {
+      "types": "./dist/components/kanban/index.d.ts",
+      "import": "./dist/components/kanban/index.js"
+    },
+    "./cms": {
+      "types": "./dist/components/cms/index.d.ts",
+      "import": "./dist/components/cms/index.js"
+    },
+    "./translation-manager": {
+      "types": "./dist/components/translation-manager/index.d.ts",
+      "import": "./dist/components/translation-manager/index.js"
+    },
+    "./ai": {
+      "types": "./dist/components/ai/index.d.ts",
+      "import": "./dist/components/ai/index.js"
+    },
+    "./tree": {
+      "types": "./dist/components/tree/index.d.ts",
+      "import": "./dist/components/tree/index.js"
+    },
+    "./realtime": {
+      "types": "./dist/components/realtime/index.d.ts",
+      "import": "./dist/components/realtime/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./standalone.css": "./dist/standalone.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json && cp src/styles.css dist/styles.css && cp ../core/themes.css dist/themes.css && cp ../core/standalone.css dist/standalone.css && node ../../scripts/eject-manifest.mjs .",
+    "dev": "vite build --watch",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@alfakit/core": "workspace:*",
+    "@fullcalendar/core": "^6.1.21",
+    "@fullcalendar/daygrid": "^6.1.21",
+    "@fullcalendar/interaction": "^6.1.21",
+    "@fullcalendar/list": "^6.1.21",
+    "@fullcalendar/timegrid": "^6.1.21",
+    "@internationalized/date": "^3.12.4",
+    "@lucide/vue": "^1.17.0",
+    "@tiptap/extension-image": "^3.31.4",
+    "@tiptap/extension-link": "^3.31.4",
+    "@tiptap/extension-placeholder": "^3.31.4",
+    "@tiptap/extension-table": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
+    "@tiptap/vue-3": "^3.31.4",
+    "@vueuse/core": "^12.8.2",
+    "chart.js": "^4.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "reka-ui": "^2.11.0",
+    "tailwind-merge": "^3.7.0",
+    "vue-sonner": "^2.0.9"
+  },
+  "peerDependencies": {
+    "@inertiajs/vue3": "^3.0.0",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@inertiajs/vue3": "^3.8.0",
+    "@types/node": "^22.20.5",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vue/test-utils": "^2.5.1",
+    "jsdom": "^30.1.2",
+    "typescript": "^5.9.0",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3",
+    "vue": "^3.5.43",
+    "vue-tsc": "^2.2.4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

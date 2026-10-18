@@ -1,0 +1,54 @@
+---
+title: Coming from Filament
+description: What maps one to one, what differs because AlfaKit renders through Inertia, and how to migrate.
+---
+
+# Coming from Filament
+
+AlfaKit's PHP API is inspired by [Filament](https://filamentphp.com), and most of what you know carries over: resources, panels, schemas, tables, actions and their fluent methods map one to one in most cases. The differences come from the architecture: AlfaKit renders through Inertia with React, Vue or Svelte instead of Livewire and Blade.
+
+A thank-you first. Filament showed the Laravel community how good an admin panel builder can be, and AlfaKit would not look the way it does without it. Thank you to Dan Harrin, the Filament team and every contributor for their work. If your application is built on Livewire and Blade, Filament is a great choice and the natural place to start.
+
+Have an existing Filament app? `php artisan alfakit:migrate-from-filament` rewrites it and writes a report of everything that needs a decision, line by line: see [Migrating from Filament](migrating-from-filament). The report is the most precise answer to "is this supported?", because it checks your actual code against the current release.
+
+## Same
+
+- `Resource`, `Panel`, `PanelProvider`, `Page`, `Widget`, `RelationManager` classes and most of their static properties (`$model`, `$navigationIcon`, `$navigationGroup`, …).
+- `Schema` components: `TextInput`, `Select`, `Repeater`, `Section`, `Tabs`, `Wizard`, … with the same fluent methods (`required()`, `live()`, `afterStateUpdated()`, `relationship()`, `columnSpanFull()`).
+- `Table` with `columns()`, `filters()`, `recordActions()`, `bulkActions()`, `defaultSort()`.
+- Table column layouts (`Split`, `Stack`, `Panel`, `Grid`, `contentGrid()`), `ColumnGroup`, `reorderableColumns()`, `paginationMode(PaginationMode::…)` (including load more and infinite scroll), relationship aggregates (`counts()`, `exists()`, `avg()`, `sum()`, `min()`, `max()`), `records()` for non-Eloquent data, `RecordActionsPosition`, `ViewColumn` and `ViewEntry`.
+- Table summaries (`summarize()` with `Sum`, `Average`, `Count`, `Range` and custom `Summarizer`), row grouping (`groups()`, `Group::make()`, `defaultGroup()`, `groupsOnly()`, collapsible and date groups), the `QueryBuilder` filter with text, number, date, boolean, select and relationship constraints, `deferFilters()`, `FiltersLayout::Modal` and `persistFiltersInSession()` / `persistSearchInSession()` / `persistSortInSession()`.
+- `Action` with `form()`, `requiresConfirmation()`, `modalHeading()`, `before()`/`after()`, `halt()`/`cancel()`, and the prebuilt `CreateAction`, `EditAction`, `DeleteAction`, `RestoreAction`, `ForceDeleteAction`, `ReplicateAction`, `AttachAction`, `DetachAction`, `AssociateAction`, `DissociateAction` plus bulk variants.
+- Imports and exports: `ImportAction` with an `Importer` and `ImportColumn`s (`requiredMapping()`, `rules()`, `guess()`, `relationship()`, `resolveRecord()`, lifecycle hooks), `ExportAction` / `ExportBulkAction` with an `Exporter` and `ExportColumn`s, `make:alfakit-importer` / `make:alfakit-exporter`, the `Import`, `Export` and `FailedImportRow` models; CSV and XLSX downloads come from signed links in a database notification ([Import & export](../actions/import-export)).
+- Action wizards (`steps()`, `skippableSteps()`), nested modal actions (`extraModalFooterActions()`, `registerModalActions()`, `cancelParentActions()`), `rateLimit()`, `requiresPasswordConfirmation()`, `authorizeIndividualRecords()`, `chunkSelectedRecords()`, `DetachBulkAction` and `DissociateBulkAction`.
+- List page tabs (`getTabs()` with `Tab::make()->modifyQueryUsing()->badge()->icon()`, `?activeTab=`), nested resources (`$parentResource`, `asParent()->relationship()->inverseRelationship()`), `ManageRelatedRecords` pages, `RelationGroup`, and `getGlobalSearchResultActions()` (URL actions). Singular resources use `ManageSingularRecord` (no Filament equivalent).
+- `Notification::make()->title()->success()->send()` and `sendToDatabase()`.
+- Clusters (`$cluster`, `make:alfakit-cluster`), record sub-navigation (`getRecordSubNavigation()`, `generateNavigationItems()`, `SubNavigationPosition`), and the panel options `collapsibleNavigationGroups()`, `sidebarWidth()`, `collapsedSidebarWidth()`, `simplePageMaxContentWidth()`, `spaUrlExceptions()`, `databaseTransactions()`, `strictAuthorization()`, `errorNotifications()` and `registerErrorNotification()`.
+- Resources without a model (no Filament equivalent; Filament users reach for Sushi): `ApiResource` with a `DataSource` or `HttpDataSource`, the `ListApiRecords` / `CreateApiRecord` / `EditApiRecord` / `ViewApiRecord` pages, `ApiRelationManager` and `make:alfakit-api-resource` ([API resources](../resources/api-resources)).
+- Form fields `Builder` (with `Block`), `ToggleButtons`, `Slider`, `CodeEditor` (with the `Language` enum) and `ModalTableSelect` (with `tableConfiguration()`), using the same state shapes (`[{type, data}]` for builders).
+- Layout components `Flex` (and `Split`), `Callout`, `EmptyState`, `Icon`, `Image`, `UnorderedList`, and container-query columns (`columns(['@md' => 2])`).
+- Field and entry actions (`prefixAction(s)()`, `suffixAction(s)()`, `hintAction(s)()`), Select `createOptionForm()` / `editOptionForm()` (with `createOptionUsing()`, `updateOptionUsing()`, `createOptionAction()`, `editOptionAction()`), `relationship()` on `Group` / `Fieldset` / `Section` (HasOne, MorphOne, BelongsTo, with `condition` and the `mutateRelationshipData…Using()` hooks), Repeater and RepeatableEntry `table([TableColumn::make(...)])`, and RichEditor `json()`, `customBlocks()` (`RichContentCustomBlock`), `mentions()` (`MentionProvider`), `mergeTags()` and `RichContentRenderer`. Live refreshes answer with only the changed components ([Reactivity](../forms/reactivity#partial-refreshes)).
+- Multi-factor authentication (`multiFactorAuthentication([AppAuthentication::make()->recoverable(), EmailAuthentication::make()], isRequired: true)`, the `HasAppAuthentication`, `HasAppAuthenticationRecovery` and `HasEmailAuthentication` contracts), `emailChangeVerification()`, `tenantDomain('{tenant:slug}.example.com')`, `tenantBillingProvider()` with `requiresTenantSubscription()`, dashboard filters (`HasFiltersForm`, `filtersForm()`, `InteractsWithPageFilters` and `$this->pageFilters`) and several `Dashboard` pages per panel.
+- Test helpers in the style of Filament's Livewire helpers: `alfakit()->testPage(EditPost::class, ['record' => $post])->fillForm([...])->call('save')->assertHasNoFormErrors()`, `callAction()`, `mountAction()`, `callTableAction()`, `callTableBulkAction()`, `searchTable()`, `sortTable()`, `filterTable()`, `assertCanSeeTableRecords()`, `assertFormSet()`, `assertActionVisible()`/`Hidden()`, `assertNotified()` ([Testing](../advanced/testing)).
+- Generators `make:alfakit-theme`, `make:alfakit-field`, `make:alfakit-column`, `make:alfakit-entry` (each with a component for your renderer) and `make:alfakit-plugin`, plus `alfakit:upgrade` and `alfakit:assets`; plugin assets with `Assets::register([Css::make(...), Js::make(...)], package: 'vendor/name')` ([Plugins](../panels/plugins#stylesheets-and-scripts)).
+- Translatable fields: `TextInput`, `Textarea` and `RichEditor` take `->translatable()` (no plugin needed, compatible with spatie/laravel-translatable's `HasTranslations`) instead of Filament's spatie-translatable plugin and its `LocaleSwitcher` ([Translatable content](../localization/translatable-content)).
+- Closure injection: `$record`, `$state`, `$get`, `$set`, `$operation`, `$data`, `$arguments`, `$action`, `$component`, type-hinted dependencies.
+
+## Different because of Inertia
+
+- **Rendering.** Filament renders Blade with Livewire and Alpine. AlfaKit sends the page schema to the Inertia page `Alfakit/Page`, rendered by `@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte`.
+- **Icons.** Filament uses Blade icon components (`heroicon-o-users`) and `FilamentIcon::register()` aliases. AlfaKit uses Lucide names (`users`); `Icons::register(['alfakit::actions.delete' => 'trash'])` aliases are resolved on the server, and a `panel:icon` component swaps the set ([Icons](../design/icons)).
+- **Colours.** Filament uses Tailwind palettes (`Color::Amber`). AlfaKit uses semantic tokens (`primary`, `success`, `warning`, `danger`, `info`, `gray`) mapped to shadcn CSS variables; `->colors(['primary' => '#2563eb'])` accepts any CSS colour.
+- **Custom views.** Where Filament takes `->view('…')` Blade views, AlfaKit uses `View::make('component-name')`, `ViewColumn::make()->view('…')` and `ViewEntry::make()->view('…')` with a frontend component registered in `createAlfakit({ components })`; custom pages set `static::$component`.
+- **Render hooks** become slots: `->slot(Slot::TOPBAR_END, …)` with HTML, Blade views or schema components, optionally scoped to pages ([Slots](../design/slots)).
+- **Reactive fields.** Instead of a Livewire round trip, a `live()` field posts the form state to the schema refresh endpoint, which re-evaluates the form on the server; the response contains only the components that changed and the renderer merges it ([Reactivity](../forms/reactivity#partial-refreshes)).
+- **Interactions.** Sorting, searching and paging are Inertia partial reloads that return the table records as JSON. Measurements, with the full test setup, are on the [Performance](performance) page.
+- **Modals.** The modal schema is fetched from the modal endpoint when the button is clicked.
+- **Impersonation** is built in: `ImpersonateAction`, `CanImpersonate` / `CanBeImpersonated` and an optional `impersonate` policy ability ([Impersonation](../panels/impersonation)).
+- **Live toasts.** `Notification::broadcast()` and `sendToDatabase(..., isEventDispatched: true)` after `->realtimeNotifications()`; the renderers use `window.Echo` when it exists ([Notifications](../notifications/overview)).
+- **Testing.** `alfakit()->testPage()` helpers keep the names of Filament's Livewire helpers and drive the page through Inertia HTTP requests to the page and the internal endpoints ([Testing](../advanced/testing)).
+- **Outside panels.** Instead of Livewire components with `InteractsWithForms`, `InteractsWithTable` and `InteractsWithActions`, pass `Standalone\Form`, `Table`, `Infolist`, `Widgets` and `Component` classes to any Inertia page as props and render them with `<AlfakitComponent>`; a hidden `standalone` panel serves them ([Outside panels](../standalone/overview)).
+
+## Plugins and gaps
+
+Filament plugins are Livewire and Blade code, so they do not run in AlfaKit; the [plugin API](../panels/plugins) and the [plugin directory](/plugins) are the place to look for equivalents. AlfaKit is still growing, and coverage of Filament's API keeps expanding; for a specific application, run `php artisan alfakit:migrate-from-filament --dry-run` and read its report rather than relying on a list here.

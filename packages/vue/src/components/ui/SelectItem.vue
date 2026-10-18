@@ -1,0 +1,40 @@
+<script setup lang="ts">
+import { CheckIcon } from '@lucide/vue'
+import { reactiveOmit } from '@vueuse/core'
+import {
+  SelectItem,
+  SelectItemIndicator,
+  SelectItemText,
+  useForwardPropsEmits,
+  type SelectItemEmits,
+  type SelectItemProps,
+} from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+import { cn } from '../../lib/utils'
+
+const props = defineProps<SelectItemProps & { class?: HTMLAttributes['class'] }>()
+const emits = defineEmits<SelectItemEmits>()
+const forwarded = useForwardPropsEmits(reactiveOmit(props, 'class'), emits)
+</script>
+
+<template>
+  <SelectItem
+    v-bind="forwarded"
+    data-slot="select-item"
+    :class="
+      cn(
+        'focus:bg-accent focus:text-accent-foreground [&_svg:not([class*=\'text-\'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=\'size-\'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2',
+        props.class,
+      )
+    "
+  >
+    <span class="absolute end-2 flex size-3.5 items-center justify-center">
+      <SelectItemIndicator>
+        <CheckIcon class="size-4" />
+      </SelectItemIndicator>
+    </span>
+    <SelectItemText>
+      <slot />
+    </SelectItemText>
+  </SelectItem>
+</template>

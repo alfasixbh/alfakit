@@ -1,0 +1,11 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[php]": { "editor.defaultFormatter": "open-southeners.laravel-pint" },
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "tailwindCSS.experimental.configFile": {
+    "packages/react/src/styles.css": "packages/react/src/**",
+    "packages/vue/src/styles.css": "packages/vue/src/**",
+    "packages/svelte/src/styles.css": "packages/svelte/src/**"
+  }
+}

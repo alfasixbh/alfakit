@@ -1,0 +1,5 @@
+export { default as AlfakitPage } from './AlfakitPage.vue'
+export { default as ContentBlockRenderer } from './ContentBlockRenderer.vue'
+export { default as PageContent } from './PageContent.vue'
+export { default as PageHeader } from './PageHeader.vue'
+export { default as PageShell } from './PageShell.vue'

@@ -1,0 +1,26 @@
+<script setup lang="ts">
+import {
+  ScrollAreaCorner,
+  ScrollAreaRoot,
+  ScrollAreaViewport,
+  type ScrollAreaRootProps,
+} from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+import { cn } from '../../lib/utils'
+import ScrollBar from './ScrollBar.vue'
+
+const props = defineProps<ScrollAreaRootProps & { class?: HTMLAttributes['class'] }>()
+</script>
+
+<template>
+  <ScrollAreaRoot data-slot="scroll-area" :type="props.type" :class="cn('relative', props.class)">
+    <ScrollAreaViewport
+      data-slot="scroll-area-viewport"
+      class="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1"
+    >
+      <slot />
+    </ScrollAreaViewport>
+    <ScrollBar />
+    <ScrollAreaCorner />
+  </ScrollAreaRoot>
+</template>

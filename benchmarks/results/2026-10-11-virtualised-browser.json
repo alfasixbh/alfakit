@@ -1,0 +1,49 @@
+{
+    "date": "2026-10-11",
+    "label": "virtualised-browser",
+    "method": "Hand-driven samples in Chrome 154 (Claude in Chrome extension) on the same machine as the harness run, right after it, same production builds and .env. Each sample is a full navigation; values are from performance.getEntriesByType('navigation')[0] (ms since navigation start), document.getElementsByTagName('*').length and performance.memory.usedJSHeapSize (bytes) read 2-4 s after navigation, after a screenshot forced layout. The tab was occluded (document.visibilityState === 'hidden') for every sample, so Chromium deferred first paint and no paint or largest-contentful-paint entries were produced: FCP and LCP are NOT in this file. JS heap is noisy: the same tab was reused and the heap grows across navigations until a GC; min is the most useful figure.",
+    "samples": {
+        "alfakit_ssr_on_list_25": [
+            { "ttfb": 223, "responseEnd": 244, "domInteractive": 251, "domContentLoaded": 278, "load": 346, "nodes": 2253 },
+            { "ttfb": 201, "responseEnd": 209, "domInteractive": 221, "domContentLoaded": 227, "load": 286, "nodes": 2253 },
+            { "ttfb": 206, "responseEnd": 212, "domInteractive": 223, "domContentLoaded": 231, "load": 290, "nodes": 2253 },
+            { "ttfb": 193, "responseEnd": 200, "domInteractive": 212, "domContentLoaded": 218, "load": 279, "nodes": 2253 },
+            { "ttfb": 204, "responseEnd": 209, "domInteractive": 222, "domContentLoaded": 229, "load": 298, "nodes": 2253 }
+        ],
+        "alfakit_ssr_off_list_25": [
+            { "ttfb": 126, "responseEnd": 126, "domInteractive": 137, "domContentLoaded": 166, "load": 238, "nodes": 2251 },
+            { "ttfb": 104, "responseEnd": 106, "domInteractive": 121, "domContentLoaded": 129, "load": 193, "nodes": 2251 },
+            { "ttfb": 88, "responseEnd": 91, "domInteractive": 101, "domContentLoaded": 108, "load": 165, "nodes": 2251 },
+            { "ttfb": 108, "responseEnd": 110, "domInteractive": 124, "domContentLoaded": 131, "load": 196, "nodes": 2251 },
+            { "ttfb": 98, "responseEnd": 99, "domInteractive": 112, "domContentLoaded": 120, "load": 188, "nodes": 2251 }
+        ],
+        "alfakit_ssr_on_form_500": [
+            { "ttfb": 447, "responseEnd": 452, "domInteractive": 458, "domContentLoaded": 484, "load": 1192, "nodes": 611, "heap": 20050350 },
+            { "ttfb": 419, "responseEnd": 424, "domInteractive": 428, "domContentLoaded": 451, "load": 496, "nodes": 621, "heap": 20967347 },
+            { "ttfb": 406, "responseEnd": 413, "domInteractive": 423, "domContentLoaded": 429, "load": 472, "nodes": 621, "heap": 14326176 },
+            { "ttfb": 411, "responseEnd": 421, "domInteractive": 431, "domContentLoaded": 436, "load": 481, "nodes": 611, "heap": 14398711 },
+            { "ttfb": 414, "responseEnd": 423, "domInteractive": 432, "domContentLoaded": 437, "load": 485, "nodes": 611, "heap": 18611245 }
+        ],
+        "alfakit_ssr_off_form_500": [
+            { "ttfb": 339, "responseEnd": 344, "domInteractive": 354, "domContentLoaded": 362, "load": 422, "nodes": 609, "heap": 39536926 },
+            { "ttfb": 414, "responseEnd": 418, "domInteractive": 422, "domContentLoaded": 427, "load": 473, "nodes": 609, "heap": 23812484 },
+            { "ttfb": 342, "responseEnd": 347, "domInteractive": 359, "domContentLoaded": 365, "load": 412, "nodes": 609, "heap": 26760048 },
+            { "ttfb": 340, "responseEnd": 346, "domInteractive": 359, "domContentLoaded": 366, "load": 422, "nodes": 609, "heap": 26778550 },
+            { "ttfb": 339, "responseEnd": 345, "domInteractive": 357, "domContentLoaded": 365, "load": 421, "nodes": 609, "heap": 29743454 }
+        ],
+        "filament_form_500": [
+            { "ttfb": 430, "responseEnd": 526, "domInteractive": 565, "domContentLoaded": 2254, "load": 2315, "nodes": 33515, "heap": 81764676 },
+            { "ttfb": 422, "responseEnd": 546, "domInteractive": 614, "domContentLoaded": 2460, "load": 2523, "nodes": 33515, "heap": 138039997 },
+            { "ttfb": 419, "responseEnd": 560, "domInteractive": 644, "domContentLoaded": 2485, "load": 2560, "nodes": 33515, "heap": 195333698 },
+            { "ttfb": 416, "responseEnd": 559, "domInteractive": 637, "domContentLoaded": 2554, "load": 2621, "nodes": 33515, "heap": 227694648 },
+            { "ttfb": 424, "responseEnd": 535, "domInteractive": 587, "domContentLoaded": 2450, "load": 2511, "nodes": 33515, "heap": 255192561 }
+        ]
+    },
+    "medians": {
+        "alfakit_ssr_on_list_25": { "ttfb": 204, "domInteractive": 222, "domContentLoaded": 229, "load": 290, "nodes": 2253 },
+        "alfakit_ssr_off_list_25": { "ttfb": 104, "domInteractive": 121, "domContentLoaded": 129, "load": 193, "nodes": 2251 },
+        "alfakit_ssr_on_form_500": { "ttfb": 414, "domInteractive": 431, "domContentLoaded": 437, "load": 485, "nodes": 611, "heap_min": 14326176, "heap_median": 18611245 },
+        "alfakit_ssr_off_form_500": { "ttfb": 340, "domInteractive": 359, "domContentLoaded": 365, "load": 422, "nodes": 609, "heap_min": 23812484, "heap_median": 26778550 },
+        "filament_form_500": { "ttfb": 422, "domInteractive": 614, "domContentLoaded": 2460, "load": 2523, "nodes": 33515, "heap_min": 81764676, "heap_median": 195333698 }
+    }
+}

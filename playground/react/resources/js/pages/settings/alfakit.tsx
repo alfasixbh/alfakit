@@ -1,0 +1,23 @@
+import { AlfakitComponent, type StandaloneComponentSchema } from '@alfakit/react';
+import { Head } from '@inertiajs/react';
+
+/**
+ * AlfaKit's account page (`AuthKit::routes()`): profile, password, two-step verification,
+ * browser sessions and account deletion, each a standalone component in `sections`.
+ */
+export default function AlfakitAccount({
+    sections,
+    authKit,
+}: {
+    sections: Record<string, StandaloneComponentSchema>;
+    authKit: { title: string };
+}) {
+    return (
+        <>
+            <Head title={authKit.title} />
+            {Object.entries(sections).map(([key, section]) => (
+                <AlfakitComponent key={key} component={section} />
+            ))}
+        </>
+    );
+}

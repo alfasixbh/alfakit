@@ -1,0 +1,39 @@
+{
+  "preset": "laravel",
+  "rules": {
+    "declare_strict_types": true,
+    "final_class": false,
+    "fully_qualified_strict_types": true,
+    "global_namespace_import": {
+      "import_classes": true,
+      "import_constants": true,
+      "import_functions": true
+    },
+    "ordered_class_elements": {
+      "order": ["use_trait", "case", "constant", "property", "construct", "method"]
+    },
+    "ordered_imports": {
+      "sort_algorithm": "alpha",
+      "imports_order": ["class", "function", "const"]
+    },
+    "no_superfluous_phpdoc_tags": {
+      "allow_mixed": true,
+      "allow_unused_params": true
+    },
+    "phpdoc_order": true,
+    "trailing_comma_in_multiline": {
+      "elements": ["arguments", "arrays", "match", "parameters"]
+    }
+  },
+  "exclude": [
+    "playground",
+    "docs",
+    "demo",
+    "benchmarks",
+    "vendor",
+    "node_modules",
+    "packages/alfakit/tests/Fixtures/FilamentApp",
+    "packages/alfakit/tests/Fixtures/Filament5App",
+    "packages/alfakit/tests/Fixtures/StarterKits"
+  ]
+}

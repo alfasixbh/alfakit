@@ -1,0 +1,1 @@
+<output>explicit swatch</output>

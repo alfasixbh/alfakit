@@ -1,0 +1,59 @@
+{
+  "headroomPercent": 10,
+  "entries": {
+    "host:react": {
+      "limitGzipBytes": 24582,
+      "baseline": {
+        "rawBytes": 58786,
+        "gzipBytes": 22347,
+        "chunks": 10,
+        "measuredAt": "2026-10-15T14:40:49.245Z"
+      }
+    },
+    "host:vue": {
+      "limitGzipBytes": 24345,
+      "baseline": {
+        "rawBytes": 58578,
+        "gzipBytes": 22131,
+        "chunks": 7,
+        "measuredAt": "2026-10-15T14:40:49.245Z"
+      }
+    },
+    "host:svelte": {
+      "limitGzipBytes": 26641,
+      "baseline": {
+        "rawBytes": 63677,
+        "gzipBytes": 24219,
+        "chunks": 11,
+        "measuredAt": "2026-10-15T14:40:49.245Z"
+      }
+    },
+    "panel:react": {
+      "limitGzipBytes": 403063,
+      "baseline": {
+        "rawBytes": 1115970,
+        "gzipBytes": 366420,
+        "chunks": 97,
+        "measuredAt": "2026-10-15T14:40:49.245Z"
+      }
+    },
+    "panel:vue": {
+      "limitGzipBytes": 379351,
+      "baseline": {
+        "rawBytes": 1092958,
+        "gzipBytes": 344864,
+        "chunks": 68,
+        "measuredAt": "2026-10-15T14:40:49.245Z"
+      }
+    },
+    "panel:svelte": {
+      "limitGzipBytes": 400956,
+      "baseline": {
+        "rawBytes": 1148191,
+        "gzipBytes": 364505,
+        "chunks": 91,
+        "measuredAt": "2026-10-15T14:40:49.245Z"
+      }
+    }
+  }
+}

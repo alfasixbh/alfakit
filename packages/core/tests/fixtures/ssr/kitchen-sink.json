@@ -1,0 +1,960 @@
+{
+  "component": "Alfakit/Page",
+  "props": {
+    "errors": {},
+    "name": "Alfakit React",
+    "auth": {
+      "user": {
+        "id": 1,
+        "name": "Alfa Admin",
+        "email": "admin@example.com",
+        "email_verified_at": "2026-10-08T08:30:19.000000Z",
+        "created_at": "2026-10-08T08:30:19.000000Z",
+        "updated_at": "2026-10-08T13:08:19.000000Z",
+        "two_factor_confirmed_at": null,
+        "locale": "en",
+        "timezone": null
+      }
+    },
+    "sidebarOpen": true,
+    "alfakit": {
+      "id": "admin",
+      "path": "admin",
+      "url": "http://localhost/admin",
+      "brandName": "Alfakit React",
+      "theme": {
+        "name": "alfakit",
+        "attribute": "alfakit",
+        "sidebar": "floating",
+        "density": "comfortable",
+        "radius": "0.875rem",
+        "font": "Plus Jakarta Sans",
+        "fontCss": "'Plus Jakarta Sans'",
+        "headingFontCss": null,
+        "fontUrl": "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap",
+        "fontUrls": [
+          "https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap"
+        ],
+        "design": {
+          "layout": "sidebar",
+          "nav": "pill",
+          "header": "banner",
+          "surfaces": "elevated",
+          "inputs": "filled",
+          "buttons": "pill",
+          "tables": "minimal"
+        }
+      },
+      "slots": {
+        "topbar.end": [
+          {
+            "type": "html",
+            "html": "<label class=\"hidden items-center gap-2 text-xs text-muted-foreground sm:flex\">\n    <span>Theme</span>\n    <select\n        class=\"h-8 rounded-md border border-input bg-background px-2 text-sm text-foreground\"\n        onchange=\"window.location.href = '/demo/theme/' + this.value\"\n        aria-label=\"Theme\"\n    >\n                    <option value=\"neutral\" >Neutral</option>\n                    <option value=\"alfakit\" selected>Alfakit</option>\n                    <option value=\"minimal\" >Minimal</option>\n                    <option value=\"soft\" >Soft</option>\n                    <option value=\"corporate\" >Corporate</option>\n                    <option value=\"filament\" >Filament style</option>\n            </select>\n</label>\n"
+          }
+        ]
+      },
+      "darkMode": {
+        "enabled": true,
+        "forced": false
+      },
+      "sidebarCollapsibleOnDesktop": true,
+      "breadcrumbs": true,
+      "navigation": [
+        {
+          "collapsible": true,
+          "items": [
+            {
+              "label": "Dashboard",
+              "icon": "layout-dashboard",
+              "url": "http://localhost/admin",
+              "active": true
+            }
+          ]
+        },
+        {
+          "label": "Blog",
+          "collapsible": true,
+          "items": [
+            {
+              "label": "Categories",
+              "icon": "folder",
+              "url": "http://localhost/admin/categories"
+            },
+            {
+              "label": "Posts",
+              "icon": "file-text",
+              "url": "http://localhost/admin/posts"
+            },
+            {
+              "label": "Tags",
+              "icon": "tag",
+              "url": "http://localhost/admin/tags"
+            }
+          ]
+        }
+      ],
+      "user": {
+        "id": 1,
+        "name": "Alfa Admin",
+        "email": "admin@example.com",
+        "avatar": null
+      },
+      "userMenu": {
+        "items": [],
+        "profileUrl": "http://localhost/admin/profile",
+        "logoutUrl": "http://localhost/admin/logout"
+      },
+      "databaseNotifications": {
+        "pollingInterval": "30s",
+        "unreadCount": 0
+      },
+      "globalSearch": {
+        "keyBindings": ["mod+k"],
+        "placeholder": "Search…"
+      },
+      "endpoints": {
+        "action": "http://localhost/admin/_alfakit/actions",
+        "modal": "http://localhost/admin/_alfakit/actions/modal",
+        "schemaRefresh": "http://localhost/admin/_alfakit/schema/refresh",
+        "schemaOptions": "http://localhost/admin/_alfakit/schema/options",
+        "tableCell": "http://localhost/admin/_alfakit/table/cell",
+        "tableReorder": "http://localhost/admin/_alfakit/table/reorder",
+        "locale": "http://localhost/admin/_alfakit/locale",
+        "upload": "http://localhost/admin/_alfakit/uploads",
+        "uploadDestroy": "http://localhost/admin/_alfakit/uploads",
+        "globalSearch": "http://localhost/admin/_alfakit/global-search",
+        "notifications": "http://localhost/admin/_alfakit/notifications",
+        "notificationsReadAll": "http://localhost/admin/_alfakit/notifications/read-all",
+        "notificationsDestroyAll": "http://localhost/admin/_alfakit/notifications",
+        "logout": "http://localhost/admin/logout"
+      },
+      "auth": {
+        "login": "http://localhost/admin/login",
+        "register": null,
+        "passwordReset": "http://localhost/admin/password-reset/request"
+      },
+      "flashKey": "alfakitNotifications",
+      "localization": {
+        "code": "en",
+        "tag": "en",
+        "label": "English",
+        "direction": "ltr",
+        "fallbackLocale": "en",
+        "firstDayOfWeek": 0,
+        "currency": "USD",
+        "timezone": "UTC",
+        "switcher": true,
+        "locales": [
+          {
+            "code": "en",
+            "tag": "en",
+            "label": "English",
+            "direction": "ltr"
+          },
+          {
+            "code": "ar",
+            "tag": "ar",
+            "label": "العربية",
+            "direction": "rtl"
+          },
+          {
+            "code": "fr",
+            "tag": "fr",
+            "label": "Français",
+            "direction": "ltr"
+          },
+          {
+            "code": "de",
+            "tag": "de",
+            "label": "Deutsch",
+            "direction": "ltr"
+          },
+          {
+            "code": "ja",
+            "tag": "ja",
+            "label": "日本語",
+            "direction": "ltr"
+          }
+        ]
+      },
+      "csrf": "test-token",
+      "translations": {
+        "actions": "Actions",
+        "cancel": "Cancel",
+        "close": "Close",
+        "confirm": "Confirm",
+        "save": "Save",
+        "search": "Search",
+        "loading": "Loading…",
+        "no_results": "No results.",
+        "select_option": "Select an option",
+        "clear": "Clear",
+        "remove": "Remove",
+        "add": "Add",
+        "copy": "Copy",
+        "copied": "Copied",
+        "toggle_sidebar": "Toggle sidebar",
+        "toggle_theme": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System",
+        "logout": "Sign out",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "mark_all_read": "Mark all as read",
+        "clear_notifications": "Clear notifications",
+        "no_notifications": "You have no notifications.",
+        "unsaved_changes": "You have unsaved changes. Leave anyway?",
+        "language": "Language",
+        "navigation": "Navigation",
+        "more": "More",
+        "sidebar": "Sidebar",
+        "open": "Open",
+        "download": "Download",
+        "toggle": "Toggle",
+        "toggle_section": "Toggle section",
+        "steps": "Steps",
+        "pagination": "Pagination",
+        "mark_as_read": "Mark as read",
+        "mobile_sidebar": "Displays the mobile sidebar.",
+        "chart": "Chart",
+        "command_palette": "Command palette",
+        "command_palette_description": "Search for a command to run…",
+        "load_more": "Load more",
+        "widget_not_registered": "Widget component :component is not registered.",
+        "table": {
+          "filters": "Filters",
+          "reset_filters": "Reset",
+          "columns": "Columns",
+          "per_page": "Per page",
+          "showing": "Showing :first–:last of :total",
+          "selected": ":count selected",
+          "select_all": "Select all",
+          "deselect_all": "Deselect all",
+          "bulk_actions": "Bulk actions",
+          "empty": "No records found.",
+          "previous": "Previous",
+          "next": "Next",
+          "all": "All",
+          "select_page": "Select page",
+          "select_row": "Select row",
+          "remove_filter": "Remove filter",
+          "reorder_start": "Reorder",
+          "reorder_stop": "Done"
+        },
+        "form": {
+          "required": "Required",
+          "drop_files": "Drop files here or click to browse",
+          "uploading": "Uploading…",
+          "add_row": "Add row",
+          "add_item": "Add item",
+          "remove_item": "Remove",
+          "move_up": "Move up",
+          "move_down": "Move down",
+          "search_placeholder": "Type to search…",
+          "next_step": "Next",
+          "previous_step": "Back",
+          "file_too_large": "This file is too large.",
+          "file_too_small": "This file is too small.",
+          "min_files": "At least :count file|At least :count files",
+          "clone": "Clone",
+          "remove_row": "Remove row",
+          "pick_color": "Pick a colour",
+          "link_prompt": "Link URL",
+          "pick_date": "Pick a date",
+          "show_password": "Show password",
+          "hide_password": "Hide password"
+        },
+        "editor": {
+          "bold": "Bold",
+          "italic": "Italic",
+          "underline": "Underline",
+          "strike": "Strikethrough",
+          "link": "Link",
+          "h2": "Heading 2",
+          "h3": "Heading 3",
+          "heading": "Heading",
+          "blockquote": "Quote",
+          "code_block": "Code block",
+          "bullet_list": "Bullet list",
+          "ordered_list": "Numbered list",
+          "divider": "Divider",
+          "image": "Insert image",
+          "undo": "Undo",
+          "redo": "Redo"
+        },
+        "tenancy": {
+          "switch": "Switch",
+          "register": "New",
+          "profile": "Settings"
+        }
+      }
+    },
+    "alfakitAppearance": "system",
+    "page": {
+      "class": "AlfaSix\\Alfakit\\Pages\\Dashboard",
+      "layout": "app",
+      "title": "Kitchen sink",
+      "heading": "Kitchen sink",
+      "content": [
+        {
+          "type": "Form",
+          "key": "form",
+          "component": "form",
+          "components": [
+            {
+              "type": "Tabs",
+              "key": "tabs-0",
+              "label": "Tabs",
+              "columns": {
+                "default": 1
+              },
+              "columnSpan": {
+                "default": "full"
+              },
+              "schema": [
+                {
+                  "type": "Tab",
+                  "key": "tabs-0.tab-0",
+                  "label": "First",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "schema": [
+                    {
+                      "type": "TextInput",
+                      "key": "title",
+                      "label": "Title",
+                      "inputType": "text",
+                      "name": "title",
+                      "statePath": "title",
+                      "required": true,
+                      "helperText": "Help"
+                    },
+                    {
+                      "type": "MoneyInput",
+                      "key": "price",
+                      "label": "Price",
+                      "currency": "USD",
+                      "decimals": 2,
+                      "name": "price",
+                      "statePath": "price"
+                    },
+                    {
+                      "type": "Textarea",
+                      "key": "body",
+                      "label": "Body",
+                      "name": "body",
+                      "statePath": "body"
+                    },
+                    {
+                      "type": "Hidden",
+                      "key": "secret",
+                      "name": "secret",
+                      "statePath": "secret"
+                    },
+                    {
+                      "type": "Checkbox",
+                      "key": "agree",
+                      "label": "Agree",
+                      "inline": true,
+                      "name": "agree",
+                      "statePath": "agree"
+                    },
+                    {
+                      "type": "Toggle",
+                      "key": "active",
+                      "label": "Active",
+                      "inline": true,
+                      "name": "active",
+                      "statePath": "active"
+                    },
+                    {
+                      "type": "Select",
+                      "key": "choice",
+                      "label": "Choice",
+                      "options": [
+                        {
+                          "value": "a",
+                          "label": "Alpha"
+                        },
+                        {
+                          "value": "b",
+                          "label": "Beta"
+                        }
+                      ],
+                      "selectablePlaceholder": true,
+                      "name": "choice",
+                      "statePath": "choice"
+                    },
+                    {
+                      "type": "Select",
+                      "key": "many",
+                      "label": "Many",
+                      "options": [
+                        {
+                          "value": "a",
+                          "label": "Alpha"
+                        },
+                        {
+                          "value": "b",
+                          "label": "Beta"
+                        }
+                      ],
+                      "multiple": true,
+                      "selectablePlaceholder": true,
+                      "name": "many",
+                      "statePath": "many"
+                    },
+                    {
+                      "type": "CheckboxList",
+                      "key": "list",
+                      "label": "List",
+                      "options": [
+                        {
+                          "value": "a",
+                          "label": "Alpha"
+                        },
+                        {
+                          "value": "b",
+                          "label": "Beta"
+                        }
+                      ],
+                      "name": "list",
+                      "statePath": "list"
+                    },
+                    {
+                      "type": "Radio",
+                      "key": "radio",
+                      "label": "Radio",
+                      "options": [
+                        {
+                          "value": "a",
+                          "label": "Alpha"
+                        },
+                        {
+                          "value": "b",
+                          "label": "Beta"
+                        }
+                      ],
+                      "name": "radio",
+                      "statePath": "radio"
+                    }
+                  ]
+                },
+                {
+                  "type": "Tab",
+                  "key": "tabs-0.tab-1",
+                  "label": "Second",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "schema": [
+                    {
+                      "type": "DatePicker",
+                      "key": "date",
+                      "label": "Date",
+                      "format": "Y-m-d",
+                      "hasDate": true,
+                      "hasTime": false,
+                      "native": true,
+                      "timezone": "UTC",
+                      "firstDayOfWeek": 1,
+                      "closeOnDateSelection": true,
+                      "name": "date",
+                      "statePath": "date"
+                    },
+                    {
+                      "type": "DateTimePicker",
+                      "key": "datetime",
+                      "label": "Datetime",
+                      "format": "Y-m-d H:i",
+                      "hasDate": true,
+                      "hasTime": true,
+                      "native": true,
+                      "timezone": "UTC",
+                      "firstDayOfWeek": 1,
+                      "closeOnDateSelection": true,
+                      "name": "datetime",
+                      "statePath": "datetime"
+                    },
+                    {
+                      "type": "TimePicker",
+                      "key": "time",
+                      "label": "Time",
+                      "format": "H:i",
+                      "hasDate": false,
+                      "hasTime": true,
+                      "native": true,
+                      "timezone": "UTC",
+                      "firstDayOfWeek": 1,
+                      "closeOnDateSelection": true,
+                      "name": "time",
+                      "statePath": "time"
+                    },
+                    {
+                      "type": "ColorPicker",
+                      "key": "color",
+                      "label": "Color",
+                      "format": "hex",
+                      "name": "color",
+                      "statePath": "color"
+                    },
+                    {
+                      "type": "TagsInput",
+                      "key": "tags",
+                      "label": "Tags",
+                      "splitKeys": ["Enter", ","],
+                      "name": "tags",
+                      "statePath": "tags"
+                    },
+                    {
+                      "type": "KeyValue",
+                      "key": "meta",
+                      "label": "Meta",
+                      "keyLabel": "Key",
+                      "valueLabel": "Value",
+                      "addActionLabel": "Add row",
+                      "addable": true,
+                      "deletable": true,
+                      "reorderable": false,
+                      "editableKeys": true,
+                      "editableValues": true,
+                      "name": "meta",
+                      "statePath": "meta"
+                    },
+                    {
+                      "type": "FileUpload",
+                      "key": "file",
+                      "label": "File",
+                      "maxFiles": 1,
+                      "previewable": true,
+                      "deletable": true,
+                      "panelLayout": "compact",
+                      "files": [],
+                      "name": "file",
+                      "statePath": "file"
+                    },
+                    {
+                      "type": "RichEditor",
+                      "key": "rich",
+                      "label": "Rich",
+                      "toolbarButtons": [
+                        "bold",
+                        "italic",
+                        "underline",
+                        "strike",
+                        "link",
+                        "|",
+                        "h2",
+                        "h3",
+                        "blockquote",
+                        "codeBlock",
+                        "|",
+                        "bulletList",
+                        "orderedList",
+                        "|",
+                        "attachFiles",
+                        "undo",
+                        "redo"
+                      ],
+                      "fileAttachments": {
+                        "disk": "local",
+                        "directory": null
+                      },
+                      "name": "rich",
+                      "statePath": "rich"
+                    },
+                    {
+                      "type": "MarkdownEditor",
+                      "key": "markdown",
+                      "label": "Markdown",
+                      "toolbarButtons": [
+                        "bold",
+                        "italic",
+                        "strike",
+                        "link",
+                        "|",
+                        "heading",
+                        "blockquote",
+                        "codeBlock",
+                        "|",
+                        "bulletList",
+                        "orderedList",
+                        "table",
+                        "|",
+                        "attachFiles",
+                        "undo",
+                        "redo"
+                      ],
+                      "fileAttachments": {
+                        "disk": "local",
+                        "directory": null
+                      },
+                      "html": "<h1>Title</h1>\n",
+                      "name": "markdown",
+                      "statePath": "markdown"
+                    }
+                  ]
+                }
+              ],
+              "activeTab": 1
+            },
+            {
+              "type": "Section",
+              "key": "section-0",
+              "label": "Section",
+              "columns": {
+                "default": 1,
+                "lg": 2
+              },
+              "columnSpan": {
+                "default": "full"
+              },
+              "schema": [
+                {
+                  "type": "Repeater",
+                  "key": "items",
+                  "label": "Items",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "items": [
+                    {
+                      "key": "0",
+                      "label": null,
+                      "schema": [
+                        {
+                          "type": "TextInput",
+                          "key": "items.0.name",
+                          "label": "Name",
+                          "inputType": "text",
+                          "name": "name",
+                          "statePath": "items.0.name"
+                        }
+                      ]
+                    }
+                  ],
+                  "template": [
+                    {
+                      "type": "TextInput",
+                      "key": "items.__INDEX__.name",
+                      "label": "Name",
+                      "inputType": "text",
+                      "name": "name",
+                      "statePath": "items.__INDEX__.name"
+                    }
+                  ],
+                  "templateState": {
+                    "name": null
+                  },
+                  "addable": true,
+                  "deletable": true,
+                  "reorderable": true,
+                  "addActionLabel": "Add to items",
+                  "name": "items",
+                  "statePath": "items"
+                },
+                {
+                  "type": "Fieldset",
+                  "key": "section-0.fieldset-0",
+                  "label": "Fieldset",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "columnSpan": {
+                    "default": "full"
+                  },
+                  "schema": [
+                    {
+                      "type": "TextInput",
+                      "key": "inner",
+                      "label": "Inner",
+                      "inputType": "text",
+                      "name": "inner",
+                      "statePath": "inner"
+                    }
+                  ]
+                },
+                {
+                  "type": "Grid",
+                  "key": "section-0.grid-0",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "schema": [
+                    {
+                      "type": "TextInput",
+                      "key": "g1",
+                      "label": "G1",
+                      "inputType": "text",
+                      "name": "g1",
+                      "statePath": "g1"
+                    },
+                    {
+                      "type": "TextInput",
+                      "key": "g2",
+                      "label": "G2",
+                      "inputType": "text",
+                      "name": "g2",
+                      "statePath": "g2"
+                    }
+                  ]
+                },
+                {
+                  "type": "Placeholder",
+                  "key": "placeholder",
+                  "label": "Placeholder",
+                  "content": "Placeholder content"
+                },
+                {
+                  "type": "Text",
+                  "key": "section-0.text-0",
+                  "content": "Plain text"
+                },
+                {
+                  "type": "Html",
+                  "key": "section-0.html-0",
+                  "columnSpan": {
+                    "default": "full"
+                  },
+                  "content": "<p>Some html</p>"
+                }
+              ],
+              "heading": "Section",
+              "description": "Desc",
+              "collapsible": true
+            },
+            {
+              "type": "Wizard",
+              "key": "wizard-0",
+              "columns": {
+                "default": 1
+              },
+              "columnSpan": {
+                "default": "full"
+              },
+              "schema": [
+                {
+                  "type": "Step",
+                  "key": "wizard-0.step-0",
+                  "label": "One",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "schema": [
+                    {
+                      "type": "TextInput",
+                      "key": "w1",
+                      "label": "W1",
+                      "inputType": "text",
+                      "name": "w1",
+                      "statePath": "w1"
+                    }
+                  ]
+                },
+                {
+                  "type": "Step",
+                  "key": "wizard-0.step-1",
+                  "label": "Two",
+                  "columns": {
+                    "default": 1,
+                    "lg": 2
+                  },
+                  "schema": [
+                    {
+                      "type": "TextInput",
+                      "key": "w2",
+                      "label": "W2",
+                      "inputType": "text",
+                      "name": "w2",
+                      "statePath": "w2"
+                    }
+                  ]
+                }
+              ],
+              "startStep": 1,
+              "nextActionLabel": "Next",
+              "previousActionLabel": "Back"
+            }
+          ],
+          "state": {
+            "title": "Hello",
+            "date": "2026-01-02",
+            "datetime": "2026-01-02 10:30",
+            "tags": ["x"],
+            "meta": {
+              "k": "v"
+            },
+            "items": [
+              {
+                "name": "Row"
+              }
+            ],
+            "rich": "<p>Rich <strong>text</strong></p>",
+            "markdown": "# Title",
+            "color": "#ff0000",
+            "price": null,
+            "body": null,
+            "secret": null,
+            "agree": false,
+            "active": false,
+            "choice": null,
+            "many": [],
+            "list": [],
+            "radio": null,
+            "time": null,
+            "file": [],
+            "inner": null,
+            "g1": null,
+            "g2": null,
+            "w1": null,
+            "w2": null
+          },
+          "columns": {
+            "default": 1,
+            "lg": 2
+          },
+          "actions": [],
+          "operation": "create"
+        },
+        {
+          "type": "Infolist",
+          "key": "infolist",
+          "components": [
+            {
+              "type": "TextEntry",
+              "key": "title",
+              "label": "Title",
+              "copyable": true,
+              "name": "title",
+              "state": "Hello"
+            },
+            {
+              "type": "TextEntry",
+              "key": "created",
+              "label": "Created",
+              "name": "created",
+              "state": "Jan 2, 2026 10:30"
+            },
+            {
+              "type": "IconEntry",
+              "key": "flag",
+              "label": "Flag",
+              "icon": "circle-check",
+              "color": "success",
+              "name": "flag",
+              "state": true
+            },
+            {
+              "type": "ColorEntry",
+              "key": "c",
+              "label": "C",
+              "name": "c",
+              "state": "#00ff00"
+            },
+            {
+              "type": "ImageEntry",
+              "key": "img",
+              "label": "Img",
+              "name": "img",
+              "state": ["https://example.com/a.png"]
+            },
+            {
+              "type": "KeyValueEntry",
+              "key": "kv",
+              "label": "Kv",
+              "keyLabel": "Key",
+              "valueLabel": "Value",
+              "name": "kv",
+              "state": {
+                "a": "b"
+              }
+            },
+            {
+              "type": "RepeatableEntry",
+              "key": "rep",
+              "label": "Rep",
+              "columns": {
+                "default": 1,
+                "lg": 2
+              },
+              "items": [
+                [
+                  {
+                    "type": "TextEntry",
+                    "key": "n",
+                    "label": "N",
+                    "name": "n",
+                    "state": "x"
+                  }
+                ]
+              ],
+              "contained": true,
+              "name": "rep"
+            }
+          ]
+        },
+        {
+          "type": "Widgets",
+          "key": "widgets",
+          "columns": {
+            "default": 1,
+            "lg": 2
+          },
+          "widgets": [
+            {
+              "type": "Chart",
+              "key": "sales",
+              "id": "sales",
+              "columnSpan": {
+                "default": 1
+              },
+              "heading": "Sales",
+              "chartType": "line",
+              "data": {
+                "labels": ["a", "b", "c"],
+                "datasets": [
+                  {
+                    "label": "Sales",
+                    "data": [1, 2, 3]
+                  }
+                ]
+              },
+              "options": {}
+            },
+            {
+              "type": "StatsOverviewWidget",
+              "key": "stats",
+              "id": "stats",
+              "columnSpan": {
+                "default": "full"
+              },
+              "stats": [
+                {
+                  "label": "Users",
+                  "value": "1,024",
+                  "description": "+12%",
+                  "descriptionIcon": "trending-up",
+                  "color": "success",
+                  "chart": [1, 3, 2],
+                  "chartColor": "success"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "token": "test-token"
+    }
+  },
+  "url": "/admin/kitchen-sink",
+  "version": null,
+  "sharedProps": ["errors", "name", "auth", "sidebarOpen", "alfakit", "alfakitAppearance"]
+}

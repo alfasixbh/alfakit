@@ -1,0 +1,6 @@
+export { default as CalendarWidget } from './CalendarLazy.svelte'
+export { default as ChartWidget } from './ChartLazy.svelte'
+export { default as DashboardCustomizer } from './DashboardCustomizer.svelte'
+export { default as StatsOverviewWidget } from './StatsOverviewWidget.svelte'
+export { default as WidgetGrid } from './WidgetGrid.svelte'
+export { default as WidgetRenderer } from './WidgetRenderer.svelte'

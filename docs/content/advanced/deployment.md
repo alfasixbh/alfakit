@@ -1,0 +1,17 @@
+---
+title: Deployment
+description: Production checklist.
+---
+
+# Deployment
+
+1. **Build assets** — `npm run build` compiles the panel entry alongside your app. With [server-side rendering](./ssr), run `npm run build:ssr` instead and keep `php artisan inertia:start-ssr` running (Supervisor or similar); restart it on every deploy so it serves the new bundle (`php artisan inertia:stop-ssr` stops it).
+2. **Plugin assets** — `alfakit:install` adds `@php artisan alfakit:upgrade` to composer's `post-autoload-dump`, which republishes the files registered with `Assets::register()` to `public/vendor/alfakit` on every `composer install`. Otherwise run `php artisan alfakit:assets` on deploy. `public/vendor/alfakit` is generated: keep it out of version control. See [Assets](./assets).
+3. **Cache discovery and the Vite manifest** — `php artisan optimize` runs `alfakit:optimize` for you (and `optimize:clear` runs `alfakit:optimize-clear`); you can also run either command on its own. If you run `config:cache` and `route:cache` yourself instead of `optimize`, add `alfakit:optimize`. Besides discovery it stores the renderer's `public/build/manifest.json` as PHP: an AlfaKit build lists every icon and translation chunk (about 1 MB of JSON), which Laravel would otherwise decode on every page load and Inertia hash on every request. The copy is only used while the manifest's size and modification time match, so run `optimize` after `npm run build` (a newer build is read from the JSON until you do). AlfaKit's routes are registered at boot and use controllers only (no closures), so `route:cache` works; with many panels and plugins, the route cache is the largest single saving per request.
+4. **Content Security Policy** — with a nonce-based CSP, call `Vite::useCspNonce()` in a middleware before the response renders ([full example](./security#content-security-policy)). AlfaKit's root view adds the nonce to its inline theme `<script>` and `<style>` and to plugin asset tags. The root `<html>` element carries the panel's theme variables in a `style` attribute, so a policy that blocks inline style attributes needs `style-src-attr 'unsafe-inline'`.
+5. **Access control** — users must implement `CanAccessPanel` outside `local`; see [Authentication](../panels/authentication).
+6. **Uploads** — configure `alfakit.uploads.temporary_disk` and schedule `alfakit:prune-uploads` daily. Make sure the final disk (`alfakit.default_filesystem_disk`) is public or serves temporary URLs.
+7. **Queues** — database notifications and long actions can be queued like any Laravel job.
+8. **OPcache** — enable it with `opcache.validate_timestamps=0` and reload PHP-FPM on each deploy; it is the biggest single speed-up for a panel, which loads many small classes per request. See [Performance](../getting-started/performance#keeping-your-panel-fast).
+9. **Octane** — supported. Pages reset their caches per request; avoid storing request state in static properties of your own pages.
+10. **Version alignment** — keep `alfasix/alfakit` and `@alfakit/*` on the same minor version.

@@ -1,0 +1,18 @@
+/**
+ * Drop-in header components of starter kit mode (`Panel::starterKit()`): AlfaKit's search,
+ * notifications bell and tenant switcher in the host's own header, on every page of the
+ * application. They read the shared `alfakitNavigation` prop, render a lightweight trigger
+ * straight away, and load their code and the panel data once mounted (never during SSR).
+ *
+ * ```svelte
+ * <script lang="ts">
+ *   import { AlfakitNotifications, AlfakitSearch } from '@alfakit/svelte'
+ * </script>
+ *
+ * <AlfakitSearch />
+ * <AlfakitNotifications />
+ * ```
+ */
+export { default as AlfakitNotifications } from './AlfakitNotifications.svelte'
+export { default as AlfakitSearch } from './AlfakitSearch.svelte'
+export { default as AlfakitTenantSwitcher } from './AlfakitTenantSwitcher.svelte'

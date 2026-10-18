@@ -1,0 +1,42 @@
+node_modules
+dist
+vendor
+coverage
+pnpm-lock.yaml
+playground/*/public/build
+playground/*/bootstrap/cache
+playground/*/storage
+docs/public/build
+docs/bootstrap/cache
+docs/storage
+**/*.blade.php
+.svelte-kit
+**/bootstrap/cache
+**/bootstrap/ssr
+**/resources/js/actions
+**/resources/js/routes
+**/resources/js/wayfinder
+# Playground apps: only the Alfakit wiring is ours to format.
+playground/*/resources/js/**
+!playground/*/resources/js/alfakit/
+!playground/*/resources/js/alfakit/**
+playground/*/resources/css/app.css
+playground/*/components.json
+
+# Benchmark harness: scratch Filament app, generated data and raw results.
+benchmarks/
+e2e/.auth/
+e2e/test-results/
+e2e/playwright-report/
+packages/alfakit/tests/Fixtures/FilamentApp/
+packages/alfakit/tests/Fixtures/Filament5App/
+
+# Demo app: generated and runtime files.
+demo/public/build
+demo/public/demo-files
+demo/storage
+demo/database/database.sqlite
+
+# Copies of the Laravel starter kits' files that alfakit:install --starter-kit patches.
+packages/alfakit/tests/Fixtures/StarterKits/
+packages/plugins/analytics/resources/js/script.js

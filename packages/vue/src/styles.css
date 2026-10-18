@@ -1,0 +1,311 @@
+/*
+ * Alfakit theme tokens. Import after Tailwind in your panel stylesheet:
+ *
+ *   @import 'tailwindcss';
+ *   @import '@alfakit/vue/styles.css';
+ *
+ * Panel colours set with `->colors([...])` arrive as `--alfakit-*` variables and feed the
+ * shadcn tokens below. Override any token in your own CSS to restyle the panel.
+ */
+
+/* Built-in themes (alfakit, minimal, soft, corporate, filament); neutral is below. */
+@import './themes.css';
+
+/*
+ * Toast styles. Imported here rather than from JavaScript so the package stays importable
+ * by Node for server-side rendering.
+ */
+@import 'vue-sonner/style.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Grid classes are composed at runtime from schema breakpoints (`columns`, `columnSpan`),
+ * so force Tailwind to generate every variant the renderers can produce.
+ */
+@source inline('{,sm:,md:,lg:,xl:,2xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,full}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:}col-start-{1,2,3,4,5,6,7,8,9,10,11,12}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:}order-{1,2,3,4,5,6,7,8,9,10,11,12,first,last,none}');
+@source inline('line-clamp-{1,2,3,4,5,6}');
+/* Table content layouts: `Split::from()`, `visibleFrom()` / `hiddenFrom()` (core `table-layout.ts`). */
+@source inline('{,sm:,md:,lg:,xl:,2xl:}{flex,hidden,flex-row,flex-col,items-center}');
+/* Column `visibleFrom()` / `hiddenFrom()`: header cells, body cells and layout blocks. */
+@source inline('{sm:,md:,lg:,xl:,2xl:}{table-cell,block}');
+/* Container-query columns (`columns(['@md' => 2])`), relative to the schema's `@container`. */
+@source inline(
+  '{@3xs:,@2xs:,@xs:,@sm:,@md:,@lg:,@xl:,@2xl:,@3xl:,@4xl:,@5xl:,@6xl:,@7xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12}'
+);
+@source inline(
+  '{@3xs:,@2xs:,@xs:,@sm:,@md:,@lg:,@xl:,@2xl:,@3xl:,@4xl:,@5xl:,@6xl:,@7xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,full}'
+);
+/* `Flex` rows and alignment from a breakpoint (`flexLayoutClasses()`). */
+@source inline('{,sm:,md:,lg:,xl:,2xl:}{flex-row,items-start,items-center,items-end}');
+/* `Flex::alignment()` (`flexLayoutClasses()`). */
+@source inline('justify-{start,center,end,between}');
+/* CMS block layouts (core `cms.ts`: `cmsGridClass()`, `cmsAspectClass()`, `cmsWidthClass()`). */
+@source inline(
+  '{aspect-video,aspect-square,aspect-[4/3],aspect-[21/9],aspect-[9/16],max-w-sm,max-w-3xl,max-w-4xl,max-w-6xl,gap-6,gap-8,mx-auto,w-full}'
+);
+/* Spreadsheet mode (core `spreadsheet.ts`: `SPREADSHEET_CLASSES`, `spreadsheetCellClass()`). */
+@source inline(
+  '{sticky,top-0,z-[1],border-collapse,last:border-e-0,tabular-nums,max-w-80,min-w-24,cursor-cell,bg-muted/20,bg-muted/30,bg-primary/10,outline-ring,outline-2,-outline-offset-2,bg-amber-500/10,ring-destructive,ring-1,ring-inset}'
+);
+
+@theme inline {
+  --font-sans:
+    var(--alfakit-font, 'Instrument Sans'), ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji';
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-danger: var(--destructive);
+  --color-danger-foreground: var(--destructive-foreground);
+  --color-gray: var(--muted-foreground);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: var(--alfakit-primary, oklch(0.205 0 0));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.985 0 0));
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: var(--alfakit-danger, oklch(0.55 0.245 27.325));
+  --destructive-foreground: var(--alfakit-danger-foreground, oklch(0.985 0 0));
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.64 0 0);
+  --ring: oklch(0.708 0 0);
+
+  /* Status colours pass WCAG AA (4.5:1) as text on the page and on their 10% badge tint, and under their foregrounds. */
+  --success: var(--alfakit-success, oklch(0.48 0.14 150.5));
+  --success-foreground: var(--alfakit-success-foreground, oklch(0.985 0 0));
+  --warning: var(--alfakit-warning, oklch(0.52 0.15 48));
+  --warning-foreground: var(--alfakit-warning-foreground, oklch(0.985 0 0));
+  --info: var(--alfakit-info, oklch(0.51 0.24 263.5));
+  --info-foreground: var(--alfakit-info-foreground, oklch(0.985 0 0));
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--alfakit-primary-foreground, oklch(0.985 0 0));
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: var(--alfakit-primary, oklch(0.922 0 0));
+  --primary-foreground: var(--alfakit-primary-foreground, oklch(0.205 0 0));
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: var(--alfakit-danger, oklch(0.704 0.191 22.216));
+  --destructive-foreground: var(--alfakit-danger-foreground, oklch(0.205 0 0));
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 38%);
+  --ring: oklch(0.556 0 0);
+
+  /* Light status colours in dark mode take dark text (AA under their foregrounds). */
+  --success: var(--alfakit-success, oklch(0.723 0.219 149.579));
+  --success-foreground: var(--alfakit-success-foreground, oklch(0.145 0 0));
+  --warning: var(--alfakit-warning, oklch(0.828 0.189 84.429));
+  --warning-foreground: var(--alfakit-warning-foreground, oklch(0.145 0 0));
+  --info: var(--alfakit-info, oklch(0.707 0.165 254.624));
+  --info-foreground: var(--alfakit-info-foreground, oklch(0.145 0 0));
+
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--alfakit-primary-foreground, oklch(0.985 0 0));
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Rich editor content */
+/* Previews of custom blocks keep their own styles (`.alfakit-not-prose`) unless the block's
+   `shouldApplyProseStylingToPreview()` returns true. */
+.alfakit-prose :where(h1):not(:where(.alfakit-not-prose *)) {
+  @apply mt-5 mb-2 text-2xl font-semibold;
+}
+.alfakit-prose :where(h2):not(:where(.alfakit-not-prose *)) {
+  @apply mt-4 mb-2 text-xl font-semibold;
+}
+.alfakit-prose :where(h3):not(:where(.alfakit-not-prose *)) {
+  @apply mt-3 mb-1 text-lg font-semibold;
+}
+.alfakit-prose :where(h4):not(:where(.alfakit-not-prose *)) {
+  @apply mt-3 mb-1 text-base font-semibold;
+}
+.alfakit-prose :where(h5):not(:where(.alfakit-not-prose *)) {
+  @apply mt-2 mb-1 text-sm font-semibold;
+}
+.alfakit-prose :where(h6):not(:where(.alfakit-not-prose *)) {
+  @apply text-muted-foreground mt-2 mb-1 text-sm font-semibold;
+}
+.alfakit-prose :where(p):not(:where(.alfakit-not-prose *)) {
+  @apply my-2 leading-relaxed;
+}
+.alfakit-prose :where(ul):not(:where(.alfakit-not-prose *)) {
+  @apply my-2 list-disc ps-6;
+}
+.alfakit-prose :where(ol):not(:where(.alfakit-not-prose *)) {
+  @apply my-2 list-decimal ps-6;
+}
+.alfakit-prose :where(blockquote):not(:where(.alfakit-not-prose *)) {
+  @apply text-muted-foreground my-2 border-s-2 ps-4 italic;
+}
+.alfakit-prose :where(pre):not(:where(.alfakit-not-prose *)) {
+  @apply bg-muted my-2 overflow-x-auto rounded-md p-3 text-sm;
+}
+.alfakit-prose :where(code):not(:where(.alfakit-not-prose *)) {
+  @apply bg-muted rounded px-1 py-0.5 text-sm;
+}
+.alfakit-prose :where(a):not(:where(.alfakit-not-prose *)) {
+  @apply text-primary underline underline-offset-4;
+}
+.alfakit-prose :where(img):not(:where(.alfakit-not-prose *)) {
+  @apply my-2 h-auto max-w-full rounded-md;
+}
+.alfakit-prose :where(table):not(:where(.alfakit-not-prose *)) {
+  @apply my-2 w-full border-collapse text-sm;
+}
+.alfakit-prose :where(td, th):not(:where(.alfakit-not-prose *)) {
+  @apply border px-2 py-1;
+}
+/* Rich editor toolbar output: table headers, selected cells, highlights, details */
+.alfakit-prose :where(th):not(:where(.alfakit-not-prose *)) {
+  @apply bg-muted/50 text-start font-semibold;
+}
+.alfakit-prose :where(td, th) > :where(p):not(:where(.alfakit-not-prose *)) {
+  @apply my-0;
+}
+.alfakit-prose :where(.selectedCell):not(:where(.alfakit-not-prose *)) {
+  @apply bg-primary/10;
+}
+.alfakit-prose :where(mark):not(:where(.alfakit-not-prose *)) {
+  @apply rounded-sm bg-yellow-200 px-0.5 text-inherit dark:bg-yellow-500/40;
+}
+.alfakit-prose :where(details):not(:where(.alfakit-not-prose *)) {
+  @apply my-2 rounded-md border px-3 py-2;
+}
+.alfakit-prose :where(summary):not(:where(.alfakit-not-prose *)) {
+  @apply cursor-pointer font-medium;
+}
+/* Rich editor mentions, merge tags and custom blocks (RichEditor extensions) */
+.alfakit-prose :where(.alfakit-mention):not(:where(.alfakit-not-prose *)) {
+  @apply bg-primary/10 text-primary rounded px-1 font-medium;
+}
+.alfakit-prose :where(.alfakit-merge-tag):not(:where(.alfakit-not-prose *)) {
+  @apply bg-muted text-muted-foreground rounded px-1 font-mono text-xs;
+}
+.alfakit-prose :where(.alfakit-custom-block) {
+  @apply bg-card my-2 overflow-hidden rounded-md border;
+}
+.alfakit-prose :where(.alfakit-custom-block.ProseMirror-selectednode) {
+  @apply ring-ring/50 ring-[3px];
+}
+.alfakit-prose :where(.alfakit-custom-block-header) {
+  @apply text-muted-foreground bg-muted/40 flex items-center justify-between gap-2 border-b px-2 py-1 text-xs font-medium;
+}
+.alfakit-prose :where(.alfakit-custom-block-controls) {
+  @apply flex items-center gap-1;
+}
+.alfakit-prose :where(.alfakit-custom-block-controls button) {
+  @apply hover:bg-accent hover:text-accent-foreground rounded px-1.5 py-0.5;
+}
+.alfakit-prose :where(.alfakit-custom-block-preview) {
+  @apply p-3;
+}
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply text-muted-foreground pointer-events-none float-left;
+}

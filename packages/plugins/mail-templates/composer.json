@@ -1,0 +1,86 @@
+{
+  "name": "alfasix/alfakit-mail-templates",
+  "description": "Editable email templates for AlfaKit panels: admins edit the subject and body of AlfaKit's, its plugins' and your mails per locale with merge tags, preview them with sample data, send a test to themselves, reset to the default and browse the history.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "email",
+    "mail templates",
+    "merge tags",
+    "notifications"
+  ],
+  "homepage": "https://alfakit.dev/docs/plugins/mail-templates",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit"
+  },
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "^0.1|@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitMailTemplates\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\AlfakitMailTemplates\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AlfaSix\\AlfakitMailTemplates\\AlfakitMailTemplatesServiceProvider"
+      ]
+    },
+    "alfakit": {
+      "version": "^0.1",
+      "frontend": null,
+      "showcase": {
+        "demoPath": "mail-templates",
+        "tour": [
+          "Open Settings > Mail templates",
+          "Customise the sign-in code email in Arabic",
+          "Insert a merge tag from the editor",
+          "Preview it light and dark, then send a test to yourself"
+        ],
+        "clips": [
+          "react-light",
+          "react-dark",
+          "vue-light",
+          "vue-dark",
+          "svelte-light",
+          "svelte-dark"
+        ],
+        "worksWith": [
+          "teams",
+          "helpdesk",
+          "invoices"
+        ],
+        "highlights": [
+          "Edit any AlfaKit or plugin email per language",
+          "Merge tags with validation",
+          "Sanitised rich-text bodies",
+          "Preview with sample data, light and dark",
+          "Test email to yourself only",
+          "Reset to default and version history"
+        ]
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

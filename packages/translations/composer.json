@@ -1,0 +1,47 @@
+{
+  "name": "alfasix/alfakit-translations",
+  "description": "Community translations of the Alfakit admin panel builder into many languages.",
+  "keywords": [
+    "laravel",
+    "alfakit",
+    "translations",
+    "i18n",
+    "localization",
+    "rtl"
+  ],
+  "homepage": "https://alfakit.dev/docs/localization/overview",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/alfasixbh/alfakit/issues",
+    "source": "https://github.com/alfasixbh/alfakit"
+  },
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "AlfaSix\\AlfakitTranslations\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AlfaSix\\AlfakitTranslations\\AlfakitTranslationsServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

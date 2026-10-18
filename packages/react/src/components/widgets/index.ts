@@ -1,0 +1,5 @@
+export { CalendarWidget } from './calendar-lazy'
+export { ChartWidget } from './chart-lazy'
+export { CustomizableWidgetGrid } from './dashboard-customizer'
+export { StatsOverviewWidget } from './stats-overview'
+export { WidgetGrid, WidgetRenderer } from './widgets-block'

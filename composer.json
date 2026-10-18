@@ -1,0 +1,138 @@
+{
+  "name": "alfasix/alfakit-monorepo",
+  "description": "Development monorepo for Alfakit. The publishable package lives in packages/alfakit.",
+  "type": "project",
+  "license": "MIT",
+  "homepage": "https://alfakit.dev",
+  "authors": [
+    {
+      "name": "Alfa Six",
+      "homepage": "https://alfasixbh.com",
+      "role": "Developer"
+    }
+  ],
+  "private": true,
+  "require": {
+    "php": "^8.3",
+    "alfasix/alfakit": "@dev",
+    "alfasix/alfakit-translations": "@dev"
+  },
+  "require-dev": {
+    "larastan/larastan": "^3.13",
+    "laravel/ai": "^1.2",
+    "laravel/cashier": "^16.8",
+    "laravel/cashier-paddle": "^2.8",
+    "laravel/mcp": "^1.0",
+    "laravel/pennant": "^1.26",
+    "laravel/pint": "^1.32",
+    "laravel/reverb": "^1.12",
+    "laravel/sanctum": "^4.3",
+    "orchestra/testbench": "^11.3",
+    "pestphp/pest": "^5.3",
+    "pestphp/pest-plugin-laravel": "^5.0",
+    "rector/rector": "^2.7",
+    "spatie/laravel-activitylog": "^5.1",
+    "spatie/laravel-backup": "^10.3",
+    "spatie/laravel-health": "^1.40",
+    "spatie/laravel-medialibrary": "^11.23",
+    "spatie/laravel-permission": "^8.3",
+    "spatie/laravel-ray": "^1.43",
+    "spatie/laravel-settings": "^3.9",
+    "spatie/laravel-tags": "^4.12"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "packages/*",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
+  "autoload-dev": {
+    "psr-4": {
+      "AlfaSix\\Alfakit\\Tests\\": "packages/alfakit/tests/",
+      "AlfaSix\\AlfakitShield\\": "packages/plugins/shield/src/",
+      "AlfaSix\\AlfakitShield\\Tests\\": "packages/plugins/shield/tests/",
+      "AlfaSix\\AlfakitBilling\\": "packages/plugins/billing/src/",
+      "AlfaSix\\AlfakitBilling\\Tests\\": "packages/plugins/billing/tests/",
+      "AlfaSix\\AlfakitMediaLibrary\\": "packages/plugins/media-library/src/",
+      "AlfaSix\\AlfakitMediaLibrary\\Tests\\": "packages/plugins/media-library/tests/",
+      "AlfaSix\\AlfakitSettings\\": "packages/plugins/settings/src/",
+      "AlfaSix\\AlfakitSettings\\Tests\\": "packages/plugins/settings/tests/",
+      "AlfaSix\\AlfakitTags\\": "packages/plugins/tags/src/",
+      "AlfaSix\\AlfakitTags\\Tests\\": "packages/plugins/tags/tests/",
+      "AlfaSix\\AlfakitActivityLog\\": "packages/plugins/activity-log/src/",
+      "AlfaSix\\AlfakitActivityLog\\Tests\\": "packages/plugins/activity-log/tests/",
+      "AlfaSix\\AlfakitBackup\\": "packages/plugins/backup/src/",
+      "AlfaSix\\AlfakitBackup\\Tests\\": "packages/plugins/backup/tests/",
+      "AlfaSix\\AlfakitHealth\\": "packages/plugins/health/src/",
+      "AlfaSix\\AlfakitHealth\\Tests\\": "packages/plugins/health/tests/",
+      "AlfaSix\\AlfakitCalendar\\": "packages/plugins/calendar/src/",
+      "AlfaSix\\AlfakitCalendar\\Tests\\": "packages/plugins/calendar/tests/",
+      "AlfaSix\\AlfakitTree\\": "packages/plugins/tree/src/",
+      "AlfaSix\\AlfakitTree\\Tests\\": "packages/plugins/tree/tests/",
+      "AlfaSix\\AlfakitComments\\": "packages/plugins/comments/src/",
+      "AlfaSix\\AlfakitComments\\Tests\\": "packages/plugins/comments/tests/",
+      "AlfaSix\\AlfakitKanban\\": "packages/plugins/kanban/src/",
+      "AlfaSix\\AlfakitKanban\\Tests\\": "packages/plugins/kanban/tests/",
+      "AlfaSix\\AlfakitForms\\": "packages/plugins/forms/src/",
+      "AlfaSix\\AlfakitForms\\Tests\\": "packages/plugins/forms/tests/",
+      "AlfaSix\\AlfakitCms\\": "packages/plugins/cms/src/",
+      "AlfaSix\\AlfakitCms\\Tests\\": "packages/plugins/cms/tests/",
+      "AlfaSix\\AlfakitApi\\": "packages/plugins/api/src/",
+      "AlfaSix\\AlfakitApi\\Tests\\": "packages/plugins/api/tests/",
+      "AlfaSix\\AlfakitOps\\": "packages/plugins/ops/src/",
+      "AlfaSix\\AlfakitOps\\Tests\\": "packages/plugins/ops/tests/",
+      "AlfaSix\\AlfakitWebhooks\\": "packages/plugins/webhooks/src/",
+      "AlfaSix\\AlfakitWebhooks\\Tests\\": "packages/plugins/webhooks/tests/",
+      "AlfaSix\\AlfakitFeatureFlags\\": "packages/plugins/feature-flags/src/",
+      "AlfaSix\\AlfakitFeatureFlags\\Tests\\": "packages/plugins/feature-flags/tests/",
+      "AlfaSix\\AlfakitTranslationManager\\": "packages/plugins/translation-manager/src/",
+      "AlfaSix\\AlfakitTranslationManager\\Tests\\": "packages/plugins/translation-manager/tests/",
+      "AlfaSix\\AlfakitTranslations\\Tests\\": "packages/translations/tests/",
+      "AlfaSix\\AlfakitAi\\": "packages/plugins/ai/src/",
+      "AlfaSix\\AlfakitAi\\Tests\\": "packages/plugins/ai/tests/",
+      "AlfaSix\\AlfakitTeams\\": "packages/plugins/teams/src/",
+      "AlfaSix\\AlfakitTeams\\Tests\\": "packages/plugins/teams/tests/",
+      "AlfaSix\\AlfakitHelpdesk\\": "packages/plugins/helpdesk/src/",
+      "AlfaSix\\AlfakitHelpdesk\\Tests\\": "packages/plugins/helpdesk/tests/",
+      "AlfaSix\\AlfakitFileManager\\": "packages/plugins/file-manager/src/",
+      "AlfaSix\\AlfakitFileManager\\Tests\\": "packages/plugins/file-manager/tests/",
+      "AlfaSix\\AlfakitWorkflows\\": "packages/plugins/workflows/src/",
+      "AlfaSix\\AlfakitWorkflows\\Tests\\": "packages/plugins/workflows/tests/",
+      "AlfaSix\\AlfakitInvoices\\": "packages/plugins/invoices/src/",
+      "AlfaSix\\AlfakitInvoices\\Tests\\": "packages/plugins/invoices/tests/",
+      "AlfaSix\\AlfakitAnalytics\\": "packages/plugins/analytics/src/",
+      "AlfaSix\\AlfakitAnalytics\\Tests\\": "packages/plugins/analytics/tests/",
+      "AlfaSix\\AlfakitMailTemplates\\": "packages/plugins/mail-templates/src/",
+      "AlfaSix\\AlfakitMailTemplates\\Tests\\": "packages/plugins/mail-templates/tests/"
+    }
+  },
+  "scripts": {
+    "test": [
+      "vendor/bin/pest --test-directory=packages/alfakit/tests",
+      "vendor/bin/pest --test-directory=packages/plugins packages/plugins",
+      "vendor/bin/pest --test-directory=packages/translations/tests packages/translations/tests"
+    ],
+    "test:coverage": "vendor/bin/pest --test-directory=packages/alfakit/tests --coverage --min=80",
+    "lint": "vendor/bin/pint --test",
+    "format": "vendor/bin/pint",
+    "analyse": "vendor/bin/phpstan analyse --memory-limit=2G",
+    "refactor": "vendor/bin/rector process",
+    "refactor:dry": "vendor/bin/rector process --dry-run",
+    "check": [
+      "@lint",
+      "@analyse",
+      "@test"
+    ]
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

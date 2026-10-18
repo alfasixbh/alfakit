@@ -1,0 +1,491 @@
+{
+    "$comment": "The AlfaKit plugin directory, rendered at /plugins. Add your plugin with a pull request; see /plugins/submit for the fields. Entries are sorted by the site (first-party first, then by name).",
+    "categories": {
+        "localization": "Localization",
+        "fields": "Fields and columns",
+        "widgets": "Widgets and dashboards",
+        "auth": "Authentication and security",
+        "integrations": "Integrations",
+        "themes": "Themes and design",
+        "developer-tools": "Developer tools",
+        "other": "Other"
+    },
+    "plugins": [
+        {
+            "name": "AlfaKit Translations",
+            "package": "alfasix/alfakit-translations",
+            "description": "Translations of the AlfaKit interface into Arabic, Chinese (Simplified), Dutch, French, German, Italian, Japanese, Persian, Portuguese (Brazil), Russian, Spanish and Turkish. Registered as a layered language pack, so your own lang/vendor overrides still win.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "localization",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "*",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/translations",
+                "docs": "/docs/localization/overview"
+            }
+        },
+        {
+            "name": "AlfaKit Billing",
+            "package": "alfasix/alfakit-billing",
+            "description": "Subscription billing for tenants or users: Stripe (Laravel Cashier), Paddle (Cashier Paddle) and Laravel Spark providers, a plans page with trials, the billing portal and middleware that sends unsubscribed customers to checkout.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "integrations",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/billing",
+                "docs": "/docs/plugins/billing"
+            }
+        },
+        {
+            "name": "AlfaKit Media Library",
+            "package": "alfasix/alfakit-media-library",
+            "description": "Spatie Laravel Media Library in forms, tables and infolists: a file upload that stores media in a collection (conversions, custom properties, responsive images, ordering, private disks), an image column and an image entry.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "fields",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/media-library",
+                "docs": "/docs/plugins/media-library"
+            }
+        },
+        {
+            "name": "AlfaKit Tags",
+            "package": "alfasix/alfakit-tags",
+            "description": "Spatie Laravel Tags in forms, tables and infolists: a tags input with tag types and suggestions from existing tags, saved with syncTagsWithType(), and badge columns and entries.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "fields",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/tags",
+                "docs": "/docs/plugins/tags"
+            }
+        },
+        {
+            "name": "AlfaKit Settings",
+            "package": "alfasix/alfakit-settings",
+            "description": "Settings pages for Spatie Laravel Settings: a SettingsPage that fills its form from a settings class and saves it, with fill/save hooks, authorisation and a make:alfakit-settings-page generator.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "integrations",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/settings",
+                "docs": "/docs/plugins/settings"
+            }
+        },
+        {
+            "name": "AlfaKit Shield",
+            "package": "alfasix/alfakit-shield",
+            "description": "Roles and permissions with Spatie Laravel Permission: a role resource with per-resource, page, widget and custom permission tabs, permission and policy generation, a super admin role, page and widget guards, and tenant-scoped roles.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "auth",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/shield",
+                "docs": "/docs/plugins/shield"
+            }
+        },
+        {
+            "name": "AlfaKit Activity Log",
+            "package": "alfasix/alfakit-activity-log",
+            "description": "Spatie Laravel Activitylog in your panel: an activity resource with filters and an old → new changes view, a relation manager for logged models, a timeline infolist entry, tenant-scoped logs and optional logging of create, edit and delete actions.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "integrations",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/activity-log",
+                "docs": "/docs/plugins/activity-log"
+            }
+        },
+        {
+            "name": "AlfaKit Backup",
+            "package": "alfasix/alfakit-backup",
+            "description": "Spatie Laravel Backup in your panel: backups per disk with each destination's health, queued backups (database, files or both), signed downloads and deletion, with polling and authorisation.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "developer-tools",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/backup",
+                "docs": "/docs/plugins/backup"
+            }
+        },
+        {
+            "name": "AlfaKit Health",
+            "package": "alfasix/alfakit-health",
+            "description": "Spatie Laravel Health in your panel: a health page with a card per check, a refresh action that runs the checks, and a dashboard widget summarising failures, with polling and authorisation.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "developer-tools",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/health",
+                "docs": "/docs/plugins/health"
+            }
+        },
+        {
+            "name": "AlfaKit Ops",
+            "package": "alfasix/alfakit-ops",
+            "description": "An operations toolkit: failed jobs with a redacted payload viewer and retry, queue and batch monitoring, the scheduler with \"Run now\", a log viewer that pages huge files from the end, cache and maintenance mode tasks, and system information. Deny by default.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "developer-tools",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/ops",
+                "docs": "/docs/plugins/ops"
+            }
+        },
+        {
+            "name": "AlfaKit Calendar",
+            "package": "alfasix/alfakit-calendar",
+            "description": "FullCalendar widgets: month, week, day and list views in the panel's locale, timezone and direction, events fetched per range, click and range-select actions, and authorised drag and drop and resizing.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "widgets",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/calendar",
+                "docs": "/docs/plugins/calendar"
+            }
+        },
+        {
+            "name": "AlfaKit Tree",
+            "package": "alfasix/alfakit-tree",
+            "description": "Hierarchical records as a drag-and-drop, keyboard-accessible tree: a resource tree page, a tree widget and a model trait, with per-node actions, a maximum depth and one validated, tenant-scoped save.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/tree",
+                "docs": "/docs/plugins/tree"
+            }
+        },
+        {
+            "name": "AlfaKit Kanban",
+            "package": "alfasix/alfakit-kanban",
+            "description": "Kanban boards for any Eloquent model as resource pages and dashboard widgets: columns from an enum, a relationship or a closure, rich cards, drag and drop with mouse, touch and keyboard, WIP limits, transitions, swimlanes, search and filters, and one authorised, tenant-scoped request per move.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/kanban",
+                "docs": "/docs/plugins/kanban"
+            }
+        },
+        {
+            "name": "AlfaKit File Manager",
+            "package": "alfasix/alfakit-file-manager",
+            "description": "A Google-Drive-lite file manager for any Laravel filesystem disk: folder tree, grid and list views, search, multi-selection with mouse and keyboard, drag-and-drop uploads with progress, move, copy, rename, trash with restore, previews, image editing, zip downloads, shareable and revocable links and a FileManagerPicker form field. Every operation is authorised, path-checked and tenant-scoped.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/file-manager",
+                "docs": "/docs/plugins/file-manager"
+            }
+        },
+        {
+            "name": "AlfaKit Comments",
+            "package": "alfasix/alfakit-comments",
+            "description": "Comments on any record with @mentions, emoji reactions and bell notifications: an infolist entry, a slide-over and table action and a polling widget, with author-only editing, events and tenant-scoped mentions.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/comments",
+                "docs": "/docs/plugins/comments"
+            }
+        },
+        {
+            "name": "AlfaKit Workflows",
+            "package": "alfasix/alfakit-workflows",
+            "description": "State machines and approval workflows for any model: guarded, policy-checked transitions with forms and comments, single, any-of, all-of and multi-level approvals with due dates, reminders, delegation and escalation, an approvals inbox with bulk approve, a history timeline and an accessible workflow diagram.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/workflows",
+                "docs": "/docs/plugins/workflows"
+            }
+        },
+        {
+            "name": "AlfaKit Forms",
+            "package": "alfasix/alfakit-forms",
+            "description": "A Typeform-class form builder: admins build multi-step forms with conditional logic, validation and file uploads in the panel; the public fills them on your own pages. Every submission is re-validated on the server, with spam protection, limits, schedules, email notifications, CSV/XLSX exports and stats.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "fields",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/forms",
+                "docs": "/docs/plugins/forms"
+            }
+        },
+        {
+            "name": "AlfaKit API",
+            "package": "alfasix/alfakit-api",
+            "description": "Automatic, secure JSON REST APIs for your resources: CRUD that reuses the resource form's validation and page hooks, policies on every call, tenant isolation, personal access tokens with per-resource abilities, rate limiting, RFC 9457 errors, ETags, idempotency keys and a generated OpenAPI 3.1 document with an in-panel API reference.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "integrations",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/api",
+                "docs": "/docs/plugins/api"
+            }
+        },
+        {
+            "name": "AlfaKit Webhooks",
+            "package": "alfasix/alfakit-webhooks",
+            "description": "Outgoing webhooks managed in the panel: endpoints subscribe to the events your app registers (or model events), queued deliveries signed with HMAC-SHA256, exponential backoff retries, SSRF protection with DNS pinning, auto-disable with admin notifications, a redacted deliveries log with replay, test pings, secret rotation and tenant isolation.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "integrations",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/webhooks",
+                "docs": "/docs/plugins/webhooks"
+            }
+        },
+        {
+            "name": "AlfaKit Feature Flags",
+            "package": "alfasix/alfakit-feature-flags",
+            "description": "A control centre for Laravel Pennant: turn features on for everyone, specific users or teams, or a stable percentage; schedule rollouts, keep a kill switch, edit rich values and see a full audit trail.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "developer-tools",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/feature-flags",
+                "docs": "/docs/plugins/feature-flags"
+            }
+        },
+        {
+            "name": "AlfaKit CMS",
+            "package": "alfasix/alfakit-cms",
+            "description": "Run your public site from the panel: block-based pages with drafts, autosave, a live preview, scheduling, a review workflow, revisions with plain-language compare, templates and reusable sections, SEO helper, sitemap, robots.txt, redirects and menus, rendered in React, Vue or Svelte, plus a read-only JSON API.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/cms",
+                "docs": "/docs/plugins/cms"
+            }
+        },
+        {
+            "name": "AlfaKit Translation Manager",
+            "package": "alfasix/alfakit-translation-manager",
+            "description": "Let non-developers edit your app's translations in the panel: a keyboard-driven grid of keys by language with search and filters, placeholder, HTML and plural checks, right-to-left inputs, history, an instant cached database override layer, safe export to and import from lang files, code scanning for missing and unused keys, and AI translations that are reviewed before they apply.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "localization",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/translation-manager",
+                "docs": "/docs/plugins/translation-manager"
+            }
+        },
+        {
+            "name": "AlfaKit Teams",
+            "package": "alfasix/alfakit-teams",
+            "description": "Jetstream-style teams on top of multi-tenancy: create team and team settings pages, personal teams, members with configurable roles and permissions, e-mail invitations with signed links, domain auto-join, seat limits and an optional billing seat hook, all authorised by team role.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "auth",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/teams",
+                "docs": "/docs/plugins/teams"
+            }
+        },
+        {
+            "name": "AlfaKit AI",
+            "package": "alfasix/alfakit-ai",
+            "description": "AI on laravel/ai that respects your panel's permissions: one-line AI actions (summarise, translate, extract into fields, classify), a writing assistant on text fields, natural-language table filters validated against the table's own filters, a copilot that proposes actions you confirm, an MCP server for your resources and usage logging with cost estimates.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "integrations",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/ai",
+                "docs": "/docs/plugins/ai"
+            }
+        },
+        {
+            "name": "AlfaKit Invoices",
+            "package": "alfasix/alfakit-invoices",
+            "description": "Invoices, quotes, credit notes and receipts: exact integer money in any currency (JPY, BHD…), inclusive, exclusive and compound taxes, atomic per-tenant numbering, live server-side totals, payments and overdue tracking, receivables widgets, a branded right-to-left-ready document with a pluggable PDF renderer and a signed customer link with a \"Pay now\" hook.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/invoices",
+                "docs": "/docs/plugins/invoices"
+            }
+        },
+        {
+            "name": "AlfaKit Helpdesk",
+            "package": "alfasix/alfakit-helpdesk",
+            "description": "A Zendesk-style helpdesk in your panel: tickets with SLAs on business hours, internal notes, canned replies, merging and CSAT, an agent inbox with keyboard shortcuts and real-time updates, a customer portal, a spam-protected contact form, an embeddable live chat widget, reply by email and reports.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/helpdesk",
+                "docs": "/docs/plugins/helpdesk"
+            }
+        },
+        {
+            "name": "AlfaKit Analytics",
+            "package": "alfasix/alfakit-analytics",
+            "description": "Privacy-first, cookieless web analytics for your app's public site, viewed in the panel: a 2 KB snippet and React, Vue and Svelte components, server-side tracking, daily rollups, goals, UTM and referrer sources, a dashboard with comparisons, click-to-filter top lists, realtime visitors, CSV exports and signed shared links.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/analytics",
+                "docs": "/docs/plugins/analytics"
+            }
+        },
+        {
+            "name": "AlfaKit Mail Templates",
+            "package": "alfasix/alfakit-mail-templates",
+            "description": "Editable email templates: admins edit the subject and body of AlfaKit's, its plugins' and your emails per language with merge tags, preview them light and dark, send a test to themselves, reset to the default and restore versions.",
+            "author": {
+                "name": "Alfa Six",
+                "url": "https://alfasixbh.com"
+            },
+            "category": "other",
+            "renderers": ["react", "vue", "svelte"],
+            "alfakit": "^0.1",
+            "firstParty": true,
+            "links": {
+                "repository": "https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/mail-templates",
+                "docs": "/docs/plugins/mail-templates"
+            }
+        }
+    ]
+}

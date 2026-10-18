@@ -1,0 +1,619 @@
+[
+    {
+        "label": "Getting started",
+        "items": [
+            {
+                "slug": "getting-started/introduction",
+                "title": "Introduction"
+            },
+            {
+                "slug": "getting-started/performance",
+                "title": "Performance"
+            },
+            {
+                "slug": "getting-started/installation",
+                "title": "Installation"
+            },
+            {
+                "slug": "getting-started/setup-wizard",
+                "title": "Setup wizard"
+            },
+            {
+                "slug": "getting-started/bundles",
+                "title": "Bundles"
+            },
+            {
+                "slug": "getting-started/starter-kits",
+                "title": "Inside a starter kit"
+            },
+            {
+                "slug": "getting-started/quick-start",
+                "title": "Quick start"
+            },
+            {
+                "slug": "getting-started/demo",
+                "title": "Live demo"
+            },
+            {
+                "slug": "getting-started/filament-comparison",
+                "title": "Coming from Filament"
+            },
+            {
+                "slug": "getting-started/migrating-from-filament",
+                "title": "Migrating from Filament"
+            },
+            {
+                "slug": "getting-started/ai-agents",
+                "title": "AI agents & Boost"
+            }
+        ]
+    },
+    {
+        "label": "Panels",
+        "items": [
+            {
+                "slug": "panels/configuration",
+                "title": "Configuration"
+            },
+            {
+                "slug": "panels/navigation",
+                "title": "Navigation"
+            },
+            {
+                "slug": "panels/clusters",
+                "title": "Clusters & sub-navigation"
+            },
+            {
+                "slug": "panels/authentication",
+                "title": "Authentication"
+            },
+            {
+                "slug": "panels/multi-factor-authentication",
+                "title": "Multi-factor authentication"
+            },
+            {
+                "slug": "panels/impersonation",
+                "title": "Impersonation"
+            },
+            {
+                "slug": "panels/tenancy",
+                "title": "Multi-tenancy"
+            },
+            {
+                "slug": "panels/database-per-tenant",
+                "title": "Database per tenant"
+            },
+            {
+                "slug": "panels/plugins",
+                "title": "Plugins"
+            },
+            {
+                "slug": "panels/contributing-a-plugin",
+                "title": "Contributing a plugin"
+            },
+            {
+                "slug": "panels/dashboard",
+                "title": "Dashboard"
+            },
+            {
+                "slug": "panels/command-palette",
+                "title": "Command palette"
+            },
+            {
+                "slug": "panels/keyboard-shortcuts",
+                "title": "Keyboard shortcuts"
+            },
+            {
+                "slug": "panels/realtime",
+                "title": "Real-time collaboration"
+            },
+            {
+                "slug": "panels/pwa",
+                "title": "Installable app (PWA)"
+            },
+            {
+                "slug": "panels/customer-portal",
+                "title": "Customer portals"
+            }
+        ]
+    },
+    {
+        "label": "Resources",
+        "items": [
+            {
+                "slug": "resources/overview",
+                "title": "Overview"
+            },
+            {
+                "slug": "resources/pages",
+                "title": "Pages"
+            },
+            {
+                "slug": "resources/relation-managers",
+                "title": "Relation managers"
+            },
+            {
+                "slug": "resources/nested-resources",
+                "title": "Nested resources"
+            },
+            {
+                "slug": "resources/api-resources",
+                "title": "API resources"
+            },
+            {
+                "slug": "resources/authorization",
+                "title": "Authorization"
+            },
+            {
+                "slug": "resources/global-search",
+                "title": "Global search"
+            },
+            {
+                "slug": "resources/users",
+                "title": "Users resource"
+            },
+            {
+                "slug": "resources/versions",
+                "title": "Record history"
+            }
+        ]
+    },
+    {
+        "label": "Forms",
+        "items": [
+            {
+                "slug": "forms/overview",
+                "title": "Overview"
+            },
+            {
+                "slug": "forms/fields",
+                "title": "Fields"
+            },
+            {
+                "slug": "forms/rich-editor",
+                "title": "Rich editor"
+            },
+            {
+                "slug": "forms/field-actions",
+                "title": "Field actions"
+            },
+            {
+                "slug": "forms/builder",
+                "title": "Builder"
+            },
+            {
+                "slug": "forms/choice-and-input-fields",
+                "title": "Toggle buttons, slider & code"
+            },
+            {
+                "slug": "forms/modal-table-select",
+                "title": "Modal table select"
+            },
+            {
+                "slug": "forms/layout",
+                "title": "Layout"
+            },
+            {
+                "slug": "forms/validation",
+                "title": "Validation"
+            },
+            {
+                "slug": "forms/reactivity",
+                "title": "Reactivity"
+            },
+            {
+                "slug": "forms/reusable-schemas",
+                "title": "Reusable schemas"
+            }
+        ]
+    },
+    {
+        "label": "Tables",
+        "items": [
+            {
+                "slug": "tables/overview",
+                "title": "Overview"
+            },
+            {
+                "slug": "tables/columns",
+                "title": "Columns"
+            },
+            {
+                "slug": "tables/layout",
+                "title": "Column layouts"
+            },
+            {
+                "slug": "tables/records",
+                "title": "Pagination and data"
+            },
+            {
+                "slug": "tables/performance",
+                "title": "Large tables"
+            },
+            {
+                "slug": "tables/filters",
+                "title": "Filters"
+            },
+            {
+                "slug": "tables/summaries",
+                "title": "Summaries"
+            },
+            {
+                "slug": "tables/grouping",
+                "title": "Grouping"
+            },
+            {
+                "slug": "tables/saved-views",
+                "title": "Saved views"
+            },
+            {
+                "slug": "tables/spreadsheet",
+                "title": "Spreadsheet mode"
+            },
+            {
+                "slug": "tables/actions",
+                "title": "Actions"
+            }
+        ]
+    },
+    {
+        "label": "Actions",
+        "items": [
+            {
+                "slug": "actions/overview",
+                "title": "Overview"
+            },
+            {
+                "slug": "actions/modals",
+                "title": "Modals"
+            },
+            {
+                "slug": "actions/prebuilt",
+                "title": "Prebuilt actions"
+            },
+            {
+                "slug": "actions/import-export",
+                "title": "Import & export"
+            },
+            {
+                "slug": "actions/undo",
+                "title": "Undo"
+            }
+        ]
+    },
+    {
+        "label": "Localization",
+        "items": [
+            {
+                "slug": "localization/overview",
+                "title": "Languages"
+            },
+            {
+                "slug": "localization/translatable-content",
+                "title": "Translatable content"
+            },
+            {
+                "slug": "localization/adding-a-language",
+                "title": "Adding a language"
+            },
+            {
+                "slug": "localization/rtl",
+                "title": "Right-to-left"
+            },
+            {
+                "slug": "localization/currencies-and-numbers",
+                "title": "Currencies, numbers & dates"
+            }
+        ]
+    },
+    {
+        "label": "Design",
+        "items": [
+            {
+                "slug": "design/themes",
+                "title": "Themes"
+            },
+            {
+                "slug": "design/design-options",
+                "title": "Design options"
+            },
+            {
+                "slug": "design/slots",
+                "title": "Slots"
+            },
+            {
+                "slug": "design/per-role-design",
+                "title": "Per-role and per-page design"
+            },
+            {
+                "slug": "design/customizing",
+                "title": "Customizing"
+            },
+            {
+                "slug": "design/icons",
+                "title": "Icons"
+            }
+        ]
+    },
+    {
+        "label": "More",
+        "items": [
+            {
+                "slug": "infolists/overview",
+                "title": "Infolists"
+            },
+            {
+                "slug": "widgets/overview",
+                "title": "Widgets"
+            },
+            {
+                "slug": "widgets/dashboards",
+                "title": "Dashboards"
+            },
+            {
+                "slug": "notifications/overview",
+                "title": "Notifications"
+            },
+            {
+                "slug": "pages/custom-pages",
+                "title": "Custom pages"
+            },
+            {
+                "slug": "pages/app-pages",
+                "title": "Building app pages"
+            }
+        ]
+    },
+    {
+        "label": "Outside panels",
+        "items": [
+            {
+                "slug": "standalone/overview",
+                "title": "Overview"
+            },
+            {
+                "slug": "standalone/forms",
+                "title": "Forms"
+            },
+            {
+                "slug": "standalone/tables",
+                "title": "Tables"
+            },
+            {
+                "slug": "standalone/actions-and-infolists",
+                "title": "Actions & infolists"
+            },
+            {
+                "slug": "standalone/widgets-and-notifications",
+                "title": "Widgets & notifications"
+            },
+            {
+                "slug": "standalone/customizing",
+                "title": "Customizing"
+            },
+            {
+                "slug": "standalone/testing",
+                "title": "Testing"
+            },
+            {
+                "slug": "standalone/auth-kit",
+                "title": "App auth kit"
+            },
+            {
+                "slug": "standalone/component-kit",
+                "title": "Component kit"
+            }
+        ]
+    },
+    {
+        "label": "Frontend adapters",
+        "items": [
+            {
+                "slug": "adapters/overview",
+                "title": "Overview"
+            },
+            {
+                "slug": "adapters/react",
+                "title": "React"
+            },
+            {
+                "slug": "adapters/vue",
+                "title": "Vue"
+            },
+            {
+                "slug": "adapters/svelte",
+                "title": "Svelte"
+            },
+            {
+                "slug": "adapters/custom-components",
+                "title": "Custom components"
+            }
+        ]
+    },
+    {
+        "label": "First-party plugins",
+        "items": [
+            {
+                "slug": "plugins/shield",
+                "title": "Shield"
+            },
+            {
+                "slug": "plugins/billing",
+                "title": "Billing"
+            },
+            {
+                "slug": "plugins/media-library",
+                "title": "Media Library"
+            },
+            {
+                "slug": "plugins/settings",
+                "title": "Settings"
+            },
+            {
+                "slug": "plugins/tags",
+                "title": "Tags"
+            },
+            {
+                "slug": "plugins/activity-log",
+                "title": "Activity log"
+            },
+            {
+                "slug": "plugins/backup",
+                "title": "Backup"
+            },
+            {
+                "slug": "plugins/health",
+                "title": "Health"
+            },
+            {
+                "slug": "plugins/calendar",
+                "title": "Calendar"
+            },
+            {
+                "slug": "plugins/tree",
+                "title": "Tree"
+            },
+            {
+                "slug": "plugins/comments",
+                "title": "Comments"
+            },
+            {
+                "slug": "plugins/kanban",
+                "title": "Kanban"
+            },
+            {
+                "slug": "plugins/forms",
+                "title": "Forms"
+            },
+            {
+                "slug": "plugins/api",
+                "title": "API"
+            },
+            {
+                "slug": "plugins/webhooks",
+                "title": "Webhooks"
+            },
+            {
+                "slug": "plugins/ops",
+                "title": "Ops"
+            },
+            {
+                "slug": "plugins/feature-flags",
+                "title": "Feature flags"
+            },
+            {
+                "slug": "plugins/cms",
+                "title": "CMS"
+            },
+            {
+                "slug": "plugins/translation-manager",
+                "title": "Translation manager"
+            },
+            {
+                "slug": "plugins/teams",
+                "title": "Teams"
+            },
+            {
+                "slug": "plugins/ai",
+                "title": "AI"
+            },
+            {
+                "slug": "plugins/workflows",
+                "title": "Workflows"
+            },
+            {
+                "slug": "plugins/invoices",
+                "title": "Invoices"
+            },
+            {
+                "slug": "plugins/file-manager",
+                "title": "File manager"
+            },
+            {
+                "slug": "plugins/helpdesk",
+                "title": "Helpdesk"
+            },
+            {
+                "slug": "plugins/analytics",
+                "title": "Analytics"
+            },
+            {
+                "slug": "plugins/mail-templates",
+                "title": "Mail templates"
+            }
+        ]
+    },
+    {
+        "label": "Advanced",
+        "items": [
+            {
+                "slug": "advanced/custom-components",
+                "title": "Bring your own components"
+            },
+            {
+                "slug": "advanced/schema-contract",
+                "title": "Schema contract"
+            },
+            {
+                "slug": "advanced/stability",
+                "title": "Stability and upgrades"
+            },
+            {
+                "slug": "advanced/commands",
+                "title": "Artisan commands"
+            },
+            {
+                "slug": "advanced/assets",
+                "title": "Assets"
+            },
+            {
+                "slug": "advanced/ejecting-components",
+                "title": "Ejecting components"
+            },
+            {
+                "slug": "advanced/security",
+                "title": "Security"
+            },
+            {
+                "slug": "advanced/testing",
+                "title": "Testing"
+            },
+            {
+                "slug": "advanced/accessibility",
+                "title": "Accessibility"
+            },
+            {
+                "slug": "advanced/debug-panel",
+                "title": "Debug panel"
+            },
+            {
+                "slug": "advanced/ssr",
+                "title": "Server-side rendering"
+            },
+            {
+                "slug": "advanced/enums",
+                "title": "Enums"
+            },
+            {
+                "slug": "advanced/performance",
+                "title": "Performance"
+            },
+            {
+                "slug": "advanced/deployment",
+                "title": "Deployment"
+            },
+            {
+                "slug": "advanced/doctor",
+                "title": "Doctor"
+            },
+            {
+                "slug": "advanced/dev-tools",
+                "title": "Dev tools & schema inspector"
+            },
+            {
+                "slug": "advanced/emails",
+                "title": "Emails"
+            }
+        ]
+    }
+]
