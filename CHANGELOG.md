@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-18
+
+First public beta.
+
 ### Added (beyond Filament)
 
 - `alfakit:optimize` caches the Vite manifest as PHP (skips decoding about 1 MB of JSON per full page load and hashing it for the Inertia version); `optimize:clear` removes it, and a new build falls back to the JSON until the next optimize. The translation-manager plugin reads its cache version once per request.
@@ -823,3 +827,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - A collapsible aside Section crashed in React; aside sections can now collapse in Vue and Svelte too.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
+
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/alfasixbh/alfakit/releases/tag/v0.1.0
