@@ -6,6 +6,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-19
+
+### Fixed
+
+- `alfakit:install` creates the `notifications` table migration (the generated panel turns on database notifications), and `alfakit:setup` offers to run it; signing in to a fresh panel failed with "no such table: notifications".
+- `make:alfakit-resource --soft-deletes` and `alfakit:generate --soft-deletes` on a model without `SoftDeletes` leave soft-delete support out with a warning, and `TrashedFilter` leaves the query alone on such a model; the list page failed with "Call to undefined method withoutTrashed()".
+- Vue: icons and lazily loaded components no longer cause hydration mismatches when another app on the page already loaded them; the "mounted" gate is now per app.
+- `alfakit:migrate-from-filament` rewrites `null =>` array keys (for example in `getTabs()`) to `'' =>`, which PHP 8.5 deprecates writing as `null`; `match` arms keep `null`.
+- Package READMEs load the Alfa Six logo from absolute URLs, so it shows on Packagist, npm and the read-only split repositories.
+
 ## [0.1.0] - 2026-10-18
 
 First public beta.
@@ -102,8 +112,6 @@ First public beta.
 
 ### Fixed (beyond Filament)
 
-- `alfakit:install` creates the `notifications` table migration (the generated panel turns on database notifications), and `alfakit:setup` offers to run it; signing in to a fresh panel failed with "no such table: notifications".
-- Vue: icons and lazily loaded components no longer cause hydration mismatches when another app on the page already loaded them; the "mounted" gate is now per app.
 - Deferred navigation badges on tenancy panels: the badges prop was decided before the tenant was identified, so it was never sent and the sidebar kept its placeholders. It is now resolved with the response.
 - Svelte Select, Tooltip and DropdownMenu (sub)content follow the panel direction (bits-ui defaults to left to right), like Popover.
 - the panel's toasts (including the PWA "new version" toast) start below the sticky top bar instead of covering the breadcrumbs, search and switchers, on phones too (`PANEL_TOAST_OFFSET` in `@alfakit/core`).
@@ -830,5 +838,6 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/alfasixbh/alfakit/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/alfasixbh/alfakit/releases/tag/v0.1.0
