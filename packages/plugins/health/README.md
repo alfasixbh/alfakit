@@ -1,6 +1,8 @@
 # AlfaKit Health
 
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="../../../art/alfasix/alfa-six-micro-white.svg"><img src="../../../art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
+<p><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-white.svg"><img src="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
+
+> This is a read-only split of the [AlfaKit monorepo](https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/health). Please open issues and pull requests there.
 
 [Spatie Laravel Health](https://spatie.be/docs/laravel-health) for [AlfaKit](https://alfakit.dev) panels: a Health page with the latest result of every check, a refresh action that runs the checks, and an optional dashboard widget summarising failures. It renders in React, Vue and Svelte with AlfaKit's built-in components.
 

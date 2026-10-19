@@ -1,6 +1,8 @@
 # AlfaKit Backup
 
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="../../../art/alfasix/alfa-six-micro-white.svg"><img src="../../../art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
+<p><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-white.svg"><img src="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
+
+> This is a read-only split of the [AlfaKit monorepo](https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/backup). Please open issues and pull requests there.
 
 [Spatie Laravel Backup](https://spatie.be/docs/laravel-backup) for [AlfaKit](https://alfakit.dev) panels: a Backups page that lists the backups of every destination disk with the destinations' health, creates backups in the background, and downloads and deletes them. It renders in React, Vue and Svelte with AlfaKit's built-in components.
 

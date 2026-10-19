@@ -1,6 +1,6 @@
 # @alfakit/core
 
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="../../art/alfasix/alfa-six-micro-white.svg"><img src="../../art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
+<p><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-white.svg"><img src="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
 
 Framework-agnostic schema types and state management for AlfaKit renderers. You normally do not install this directly; it is a dependency of `@alfakit/react`, `@alfakit/vue` and `@alfakit/svelte`.
 

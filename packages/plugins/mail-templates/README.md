@@ -1,6 +1,8 @@
 # AlfaKit Mail Templates
 
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="../../../art/alfasix/alfa-six-micro-white.svg"><img src="../../../art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
+<p><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-white.svg"><img src="https://raw.githubusercontent.com/alfasixbh/alfakit/main/art/alfasix/alfa-six-micro-navy.svg" alt="" width="24" height="18" align="top"></picture> <sub>by <a href="https://alfasixbh.com">Alfa Six</a></sub></p>
+
+> This is a read-only split of the [AlfaKit monorepo](https://github.com/alfasixbh/alfakit/tree/main/packages/plugins/mail-templates). Please open issues and pull requests there.
 
 Editable email templates for [AlfaKit](https://alfakit.dev) panels. Admins edit the subject and body of AlfaKit's, its plugins' and your own emails per language in the rich editor with merge tags, preview them with sample data in light and dark, send a test to themselves, reset to the default and restore earlier versions. It renders in React, Vue and Svelte with AlfaKit's built-in components.
 
