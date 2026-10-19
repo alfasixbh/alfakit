@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-10-19
+
 ### Fixed
 
 - Nested resources from the parent: the generated relation manager lists the child's first text column (rich text as plain text) instead of the ID, stays usable on the parent's View page (it only links to the nested resource's own pages), and its rows open the record.
@@ -968,7 +970,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/alfasixbh/alfakit/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/alfasixbh/alfakit/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/alfasixbh/alfakit/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/alfasixbh/alfakit/compare/v0.1.1...v0.1.2
