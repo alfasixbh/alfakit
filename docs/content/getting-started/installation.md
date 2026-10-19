@@ -69,7 +69,7 @@ php artisan make:alfakit-user
 php artisan make:alfakit-resource Post --generate
 ```
 
-`--generate` inspects the `posts` table and creates sensible form fields and table columns. Add `--view` for a view page, `--soft-deletes` for restore actions, or `--simple` for modal-based CRUD on a single page.
+`--generate` inspects the `posts` table and creates sensible form fields and table columns. Add `--view` for a view page, `--soft-deletes` for the trashed filter and restore actions (the model must use `SoftDeletes`), or `--simple` for modal-based CRUD on a single page.
 
 ## 5. Build and visit
 

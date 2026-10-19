@@ -37,6 +37,8 @@ public function panel(Panel $panel): Panel
 php artisan make:alfakit-resource Post --generate --view --soft-deletes
 ```
 
+`--soft-deletes` adds the trashed filter and restore actions, so it needs a model that uses Laravel's `SoftDeletes` trait and a table with a `deleted_at` column; leave it out otherwise.
+
 Open `app/Alfakit/Resources/PostResource.php` and shape the form:
 
 ```php

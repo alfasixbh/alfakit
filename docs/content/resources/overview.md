@@ -11,6 +11,8 @@ A resource describes how one Eloquent model is managed. Generate one with:
 php artisan make:alfakit-resource Post --generate --view --soft-deletes
 ```
 
+`--soft-deletes` adds the trashed filter and restore actions, so it needs a model that uses Laravel's `SoftDeletes` trait and a table with a `deleted_at` column; leave it out otherwise.
+
 ```php
 namespace App\Alfakit\Resources;
 
