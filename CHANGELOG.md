@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-19
+
 ### Added
 
 - `alfakit:setup` creates the admin user you sign in with: interactively it offers `make:alfakit-user`, and `--admin-email`, `--admin-name` and `--admin-password` create it unattended (panel mode). The installation guide and quick start now explain creating your first user.
@@ -944,6 +946,7 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/alfasixbh/alfakit/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/alfasixbh/alfakit/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/alfasixbh/alfakit/releases/tag/v0.1.0
