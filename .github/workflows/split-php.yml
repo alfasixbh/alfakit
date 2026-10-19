@@ -58,24 +58,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: symplify/monorepo-split-github-action@v2.3.0
-        if: "!startsWith(github.ref, 'refs/tags/')"
-        with:
-          package_directory: ${{ matrix.package.directory }}
-          repository_organization: alfasixbh
-          repository_name: ${{ matrix.package.repository }}
-          user_name: alfakit-bot
-          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+      # A plain subtree split and push: the same history as the seeded repositories, and a
+      # refused push fails the job (the previous split action reported success anyway).
+      - name: Split and push
         env:
-          GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
-      - uses: symplify/monorepo-split-github-action@v2.3.0
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          tag: ${{ github.ref_name }}
-          package_directory: ${{ matrix.package.directory }}
-          repository_organization: alfasixbh
-          repository_name: ${{ matrix.package.repository }}
-          user_name: alfakit-bot
-          user_email: 41898282+github-actions[bot]@users.noreply.github.com
-        env:
-          GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
+          SPLIT_TOKEN: ${{ secrets.SPLIT_TOKEN }}
+          DIRECTORY: ${{ matrix.package.directory }}
+          REPOSITORY: ${{ matrix.package.repository }}
+        run: |
+          set -euo pipefail
+          sha=$(git subtree split --prefix="$DIRECTORY" HEAD)
+          url="https://x-access-token:${SPLIT_TOKEN}@github.com/alfasixbh/${REPOSITORY}.git"
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            git push "$url" "$sha:refs/tags/$GITHUB_REF_NAME"
+          else
+            git push "$url" "$sha:refs/heads/main"
+          fi
