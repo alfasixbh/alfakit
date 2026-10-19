@@ -34,6 +34,7 @@ The wizard looks at your app (Inertia adapter, a Laravel starter kit, Fortify) a
 - adds **roles and permissions** with the Shield plugin;
 - configures **AI providers** for `laravel/ai` ([`alfakit:ai-setup`](setup-wizard#ai-providers)) and **realtime** notifications over Reverb ([`alfakit:realtime`](setup-wizard#realtime));
 - installs the **first-party plugins** you pick, sets your **brand colour, logo and font**, and can seed **demo data**;
+- creates the **admin user** you sign in with (it asks for a name, email address and password);
 - ends with a summary and the next steps.
 
 Every question has a flag, so CI and scripts can run it unattended, and running it again skips what is already done:
@@ -62,22 +63,31 @@ The installer:
 
 The panel has its own entry so it never collides with your application's own Inertia pages, layouts or global styles.
 
-## 4. Create a user and a resource
+## 4. Create your admin user
+
+The panel has its own login page, so you need a user to sign in with. The setup wizard offers to create one; otherwise (or for more users) run:
 
 ```bash
 php artisan make:alfakit-user
+```
+
+It asks for a name, email address and password and creates the user with your app's `User` model, already verified. Pass `--name`, `--email` and `--password` to skip the questions. Once you are in, the [users resource](../resources/users) lets you invite and manage everyone else from the panel. In a [starter kit](starter-kits) install, sign in with your app's own login and registration pages instead.
+
+## 5. Create a resource
+
+```bash
 php artisan make:alfakit-resource Post --generate
 ```
 
 `--generate` inspects the `posts` table and creates sensible form fields and table columns. Add `--view` for a view page, `--soft-deletes` for the trashed filter and restore actions (the model must use `SoftDeletes`), or `--simple` for modal-based CRUD on a single page.
 
-## 5. Build and visit
+## 6. Build and visit
 
 ```bash
 npm run dev     # or npm run build
 ```
 
-Open `/admin` and sign in. The panel has its own Vite entries, so a build made before you installed AlfaKit (starter kits ship one in `public/build`) does not include them: until you rebuild or start the dev server, the panel fails with "Unable to locate file in Vite manifest". `php artisan alfakit:doctor` checks this.
+Open `/admin` and sign in with the user from step 4. The panel has its own Vite entries, so a build made before you installed AlfaKit (starter kits ship one in `public/build`) does not include them: until you rebuild or start the dev server, the panel fails with "Unable to locate file in Vite manifest". `php artisan alfakit:doctor` checks this.
 
 ## Inside a Laravel starter kit
 

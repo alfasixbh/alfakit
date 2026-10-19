@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- `alfakit:setup` creates the admin user you sign in with: interactively it offers `make:alfakit-user`, and `--admin-email`, `--admin-name` and `--admin-password` create it unattended (panel mode). The installation guide and quick start now explain creating your first user.
+
 ### Changed
 
 - Route names of pages and resources with nested slugs now use dots instead of "/", so the starter kits' Wayfinder can generate them (breaking for code that refers to these names): `alfakit.{panel}.pages.helpdesk/inbox` → `alfakit.{panel}.pages.helpdesk.inbox`, `alfakit.{panel}.resources.cms/pages.index` → `alfakit.{panel}.resources.cms.pages.index`, `alfakit.{panel}.pages.settings-page/general` → `alfakit.{panel}.pages.settings-page.general`. URLs are unchanged. Use `Page::getUrl()` / `Resource::getUrl()` (or `Page::getRelativeRouteName()` / `Resource::getRouteBaseName()`) instead of hand-written names.

@@ -28,7 +28,8 @@ The default is a **minimal install**: every optional step defaults to _no_, no p
 8. **Branding**: writes the primary colour, logo and font to the panel provider (`->colors()`, `->brandLogo()`, `->font()`).
 9. **Demo data** (optional): writes `database/seeders/AlfakitDemoSeeder.php` (an admin and a dozen users) and seeds it. It never seeds in production.
 10. **Migrations**: asks once at the end when a step added migrations.
-11. **Summary**: every step with its result, then the next steps (plugin notes, commands to run).
+11. **Admin user** (panel mode): offers to create the user you sign in with (`make:alfakit-user`), or creates it from `--admin-email`, `--admin-name` and `--admin-password`. In starter-kit mode you sign in with the app's own login.
+12. **Summary**: every step with its result, then the next steps (plugin notes, commands to run).
 
 ## Flags
 
@@ -49,6 +50,9 @@ Every question has a flag. Without `--no-interaction` the wizard only asks what 
 | `--logo=images/logo.svg`                | A path under `public/` (written as `asset(…)`) or a URL                               |
 | `--font=Inter`                          | The font family                                                                       |
 | `--demo`                                | Write and run the demo seeder                                                         |
+| `--admin-email=you@example.com`         | Create the admin user you sign in with (needs `--admin-password`)                     |
+| `--admin-name=Admin`                    | The admin user's name (default `Admin`)                                               |
+| `--admin-password=…`                    | The admin user's password                                                             |
 | `--migrate`                             | Run the migrations without asking                                                     |
 | `--no-install`                          | Never run Composer or npm: the summary lists the commands to run yourself             |
 | `--force`                               | Overwrite generated files                                                             |
@@ -59,7 +63,8 @@ A complete unattended run:
 php artisan alfakit:setup --mode=panel --users --roles \
     --plugins=activity-log,comments,media-library \
     --brand-color="#2563eb" --logo=images/logo.svg --font=Inter \
-    --demo --migrate --no-interaction
+    --demo --migrate --admin-email=you@example.com --admin-password=secret \
+    --no-interaction
 ```
 
 Plugin slugs: `activity-log`, `ai`, `analytics`, `api`, `backup`, `billing`, `calendar`, `cms`, `comments`, `feature-flags`, `file-manager`, `forms`, `health`, `helpdesk`, `invoices`, `kanban`, `mail-templates`, `media-library`, `ops`, `settings`, `shield`, `tags`, `teams`, `translation-manager`, `tree`, `webhooks`, `workflows` (`php artisan alfakit:add --list` shows the current list with descriptions). Each is installed as `alfasix/alfakit-<slug>`. Plugins that need a spatie package (activity log, media library, tags, settings) get its migrations published; the summary lists what is left, such as adding `LogsActivity` to a model.

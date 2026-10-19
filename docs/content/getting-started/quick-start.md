@@ -31,6 +31,14 @@ public function panel(Panel $panel): Panel
 }
 ```
 
+## Signing in
+
+The panel lives at `/admin` with its own login page. If the setup wizard didn't create your user, create one now:
+
+```bash
+php artisan make:alfakit-user
+```
+
 ## The models
 
 AlfaKit builds on your Eloquent models, so create them first (skip this if your app already has them):
