@@ -39,6 +39,7 @@
     <Input
       id={field.id}
       name={component.name}
+      dir="ltr"
       value={field.value ?? ''}
       oninput={(event) => field.setValue(event.currentTarget.value)}
       onblur={field.blur}

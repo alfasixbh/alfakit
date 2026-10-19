@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+  import { useAppMounted } from '../../lib/hydration.svelte'
   import { formatKeyBinding, globalSearchSuffix, SHORTCUT_IDS, shortcuts } from '@alfakit/core'
   import { router } from '@inertiajs/svelte'
   import SearchIcon from '@lucide/svelte/icons/search'
@@ -47,6 +48,8 @@
   let open = $state(false)
   // Undefined on the server and during hydration (nothing loads there), so the markup matches.
   let Palette = $state(untrack(() => loader.current))
+  // Per app: another app on the page may have loaded it, but this one's server markup has none.
+  const appMounted = useAppMounted()
 
   const preload = () => {
     void loader.load().catch(() => {})
@@ -118,6 +121,7 @@
         class="text-muted-foreground hidden text-[10px] sm:inline">{suffix.text}</span
       >{/if}
     {#if hydrated.current && suffix?.type === 'keyBinding'}<kbd
+        dir="ltr"
         class="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline"
         >{formatKeyBinding(suffix.keyBinding)}</kbd
       >{/if}
@@ -125,5 +129,5 @@
   <Slot name="global-search.after" />
   <!-- The dialog's code loads on first open (click or shortcut); hovering or focusing the
        field fetches it ahead. Not rendered on the server, like the closed dialog before it. -->
-  {#if Palette}<Palette bind:open />{/if}
+  {#if Palette && appMounted.current}<Palette bind:open />{/if}
 {/if}

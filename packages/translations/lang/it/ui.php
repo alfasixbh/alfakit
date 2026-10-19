@@ -398,6 +398,15 @@ return [
         'size' => 'Dimensione',
         'no_tree' => 'Il server non ha inviato un albero dello schema per questa pagina.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => 'Rimuovi :name',
+        'move_up' => 'Sposta :name su',
+        'move_down' => 'Sposta :name giù',
+        'edit' => 'Modifica :name',
+        'open' => 'Apri :name',
+        'download' => 'Scarica :name',
+    ],
     'image_editor' => [
         'title' => 'Modifica immagine',
         'keyboard_hint' => 'Le frecce spostano l’area di ritaglio. Maiusc e le frecce la ridimensionano.',

@@ -1,6 +1,7 @@
 import { FormStore, type SchemaComponent, type TableSchema } from '@alfakit/core'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { FormProvider } from '../src/components/form/form-context'
+import { ShortcutKeys } from '../src/components/panel/shortcut-keys'
 import { SchemaRenderer } from '../src/components/schema/schema-renderer'
 import { DataTable } from '../src/components/table/table-block'
 import { Wrapper, setPageProps } from './mocks'
@@ -189,5 +190,19 @@ describe('table accessibility', () => {
     expect(rows[0]).toHaveTextContent('World')
     expect(rows[1]).toHaveTextContent('Hello')
     expect(screen.getByText('Row moved to position 2 of 2')).toBeInTheDocument()
+  })
+})
+
+describe('key bindings', () => {
+  it('keeps the keys of a binding in left-to-right order in right-to-left pages', () => {
+    const { container } = render(
+      <Wrapper>
+        <ShortcutKeys binding="mod+k" />
+      </Wrapper>,
+    )
+
+    const keys = [...container.querySelectorAll('kbd')]
+    expect(keys.length).toBeGreaterThan(0)
+    expect(keys.every((key) => key.getAttribute('dir') === 'ltr')).toBe(true)
   })
 })

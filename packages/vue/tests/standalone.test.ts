@@ -1,8 +1,10 @@
 import type { StandaloneComponentSchema } from '@alfakit/core'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
+import { Toaster as AppToaster } from 'vue-sonner'
 import contactForm from '../../core/tests/fixtures/standalone/contact-form.json'
 import postsTable from '../../core/tests/fixtures/standalone/posts-table.json'
+import { showToast } from '../src/components/notifications/flash-toasts'
 import { AlfakitComponent, AlfakitToaster, configureAlfakit } from '../src/standalone'
 import { flush } from './mocks'
 
@@ -108,6 +110,26 @@ describe('AlfakitComponent (outside panels)', () => {
 
     expect(wrapper.find('[data-testid="custom-layout"]').text()).toBe('1 block')
     expect(wrapper.find('input[type="email"]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it("shows a toast once although the app's layout mounts its own toaster", async () => {
+    const Page = defineComponent({ setup: () => () => [h(AppToaster), h(AlfakitToaster)] })
+    const wrapper = mount(Page, { attachTo: document.body })
+    await flush()
+
+    showToast({ id: 'n1', title: 'Saved once', status: 'success' } as never)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flush()
+
+    const toasts = Array.from(document.querySelectorAll('[data-sonner-toast]')).filter((toast) =>
+      toast.textContent?.includes('Saved once'),
+    )
+
+    expect(toasts).toHaveLength(1)
+    // In Alfakit's own toaster (top), not the app's id-less one (bottom).
+    expect(toasts[0]?.closest('[data-sonner-toaster]')?.getAttribute('data-y-position')).toBe('top')
 
     wrapper.unmount()
   })

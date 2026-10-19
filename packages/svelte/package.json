@@ -85,7 +85,7 @@
     "**/*.css"
   ],
   "scripts": {
-    "build": "svelte-package -i src -o dist && cp src/styles.css dist/styles.css && cp ../core/themes.css dist/themes.css && cp ../core/standalone.css dist/standalone.css && node ../../scripts/eject-manifest.mjs .",
+    "build": "svelte-package -i src -o dist && cp src/styles.css dist/styles.css && cp ../core/themes.css dist/themes.css && cp ../core/components.css dist/components.css && cp ../core/standalone.css dist/standalone.css && node ../../scripts/eject-manifest.mjs .",
     "dev": "svelte-package -i src -o dist --watch",
     "typecheck": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run"

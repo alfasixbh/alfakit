@@ -2,6 +2,7 @@
   import type { OpenModal } from '@alfakit/core'
   import {
     actionFormComponent,
+    formIdPrefix,
     actionFormParams,
     confirmModalClose,
     FormStore,
@@ -103,6 +104,8 @@
     return new FormStore(schema.form, {
       token: context.token,
       component: actionFormComponent(action, context),
+      // Own field ids: the modal opens over a form whose fields may share names.
+      idPrefix: formIdPrefix(actionFormComponent(action, context)),
       record: context.record ?? null,
       refreshUrl: panel.endpoints.schemaRefresh,
       optionsUrl: panel.endpoints.schemaOptions,
@@ -242,11 +245,19 @@
     if (!schema.closeByEscaping) event.preventDefault()
   }
 
-  function autofocus(node: HTMLElement, enabled: boolean) {
-    if (enabled) {
-      requestAnimationFrame(() => node.focus())
-    }
-  }
+  // `modalAutofocus()` on a modal without a form focuses its submit button (React and Vue
+  // put `autofocus` on it); after the dialog's own initial focus, hence the frame.
+  let submitButton = $state<HTMLElement | null>(null)
+  let autofocused = false
+
+  $effect(() => {
+    const button = submitButton
+
+    if (!button || autofocused || !schema.autofocus || form) return
+
+    autofocused = true
+    requestAnimationFrame(() => button.focus())
+  })
 </script>
 
 {#snippet header()}
@@ -368,6 +379,7 @@
     {/if}
     {#if schema.submitLabel && submitVisible}
       <Button
+        bind:ref={submitButton}
         type="button"
         class={colorClass(solidButtonColorClasses, schema.submitColor, 'primary')}
         onclick={submit}
@@ -439,9 +451,6 @@
               'bg-background sticky bottom-0 -mx-6 -mb-6 rounded-b-lg border-t px-6 py-4',
           )}>{@render footer()}</DialogFooter
         >{/if}
-      <span class="sr-only" use:autofocus={schema.autofocus && !form}
-        >{t('close', {}, 'Close')}</span
-      >
     </DialogContent>
   </Dialog>
 {/if}

@@ -1,4 +1,4 @@
-import type { Breakpoints, IconName, Option } from './common'
+import type { Breakpoints, Color, IconName, Option } from './common'
 import type { BaseField } from './components'
 
 // ---------------------------------------------------------------- Summaries
@@ -54,6 +54,10 @@ export interface TableRecordGroupSchema {
   key: string
   title: string
   description?: string
+  /** The enum's icon (`HasIcon`) when the group state is an enum. */
+  icon?: IconName
+  /** The enum's colour (`HasColor`), applied to the icon. */
+  color?: Color
   summary?: ColumnSummariesSchema
   collapsible?: boolean
 }

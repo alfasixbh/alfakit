@@ -50,6 +50,7 @@ function request() {
     <span class="sr-only sm:not-sr-only sm:flex-1 sm:text-start">{{ placeholder }}</span>
     <kbd
       v-if="hydrated && binding"
+      dir="ltr"
       class="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline"
       >{{ formatKeyBinding(binding) }}</kbd
     >

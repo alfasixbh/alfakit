@@ -74,10 +74,10 @@ php artisan make:alfakit-resource Post --generate
 ## 5. Build and visit
 
 ```bash
-npm run dev
+npm run dev     # or npm run build
 ```
 
-Open `/admin` and sign in.
+Open `/admin` and sign in. The panel has its own Vite entries, so a build made before you installed AlfaKit (starter kits ship one in `public/build`) does not include them: until you rebuild or start the dev server, the panel fails with "Unable to locate file in Vite manifest". `php artisan alfakit:doctor` checks this.
 
 ## Inside a Laravel starter kit
 

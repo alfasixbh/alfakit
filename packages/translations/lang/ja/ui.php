@@ -398,6 +398,15 @@ return [
         'size' => 'サイズ',
         'no_tree' => 'サーバーはこのページのスキーマツリーを送信しませんでした。',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => ':name を削除',
+        'move_up' => ':name を上へ移動',
+        'move_down' => ':name を下へ移動',
+        'edit' => ':name を編集',
+        'open' => ':name を開く',
+        'download' => ':name をダウンロード',
+    ],
     'image_editor' => [
         'title' => '画像を編集',
         'keyboard_hint' => '矢印キーで切り抜き範囲を移動、Shift と矢印キーでサイズを変更します。',

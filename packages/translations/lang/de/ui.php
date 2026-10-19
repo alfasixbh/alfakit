@@ -398,6 +398,15 @@ return [
         'size' => 'Größe',
         'no_tree' => 'Der Server hat keinen Schema-Baum für diese Seite gesendet.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => ':name entfernen',
+        'move_up' => ':name nach oben verschieben',
+        'move_down' => ':name nach unten verschieben',
+        'edit' => ':name bearbeiten',
+        'open' => ':name öffnen',
+        'download' => ':name herunterladen',
+    ],
     'image_editor' => [
         'title' => 'Bild bearbeiten',
         'keyboard_hint' => 'Pfeiltasten verschieben den Zuschnitt. Umschalt und Pfeiltasten ändern seine Größe.',

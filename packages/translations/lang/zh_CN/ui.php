@@ -398,6 +398,15 @@ return [
         'size' => '大小',
         'no_tree' => '服务器没有为此页面发送架构树。',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => '移除 :name',
+        'move_up' => '上移 :name',
+        'move_down' => '下移 :name',
+        'edit' => '编辑 :name',
+        'open' => '打开 :name',
+        'download' => '下载 :name',
+    ],
     'image_editor' => [
         'title' => '编辑图片',
         'keyboard_hint' => '方向键移动裁剪区域，Shift 加方向键调整大小。',

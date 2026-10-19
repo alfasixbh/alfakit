@@ -149,7 +149,7 @@
       {:else if tenancy.profileUrl}
         <DropdownMenuItem onSelect={() => router.visit(tenancy.profileUrl ?? '/')}
           ><Icon name="alfakit::panels.tenant-menu.profile-button" fallback={SettingsIcon} />
-          {t('tenancy.profile', {}, 'Settings')}</DropdownMenuItem
+          {tenancy.profileLabel ?? t('tenancy.profile', {}, 'Settings')}</DropdownMenuItem
         >
       {/if}
       {#if tenancy.menu}<MenuItemEntries items={tenancy.menu} menu="tenantMenu" />{/if}
@@ -158,7 +158,7 @@
       {:else if tenancy.registrationUrl}
         <DropdownMenuItem onSelect={() => router.visit(tenancy.registrationUrl ?? '/')}
           ><Icon name="alfakit::panels.tenant-menu.registration-button" fallback={PlusIcon} />
-          {t('tenancy.register', {}, 'New')}</DropdownMenuItem
+          {tenancy.registrationLabel ?? t('tenancy.register', {}, 'New')}</DropdownMenuItem
         >
       {/if}
     </DropdownMenuContent>

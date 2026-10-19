@@ -354,7 +354,7 @@ describe('file manager controller', () => {
     expect(uploader).not.toHaveBeenCalled()
     expect(controller.state.uploads[0]).toMatchObject({
       status: 'error',
-      error: 'big.bin is larger than 1,000 byte.',
+      error: 'big.bin is larger than 1,000 bytes.',
     })
   })
 
@@ -416,7 +416,10 @@ describe('file manager controller', () => {
     const formatter = new LocaleFormatter('en')
 
     expect(fileManagerSize(1536, formatter)).toBe('1.5 kB')
-    expect(fileManagerSize(0, formatter)).toBe('0 byte')
+    expect(fileManagerSize(0, formatter)).toBe('0 bytes')
+    expect(fileManagerSize(1, formatter)).toBe('1 byte')
+    expect(fileManagerSize(11, formatter)).toBe('11 bytes')
+    expect(fileManagerSize(11, new LocaleFormatter('fr'))).toMatch(/^11\s+octets$/u)
     expect(fileManagerExpiry(60)).toEqual({ key: 'expiry_hours', count: 1 })
     expect(fileManagerExpiry(10080)).toEqual({ key: 'expiry_days', count: 7 })
     expect(fileManagerExpiry(45)).toEqual({ key: 'expiry_minutes', count: 45 })

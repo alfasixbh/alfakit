@@ -398,6 +398,15 @@ return [
         'size' => 'الحجم',
         'no_tree' => 'لم يرسل الخادم شجرة مخطط لهذه الصفحة.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => 'إزالة :name',
+        'move_up' => 'نقل :name لأعلى',
+        'move_down' => 'نقل :name لأسفل',
+        'edit' => 'تعديل :name',
+        'open' => 'فتح :name',
+        'download' => 'تنزيل :name',
+    ],
     'image_editor' => [
         'title' => 'تعديل الصورة',
         'keyboard_hint' => 'مفاتيح الأسهم تحرك منطقة القص. Shift مع الأسهم يغير حجمها.',

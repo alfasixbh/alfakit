@@ -1,5 +1,5 @@
 import type { BaseField, FieldAriaAttributes, FormState, FormStore } from '@alfakit/core'
-import { fieldAria } from '@alfakit/core'
+import { fieldAria, fieldDomId } from '@alfakit/core'
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
 import { useStore, useStoreSelector } from '../../hooks/use-store'
 
@@ -65,10 +65,7 @@ export function useField<T = unknown>(field: BaseField): FieldBinding<T> {
   const setValue = useCallback((next: T) => store.setValue(path, next), [store, path])
   const blur = useCallback(() => store.blur(path), [store, path])
 
-  const id = useMemo(
-    () => field.id ?? `alfakit-${path.replace(/[^a-zA-Z0-9_-]/g, '-')}`,
-    [field.id, path],
-  )
+  const id = useMemo(() => field.id ?? fieldDomId(store.idPrefix, path), [field.id, store, path])
 
   const aria = useMemo(
     () =>

@@ -56,7 +56,7 @@ it('lists the backups of each disk, newest first', function (): void {
             ['state' => basename($new), 'description' => $new],
             ['state' => basename($old), 'description' => $old],
         ])
-        ->and($table['records'][1]['cells']['size']['state'])->toBe('2.00 KB')
+        ->and($table['records'][1]['cells']['size']['state'])->toBe('2 kB')
         ->and($table['records'][1]['cells']['disk']['state'])->toBe('backups');
 
     alfakit()->testPage(Backups::class, panel: 'backups')
@@ -82,7 +82,7 @@ it('shows the health of each destination', function (): void {
 
     expect($widget['stats'][0]['value'])->toBe('Healthy')
         ->and($widget['stats'][0]['color'])->toBe('success')
-        ->and($widget['stats'][0]['description'])->toStartWith('1 backup · 1.00 KB used · newest');
+        ->and($widget['stats'][0]['description'])->toStartWith('1 backup · 1 kB used · newest');
 });
 
 it('queues a backup with the chosen option instead of running it', function (string $option, array $commandOptions): void {

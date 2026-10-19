@@ -398,6 +398,15 @@ return [
         'size' => 'Tamaño',
         'no_tree' => 'El servidor no envió un árbol de esquema para esta página.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => 'Quitar :name',
+        'move_up' => 'Mover :name arriba',
+        'move_down' => 'Mover :name abajo',
+        'edit' => 'Editar :name',
+        'open' => 'Abrir :name',
+        'download' => 'Descargar :name',
+    ],
     'image_editor' => [
         'title' => 'Editar imagen',
         'keyboard_hint' => 'Las flechas mueven el área de recorte. Mayús y las flechas cambian su tamaño.',

@@ -199,6 +199,7 @@ describe('fused group', () => {
     const controls = container.querySelector('[data-slot="fused-group-controls"]')!
 
     expect(screen.getByRole('group', { name: 'Phone' })).toBeInTheDocument()
+    expect(screen.getByText('Phone')).toHaveAttribute('data-slot', 'label')
     expect(controls.className).toContain('lg:grid-cols-2')
     expect(controls.querySelectorAll('input')).toHaveLength(2)
     expect(screen.getByLabelText('code')).toBeInTheDocument()

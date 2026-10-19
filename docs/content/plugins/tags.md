@@ -40,6 +40,29 @@ use AlfaSix\AlfakitTags\TagsPlugin;
 $panel->plugin(TagsPlugin::make());
 ```
 
+### When the app already has a `tags` table
+
+Spatie's migration creates `tags` and `taggables`. If your app has its own `tags` table, `php artisan alfakit:add tags` says so and doesn't publish the migration (it would fail on every `migrate`). Give Spatie a table of its own:
+
+```php
+namespace App\Models;
+
+use Spatie\Tags\Tag;
+
+class SpatieTag extends Tag
+{
+    protected $table = 'spatie_tags';
+
+    // The pivot column stays `tag_id`.
+    public function getForeignKey(): string
+    {
+        return 'tag_id';
+    }
+}
+```
+
+Set it as `'tag_model' => App\Models\SpatieTag::class` in `config/tags.php` (`php artisan vendor:publish --tag=tags-config`), publish the migration (`php artisan vendor:publish --tag=tags-migrations`), change `tags` to `spatie_tags` in it (`Schema::create`, `constrained('spatie_tags')`, `dropIfExists`) and migrate. `SpatieTagsInput` uses the configured model. A model that already has a `tags()` relationship can't use `HasTags` as well.
+
 ## Tag types
 
 Spatie tags can have a type (`categories`, `colors`…). Each component takes `type()`:

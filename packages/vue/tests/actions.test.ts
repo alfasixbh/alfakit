@@ -45,6 +45,13 @@ describe('actions', () => {
     expect(link?.attributes('href')).toBe('/posts/create')
     expect(wrapper.findAll('button').some((node) => node.text().includes('Delete'))).toBe(true)
     expect(wrapper.find('button[aria-label="Actions"]').exists()).toBe(true)
+    // Link actions cancel the size variant's `has-[>svg]:px-*`, so an icon never pads them.
+    expect(
+      wrapper
+        .findAll('button')
+        .find((node) => node.text().includes('Delete'))
+        ?.classes(),
+    ).toContain('has-[>svg]:px-0')
 
     wrapper.unmount()
   })

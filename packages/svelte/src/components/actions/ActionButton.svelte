@@ -4,6 +4,8 @@
     bindsKeyBindings,
     formatKeyBinding,
     iconButtonSize,
+    isActionLoading,
+    isActionProcessing,
     registerKeyBindings,
     resolveActionSize,
   } from '@alfakit/core'
@@ -50,12 +52,9 @@
 
   const runner = useActionRunner()
   const runnerState = useStore(runner.store)
-  const loading = $derived(runnerState.current.loading === action.name)
-  const processing = $derived(
-    runnerState.current.modals.some(
-      (modal) => modal.action.name === action.name && modal.processing,
-    ),
-  )
+  // Only this run (this record's button), not the same action in every table row.
+  const loading = $derived(isActionLoading(runnerState.current, action, context))
+  const processing = $derived(isActionProcessing(runnerState.current, action, context))
 
   const variant = $derived(
     variantProp ??
@@ -87,7 +86,7 @@
         return colorClass(ghostButtonColorClasses, color, 'gray')
       case 'link':
         return cn(
-          'h-auto p-0 underline-offset-4 hover:underline',
+          'h-auto p-0 underline-offset-4 hover:underline has-[>svg]:px-0',
           colorClass(textColorClasses, color, 'primary'),
         )
       case 'icon-button':
@@ -254,7 +253,9 @@
     </TooltipTrigger>
     <TooltipContent>
       {tooltip}
-      {#if shortcut}<kbd class="ms-2 rounded border border-white/20 px-1 font-mono text-[10px]"
+      {#if shortcut}<kbd
+          dir="ltr"
+          class="ms-2 rounded border border-white/20 px-1 font-mono text-[10px]"
           >{formatKeyBinding(shortcut)}</kbd
         >{/if}
     </TooltipContent>

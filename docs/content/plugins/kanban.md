@@ -23,7 +23,7 @@ use AlfaSix\AlfakitKanban\KanbanPlugin;
 $panel->plugin(KanbanPlugin::make());
 ```
 
-No migration is needed: the board reads a status column (or a `BelongsTo` relationship) and, to keep cards in order within a column, an integer order column on your table:
+No migration is needed: the board reads a status column (or a `BelongsTo` relationship) and, to keep cards in order within a column, an integer order column on your table. The board orders by a `sort` column by default; on a table without one, set `protected static ?string $orderAttribute = null;` on the page (cards then keep key order), or the board fails with "no such column: sort":
 
 ```php
 Schema::table('tasks', function (Blueprint $table): void {
@@ -72,6 +72,8 @@ public static function getPages(): array
 ```
 
 The cards come from the resource's query, so tenancy, global scopes and nested resources apply, and the user needs the resource's `viewAny` ability. With `getFormSchema()` the page has a create action in its header, every column a **+** button that opens the same modal with the column filled in, clicking a card opens a view modal and every card has a menu with view, edit and delete. Without fields, view and edit open the resource's pages when it has them. `content()` components are shown below the board.
+
+The page is titled after the board, "Tasks board" (the resource's plural model label with the translated `alfakit-kanban::kanban.page.title`), with the resource list in the breadcrumbs before it; its sub-navigation label is the same. Set `protected static ?string $title = 'Sprint board';` (and `$navigationLabel` for the sub-navigation) to name it yourself.
 
 ## A board widget
 

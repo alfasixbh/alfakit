@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { resolveToastPosition, type ToastPosition } from '@alfakit/core'
+import { resolveToastPosition, STARTER_KIT_TOASTER_ID, type ToastPosition } from '@alfakit/core'
 import { onMounted, onUnmounted } from 'vue'
+import { setToasterId } from '../components/notifications/flash-toasts'
 import Toaster from '../components/ui/Toaster.vue'
 import { useOptionalAlfakit } from '../context'
 import { claimToaster, createStandaloneContext, ensureFlashToasts } from './runtime'
@@ -38,15 +39,24 @@ let release: (() => void) | null = null
 onMounted(() => {
   if (!props.claimed) release = claimToaster()
 
+  // Our own toaster gets an id, so a `<Toaster />` the app's layout already mounts (the
+  // starter kits have one) doesn't show every Alfakit toast a second time.
+  if (props.toaster) setToasterId(STARTER_KIT_TOASTER_ID)
+
   ensureFlashToasts(context.registry)
 })
 
-onUnmounted(() => release?.())
+onUnmounted(() => {
+  release?.()
+
+  if (props.toaster) setToasterId(undefined)
+})
 </script>
 
 <template>
   <Toaster
     v-if="props.toaster"
+    :id="STARTER_KIT_TOASTER_ID"
     :position="resolveToastPosition(props.position, props.dir)"
     :dir="props.dir"
     rich-colors

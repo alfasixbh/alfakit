@@ -1,5 +1,6 @@
-import { resolveToastPosition, type ToastPosition } from '@alfakit/core'
+import { resolveToastPosition, STARTER_KIT_TOASTER_ID, type ToastPosition } from '@alfakit/core'
 import { useEffect, useMemo } from 'react'
+import { setToasterId } from '../components/notifications/flash-toasts'
 import { Toaster } from '../components/ui/sonner'
 import { useOptionalAlfakit, type AlfakitContextValue } from '../context'
 import { claimToaster, createStandaloneContext, ensureFlashToasts } from './runtime'
@@ -46,7 +47,25 @@ export function AlfakitToaster({
     ensureFlashToasts(context.registry)
   }, [context])
 
+  // Our own toaster gets an id, so a `<Toaster />` the app's layout already mounts (the
+  // starter kits have one) doesn't show every Alfakit toast a second time.
+  useEffect(() => {
+    if (!toaster) return undefined
+
+    setToasterId(STARTER_KIT_TOASTER_ID)
+
+    return () => setToasterId(undefined)
+  }, [toaster])
+
   if (!toaster) return null
 
-  return <Toaster position={resolveToastPosition(position, dir)} dir={dir} richColors closeButton />
+  return (
+    <Toaster
+      id={STARTER_KIT_TOASTER_ID}
+      position={resolveToastPosition(position, dir)}
+      dir={dir}
+      richColors
+      closeButton
+    />
+  )
 }

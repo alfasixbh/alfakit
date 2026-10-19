@@ -8,6 +8,13 @@ return [
         'saved' => '並び順を保存しました',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => ':titleを表示',
+        'edit' => ':titleを編集',
+        'delete' => ':titleを削除',
+    ],
+
     'validation' => [
         'invalid' => 'ツリーを読み取れませんでした。',
         'unknown_record' => 'ツリー内のレコードが存在しません。ページを再読み込みしてもう一度お試しください。',

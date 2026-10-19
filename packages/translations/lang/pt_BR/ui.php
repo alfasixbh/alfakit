@@ -398,6 +398,15 @@ return [
         'size' => 'Tamanho',
         'no_tree' => 'O servidor não enviou uma árvore de esquema para esta página.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => 'Remover :name',
+        'move_up' => 'Mover :name para cima',
+        'move_down' => 'Mover :name para baixo',
+        'edit' => 'Editar :name',
+        'open' => 'Abrir :name',
+        'download' => 'Baixar :name',
+    ],
     'image_editor' => [
         'title' => 'Editar imagem',
         'keyboard_hint' => 'As setas movem a área de corte. Shift e as setas a redimensionam.',

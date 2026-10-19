@@ -6,10 +6,10 @@ import {
   editableImageName,
   fetchEditableImage,
   fieldMemory,
+  fileManagerSize,
   filesFromClipboard,
   fileUploadAccept,
   fileUploadPaths,
-  formatBytes,
   insertUploadedFile,
   moveRepeaterItem,
   panelUploadOptions,
@@ -29,7 +29,7 @@ import {
   XIcon,
 } from 'lucide-react'
 import { useRef, useState, type ClipboardEvent, type DragEvent } from 'react'
-import { useChoice, usePanel, useT } from '../../context'
+import { useChoice, useFormatter, usePanel, useT } from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { cn } from '../../lib/utils'
 import { useField, useFormStore } from '../form/form-context'
@@ -47,6 +47,7 @@ interface LocalFile extends UploadedFile {
 
 export function FileUploadField({ component }: { component: FileUploadSchema }) {
   const t = useT()
+  const formatter = useFormatter()
   const choice = useChoice()
   const panel = usePanel()
   const { value, setValue, error, id, disabled, readOnly, aria } = useField<
@@ -375,7 +376,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
         variant={circle ? 'secondary' : 'ghost'}
         size="icon-xs"
         className={cn(circle && 'rounded-full shadow')}
-        aria-label={t('remove', {}, 'Remove')}
+        aria-label={t('file_upload.remove', { name: file.name }, 'Remove :name')}
         onClick={() => {
           if (file.error || file.progress !== undefined) {
             releasePreview(file.preview)
@@ -467,7 +468,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
                           : file.progress !== undefined && !file.error
                             ? (component.uploadingMessage ?? t('form.uploading', {}, 'Uploading…'))
                             : file.size
-                              ? formatBytes(file.size)
+                              ? fileManagerSize(file.size, formatter)
                               : file.temporary
                                 ? t('form.uploading', {}, 'Pending')
                                 : '')}
@@ -486,7 +487,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
                         type="button"
                         variant="ghost"
                         size="icon-xs"
-                        aria-label={t('form.move_up', {}, 'Move up')}
+                        aria-label={t('file_upload.move_up', { name: file.name }, 'Move :name up')}
                         disabled={index === 0}
                         onClick={() => move(index, index - 1)}
                       >
@@ -496,7 +497,11 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
                         type="button"
                         variant="ghost"
                         size="icon-xs"
-                        aria-label={t('form.move_down', {}, 'Move down')}
+                        aria-label={t(
+                          'file_upload.move_down',
+                          { name: file.name },
+                          'Move :name down',
+                        )}
                         disabled={index === files.length - 1}
                         onClick={() => move(index, index + 1)}
                       >
@@ -510,7 +515,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
                       variant={circle ? 'secondary' : 'ghost'}
                       size="icon-xs"
                       className={cn(circle && 'rounded-full shadow')}
-                      aria-label={t('image_editor.title', {}, 'Edit image')}
+                      aria-label={t('file_upload.edit', { name: file.name }, 'Edit :name')}
                       title={t('image_editor.title', {}, 'Edit image')}
                       data-action="edit-image"
                       onClick={() => void editExisting(file)}
@@ -524,7 +529,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
                         href={uploadedFileLinks(file).open}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={`${t('open', {}, 'Open')} ${t('opens_in_new_tab', {}, '(opens in a new tab)')}`}
+                        aria-label={`${t('file_upload.open', { name: file.name }, 'Open :name')} ${t('opens_in_new_tab', {}, '(opens in a new tab)')}`}
                       >
                         <ExternalLinkIcon />
                       </a>
@@ -535,7 +540,11 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
                       <a
                         href={uploadedFileLinks(file).download}
                         download
-                        aria-label={t('download', {}, 'Download')}
+                        aria-label={t(
+                          'file_upload.download',
+                          { name: file.name },
+                          'Download :name',
+                        )}
                       >
                         <DownloadIcon />
                       </a>
@@ -596,7 +605,9 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
                 <span className="text-muted-foreground text-xs">
                   {[
                     component.acceptedFileTypes?.join(', '),
-                    component.maxSize ? `≤ ${formatBytes(component.maxSize * 1024, 0)}` : null,
+                    component.maxSize
+                      ? `≤ ${fileManagerSize(component.maxSize * 1024, formatter)}`
+                      : null,
                     component.minFiles
                       ? choice(
                           'form.min_files',

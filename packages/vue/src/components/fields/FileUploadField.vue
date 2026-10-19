@@ -22,7 +22,7 @@ import {
   fileUploadAccept,
   filesFromClipboard,
   fileUploadPaths,
-  formatBytes,
+  fileManagerSize,
   insertUploadedFile,
   moveRepeaterItem,
   requestJson,
@@ -43,7 +43,7 @@ import {
 } from '@lucide/vue'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useStore } from '../../composables/use-store'
-import { useChoice, usePanel, useT } from '../../context'
+import { useChoice, useFormatter, usePanel, useT } from '../../context'
 import { cn } from '../../lib/utils'
 import { useField, useFormStore } from '../form/form-context'
 import FieldWrapper from '../schema/FieldWrapper.vue'
@@ -59,6 +59,7 @@ interface LocalFile extends UploadedFile {
 
 const props = defineProps<{ component: FileUploadSchema }>()
 const t = useT()
+const formatter = useFormatter()
 const choice = useChoice()
 const panel = usePanel()
 const {
@@ -424,7 +425,9 @@ const onItemDrop = (event: DragEvent, index: number) => {
 const hints = computed(() =>
   [
     props.component.acceptedFileTypes?.join(', '),
-    props.component.maxSize ? `≤ ${formatBytes(props.component.maxSize * 1024, 0)}` : null,
+    props.component.maxSize
+      ? `≤ ${fileManagerSize(props.component.maxSize * 1024, formatter.value)}`
+      : null,
     props.component.minFiles
       ? choice(
           'form.min_files',
@@ -491,7 +494,7 @@ function cssLength(value: number | string): string {
             type="button"
             variant="ghost"
             size="icon-xs"
-            :aria-label="t('remove', {}, 'Remove')"
+            :aria-label="t('file_upload.remove', { name: file.name }, 'Remove :name')"
             @click="removeEntry(file)"
             ><XIcon
           /></Button>
@@ -525,7 +528,7 @@ function cssLength(value: number | string): string {
                   : file.progress !== undefined && !file.error
                     ? (props.component.uploadingMessage ?? t('form.uploading', {}, 'Uploading…'))
                     : file.size
-                      ? formatBytes(file.size)
+                      ? fileManagerSize(file.size, formatter)
                       : file.temporary
                         ? t('form.uploading', {}, 'Pending')
                         : '')
@@ -541,7 +544,7 @@ function cssLength(value: number | string): string {
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                :aria-label="t('form.move_up', {}, 'Move up')"
+                :aria-label="t('file_upload.move_up', { name: file.name }, 'Move :name up')"
                 :disabled="index === 0"
                 @click="move(index, index - 1)"
                 ><ChevronUpIcon
@@ -550,7 +553,7 @@ function cssLength(value: number | string): string {
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                :aria-label="t('form.move_down', {}, 'Move down')"
+                :aria-label="t('file_upload.move_down', { name: file.name }, 'Move :name down')"
                 :disabled="index === files.length - 1"
                 @click="move(index, index + 1)"
                 ><ChevronDownIcon
@@ -562,7 +565,7 @@ function cssLength(value: number | string): string {
               :variant="circle ? 'secondary' : 'ghost'"
               size="icon-xs"
               :class="cn(circle && 'rounded-full shadow')"
-              :aria-label="t('image_editor.title', {}, 'Edit image')"
+              :aria-label="t('file_upload.edit', { name: file.name }, 'Edit :name')"
               :title="t('image_editor.title', {}, 'Edit image')"
               data-action="edit-image"
               @click="void editExisting(file)"
@@ -579,7 +582,7 @@ function cssLength(value: number | string): string {
                 :href="uploadedFileLinks(file).open"
                 target="_blank"
                 rel="noopener noreferrer"
-                :aria-label="`${t('open', {}, 'Open')} ${t('opens_in_new_tab', {}, '(opens in a new tab)')}`"
+                :aria-label="`${t('file_upload.open', { name: file.name }, 'Open :name')} ${t('opens_in_new_tab', {}, '(opens in a new tab)')}`"
                 ><ExternalLinkIcon
               /></a>
             </Button>
@@ -593,7 +596,7 @@ function cssLength(value: number | string): string {
               <a
                 :href="uploadedFileLinks(file).download"
                 download
-                :aria-label="t('download', {}, 'Download')"
+                :aria-label="t('file_upload.download', { name: file.name }, 'Download :name')"
                 ><DownloadIcon
               /></a>
             </Button>
@@ -603,7 +606,7 @@ function cssLength(value: number | string): string {
               :variant="circle ? 'secondary' : 'ghost'"
               size="icon-xs"
               :class="cn(circle && 'rounded-full shadow')"
-              :aria-label="t('remove', {}, 'Remove')"
+              :aria-label="t('file_upload.remove', { name: file.name }, 'Remove :name')"
               @click="removeEntry(file)"
               ><XIcon
             /></Button>

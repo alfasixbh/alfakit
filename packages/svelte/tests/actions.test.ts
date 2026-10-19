@@ -50,6 +50,24 @@ describe('actions', () => {
     expect(screen.getByRole('button', { name: 'Actions' })).toBeInTheDocument()
   })
 
+  it('keeps link actions with an icon unpadded, so record action columns never grow', () => {
+    render(Wrapper, {
+      props: {
+        component: ActionButton,
+        props: {
+          action: { type: 'Action', name: 'edit', label: 'Edit', icon: 'pencil', hasAction: true },
+          context: { token: 't', component: 'table' },
+        },
+      },
+    })
+
+    // The size variants add `has-[>svg]:px-*`, which beats `p-0` once the icon is in the
+    // button: the link must cancel it, or the padding appears later (after a re-style).
+    expect(screen.getByRole('button', { name: /Edit/ }).className).toMatch(
+      /(^| )has-\[>svg\]:px-0( |$)/,
+    )
+  })
+
   it('still runs the action when it has a keyboard shortcut tooltip', async () => {
     const onTrigger = vi.fn()
 

@@ -201,6 +201,7 @@ Tabs::make()->tabs([
 ```
 
 - `deferBadge()` loads the badge (with its colour and tooltip) in a request after the page renders, for badges that run slow queries.
+- `persistTabInQueryString('tab')` keeps the open tab in the URL under a readable value: the tab's `id()`, else its explicit `key()`, else the slug of its label (`?tab=content`, `?tab=seo`; a repeated label gets `-2`, `-3`). Give tabs an `id('billing')` when the label is translated or may change, so shared links keep working. Links with the older internal values (`?tab=tabs-0.tab-1`) still open the right tab.
 
 - `scrollable(false)` wraps the tab list onto more lines instead of scrolling it sideways, so every tab stays visible.
 - `persistTab()` remembers the active tab in the browser under the tabs' `id()` (or key): local storage by default, `persistTab(storage: 'session')` for session storage. A tab in the query string (`persistTabInQueryString()`) wins, and the stored tab is applied after the page mounts.

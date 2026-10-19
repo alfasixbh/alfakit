@@ -1,7 +1,9 @@
 import type { StandaloneComponentSchema } from '@alfakit/core'
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
+import { Toaster as AppToaster } from 'sonner'
 import contactForm from '../../core/tests/fixtures/standalone/contact-form.json'
 import postsTable from '../../core/tests/fixtures/standalone/posts-table.json'
+import { showToast } from '../src/components/notifications/flash-toasts'
 import { AlfakitComponent, AlfakitToaster, configureAlfakit } from '../src/standalone'
 
 const form = contactForm as unknown as StandaloneComponentSchema
@@ -83,5 +85,28 @@ describe('AlfakitComponent (outside panels)', () => {
 
     expect(within(screen.getByTestId('custom-layout')).getByLabelText(/Email/)).toBeInTheDocument()
     expect(document.querySelectorAll('[data-sonner-toaster]').length).toBeLessThanOrEqual(1)
+  })
+
+  it("shows a toast once although the app's layout mounts its own toaster", async () => {
+    render(
+      <>
+        <AppToaster />
+        <AlfakitToaster />
+      </>,
+    )
+
+    await act(async () => {
+      showToast({ id: 'n1', title: 'Saved once', status: 'success' } as never)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    })
+
+    expect(screen.getAllByText('Saved once')).toHaveLength(1)
+    // In Alfakit's own toaster (top), not the app's id-less one (bottom).
+    expect(
+      screen
+        .getByText('Saved once')
+        .closest('[data-sonner-toaster]')
+        ?.getAttribute('data-y-position'),
+    ).toBe('top')
   })
 })

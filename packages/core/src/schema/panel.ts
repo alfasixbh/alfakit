@@ -98,6 +98,8 @@ export interface StarterKitWidgetsSchema {
     current?: TenantSchema | null
     tenants: TenantSchema[]
     registrationUrl?: string
+    /** The registration page's own label (`RegisterTenant::getLabel()`). */
+    registrationLabel?: string
     searchable?: true
   }
 }
@@ -407,6 +409,10 @@ export interface PanelSchema {
     tenants: TenantSchema[]
     registrationUrl?: string
     profileUrl?: string
+    /** The registration page's own label (`RegisterTenant::getLabel()`); else "New". */
+    registrationLabel?: string
+    /** The profile page's own label (`EditTenantProfile::getLabel()`); else "Settings". */
+    profileLabel?: string
     /** The customised `register` entry of `tenantMenuItems()`. */
     registration?: MenuItemSchema
     /** The customised `profile` entry of `tenantMenuItems()`. */

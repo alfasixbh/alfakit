@@ -1,30 +1,51 @@
 import type { TabSchema, TabsSchema } from '@alfakit/core'
-import { readPersisted, schemaGapClass, writePersisted } from '@alfakit/core'
+import {
+  componentHasErrors,
+  readPersisted,
+  schemaGapClass,
+  tabFromQuery,
+  tabQueryValue,
+  tabToReveal,
+  writePersisted,
+} from '@alfakit/core'
 import { usePage } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
+import { useT } from '../../context'
 import { useHydrated } from '../../hooks/use-hydrated'
+import { useStoreSelector } from '../../hooks/use-store'
 import { extraProps } from '../../lib/attributes'
 import { badgeColorClasses, colorClass } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
+import { useOptionalFormStore } from '../form/form-context'
 import { SchemaRenderer } from '../schema/schema-renderer'
 import { Badge } from '../ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { DeferredSchema, useDeferredBadge } from './deferred'
 
+// Used when tabs render outside a form. Module-level so the snapshot stays stable.
+const NO_ERRORS: Record<string, string[]> = {}
+const NO_FORM_STORE = {
+  get: () => ({ errors: NO_ERRORS }),
+  subscribe: () => () => {},
+}
+
+const TAB_INVALID_CLASSES =
+  'text-destructive data-[state=active]:text-destructive dark:text-destructive dark:data-[state=active]:text-destructive'
+
 export function TabsComponent({ component }: { component: TabsSchema }) {
   const tabs = component.schema ?? []
   // The page URL (not `window.location`) so the server renders the same tab as the browser.
   const url = usePage().url
+  // The tab's readable value (`?tab=billing-address`), or its key in links from older versions.
   const fromQuery = component.queryStringKey
-    ? new URL(url, 'http://localhost').searchParams.get(component.queryStringKey)
+    ? tabFromQuery(
+        tabs,
+        new URL(url, 'http://localhost').searchParams.get(component.queryStringKey),
+      )
     : null
   const [initial] = useState<string>(
-    () =>
-      tabs.find((tab) => tab.key === fromQuery)?.key ??
-      tabs[Math.max(0, component.activeTab - 1)]?.key ??
-      tabs[0]?.key ??
-      '',
+    () => fromQuery ?? tabs[Math.max(0, component.activeTab - 1)]?.key ?? tabs[0]?.key ?? '',
   )
 
   const persist = component.persistTab
@@ -36,6 +57,21 @@ export function TabsComponent({ component }: { component: TabsSchema }) {
     hydrated && persist && !fromQuery ? readPersisted(persist.key, persist.storage) : null
   const active = chosen ?? (stored && tabs.some((tab) => tab.key === stored) ? stored : initial)
 
+  // Tabs holding a field with a validation error are marked, and when a submit brings new
+  // errors while the open tab has none, the first tab with an error opens.
+  const t = useT()
+  const store = useOptionalFormStore()
+  const errors = useStoreSelector(store?.store ?? NO_FORM_STORE, (state) => state.errors)
+  const [seenErrors, setSeenErrors] = useState<Record<string, string[]>>({})
+
+  if (seenErrors !== errors) {
+    setSeenErrors(errors)
+
+    const reveal = tabToReveal(tabs, active, seenErrors, errors)
+
+    if (reveal !== null) setChosen(reveal)
+  }
+
   const changeTab = (value: string) => {
     setChosen(value)
 
@@ -45,10 +81,11 @@ export function TabsComponent({ component }: { component: TabsSchema }) {
   useEffect(() => {
     if (!component.queryStringKey || typeof window === 'undefined') return
 
+    const tab = tabs.find((item) => item.key === active)
     const url = new URL(window.location.href)
-    url.searchParams.set(component.queryStringKey, active)
+    url.searchParams.set(component.queryStringKey, tab ? tabQueryValue(tab) : active)
     window.history.replaceState(window.history.state, '', url)
-  }, [active, component.queryStringKey])
+  }, [active, component.queryStringKey, tabs])
 
   return (
     <Tabs
@@ -76,14 +113,32 @@ export function TabsComponent({ component }: { component: TabsSchema }) {
               : 'relative max-w-full overflow-x-auto',
         )}
       >
-        {tabs.map((tab) => (
-          <TabsTrigger key={tab.key} value={tab.key}>
-            {tab.icon && tab.iconPosition !== 'after' && <Icon name={tab.icon} />}
-            {tab.label}
-            {tab.icon && tab.iconPosition === 'after' && <Icon name={tab.icon} />}
-            <TabBadge tab={tab} />
-          </TabsTrigger>
-        ))}
+        {tabs.map((tab) => {
+          const invalid = componentHasErrors(tab, errors)
+
+          return (
+            <TabsTrigger
+              key={tab.key}
+              value={tab.key}
+              data-invalid={invalid || undefined}
+              className={invalid ? TAB_INVALID_CLASSES : undefined}
+            >
+              {tab.icon && tab.iconPosition !== 'after' && <Icon name={tab.icon} />}
+              {tab.label}
+              {tab.icon && tab.iconPosition === 'after' && <Icon name={tab.icon} />}
+              <TabBadge tab={tab} />
+              {invalid && (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className="bg-destructive size-1.5 shrink-0 rounded-full"
+                  />
+                  <span className="sr-only">({t('translatable.has_errors')})</span>
+                </>
+              )}
+            </TabsTrigger>
+          )
+        })}
       </TabsList>
       {tabs.map((tab) => (
         <TabsContent

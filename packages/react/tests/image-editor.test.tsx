@@ -149,7 +149,7 @@ describe('image editor', () => {
     )
 
     // Only editable images get the button.
-    const edit = screen.getAllByRole('button', { name: 'Edit image' })
+    const edit = screen.getAllByRole('button', { name: /^Edit a\.png$/ })
     expect(edit).toHaveLength(1)
 
     fireEvent.click(edit[0]!)
@@ -171,7 +171,7 @@ describe('image editor', () => {
     const files = [{ path: 'photos/a.png', name: 'a.png', url: '/storage/photos/a.png' }]
     const { store } = renderUpload(upload({ files }), 'photos/a.png')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Edit image' }))
+    fireEvent.click(screen.getByRole('button', { name: /^Edit a\.png$/ }))
     await screen.findByLabelText('Width')
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
@@ -187,7 +187,7 @@ describe('image editor', () => {
     const files = [{ path: 'photos/a.png', name: 'a.png', url: '/storage/photos/a.png' }]
     renderUpload(upload({ files }), 'photos/a.png')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Edit image' }))
+    fireEvent.click(screen.getByRole('button', { name: /^Edit a\.png$/ }))
 
     expect(await screen.findByText('The image could not be opened.')).toBeInTheDocument()
   })
@@ -196,6 +196,6 @@ describe('image editor', () => {
     const files = [{ path: 'photos/a.png', name: 'a.png', url: '/storage/photos/a.png' }]
     renderUpload(upload({ files, imageEditor: null }), 'photos/a.png')
 
-    expect(screen.queryByRole('button', { name: 'Edit image' })).toBeNull()
+    expect(screen.queryByRole('button', { name: /^Edit a\.png$/ })).toBeNull()
   })
 })

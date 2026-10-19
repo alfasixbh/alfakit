@@ -45,7 +45,6 @@
     inputmode="numeric"
     autocomplete="one-time-code"
     pattern="[0-9]*"
-    maxlength={component.length}
     value={field.value ?? ''}
     oninput={(event) => onInput(event.currentTarget)}
     onblur={field.blur}
@@ -55,6 +54,7 @@
     required={component.required}
     autofocus={component.autofocus || undefined}
     data-slot="one-time-code-input"
+    data-input=""
     {...field.aria}
     {...extraProps(
       component.extraInputAttributes,

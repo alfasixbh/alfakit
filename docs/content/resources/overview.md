@@ -56,7 +56,7 @@ class PostResource extends Resource
 
 ## The resource wizard
 
-`--generate` turns every column into a field. To choose, run the wizard instead:
+`--generate` turns every column into a field and a table column with the wizard's defaults below (casts, enums and relationships included). To choose, run the wizard instead:
 
 ```bash
 php artisan make:alfakit-resource --wizard   # or: php artisan alfakit:generate
@@ -75,6 +75,8 @@ It lists your models (`app/Models`), reads the model's table (columns, lengths, 
 | json / array cast              | `KeyValue`                                                                                                                       | (off by default)                         |                                | `KeyValueEntry`             |
 | integer / decimal              | `TextInput::integer()` / `->numeric()`                                                                                           | `->numeric()`                            |                                | `->numeric()`               |
 
+Literal column defaults become field defaults, so a create form starts with the value the database would store: `->boolean('is_active')->default(true)` gives `Toggle::make('is_active')->default(true)`, `->string('status')->default('draft')` gives `->default('draft')`, and numbers and enum values work the same way. A `false` boolean default adds nothing (the toggle is already off); expression defaults (`useCurrent()`, `CURRENT_TIMESTAMP`, sequences) and the defaults of dates, JSON, relationships and files are left out.
+
 The related model's title column (`name`, `title`, `label`, `email`…) is picked for relationship selects and relation managers. The files are written with the regular generator stubs (published stubs and a bound `ClassGenerator` still apply), with sorted imports, so they pass Pint and PHPStan in a fresh app.
 
 Every choice is also an option, so CI runs the wizard without prompts (`--no-interaction` uses the defaults for anything not given; `none` selects nothing):
@@ -86,13 +88,13 @@ php artisan alfakit:generate Post --form=title,slug,body,author_id --table=title
 
 ## Model, labels and slugs
 
-| Property / method                   | Default                                                         |
-| ----------------------------------- | --------------------------------------------------------------- |
-| `$model`                            | `App\Models\{Name}` derived from the resource class name        |
-| `$modelLabel` / `$pluralModelLabel` | From the class name: `category` / `categories`                  |
-| `$slug`                             | English plural of the class name: `categories` (URL segment)    |
-| `$recordTitleAttribute`             | `null` — used for modal headings, breadcrumbs and global search |
-| `$recordRouteKeyName`               | model route key                                                 |
+| Property / method                   | Default                                                                                                                                        |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `$model`                            | `App\Models\{Name}` derived from the resource class name                                                                                       |
+| `$modelLabel` / `$pluralModelLabel` | From the class name: `category` / `categories`                                                                                                 |
+| `$slug`                             | English plural of the class name: `categories` (URL segment)                                                                                   |
+| `$recordTitleAttribute`             | `null` — used for modal headings, breadcrumbs and global search; without it records are titled by the model label ("Edit Post", "Delete Post") |
+| `$recordRouteKeyName`               | model route key                                                                                                                                |
 
 Override `getModelLabel()`, `getRecordTitle($record)` etc. for dynamic values.
 

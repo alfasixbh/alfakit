@@ -123,7 +123,7 @@ class RegisterTeam extends RegisterTenant
 
 ## The tenant menu
 
-The tenant menu lists the user's tenants to switch between, plus the profile, registration and `tenantMenuItems()` entries.
+The tenant menu lists the user's tenants to switch between, plus the profile, registration and `tenantMenuItems()` entries. The profile and registration links are labelled with their pages' `getLabel()` ("Team settings", "Create team"); keyed `profile` / `register` overrides in `tenantMenuItems()` can relabel them.
 
 ```php
 $panel->searchableTenantMenu();       // a search field in the menu (automatic above 10 tenants)

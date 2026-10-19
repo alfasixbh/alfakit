@@ -1,5 +1,5 @@
 import type { BaseField, FieldAriaAttributes, FormState, FormStore } from '@alfakit/core'
-import { fieldAria } from '@alfakit/core'
+import { fieldAria, fieldDomId } from '@alfakit/core'
 import {
   computed,
   inject,
@@ -75,7 +75,7 @@ export function useField<T = unknown>(field: MaybeRefOrGetter<BaseField>): Field
   // is in flight, so locking inputs would only swallow keystrokes.
   const disabled = computed(() => Boolean(toValue(field).disabled))
   const readOnly = computed(() => Boolean(toValue(field).readOnly))
-  const id = toValue(field).id ?? `alfakit-${path.replace(/[^a-zA-Z0-9_-]/g, '-')}`
+  const id = toValue(field).id ?? fieldDomId(store.idPrefix, path)
   const aria = computed(() => fieldAria(id, toValue(field), error.value))
 
   return {

@@ -75,7 +75,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json && cp src/styles.css dist/styles.css && cp ../core/themes.css dist/themes.css && cp ../core/standalone.css dist/standalone.css && node ../../scripts/eject-manifest.mjs .",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json && cp src/styles.css dist/styles.css && cp ../core/themes.css dist/themes.css && cp ../core/components.css dist/components.css && cp ../core/standalone.css dist/standalone.css && node ../../scripts/eject-manifest.mjs .",
     "dev": "vite build --watch",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run"

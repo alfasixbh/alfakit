@@ -31,7 +31,7 @@ class CommentResource extends Resource
 }
 ```
 
-Register the nested resource in the panel like any other resource. Generate one with `php artisan make:alfakit-resource Comment --nested=PostResource`.
+Register the nested resource in the panel like any other resource. Generate one with `php artisan make:alfakit-resource Comment --nested=PostResource` (with `--generate`, the foreign key to the parent is left out of the form and table: the pages create records under the parent record in the URL).
 
 ## Relationships
 

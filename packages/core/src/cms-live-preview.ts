@@ -1,3 +1,4 @@
+import { currentRecordVersion, setRecordVersion } from './conflicts'
 import { callPageMethod } from './page-methods'
 import type { CmsAutosaveResult } from './schema/cms'
 
@@ -239,7 +240,15 @@ export async function callCmsAutosave(
   state: Record<string, unknown>,
   options: { token: string; endpoint: string },
 ): Promise<CmsAutosaveResult> {
-  const response = await callPageMethod<CmsAutosaveResult>(method, { state }, options)
+  const response = await callPageMethod<CmsAutosaveResult>(
+    method,
+    { state, recordVersion: currentRecordVersion() },
+    options,
+  )
+
+  // The draft changed the record: the next save sends the new version, so it is not
+  // refused as a conflict with this tab's own autosave.
+  if (response.result.recordVersion) setRecordVersion(response.result.recordVersion)
 
   return response.result
 }

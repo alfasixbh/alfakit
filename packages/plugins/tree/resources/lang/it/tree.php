@@ -8,6 +8,13 @@ return [
         'saved' => 'Ordine salvato',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => 'Visualizza :title',
+        'edit' => 'Modifica :title',
+        'delete' => 'Elimina :title',
+    ],
+
     'validation' => [
         'invalid' => 'Impossibile leggere l’albero.',
         'unknown_record' => 'Un record dell’albero non esiste più. Ricarica la pagina e riprova.',

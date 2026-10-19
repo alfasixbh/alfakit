@@ -48,7 +48,8 @@
         aria-readonly={field.readOnly || undefined}
         class="border-input focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full rounded-md border bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
       >
-        {#if component.selectablePlaceholder}<option value="">{component.placeholder ?? ''}</option
+        {#if component.selectablePlaceholder}<option value=""
+            >{component.placeholder ?? t('select_option', {}, 'Select an option')}</option
           >{/if}
         {#each component.options as option, index (isOptionGroup(option) ? `group-${index}` : option.value)}
           {#if isOptionGroup(option)}
@@ -81,7 +82,7 @@
           <span data-slot="select-value" class={currentLabel ? undefined : 'text-muted-foreground'}
             >{#if currentLabel && component.allowHtml}{@html currentLabel}{:else}{currentLabel ??
                 component.placeholder ??
-                ''}{/if}</span
+                t('select_option', {}, 'Select an option')}{/if}</span
           >
         </SelectTrigger>
         <SelectContent>

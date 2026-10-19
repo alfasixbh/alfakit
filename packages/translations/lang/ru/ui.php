@@ -398,6 +398,15 @@ return [
         'size' => 'Размер',
         'no_tree' => 'Сервер не прислал дерево схемы для этой страницы.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => 'Удалить :name',
+        'move_up' => 'Переместить :name вверх',
+        'move_down' => 'Переместить :name вниз',
+        'edit' => 'Изменить :name',
+        'open' => 'Открыть :name',
+        'download' => 'Скачать :name',
+    ],
     'image_editor' => [
         'title' => 'Редактировать изображение',
         'keyboard_hint' => 'Стрелки перемещают область обрезки, Shift со стрелками меняет её размер.',

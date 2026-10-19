@@ -326,4 +326,24 @@ describe('tenant menu', () => {
     expect(screen.queryByText('Switch')).toBeNull()
     expect(screen.getByRole('menuitem', { name: /Settings/ })).toBeInTheDocument()
   })
+
+  it("labels the profile and registration links with the pages' own labels", () => {
+    withPanel({
+      tenancy: tenancy({
+        profileUrl: '/acme/settings',
+        profileLabel: 'Team settings',
+        registrationUrl: '/new',
+        registrationLabel: 'Create team',
+      }),
+    })
+    render(
+      <Wrapper>
+        <TenantMenu variant="topbar" />
+      </Wrapper>,
+    )
+    open()
+
+    expect(screen.getByRole('menuitem', { name: /Team settings/ })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: /Create team/ })).toBeInTheDocument()
+  })
 })

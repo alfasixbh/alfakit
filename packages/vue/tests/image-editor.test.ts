@@ -165,9 +165,9 @@ describe('image editor', () => {
     await flushPromises()
 
     // Only editable images get the button.
-    expect(document.querySelectorAll('button[aria-label="Edit image"]')).toHaveLength(1)
+    expect(document.querySelectorAll('button[aria-label="Edit a.png"]')).toHaveLength(1)
 
-    button('Edit image')!.click()
+    button('Edit a.png')!.click()
     await vi.waitFor(() => expect(field('Width')).not.toBeNull())
     expect(fetchMock.mock.calls[0]?.[0]).toBe('/storage/photos/a.png')
     expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({ credentials: 'same-origin' })
@@ -188,7 +188,7 @@ describe('image editor', () => {
     const { store } = renderUpload(upload({ files }), 'photos/a.png')
     await flushPromises()
 
-    button('Edit image')!.click()
+    button('Edit a.png')!.click()
     await vi.waitFor(() => expect(field('Width')).not.toBeNull())
     buttonWithText('Cancel')!.click()
 
@@ -205,7 +205,7 @@ describe('image editor', () => {
     renderUpload(upload({ files }), 'photos/a.png')
     await flushPromises()
 
-    button('Edit image')!.click()
+    button('Edit a.png')!.click()
 
     await vi.waitFor(() =>
       expect(document.body.textContent).toContain('The image could not be opened.'),
@@ -217,6 +217,6 @@ describe('image editor', () => {
     renderUpload(upload({ files, imageEditor: null }), 'photos/a.png')
     await flushPromises()
 
-    expect(button('Edit image')).toBeNull()
+    expect(button('Edit a.png')).toBeNull()
   })
 })

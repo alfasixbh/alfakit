@@ -36,6 +36,7 @@ export function ColorPickerField({ component }: { component: ColorPickerSchema }
         <Input
           id={id}
           name={component.name}
+          dir="ltr"
           value={value ?? ''}
           onChange={(event) => setValue(event.target.value)}
           onBlur={blur}

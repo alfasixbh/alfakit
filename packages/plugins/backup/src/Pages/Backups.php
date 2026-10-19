@@ -9,6 +9,7 @@ use AlfaSix\Alfakit\Forms\Components\Radio;
 use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Pages\Page;
 use AlfaSix\Alfakit\Panel;
+use AlfaSix\Alfakit\Support\NumberFormat;
 use AlfaSix\Alfakit\Tables\Columns\TextColumn;
 use AlfaSix\Alfakit\Tables\Filters\SelectFilter;
 use AlfaSix\Alfakit\Tables\Table;
@@ -20,7 +21,6 @@ use AlfaSix\AlfakitBackup\Support\BackupRepository;
 use AlfaSix\AlfakitBackup\Widgets\BackupDestinationsWidget;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Number;
 
 /**
  * Lists the backups of every destination disk with the destinations' health, and creates
@@ -168,7 +168,7 @@ class Backups extends Page
                     ->sortable(),
                 TextColumn::make('size')
                     ->label(__('alfakit-backup::backup.table.columns.size'))
-                    ->formatStateUsing(static fn (mixed $state): string => (string) Number::fileSize(is_numeric($state) ? (int) $state : 0, precision: 2))
+                    ->formatStateUsing(static fn (mixed $state): string => NumberFormat::fileSize(is_numeric($state) ? (int) $state : 0, 2))
                     ->sortable(),
             ])
             ->filters([

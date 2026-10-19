@@ -18,7 +18,8 @@ export function fileManagerSize(
   return formatter.number(value, {
     style: 'unit',
     unit: SIZE_UNITS[unit],
-    unitDisplay: 'short',
+    // Bytes have no short form in most locales ("11 byte"): the long one is pluralised.
+    unitDisplay: unit === 0 ? 'long' : 'short',
     maximumFractionDigits: unit === 0 ? 0 : 1,
   })
 }

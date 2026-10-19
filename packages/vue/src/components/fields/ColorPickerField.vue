@@ -45,6 +45,7 @@ const onAlpha = (event: Event) =>
       <Input
         :id="id"
         :name="props.component.name"
+        dir="ltr"
         :model-value="value ?? ''"
         :placeholder="props.component.placeholder ?? (isHex ? '#000000' : props.component.format)"
         :disabled="disabled"

@@ -25,11 +25,12 @@ Everything is built from AlfaKit components (the `Builder` field, a `Wizard`, st
 ```bash
 composer require alfasix/alfakit-forms
 php artisan vendor:publish --tag=alfakit-forms-migrations
+php artisan vendor:publish --tag=alfakit-import-export-migrations   # the submissions export
 php artisan migrate
 php artisan alfakit-forms:page
 ```
 
-The migration creates `alfakit_forms` (title, slug, description, the builder's `fields`, `settings`, publishing dates, limit, view count and a nullable `tenant` morph) and `alfakit_form_submissions` (form, tenant, submitter, `data`, spam flag, IP address and user agent).
+The migration creates `alfakit_forms` (title, slug, description, the builder's `fields`, `settings`, publishing dates, limit, view count and a nullable `tenant` morph) and `alfakit_form_submissions` (form, tenant, submitter, `data`, spam flag, IP address and user agent). Submissions are exported with AlfaKit's exporter, so its `exports` tables must exist too (`alfakit:add forms` publishes both).
 
 `alfakit-forms:page` creates the Inertia page the public route renders, for your renderer (detected from `package.json`; pass `--adapter=react|vue|svelte`, and `--path=resources/js/Pages` if your pages live elsewhere). It is a ten-line page around `<AlfakitComponent>`; edit it freely.
 
@@ -155,7 +156,26 @@ Published forms are served at `/forms/{slug}` by the route the plugin registers.
 'page' => 'alfakit-forms/form',
 ```
 
-The page uses your app's layout, fonts and shadcn tokens. With an app-wide Inertia layout (such as a starter kit's `AppLayout`), return a minimal layout for `alfakit-forms/*` pages in `createInertiaApp({ layout })`.
+The page uses your app's fonts and shadcn tokens but not its default Inertia layout: a public form in a starter-kit app would otherwise sit inside the kit's `AppLayout`, with the app sidebar. The generated page opts out of the `createInertiaApp({ layout })` default itself:
+
+```tsx
+// React (resources/js/pages/alfakit-forms/form.tsx)
+AlfakitFormPage.layout = (page: ReactNode) => <>{page}</>
+```
+
+```vue
+<!-- Vue -->
+defineOptions({ layout: (_h: unknown, page: unknown) => page as VNode })
+```
+
+```svelte
+<!-- Svelte -->
+<script module lang="ts">
+    export const layout = (_h: unknown, page: unknown) => page
+</script>
+```
+
+To render the form inside your app's default layout after all, delete that line (or the `<script module>` block). To use another layout, wrap the page in it: `AlfakitFormPage.layout = (page: ReactNode) => <SiteLayout>{page}</SiteLayout>` in React, `defineOptions({ layout: SiteLayout })` in Vue, `export const layout = SiteLayout` in Svelte.
 
 ### Embedding a form in any page
 

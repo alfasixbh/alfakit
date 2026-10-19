@@ -444,7 +444,7 @@
     {/if}
     <nav
       aria-label={tt('breadcrumb', {}, 'Folder path')}
-      class="min-w-0 flex-1"
+      class="min-w-0 flex-[1_1_12rem]"
       data-slot="file-manager-breadcrumb"
     >
       <ol class="flex min-w-0 flex-wrap items-center gap-1 text-sm">

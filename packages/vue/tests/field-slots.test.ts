@@ -218,6 +218,9 @@ describe('fused group', () => {
     )
     const controls = wrapper.find('[data-slot="fused-group-controls"]')
 
+    // A label slot, so table repeater cells hide it like field labels.
+    expect(wrapper.find('[data-slot="fused-group"] > [data-slot="label"]').text()).toBe('Phone')
+
     expect(controls.classes()).toContain('lg:grid-cols-2')
     expect(controls.findAll('input')).toHaveLength(2)
     expect(wrapper.find('label.sr-only').exists()).toBe(true)

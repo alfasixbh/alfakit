@@ -8,6 +8,13 @@ return [
         'saved' => 'Ordre enregistré',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => 'Voir :title',
+        'edit' => 'Modifier :title',
+        'delete' => 'Supprimer :title',
+    ],
+
     'validation' => [
         'invalid' => 'L’arborescence n’a pas pu être lue.',
         'unknown_record' => 'Un enregistrement de l’arborescence n’existe plus. Rechargez la page et réessayez.',

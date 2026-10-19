@@ -65,7 +65,9 @@ export function SelectField({ component }: { component: SelectSchema }) {
             className="border-input dark:bg-input/30 focus-visible:ring-ring/50 h-9 w-full rounded-md border bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
           >
             {component.selectablePlaceholder && (
-              <option value="">{component.placeholder ?? ''}</option>
+              <option value="">
+                {component.placeholder ?? t('select_option', {}, 'Select an option')}
+              </option>
             )}
             {component.options.map((option) =>
               isOptionGroup(option) ? (
@@ -103,7 +105,9 @@ export function SelectField({ component }: { component: SelectSchema }) {
               aria-readonly={readOnly || undefined}
               className="w-full"
             >
-              <SelectValue placeholder={component.placeholder ?? ''} />
+              <SelectValue
+                placeholder={component.placeholder ?? t('select_option', {}, 'Select an option')}
+              />
             </SelectTrigger>
             <SelectContent>
               {component.selectablePlaceholder &&
@@ -411,7 +415,7 @@ function ComboboxSelect({
             error && 'border-destructive',
           )}
         >
-          <span className="flex flex-1 flex-wrap items-center gap-1 text-start">
+          <span className="flex min-w-0 flex-1 flex-wrap items-center gap-1 text-start">
             {selected.length === 0 && (
               <span className="text-muted-foreground">
                 {component.placeholder ?? t('select_option', {}, 'Select an option')}

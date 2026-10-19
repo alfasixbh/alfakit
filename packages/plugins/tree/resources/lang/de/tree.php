@@ -8,6 +8,13 @@ return [
         'saved' => 'Reihenfolge gespeichert',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => ':title anzeigen',
+        'edit' => ':title bearbeiten',
+        'delete' => ':title löschen',
+    ],
+
     'validation' => [
         'invalid' => 'Der Baum konnte nicht gelesen werden.',
         'unknown_record' => 'Ein Datensatz im Baum existiert nicht mehr. Laden Sie die Seite neu und versuchen Sie es erneut.',

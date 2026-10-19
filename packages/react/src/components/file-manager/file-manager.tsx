@@ -322,7 +322,7 @@ export function FileManagerView({ schema, onChoose, onCancel }: FileManagerViewP
         )}
         <nav
           aria-label={tt('breadcrumb', {}, 'Folder path')}
-          className="min-w-0 flex-1"
+          className="min-w-0 flex-[1_1_12rem]"
           data-slot="file-manager-breadcrumb"
         >
           <ol className="flex min-w-0 flex-wrap items-center gap-1 text-sm">

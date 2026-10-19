@@ -3,6 +3,7 @@ import type { TableRecordGroupSchema } from '@alfakit/core'
 import { ChevronDownIcon, ChevronRightIcon } from '@lucide/vue'
 import { computed } from 'vue'
 import { useT } from '../../context'
+import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import Checkbox from '../ui/Checkbox.vue'
 import TableCell from '../ui/TableCell.vue'
@@ -19,6 +20,11 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ toggle: [] }>()
 const t = useT()
+
+// An enum group shows its `HasIcon` icon, in its `HasColor` colour, before the title.
+const groupIconClass = computed(
+  () => `size-4 shrink-0 ${colorClass(textColorClasses, props.group.color, 'gray')}`,
+)
 
 const toggleLabel = computed(
   () =>
@@ -56,6 +62,12 @@ const toggleLabel = computed(
             class="size-4 shrink-0"
             aria-hidden="true"
           />
+          <Icon
+            v-if="props.group.icon"
+            :name="props.group.icon"
+            :class="groupIconClass"
+            aria-hidden="true"
+          />
           <span class="flex flex-col items-start">
             <span class="font-medium">{{ props.group.title }}</span>
             <span
@@ -65,6 +77,21 @@ const toggleLabel = computed(
             >
           </span>
         </button>
+        <span
+          v-else-if="props.group.icon"
+          data-slot="table-group-title"
+          class="flex items-center gap-2"
+        >
+          <Icon :name="props.group.icon" :class="groupIconClass" aria-hidden="true" />
+          <span class="flex flex-col items-start">
+            <span class="font-medium">{{ props.group.title }}</span>
+            <span
+              v-if="props.group.description"
+              class="text-muted-foreground text-xs font-normal"
+              >{{ props.group.description }}</span
+            >
+          </span>
+        </span>
         <span v-else class="flex flex-col items-start">
           <span class="font-medium">{{ props.group.title }}</span>
           <span v-if="props.group.description" class="text-muted-foreground text-xs font-normal">{{

@@ -125,6 +125,17 @@ describe('FileUpload options', () => {
     )
   })
 
+  it('formats file sizes and the size limit with the locale formatter', async () => {
+    renderUpload(
+      upload({ maxSize: 2048, files: [{ path: 'a.pdf', name: 'A.pdf', url: '/a', size: 1536 }] }),
+      ['a.pdf'],
+    )
+    await flushPromises()
+
+    expect(document.body.textContent).toContain('≤ 2 MB')
+    expect(document.body.textContent).toContain('1.5 kB')
+  })
+
   it('links open and download to their own URLs and flags missing files', async () => {
     renderUpload(
       upload({
@@ -154,6 +165,35 @@ describe('FileUpload options', () => {
     expect(document.body.textContent).toContain('This file no longer exists.')
   })
 
+  // Screen readers hear which file a button acts on ("Remove Report.pdf").
+  it('names the file in its buttons', async () => {
+    renderUpload(
+      upload({
+        reorderable: true,
+        downloadable: true,
+        files: [
+          { path: 'a.pdf', name: 'Report.pdf', url: '/a', downloadUrl: '/dl/a' },
+          { path: 'b.pdf', name: 'Notes.pdf', url: '/b' },
+        ],
+      }),
+      ['a.pdf', 'b.pdf'],
+    )
+    await flushPromises()
+
+    const labels = [...document.querySelectorAll('[aria-label]')].map((element) =>
+      element.getAttribute('aria-label'),
+    )
+
+    expect(labels).toEqual(
+      expect.arrayContaining([
+        'Remove Report.pdf',
+        'Move Report.pdf down',
+        'Move Notes.pdf up',
+        'Download Report.pdf',
+      ]),
+    )
+  })
+
   it('applies the layout options and the MIME type map to the picker', async () => {
     renderUpload(
       upload({
@@ -176,7 +216,7 @@ describe('FileUpload options', () => {
     )
     expect(zone.style.aspectRatio).toBe('2 / 1')
     expect(zone.className).toContain('items-end')
-    expect(item.firstElementChild!.getAttribute('aria-label')).toBe('Remove')
+    expect(item.firstElementChild!.getAttribute('aria-label')).toBe('Remove Report.pdf')
     expect(document.querySelector('input[type="file"]')!.getAttribute('accept')).toBe(
       'application/vnd.sketchup.skp,.skp',
     )

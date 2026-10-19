@@ -73,16 +73,14 @@ abstract class TreePage extends Page
     }
 
     /**
-     * A create action: a modal with `getFormSchema()`, or a link to the resource's create
-     * page when it has one.
+     * A create action: a modal with `getFormSchema()`, a link to the resource's create page
+     * when it has one, else a modal with the resource's form (simple resources).
      */
     protected function getHeaderActions(): array
     {
-        if ($this->getFormSchema() !== []) {
-            return [CreateAction::make()->schema(fn (): array => $this->getFormSchema())];
-        }
+        $schema = $this->getTreeModalSchema('create');
 
-        return static::getResource()::hasPage('create') ? [CreateAction::make()] : [];
+        return $schema === false ? [] : [CreateAction::make()->schema($schema)];
     }
 
     /**

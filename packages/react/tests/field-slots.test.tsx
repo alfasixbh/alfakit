@@ -239,6 +239,8 @@ describe('fused group', () => {
     const controls = container.querySelector('[data-slot="fused-group-controls"]')!
 
     expect(screen.getByRole('group', { name: 'Phone' })).toBeInTheDocument()
+    // A label slot, so table repeater cells hide it like field labels.
+    expect(screen.getByText('Phone')).toHaveAttribute('data-slot', 'label')
     expect(controls.className).toContain('lg:grid-cols-2')
     expect(controls.querySelectorAll('input')).toHaveLength(2)
     // Labels stay for screen readers; helper texts are not shown.

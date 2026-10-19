@@ -63,7 +63,7 @@ const visible = computed(
         <DropdownMenuSeparator v-if="tenancy.tenants.length > 0" />
         <DropdownMenuItem @select="router.visit(tenancy.registrationUrl!)">
           <Icon name="alfakit::panels.tenant-menu.registration-button" :fallback="PlusIcon" />
-          {{ t('tenancy.register', {}, 'New') }}
+          {{ tenancy.registrationLabel ?? t('tenancy.register', {}, 'New') }}
         </DropdownMenuItem>
       </template>
     </DropdownMenuContent>

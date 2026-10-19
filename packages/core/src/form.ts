@@ -4,7 +4,7 @@ import { reportRequestError } from './error-notifications'
 import { HttpError, requestJson } from './http'
 import { mergeRefreshResponse } from './partial'
 import type { ModalTableSelectResponse } from './schema/advanced-fields'
-import type { FieldSchema, SchemaComponent } from './schema/components'
+import type { FieldSchema, SchemaComponent, TabSchema } from './schema/components'
 import { isField } from './schema/components'
 import type {
   FormPayload,
@@ -54,6 +54,21 @@ export interface FormStoreOptions {
   onNotifications?: (notifications: NotificationSchema[]) => void
   /** Called after a live refresh was merged (e.g. to reload what depends on the form). */
   onRefreshed?: (path: string | undefined) => void
+  /**
+   * Prefix of the fields' DOM ids (`{idPrefix}-{statePath}`), default `alfakit`. Forms shown
+   * over another form (action modals) use their own, so ids never repeat on the page.
+   */
+  idPrefix?: string
+}
+
+/** A DOM-safe id prefix for a form, e.g. `action:field.category_id.createOption` -> `alfakit-action-field-category_id-createOption`. */
+export function formIdPrefix(scope: string): string {
+  return `alfakit-${scope.replace(/[^a-zA-Z0-9_-]/g, '-')}`
+}
+
+/** The DOM id of a field: `{prefix}-{statePath}` with unsafe characters replaced. */
+export function fieldDomId(prefix: string, statePath: string): string {
+  return `${prefix}-${statePath.replace(/[^a-zA-Z0-9_-]/g, '-')}`
 }
 
 /**
@@ -177,6 +192,72 @@ export function wizardStepToReveal(
 }
 
 /**
+ * Whether a layout component (a tab, a section) holds a field with a validation error:
+ * one of its fields, a nested repeater/builder item field (`items.0.sku`), or, while the
+ * component is deferred and its fields aren't loaded, one of its `deferredPaths`.
+ */
+export function componentHasErrors(
+  component: Pick<SchemaComponent, 'schema' | 'deferred' | 'deferredPaths'>,
+  errors: Record<string, unknown>,
+): boolean {
+  const keys = Object.keys(errors).filter((key) => errors[key])
+
+  if (keys.length === 0) return false
+
+  const paths =
+    component.deferred && !component.schema?.length
+      ? (component.deferredPaths ?? [])
+      : collectFields(component.schema ?? []).map((field) => field.statePath)
+
+  return paths.some((path) => keys.some((key) => key === path || key.startsWith(`${path}.`)))
+}
+
+/**
+ * The value a tab is written to the query string as (`persistTabInQueryString()`): its
+ * readable `queryValue` (`billing-address`), else its key.
+ */
+export function tabQueryValue(tab: Pick<TabSchema, 'key' | 'queryValue'>): string {
+  return tab.queryValue ?? tab.key
+}
+
+/**
+ * The key of the tab a query-string value names: a tab's `queryValue`, or its key (links
+ * written before tabs had readable values, `?tab=tabs-0.tab-1`). Null when none matches.
+ */
+export function tabFromQuery(
+  tabs: Array<Pick<TabSchema, 'key' | 'queryValue'>>,
+  value: string | null | undefined,
+): string | null {
+  if (!value) return null
+
+  return (
+    (tabs.find((tab) => tab.queryValue === value) ?? tabs.find((tab) => tab.key === value))?.key ??
+    null
+  )
+}
+
+/**
+ * The tab to show after the errors change: when new error keys arrived (a submit or
+ * validation response) and the active tab has none, the first tab with an error.
+ */
+export function tabToReveal(
+  tabs: Array<Pick<SchemaComponent, 'key' | 'schema' | 'deferred' | 'deferredPaths'>>,
+  activeKey: string,
+  previousErrors: Record<string, unknown>,
+  errors: Record<string, unknown>,
+): string | null {
+  if (!Object.keys(errors).some((key) => !(key in previousErrors))) {
+    return null
+  }
+
+  const active = tabs.find((tab) => tab.key === activeKey)
+
+  if (active && componentHasErrors(active, errors)) return null
+
+  return tabs.find((tab) => componentHasErrors(tab, errors))?.key ?? null
+}
+
+/**
  * Framework-agnostic form state: values addressed by `statePath`, validation errors,
  * dirty tracking and server round-trips for `live()` fields.
  */
@@ -238,6 +319,11 @@ export class FormStore {
   /** Context component name of the schema (`form`, `action:table.edit`, …). */
   get component(): string {
     return this.options.component
+  }
+
+  /** Prefix of the fields' DOM ids (see `FormStoreOptions.idPrefix`). */
+  get idPrefix(): string {
+    return this.options.idPrefix ?? 'alfakit'
   }
 
   get record(): string | number | null {

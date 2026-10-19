@@ -162,6 +162,6 @@ describe('form settings from PHP', () => {
     )
 
     expect(container.querySelector('img')).toBeNull()
-    expect(screen.getByLabelText('Download')).toHaveAttribute('href', '/a.png')
+    expect(screen.getByLabelText('Download a.png')).toHaveAttribute('href', '/a.png')
   })
 })

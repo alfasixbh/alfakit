@@ -115,6 +115,10 @@ describe('file manager', () => {
     expect(screen.getByRole('navigation', { name: 'Folders' })).toBeInTheDocument()
     expect(document.querySelector('[data-slot="file-manager"]')).not.toBeNull()
     expect(document.querySelector('[data-slot="file-manager-items"]')).not.toBeNull()
+    // The path keeps a 12rem basis, so a full toolbar wraps instead of squeezing it under the search.
+    expect(document.querySelector('[data-slot="file-manager-breadcrumb"]')?.className).toContain(
+      'flex-[1_1_12rem]',
+    )
   })
 
   it('selects with clicks, Ctrl/Cmd and Shift, and shows the selection actions', async () => {

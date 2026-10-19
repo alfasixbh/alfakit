@@ -398,6 +398,15 @@ return [
         'size' => 'Grootte',
         'no_tree' => 'De server stuurde geen schemaboom voor deze pagina.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => ':name verwijderen',
+        'move_up' => ':name omhoog verplaatsen',
+        'move_down' => ':name omlaag verplaatsen',
+        'edit' => ':name bewerken',
+        'open' => ':name openen',
+        'download' => ':name downloaden',
+    ],
     'image_editor' => [
         'title' => 'Afbeelding bewerken',
         'keyboard_hint' => 'Pijltoetsen verplaatsen het bijsnijgebied. Shift en pijltoetsen wijzigen de grootte.',

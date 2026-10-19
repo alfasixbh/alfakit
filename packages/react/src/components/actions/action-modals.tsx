@@ -4,6 +4,7 @@ import {
   actionFormParams,
   actionPath,
   confirmModalClose,
+  formIdPrefix,
   FormStore,
   guardModalUnload,
   isModalHiddenByChild,
@@ -156,6 +157,8 @@ function ActionModal({ modal, hidden = false }: { modal: OpenModal; hidden?: boo
     return new FormStore(schema.form, {
       token: context.token,
       component: actionFormComponent(action, context),
+      // Own field ids: the modal opens over a form whose fields may share names.
+      idPrefix: formIdPrefix(actionFormComponent(action, context)),
       record: context.record ?? null,
       refreshUrl: panel.endpoints.schemaRefresh,
       optionsUrl: panel.endpoints.schemaOptions,
@@ -472,7 +475,6 @@ function ActionModal({ modal, hidden = false }: { modal: OpenModal; hidden?: boo
             {footer}
           </DialogFooter>
         )}
-        <span className="sr-only">{t('close', {}, 'Close')}</span>
       </DialogContent>
     </Dialog>
   )

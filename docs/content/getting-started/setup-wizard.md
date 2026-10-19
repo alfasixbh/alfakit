@@ -62,7 +62,7 @@ php artisan alfakit:setup --mode=panel --users --roles \
     --demo --migrate --no-interaction
 ```
 
-Plugin slugs: `shield`, `billing`, `media-library`, `settings`, `tags`, `activity-log`, `backup`, `health`, `calendar`, `tree`, `comments`, `kanban`, `forms`, `cms`, `api`, `ops`, `webhooks`, `feature-flags`, `translation-manager` (`php artisan alfakit:add --list` shows the current list with descriptions). Each is installed as `alfasix/alfakit-<slug>`. Plugins that need a spatie package (activity log, media library, tags, settings) get its migrations published; the summary lists what is left, such as adding `LogsActivity` to a model.
+Plugin slugs: `activity-log`, `ai`, `analytics`, `api`, `backup`, `billing`, `calendar`, `cms`, `comments`, `feature-flags`, `file-manager`, `forms`, `health`, `helpdesk`, `invoices`, `kanban`, `mail-templates`, `media-library`, `ops`, `settings`, `shield`, `tags`, `teams`, `translation-manager`, `tree`, `webhooks`, `workflows` (`php artisan alfakit:add --list` shows the current list with descriptions). Each is installed as `alfasix/alfakit-<slug>`. Plugins that need a spatie package (activity log, media library, tags, settings) get its migrations published; the summary lists what is left, such as adding `LogsActivity` to a model.
 
 ## Adding and removing plugins
 
@@ -75,7 +75,7 @@ php artisan alfakit:remove comments            # unregister from the panel, comp
 
 `alfakit:add` runs the same plugin step as the wizard: `composer require alfasix/alfakit-<slug>` after a confirmation, an entry `CommentsPlugin::make(),` in the panel provider's `->plugins([...])` array (added at the end of the chain when there is none; later plugins are appended, so they register in the order you added them) with its import, kept sorted, the plugin's migration publishing, then asks to migrate (`--migrate` runs them without asking). Without arguments it asks which plugins to add. Adding a plugin that is already set up changes nothing.
 
-`alfakit:remove` unregisters the plugin (a `->plugin(...)` call with its chained configuration, or its entry in `->plugins([...])`, and the unused import), then `composer remove`s the package after a confirmation, unless another panel provider still registers it. **Database tables are never dropped**: the command reminds you to write a migration if you no longer need the data.
+`alfakit:remove` unregisters the plugin (a `->plugin(...)` call with its chained configuration, or its entry in `->plugins([...])`, and the unused import), then `composer remove`s the package after a confirmation, unless another panel provider still registers it. **Database tables are never dropped**: the command reminds you to write a migration if you no longer need the data. Removing `shield` also takes spatie's `HasRoles` trait (added by `--roles`) off your user model once spatie/laravel-permission is gone, and points you at the roles field of the generated users resource.
 
 | Flag            | Description                                         |
 | --------------- | --------------------------------------------------- |

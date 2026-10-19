@@ -174,4 +174,11 @@ it('never creates, edits or deletes activities', function (): void {
         ->and(ActivityResource::hasPage('create'))->toBeFalse();
 
     inertiaGet('/activity/activity-log/create')->assertNotFound();
+
+    // canCreate() is false, so the list has no create action (it opened an empty modal
+    // whose save failed), and the record actions follow canEdit()/canDelete().
+    alfakit()->testPage(ListActivities::class, panel: 'activity')
+        ->assertActionHidden('create')
+        ->assertTableActionHidden('edit', $activity)
+        ->assertTableActionHidden('delete', $activity);
 });

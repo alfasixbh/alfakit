@@ -100,8 +100,9 @@ it('renders branded error pages and social meta tags', function (): void {
 it('sends a signed-in visitor from a login page to that renderer\'s panel', function (): void {
     [$user] = publicDemo();
 
-    $this->actingAs($user)->get('/vue/admin/login')->assertRedirect('/vue/admin');
-    $this->actingAs($user)->get('/svelte/admin/login')->assertRedirect('/svelte/admin');
+    // Straight to the panel home, which is the visitor's current store.
+    $this->actingAs($user)->get('/vue/admin/login')->assertRedirectContains('/vue/admin/');
+    $this->actingAs($user)->get('/svelte/admin/login')->assertRedirectContains('/svelte/admin/');
 });
 
 it('lets the demo account switch store from the top bar layout', function (): void {

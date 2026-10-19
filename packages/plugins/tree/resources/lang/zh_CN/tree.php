@@ -8,6 +8,13 @@ return [
         'saved' => '顺序已保存',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => '查看 :title',
+        'edit' => '编辑 :title',
+        'delete' => '删除 :title',
+    ],
+
     'validation' => [
         'invalid' => '无法读取树结构。',
         'unknown_record' => '树中的某条记录已不存在。请重新加载页面后重试。',

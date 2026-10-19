@@ -8,6 +8,13 @@ return [
         'saved' => 'Volgorde opgeslagen',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => ':title bekijken',
+        'edit' => ':title bewerken',
+        'delete' => ':title verwijderen',
+    ],
+
     'validation' => [
         'invalid' => 'De boom kon niet worden gelezen.',
         'unknown_record' => 'Een record in de boom bestaat niet meer. Laad de pagina opnieuw en probeer het nogmaals.',

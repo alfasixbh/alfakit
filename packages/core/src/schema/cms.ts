@@ -269,6 +269,8 @@ export interface CmsAutosaveResult {
   savedAt: string | null
   hasChanges: boolean
   previewUrl: string | null
+  /** The record's version after the draft was stored, when the editor's was still current. */
+  recordVersion?: string | null
 }
 
 export interface CmsPageProps {

@@ -398,6 +398,15 @@ return [
         'size' => 'Taille',
         'no_tree' => 'Le serveur n\'a envoyé aucun arbre de schéma pour cette page.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => 'Retirer :name',
+        'move_up' => 'Monter :name',
+        'move_down' => 'Descendre :name',
+        'edit' => 'Modifier :name',
+        'open' => 'Ouvrir :name',
+        'download' => 'Télécharger :name',
+    ],
     'image_editor' => [
         'title' => 'Modifier l’image',
         'keyboard_hint' => 'Les flèches déplacent la zone de recadrage. Maj et les flèches la redimensionnent.',

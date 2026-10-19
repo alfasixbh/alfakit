@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { SelectColumnSchema } from '@alfakit/core'
 import { isOptionGroup } from '@alfakit/core'
-import { computed, ref } from 'vue'
+import { computed, ref, useId } from 'vue'
 import { cn } from '../../lib/utils'
 import { useCellUpdate, type CellProps } from './cell-update'
 
 const props = defineProps<CellProps>()
 const schema = computed(() => props.column as SelectColumnSchema)
 const { update, saving, error } = useCellUpdate(props)
+const errorId = useId()
 const value = ref(
   props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
 )
@@ -29,7 +30,9 @@ const onChange = (event: Event) => {
     <select
       :value="value"
       :disabled="Boolean(props.cell.disabled) || saving"
+      :aria-label="props.column.label || props.column.name"
       :aria-invalid="error ? true : undefined"
+      :aria-describedby="error ? errorId : undefined"
       :class="
         cn(
           'border-input dark:bg-input/30 focus-visible:ring-ring/50 h-8 min-w-32 rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]',
@@ -48,6 +51,6 @@ const onChange = (event: Event) => {
         {{ option.label }}
       </option>
     </select>
-    <span v-if="error" class="text-destructive block text-xs">{{ error }}</span>
+    <span v-if="error" :id="errorId" class="text-destructive block text-xs">{{ error }}</span>
   </span>
 </template>

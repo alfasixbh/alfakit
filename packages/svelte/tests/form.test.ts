@@ -1,5 +1,6 @@
 import { FormStore, type FormBlock as FormBlockSchema, type SchemaComponent } from '@alfakit/core'
 import { fireEvent, render, screen } from '@testing-library/svelte'
+import { tick } from 'svelte'
 import FormHarness from './FormHarness.svelte'
 import Wrapper from './Wrapper.svelte'
 
@@ -135,5 +136,83 @@ describe('form block keyboard submit', () => {
 
     execute.mockRestore()
     unmount()
+  })
+})
+
+describe('form block after another action', () => {
+  const block = (label: string): FormBlockSchema => ({
+    type: 'Form',
+    key: 'form',
+    component: 'form',
+    components: [
+      {
+        type: 'TextInput',
+        key: 'name',
+        name: 'name',
+        statePath: 'name',
+        label,
+        inputType: 'text',
+      } as SchemaComponent,
+    ],
+    state: { name: 'Home' },
+    actions: [{ type: 'Action', name: 'save', label: 'Save', hasAction: true }],
+    operation: 'edit',
+  })
+
+  // An embedded action (e.g. "Publish" in a field) changed the record the form shows.
+  async function runOtherAction(edit: boolean) {
+    const { default: FormBlock } = await import('../src/components/form/FormBlock.svelte')
+    const { setPageProps } = await import('./mocks')
+    const { router } = await import('@inertiajs/svelte')
+    const handlers: Record<string, (event: unknown) => void> = {}
+    const on = vi.spyOn(router, 'on').mockImplementation(((
+      name: string,
+      callback: (event: unknown) => void,
+    ) => {
+      handlers[name] = callback
+
+      return () => {}
+    }) as never)
+
+    setPageProps({
+      page: { class: 'EditPage', layout: 'auth', title: 'Edit', content: [], token: 't' },
+    })
+    const { rerender, unmount } = render(Wrapper, {
+      props: { component: FormBlock, props: { block: block('Draft') } },
+    })
+
+    if (edit) await fireEvent.input(screen.getByLabelText(/Draft/), { target: { value: 'Typed' } })
+
+    handlers.start?.({ detail: { visit: { id: 'v1', method: 'post' } } })
+    handlers.success?.({
+      detail: {
+        visitId: 'v1',
+        page: { props: {}, flash: { alfakitAction: { name: 'publish', status: 'success' } } },
+      },
+    })
+    await rerender({ props: { component: FormBlock, props: { block: block('Published') } } })
+    await tick()
+
+    const input = screen.getByRole('textbox') as HTMLInputElement
+    const result = { label: input.labels?.[0]?.textContent ?? '', value: input.value }
+
+    on.mockRestore()
+    unmount()
+
+    return result
+  }
+
+  it('shows the server state when the form holds no edits', async () => {
+    const result = await runOtherAction(false)
+
+    expect(result.label).toContain('Published')
+    expect(result.value).toBe('Home')
+  })
+
+  it('keeps unsaved edits', async () => {
+    const result = await runOtherAction(true)
+
+    expect(result.label).toContain('Draft')
+    expect(result.value).toBe('Typed')
   })
 })

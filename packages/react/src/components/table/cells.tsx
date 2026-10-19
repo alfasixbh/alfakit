@@ -26,7 +26,7 @@ import {
 } from '@alfakit/core'
 import { router } from '@inertiajs/react'
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
-import { createElement, useEffect, useRef, useState } from 'react'
+import { createElement, useEffect, useId, useRef, useState } from 'react'
 import { usePanel, useRegistry, useT } from '../../context'
 import { extraProps } from '../../lib/attributes'
 import {
@@ -587,6 +587,8 @@ function NativeSelectCell(props: CellProps) {
     cell.state === null || cell.state === undefined ? '' : String(cell.state),
   )
 
+  const errorId = useId()
+
   return (
     <span onClick={(event) => event.stopPropagation()}>
       <select
@@ -596,7 +598,9 @@ function NativeSelectCell(props: CellProps) {
           setValue(event.target.value)
           void update(event.target.value === '' ? null : event.target.value)
         }}
+        aria-label={column.label || column.name}
         aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
         className={cn(
           'border-input dark:bg-input/30 focus-visible:ring-ring/50 h-8 min-w-32 rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]',
           error && 'border-destructive',
@@ -611,7 +615,11 @@ function NativeSelectCell(props: CellProps) {
             </option>
           ))}
       </select>
-      {error && <span className="text-destructive block text-xs">{error}</span>}
+      {error && (
+        <span id={errorId} className="text-destructive block text-xs">
+          {error}
+        </span>
+      )}
     </span>
   )
 }
@@ -626,6 +634,7 @@ function TextInputCell(props: CellProps) {
   const initial = cell.state === null || cell.state === undefined ? '' : String(cell.state)
   // `prefix()` / `suffix()`: text affixes around the input, like the TextInput field.
   const grouped = Boolean(cell.prefix || cell.suffix)
+  const errorId = useId()
 
   const field = (
     <span className={cn('relative block', grouped && 'min-w-0 flex-1')}>
@@ -648,7 +657,9 @@ function TextInputCell(props: CellProps) {
         step={schema.step}
         inputMode={schema.inputMode as React.HTMLAttributes<HTMLInputElement>['inputMode']}
         disabled={Boolean(cell.disabled) || saving}
+        aria-label={column.label || column.name}
         aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
         className={cn(
           'h-8 min-w-32',
           schema.prefixIcon && 'ps-8',
@@ -706,7 +717,11 @@ function TextInputCell(props: CellProps) {
       ) : (
         field
       )}
-      {error && <span className="text-destructive block text-xs">{error}</span>}
+      {error && (
+        <span id={errorId} className="text-destructive block text-xs">
+          {error}
+        </span>
+      )}
     </span>
   )
 }

@@ -18,11 +18,14 @@
   import { Toaster } from './components/ui/sonner'
   import { TooltipProvider } from './components/ui/tooltip'
   import { useAlfakit } from './context.svelte'
+  import { markAppMounted } from './lib/hydration.svelte'
 
   // Starter kit mode: Alfakit's toaster gets an id so the host's id-less one never doubles its toasts.
   let { children, toasterId }: { children?: Snippet; toasterId?: string } = $props()
 
   const { translator, registry } = useAlfakit()
+
+  markAppMounted()
 
   // Replace with createAlfakit({ components: { 'panel:impersonation-banner': … } }).
   const Banner = (registry.resolve('panel:impersonation-banner') ??
@@ -59,17 +62,18 @@
     <SchemaContractGuard {panel}>
       {@render children?.()}
     </SchemaContractGuard>
+    <!-- Inside the key like the page, so their texts follow a language switch. -->
+    <!-- Schema inspector: renders (and loads its code) only with `alfakitDevTools`. -->
+    <DevToolsSlot />
+    {#if panel?.impersonation}
+      <Banner impersonation={panel.impersonation} />
+    {/if}
   {/key}
   <ActionModals />
   <FlashToasts />
   <RealtimeNotifications />
   <!-- `Panel::pwa()`: service worker and the "new version" toast. -->
   <PwaManager />
-  <!-- Schema inspector: renders (and loads its code) only with `alfakitDevTools`. -->
-  <DevToolsSlot />
-  {#if panel?.impersonation}
-    <Banner impersonation={panel.impersonation} />
-  {/if}
   <Toaster
     id={toasterId}
     position={resolveToastPosition(panel?.toastPosition, direction)}

@@ -31,7 +31,7 @@ class Settings extends Cluster
 }
 ```
 
-A cluster is a page, so register it like one: `->pages([Settings::class])`, or discover the directory with `->discoverClusters(in: app_path('Alfakit/Clusters'), for: 'App\\Alfakit\\Clusters')`.
+A cluster is a page, so it is registered like one: `->pages([Settings::class])`, or by discovering the directory with `->discoverClusters(in: app_path('Alfakit/Clusters'), for: 'App\\Alfakit\\Clusters')`. `make:alfakit-cluster` adds that `discoverClusters()` call to the panel provider when the panel doesn't discover clusters yet (running it again changes nothing); when the panel discovers clusters in another directory, or the provider can't be edited, it prints the line to add.
 
 Put pages and resources in the cluster with `$cluster`:
 

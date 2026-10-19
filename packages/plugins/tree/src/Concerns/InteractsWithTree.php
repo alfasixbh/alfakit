@@ -14,6 +14,7 @@ use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\Alfakit\Support\Authorization;
 use AlfaSix\AlfakitTree\Support\TreeStructure;
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -112,12 +113,13 @@ trait InteractsWithTree
     }
 
     /**
-     * The label of a node: the resource's record title, else the title column.
+     * The label of a node: the resource's record title (when it has one, not the shared model
+     * label), else the title column.
      */
     public function getTreeRecordTitle(Model $record): string
     {
         $resource = $this->getResourceClass();
-        $title = $resource !== null ? $resource::getRecordTitle($record) : null;
+        $title = $resource !== null && $resource::hasRecordTitle() ? $resource::getRecordTitle($record) : null;
         $title ??= $record->getAttribute($this->getTitleColumnName());
 
         return is_scalar($title) && (string) $title !== '' ? (string) $title : (string) $record->getKey();
@@ -164,23 +166,70 @@ trait InteractsWithTree
      */
     protected function getTreeActions(): array
     {
-        $resource = $this->getResourceClass();
-        $hasForm = $this->getFormSchema() !== [];
         $actions = [];
 
-        if ($this->hasViewAction() && ($hasForm || ($resource !== null && $resource::hasPage('view')))) {
-            $actions[] = ViewAction::make()->iconButton()->schema($hasForm ? fn (): array => $this->getFormSchema() : null);
+        if ($this->hasViewAction() && ($schema = $this->getTreeModalSchema('view')) !== false) {
+            $actions[] = ViewAction::make()->iconButton()->schema($schema)
+                ->label(fn (?Model $record): string => $this->getTreeActionLabel('view', $record));
         }
 
-        if ($this->hasEditAction() && ($hasForm || ($resource !== null && $resource::hasPage('edit')))) {
-            $actions[] = EditAction::make()->iconButton()->schema($hasForm ? fn (): array => $this->getFormSchema() : null);
+        if ($this->hasEditAction() && ($schema = $this->getTreeModalSchema('edit')) !== false) {
+            $actions[] = EditAction::make()->iconButton()->schema($schema)
+                ->label(fn (?Model $record): string => $this->getTreeActionLabel('edit', $record));
         }
 
         if ($this->hasDeleteAction()) {
-            $actions[] = DeleteAction::make()->iconButton();
+            $actions[] = DeleteAction::make()->iconButton()
+                ->label(fn (?Model $record): string => $this->getTreeActionLabel('delete', $record));
         }
 
         return $actions;
+    }
+
+    /**
+     * What a view / edit / create button opens: a modal with `getFormSchema()`; else the
+     * resource's page when it has one (`null`: the action links to it); else a modal with
+     * the resource's form (a simple resource edits in modals); `false` when there is neither.
+     *
+     * @return (Closure(): array<\AlfaSix\Alfakit\Schemas\Components\Component>)|false|null
+     */
+    protected function getTreeModalSchema(string $page): Closure|false|null
+    {
+        if ($this->getFormSchema() !== []) {
+            return fn (): array => $this->getFormSchema();
+        }
+
+        $resource = $this->getResourceClass();
+
+        if ($resource === null) {
+            return false;
+        }
+
+        if ($resource::hasPage($page)) {
+            return null;
+        }
+
+        return $this->getResourceFormSchema() === [] ? false : fn (): array => $this->getResourceFormSchema();
+    }
+
+    /**
+     * The resource's form fields, for the modals of a resource without create / edit pages.
+     *
+     * @return array<\AlfaSix\Alfakit\Schemas\Components\Component>
+     */
+    protected function getResourceFormSchema(): array
+    {
+        $resource = $this->getResourceClass();
+
+        return $resource === null ? [] : $resource::form(\AlfaSix\Alfakit\Schemas\Schema::make())->getComponents(withHidden: true);
+    }
+
+    /**
+     * A node button's label names the node ("Delete Phones"), like the move buttons.
+     */
+    protected function getTreeActionLabel(string $action, ?Model $record): string
+    {
+        return (string) __('alfakit-tree::tree.actions.'.$action, ['title' => $record === null ? '' : $this->getTreeRecordTitle($record)]);
     }
 
     /**

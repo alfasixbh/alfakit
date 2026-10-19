@@ -109,6 +109,11 @@ export interface ActionRunnerState {
   modals: OpenModal[]
   /** Name of the action currently loading its modal. */
   loading: string | null
+  /**
+   * Which run of it (component, action path and record): a table renders the same action
+   * once per row, and only the clicked row's button is loading (`isActionLoading()`).
+   */
+  loadingKey?: string | null
 }
 
 export interface ActionRunnerOptions {
@@ -137,7 +142,7 @@ export class ActionRunner {
   private readonly modalForms = new Map<string, FormStore>()
 
   constructor(private readonly options: ActionRunnerOptions) {
-    this.store = createStore<ActionRunnerState>({ modals: [], loading: null })
+    this.store = createStore<ActionRunnerState>({ modals: [], loading: null, loadingKey: null })
   }
 
   get state(): ActionRunnerState {
@@ -354,14 +359,14 @@ export class ActionRunner {
     }
 
     this.running.add(key)
-    this.store.update({ loading: action.name })
+    this.store.update({ loading: action.name, loadingKey: runKey(action, context) })
 
     try {
       const modal = await this.fetchModal(action, context)
 
       // `mountUsing()` halted or cancelled the action: the modal stays closed.
       if (isCancelledModal(modal)) {
-        this.store.update({ loading: null })
+        this.store.update({ loading: null, loadingKey: null })
         this.notify(modal.notifications)
         resolve?.(undefined)
 
@@ -370,13 +375,14 @@ export class ActionRunner {
 
       this.store.set((state) => ({
         loading: null,
+        loadingKey: null,
         modals: [
           ...state.modals,
           { action, context, modal, errors: {}, processing: false, resolve },
         ],
       }))
     } catch (error) {
-      this.store.update({ loading: null })
+      this.store.update({ loading: null, loadingKey: null })
       resolve?.(undefined)
       this.options.onError?.(error)
     } finally {
@@ -987,7 +993,29 @@ export function groupMenuItems<T extends { group?: number }>(items: T[]): T[][] 
   return groups
 }
 
-function runKey(action: ActionSchema, context: ActionContext): string {
+/** Whether this button's run (this action for this record) is fetching its modal. */
+export function isActionLoading(
+  state: ActionRunnerState,
+  action: ActionSchema,
+  context: ActionContext,
+): boolean {
+  return state.loadingKey === runKey(action, context)
+}
+
+/** Whether this button's run (this action for this record) has a modal that is submitting. */
+export function isActionProcessing(
+  state: ActionRunnerState,
+  action: ActionSchema,
+  context: ActionContext,
+): boolean {
+  const key = runKey(action, context)
+
+  return state.modals.some(
+    (modal) => modal.processing && runKey(modal.action, modal.context) === key,
+  )
+}
+
+function runKey(action: Pick<ActionSchema, 'name'>, context: ActionContext): string {
   return [context.component ?? 'page', actionPath(action, context), context.record ?? ''].join(
     '\u0000',
   )

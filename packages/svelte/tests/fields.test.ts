@@ -53,6 +53,8 @@ describe('field behaviour', () => {
     })
 
     expect(store.getValue('color')).toBe('hsl(0, 100%, 50%)')
+    // The colour value reads left to right, also in right-to-left languages.
+    expect(container.querySelector('input#alfakit-color')).toHaveAttribute('dir', 'ltr')
   })
 
   it('locks read-only toggles, checkboxes and tags', () => {
@@ -101,5 +103,59 @@ describe('field behaviour', () => {
 
     expect(optionLabels).toHaveBeenCalledTimes(1)
     optionLabels.mockRestore()
+  })
+
+  it('lets a long selected label shrink and truncate in a narrow searchable select', () => {
+    renderForm(
+      [
+        {
+          type: 'Select',
+          key: 'currency',
+          name: 'currency',
+          statePath: 'currency',
+          label: 'Currency',
+          searchable: true,
+          options: [{ value: 'usd', label: 'US Dollar (USD)' }],
+        } as SchemaComponent,
+      ],
+      { currency: 'usd' },
+    )
+
+    const label = screen.getByText('US Dollar (USD)')
+
+    // The flex wrapper must be allowed to shrink (min-w-0), or `truncate` never applies
+    // and the label spills over the next field.
+    expect(label).toHaveClass('truncate')
+    expect(label.parentElement).toHaveClass('min-w-0')
+  })
+
+  it('shows the default placeholder in empty plain and native selects', async () => {
+    const { container } = renderForm(
+      [
+        {
+          type: 'Select',
+          key: 'type',
+          name: 'type',
+          statePath: 'type',
+          label: 'Type',
+          options: [{ value: 'a', label: 'A' }],
+        } as SchemaComponent,
+        {
+          type: 'Select',
+          key: 'kind',
+          name: 'kind',
+          statePath: 'kind',
+          label: 'Kind',
+          native: true,
+          selectablePlaceholder: true,
+          options: [{ value: 'a', label: 'A' }],
+        } as SchemaComponent,
+      ],
+      { type: null, kind: null },
+    )
+    await tick()
+
+    expect(container.querySelector('#alfakit-type')?.textContent).toContain('Select an option')
+    expect(container.querySelector('select option[value=""]')?.textContent).toBe('Select an option')
   })
 })

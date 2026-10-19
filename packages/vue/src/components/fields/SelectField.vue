@@ -62,7 +62,7 @@ const plainLabel = (label: string): string =>
         @blur="blur"
       >
         <option v-if="props.component.selectablePlaceholder" value="">
-          {{ props.component.placeholder ?? '' }}
+          {{ props.component.placeholder ?? t('select_option', {}, 'Select an option') }}
         </option>
         <template
           v-for="option in props.component.options"
@@ -97,7 +97,9 @@ const plainLabel = (label: string): string =>
           :aria-readonly="readOnly || undefined"
           class="w-full"
         >
-          <SelectValue :placeholder="props.component.placeholder ?? ''" />
+          <SelectValue
+            :placeholder="props.component.placeholder ?? t('select_option', {}, 'Select an option')"
+          />
         </SelectTrigger>
         <SelectContent>
           <SelectItem

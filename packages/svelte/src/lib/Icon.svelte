@@ -4,7 +4,8 @@
   import type { Component } from 'svelte'
   import { useOptionalRegistry } from '../context.svelte'
   import { cn } from './utils'
-  import { loadIcon, resolveIcon, type LucideIconComponent } from './icons'
+  import { useAppMounted } from './hydration.svelte'
+  import { loadIcon, resolveIcon, resolveRegisteredIcon, type LucideIconComponent } from './icons'
 
   type Props = LucideProps & {
     /**
@@ -39,13 +40,18 @@
 
   // Icons load on demand (each is its own chunk); one already loaded renders at once. The
   // server render shows nothing, like `lucide-react/dynamic`.
+  // Until this app has hydrated, only registered icons (and the glyph) render, like on the
+  // server, even when another app on the page already loaded the icon.
+  const mounted = useAppMounted()
   let loaded = $state<{ key: string; icon: LucideIconComponent | undefined }>()
   const key = $derived(`${iconName ?? ''}|${fallback ?? ''}`)
+  const resolve = (icon: string) =>
+    mounted.current ? resolveIcon(icon) : resolveRegisteredIcon(icon)
   const component = $derived(
     iconName
-      ? (resolveIcon(iconName) ??
-          (loaded?.key === key ? loaded.icon : undefined) ??
-          (fallback ? resolveIcon(fallback) : undefined) ??
+      ? (resolve(iconName) ??
+          (mounted.current && loaded?.key === key ? loaded.icon : undefined) ??
+          (fallback ? resolve(fallback) : undefined) ??
           (Glyph as LucideIconComponent | undefined))
       : undefined,
   )

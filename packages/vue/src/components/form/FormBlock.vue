@@ -14,6 +14,7 @@ import {
   registerFormSubmitter,
   registerPageForm,
   resolvePartialProps,
+  shouldResyncForm,
   wizardProgressStore,
 } from '@alfakit/core'
 import { router } from '@inertiajs/vue3'
@@ -102,6 +103,10 @@ watch(token, (value) => store.setToken(value))
 // block may arrive before or after Inertia's `success` event, so handle both orders.
 let submittedBlock: FormBlockSchema | null = null
 let refillPending = false
+// Another action succeeded and its new block has not arrived yet.
+let resyncPending = false
+// The block when the latest non-GET visit started, to tell whether its response arrived.
+let visitBlock: FormBlockSchema | null = null
 
 watch(
   () => props.block,
@@ -109,6 +114,12 @@ watch(
     if (refillPending) {
       refillPending = false
       store.fill(block)
+    }
+
+    if (resyncPending) {
+      resyncPending = false
+
+      if (!store.isDirty) store.fill(block)
     }
   },
 )
@@ -153,10 +164,23 @@ const offStart = router.on('start', (event) => {
   if (submitting && !submitVisit && visit.method !== 'get') {
     submitVisit = visit.id
   }
+
+  if (visit.method !== 'get') visitBlock = props.block
 })
 
 const offSuccess = router.on('success', (event) => {
   const id = submitVisit
+
+  // Another action changed the record: show the server's new form unless it holds edits.
+  if (!id && shouldResyncForm(pageFlash(event.detail.page), store)) {
+    if (props.block !== visitBlock) {
+      store.fill(props.block)
+    } else {
+      resyncPending = true
+    }
+
+    return
+  }
 
   if (!id || (event.detail.visitId ?? id) !== id) return
 

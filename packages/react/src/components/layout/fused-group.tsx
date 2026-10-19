@@ -25,7 +25,11 @@ export function FusedGroupComponent({ component }: { component: FusedGroupSchema
       {...extraProps(component.extraAttributes, 'flex flex-col gap-1.5')}
     >
       {component.label && (
-        <span id={labelId} className="text-sm leading-none font-medium select-none">
+        <span
+          id={labelId}
+          data-slot="label"
+          className="text-sm leading-none font-medium select-none"
+        >
           {component.label}
         </span>
       )}

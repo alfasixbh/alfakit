@@ -398,6 +398,15 @@ return [
         'size' => 'اندازه',
         'no_tree' => 'سرور درخت اسکیمایی برای این صفحه ارسال نکرد.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => 'حذف :name',
+        'move_up' => 'انتقال :name به بالا',
+        'move_down' => 'انتقال :name به پایین',
+        'edit' => 'ویرایش :name',
+        'open' => 'باز کردن :name',
+        'download' => 'دانلود :name',
+    ],
     'image_editor' => [
         'title' => 'ویرایش تصویر',
         'keyboard_hint' => 'کلیدهای جهت ناحیه برش را جابه‌جا می‌کنند. Shift و کلیدهای جهت اندازه آن را تغییر می‌دهند.',

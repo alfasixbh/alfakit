@@ -34,7 +34,7 @@ const repeater = {
   addActionLabel: 'Add line',
   table: [
     { label: 'Product', name: 'product', required: true, width: '60%' },
-    { label: 'Quantity', name: 'qty', alignment: 'end', hiddenLabel: true },
+    { label: 'Quantity', name: 'qty', alignment: 'end', hiddenLabel: true, width: '9rem' },
   ],
 } as SchemaComponent
 
@@ -57,6 +57,11 @@ describe('Repeater table layout', () => {
 
     expect(headers).toEqual(['Product*', 'Quantity', 'Actions'])
     expect(table.querySelector('thead th')?.getAttribute('style')).toContain('width: 60%')
+    // A fixed width is also the minimum (the table scrolls instead of squeezing fields).
+    expect(table.querySelector('thead th')?.getAttribute('style')).not.toContain('min-width')
+    expect(table.querySelectorAll('thead th')[1]?.getAttribute('style')).toContain(
+      'min-width: 9rem',
+    )
     expect(table.querySelectorAll('thead th span.sr-only')[0]?.textContent).toBe('Quantity')
 
     const rows = table.querySelectorAll('tbody tr')

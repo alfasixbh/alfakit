@@ -5,6 +5,11 @@ import { cn } from '../../lib/utils'
 
 /** Header cells shared by the Repeater and RepeatableEntry tables. */
 const props = defineProps<{ columns: TableColumnSchema[] }>()
+
+// A fixed `width()` (`9rem`, `120px`) is also the column's minimum, so the table scrolls
+// sideways instead of squeezing its fields; percentages stay flexible.
+const widthStyle = (width?: string | null) =>
+  !width ? undefined : width.trim().endsWith('%') ? { width } : { width, minWidth: width }
 </script>
 
 <template>
@@ -12,7 +17,7 @@ const props = defineProps<{ columns: TableColumnSchema[] }>()
     v-for="(column, index) in props.columns"
     :key="`${column.name ?? 'column'}-${index}`"
     scope="col"
-    :style="column.width ? { width: column.width } : undefined"
+    :style="widthStyle(column.width)"
     :class="
       cn(
         'text-muted-foreground px-3 py-2 text-xs font-medium',

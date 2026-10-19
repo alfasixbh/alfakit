@@ -226,7 +226,7 @@ See [Multi-factor authentication](multi-factor-authentication) (authenticator ap
 
 ## Email verification
 
-With `->emailVerification()` users implementing `MustVerifyEmail` are redirected to a prompt page until they click the signed link, which lands on `/admin/email-verification/verify/{id}/{hash}`.
+With `->emailVerification()` users implementing `MustVerifyEmail` are redirected to a prompt page until they click the signed link, which lands on `/admin/email-verification/verify/{id}/{hash}`. Verification mails sent from the panel (sign-up, **Resend** on the prompt, a changed email address) link to that route, even when the app has its own `verification.verify` route (a starter kit's); mails sent elsewhere keep Laravel's link, and a `VerifyEmail::createUrlUsing()` callback in your own providers replaces both.
 
 ## Logging out
 

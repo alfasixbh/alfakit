@@ -8,6 +8,13 @@ return [
         'saved' => 'تم حفظ الترتيب',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => 'عرض :title',
+        'edit' => 'تعديل :title',
+        'delete' => 'حذف :title',
+    ],
+
     'validation' => [
         'invalid' => 'تعذرت قراءة الشجرة.',
         'unknown_record' => 'أحد السجلات في الشجرة لم يعد موجودًا. أعد تحميل الصفحة وحاول مرة أخرى.',

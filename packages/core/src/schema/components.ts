@@ -767,6 +767,11 @@ export interface FieldsetSchema extends BaseComponent {
 
 export interface TabSchema extends BaseComponent {
   type: 'Tab'
+  /**
+   * The tab's readable value in the query string when its tabs `persistTabInQueryString()`:
+   * its `id()`, explicit `key()` or label slug (`?tab=billing-address`).
+   */
+  queryValue?: string
   icon?: IconName
   iconPosition?: IconPosition
   badge?: string | number

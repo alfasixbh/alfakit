@@ -45,6 +45,8 @@ describe('actions', () => {
     expect(screen.getByRole('link', { name: /New post/ })).toHaveAttribute('href', '/posts/create')
     expect(screen.getByRole('button', { name: /Delete/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Actions' })).toBeInTheDocument()
+    // Link actions cancel the size variant's `has-[>svg]:px-*`, so an icon never pads them.
+    expect(screen.getByRole('button', { name: /Delete/ }).className).toContain('has-[>svg]:px-0')
   })
 
   it('opens a confirmation modal fetched from the server and submits it', async () => {

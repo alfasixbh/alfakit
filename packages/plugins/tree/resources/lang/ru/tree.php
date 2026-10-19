@@ -8,6 +8,13 @@ return [
         'saved' => 'Порядок сохранён',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => 'Просмотреть :title',
+        'edit' => 'Изменить :title',
+        'delete' => 'Удалить :title',
+    ],
+
     'validation' => [
         'invalid' => 'Не удалось прочитать дерево.',
         'unknown_record' => 'Одна из записей дерева больше не существует. Перезагрузите страницу и повторите попытку.',

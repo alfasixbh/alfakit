@@ -210,7 +210,7 @@ const removeTag = (event: Event, key: string) => {
           )
         "
       >
-        <span class="flex flex-1 flex-wrap items-center gap-1 text-start">
+        <span class="flex min-w-0 flex-1 flex-wrap items-center gap-1 text-start">
           <span v-if="selected.length === 0" class="text-muted-foreground">{{
             props.component.placeholder ?? t('select_option', {}, 'Select an option')
           }}</span>

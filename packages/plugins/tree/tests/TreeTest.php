@@ -13,6 +13,7 @@ use AlfaSix\AlfakitTree\Tests\Fixtures\Category;
 use AlfaSix\AlfakitTree\Tests\Fixtures\CategoryPolicy;
 use AlfaSix\AlfakitTree\Tests\Fixtures\CategoryResource;
 use AlfaSix\AlfakitTree\Tests\Fixtures\CategoryTreeWidget;
+use AlfaSix\AlfakitTree\Tests\Fixtures\SimpleCategoryResource;
 use AlfaSix\AlfakitTree\Tests\TestCase as TreeTestCase;
 use AlfaSix\AlfakitTree\TreePlugin;
 use Illuminate\Support\Facades\Gate;
@@ -186,6 +187,32 @@ it('runs node actions for the node record', function (): void {
 
     treeTest()->postJson('/trees/_alfakit/actions', ['token' => $token, 'component' => 'tree', 'action' => 'delete', 'record' => $keep->id])->assertForbidden();
     treeTest()->postJson('/trees/_alfakit/actions', ['token' => $token, 'component' => 'tree', 'action' => 'edit', 'record' => 999])->assertNotFound();
+});
+
+it('creates and edits in modals with the resource form on a simple resource, and names the node in its buttons', function (): void {
+    Panels::register('trees', fn (Panel $panel): Panel => $panel->plugin(TreePlugin::make())->resources([SimpleCategoryResource::class]));
+    treeTest()->actingAs(treeUser());
+    $c = treeCategories();
+
+    [$token, $tree, $page] = treePage('/trees/simple-categories');
+    $books = collect($tree['nodes'])->firstWhere('title', 'Books');
+
+    expect($page['headerActions'][0]['name'])->toBe('create')
+        ->and($page['headerActions'][0]['url'] ?? null)->toBeNull()
+        ->and(collect($books['actions'])->pluck('name')->all())->toBe(['edit', 'delete'])
+        ->and(collect($books['actions'])->pluck('label')->all())->toBe(['Edit Books', 'Delete Books']);
+
+    $modal = treeTest()->getJson('/trees/_alfakit/actions/modal?'.http_build_query([
+        'token' => $token, 'component' => 'tree', 'action' => 'edit', 'record' => $c['books']->id,
+    ]))->assertOk()->json();
+
+    expect($modal['form']['state']['title'])->toBe('Books');
+
+    treeTest()->postJson('/trees/_alfakit/actions', ['token' => $token, 'component' => 'tree', 'action' => 'edit', 'record' => $c['books']->id, 'data' => ['title' => 'Novels']])->assertSuccessful();
+    treeTest()->postJson('/trees/_alfakit/actions', ['token' => $token, 'action' => 'create', 'data' => ['title' => 'Music']])->assertSuccessful();
+
+    expect($c['books']->fresh()->title)->toBe('Novels')
+        ->and(Category::query()->where('title', 'Music')->exists())->toBeTrue();
 });
 
 it('renders and saves a tree widget through the widget endpoint', function (): void {

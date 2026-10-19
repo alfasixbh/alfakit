@@ -233,7 +233,7 @@ DatePicker::make('published_at')->native(false)->minDate(now())->displayFormat('
 DateTimePicker::make('starts_at')->seconds(false)->timezone('Asia/Bahrain');
 ```
 
-`format()` sets the stored format (defaults `Y-m-d`, `Y-m-d H:i:s`, `H:i:s`). Values are normalised to that format on hydrate and dehydrate. Date-times are shown in the panel's timezone (or the field's `timezone()`) and converted back to the app timezone on save; dates and times of day are never shifted. Month and day names follow the user's language, and the week starts on the locale's first day (Monday in most of Europe, Sunday in the US) unless you set `firstDayOfWeek()`, `weekStartsOnMonday()` or `weekStartsOnSunday()`. Also `disabledDates()`, `closeOnDateSelection()`.
+`format()` sets the stored format (defaults: `Y-m-d`; `Y-m-d H:i` and `H:i`, or `Y-m-d H:i:s` and `H:i:s` with `seconds()`). Values are normalised to that format on hydrate and dehydrate. Date-times are shown in the panel's timezone (or the field's `timezone()`) and converted back to the app timezone on save; dates and times of day are never shifted. Month and day names follow the user's language, and the week starts on the locale's first day (Monday in most of Europe, Sunday in the US) unless you set `firstDayOfWeek()`, `weekStartsOnMonday()` or `weekStartsOnSunday()`. Also `disabledDates()`, `closeOnDateSelection()`.
 
 ```php
 DateTimePicker::make('starts_at')

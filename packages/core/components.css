@@ -1,0 +1,347 @@
+/*
+ * Component styles shared by panels (themes.css) and by Alfakit outside panels
+ * (standalone.css, starter-kit panels): chart colours, RichEditor columns, the calendar,
+ * tree and Kanban plugins, and field positioning. They read the theme tokens (`--primary`,
+ * `--border`…), whichever stylesheet defines them. Copied into each renderer's dist.
+ */
+
+/* ------------------------------------------------------------------ Charts */
+
+/*
+ * Chart.js paints axes, legends and tooltips on the canvas, so chart widgets read these
+ * properties from <html> (re-read when the theme or dark mode changes). Colours take any
+ * CSS colour; the widths and radius are unitless numbers. Override them in a theme:
+ *   :root[data-alfakit-theme~='acme'] { --chart-tooltip-bg: oklch(0.2 0 0); }
+ * Stat sparklines (`[data-slot='stat-chart']`) use the `--stat-chart-*` properties.
+ */
+:root {
+  --chart-text: var(--muted-foreground);
+  --chart-grid: var(--border);
+  --chart-legend-foreground: var(--muted-foreground);
+  --chart-tooltip-bg: var(--popover);
+  --chart-tooltip-foreground: var(--popover-foreground);
+  --chart-tooltip-border: var(--border);
+  --chart-tooltip-border-width: 1;
+  --chart-tooltip-radius: 6;
+  --stat-chart-stroke-width: 2;
+  --stat-chart-fill-opacity: 0.12;
+}
+
+/*
+ * RichEditor `grid` column blocks and `lead` / `small` text, in the editor and in rendered
+ * content (`RichContentRenderer`). Columns stack on small screens. Stored as
+ * `<div data-type="grid" class="alfakit-grid alfakit-grid-cols-2"><div data-type="gridColumn">`
+ * and `<p class="alfakit-lead">`; copy these rules when showing content outside a panel.
+ */
+:where(.alfakit-grid) {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  margin-block: 0.5rem;
+}
+:where(.alfakit-grid-column) {
+  min-width: 0;
+}
+:where(.alfakit-grid-column) > :first-child {
+  margin-block-start: 0;
+}
+@media (min-width: 768px) {
+  :where(.alfakit-grid-cols-2) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-3) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-4) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-5) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  :where(.alfakit-grid-cols-6) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+:where([contenteditable] .alfakit-grid-column) {
+  border: 1px dashed var(--border);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+}
+:where(.alfakit-lead) {
+  font-size: 1.125em;
+  line-height: 1.6;
+}
+:where(.alfakit-prose small) {
+  font-size: 0.8125em;
+}
+
+/* ---------------------------------------------------------- Calendar and tree */
+
+/*
+ * The calendar widget (alfasix/alfakit-calendar) draws FullCalendar inside
+ * `[data-slot="calendar"]`; FullCalendar reads these `--fc-*` variables, so every theme's
+ * tokens (and dark mode) apply. Override them on the slot to restyle one calendar.
+ */
+:where(.fc[data-slot='calendar']) {
+  --fc-small-font-size: 0.75rem;
+  --fc-page-bg-color: var(--card);
+  --fc-neutral-bg-color: var(--muted);
+  --fc-neutral-text-color: var(--muted-foreground);
+  --fc-border-color: var(--border);
+  --fc-button-text-color: var(--foreground);
+  --fc-button-bg-color: var(--background);
+  --fc-button-border-color: var(--border);
+  --fc-button-hover-bg-color: var(--accent);
+  --fc-button-hover-border-color: var(--border);
+  --fc-button-active-bg-color: var(--secondary);
+  --fc-button-active-border-color: var(--border);
+  --fc-event-bg-color: var(--primary);
+  --fc-event-border-color: var(--primary);
+  --fc-event-text-color: var(--primary-foreground);
+  --fc-event-selected-overlay-color: color-mix(in oklab, var(--foreground) 25%, transparent);
+  --fc-more-link-bg-color: var(--muted);
+  --fc-more-link-text-color: var(--foreground);
+  --fc-non-business-color: color-mix(in oklab, var(--muted) 60%, transparent);
+  --fc-bg-event-color: var(--primary);
+  --fc-bg-event-opacity: 0.2;
+  --fc-highlight-color: color-mix(in oklab, var(--primary) 15%, transparent);
+  --fc-today-bg-color: color-mix(in oklab, var(--primary) 6%, transparent);
+  --fc-now-indicator-color: var(--destructive);
+  --fc-list-event-hover-bg-color: var(--accent);
+  color: var(--card-foreground);
+}
+/*
+ * FullCalendar puts its `fc` class on the slot element itself and injects its own CSS
+ * (`.fc .fc-button`, two classes), so these rules are plain selectors anchored on
+ * `.fc[data-slot='calendar']` (three) rather than `:where()`, which would always lose.
+ * Restyle one calendar with a more specific selector or with the `--fc-*` variables.
+ */
+.fc[data-slot='calendar'] .fc-toolbar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+  color: var(--foreground);
+}
+.fc[data-slot='calendar'] .fc-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  box-shadow: none;
+  text-transform: capitalize;
+}
+.fc[data-slot='calendar'] .fc-button .fc-icon {
+  font-size: 1.125rem;
+}
+.fc[data-slot='calendar'] .fc-button-group > .fc-button:not(:first-child) {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.fc[data-slot='calendar'] .fc-button-group > .fc-button:not(:last-child) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.fc[data-slot='calendar'] .fc-button-primary:disabled {
+  opacity: 0.5;
+}
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled).fc-button-active,
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled):active {
+  color: var(--secondary-foreground);
+}
+.fc[data-slot='calendar'] .fc-button-primary:focus,
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled).fc-button-active:focus,
+.fc[data-slot='calendar'] .fc-button-primary:not(:disabled):active:focus {
+  box-shadow: none;
+}
+.fc[data-slot='calendar'] .fc-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  z-index: 2;
+}
+.fc[data-slot='calendar'] a {
+  color: inherit;
+}
+.fc[data-slot='calendar'] .fc-daygrid-day-number,
+.fc[data-slot='calendar'] .fc-col-header-cell-cushion {
+  text-decoration: none;
+}
+.fc[data-slot='calendar'] .fc-col-header-cell-cushion {
+  padding-block: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+.fc[data-slot='calendar'] .fc-daygrid-day-number {
+  font-size: 0.875rem;
+}
+.fc[data-slot='calendar'] .fc-day-other .fc-daygrid-day-number {
+  color: var(--muted-foreground);
+}
+/* Today: a tinted cell (`--fc-today-bg-color`) and the date in a primary pill. */
+.fc[data-slot='calendar'] .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  margin: 0.25rem;
+  padding: 0 0.375rem;
+  border-radius: 9999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 600;
+}
+.fc[data-slot='calendar'] .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
+  color: var(--primary);
+  font-weight: 600;
+}
+.fc[data-slot='calendar'] .fc-event {
+  border-radius: min(var(--radius), 0.375rem);
+}
+.fc[data-slot='calendar'] .fc-daygrid-event,
+.fc[data-slot='calendar'] .fc-timegrid-event .fc-event-main,
+.fc[data-slot='calendar'] .fc-list-event td {
+  font-size: 0.75rem;
+}
+/* Clipped titles keep their beginning and end with an ellipsis, also a Latin title in a
+   right-to-left calendar (its direction follows its own text). */
+.fc[data-slot='calendar'] .fc-event-title {
+  text-overflow: ellipsis;
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+.fc[data-slot='calendar'] .fc-daygrid-dot-event:hover,
+.fc[data-slot='calendar'] .fc-daygrid-dot-event.fc-event-mirror {
+  background: var(--accent);
+}
+.fc[data-slot='calendar'] .fc-list-day-cushion,
+.fc[data-slot='calendar'] .fc-popover-header {
+  color: var(--foreground);
+}
+.fc[data-slot='calendar'] .fc-popover {
+  border-radius: var(--radius);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+}
+.fc[data-slot='calendar'] .fc-timegrid-slot-label,
+.fc[data-slot='calendar'] .fc-timegrid-axis,
+.fc[data-slot='calendar'] .fc-list-event-time {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+/*
+ * The list view hides its column headers for screen readers with `left: -10000px`. Right to
+ * left that is scrollable overflow: the whole page gains a 10 000 px horizontal scroll and the
+ * top bar slides under the sidebar. Clip it in place instead (still read by screen readers).
+ */
+.fc[data-slot='calendar'] .fc-list-table thead {
+  left: auto;
+  inset-inline-start: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * Fields contain what they position. Headless switches, checkboxes and radios render a
+ * visually hidden native input beside the control, absolutely positioned (and shifted by
+ * -100%); without a positioned field it lands at the page edge and, right to left, widens
+ * the page on phones.
+ */
+:where([data-slot='field']) {
+  position: relative;
+}
+
+/*
+ * Narrow screens: FullCalendar keeps its header toolbar on one row, wider than a phone.
+ * Its chunks (navigation, title, views) wrap instead, and the title shrinks. Flex gaps and
+ * `justify-content` follow the writing direction, so this works right to left too. (Plain
+ * selectors: FullCalendar injects its own CSS, which would beat `:where()`; the slot is
+ * the `.fc` element itself.)
+ */
+@media (max-width: 39.99rem) {
+  [data-slot='calendar'] .fc-toolbar.fc-header-toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  [data-slot='calendar'] .fc-toolbar .fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+  [data-slot='calendar'] .fc-toolbar .fc-toolbar-title {
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+  [data-slot='calendar'] .fc-toolbar .fc-button {
+    font-size: 0.8125rem;
+  }
+}
+
+/*
+ * The tree (alfasix/alfakit-tree): the drop indicator while dragging. Rows carry
+ * `data-drop="before|after|inside"`; lines are drawn above or below the row, so they
+ * need no direction.
+ */
+:where([data-slot='tree-item'][data-drop='before']) {
+  box-shadow: inset 0 2px 0 0 var(--primary);
+}
+:where([data-slot='tree-item'][data-drop='after']) {
+  box-shadow: inset 0 -2px 0 0 var(--primary);
+}
+:where([data-slot='tree-item'][data-drop='inside']) {
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  outline: 1px dashed var(--primary);
+  outline-offset: -1px;
+}
+
+/*
+ * The Kanban board (alfasix/alfakit-kanban). A card being dragged leaves a dashed
+ * placeholder (`data-picked="pointer"`) while a copy follows the pointer
+ * (`data-slot="kanban-ghost"`); a card picked up with the keyboard is lifted
+ * (`data-picked="keyboard"`). A list the picked card may not enter has `data-refused`.
+ */
+:where([data-slot='kanban-card'][data-picked='pointer']) {
+  opacity: 0.45;
+}
+:where([data-slot='kanban-card'][data-picked='pointer'] > [data-slot='kanban-card-body']) {
+  border-style: dashed;
+  box-shadow: none;
+}
+:where([data-slot='kanban-card'][data-picked='keyboard'] > [data-slot='kanban-card-body']) {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: 0 10px 24px -12px color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+:where([data-slot='kanban-card'][data-saving]) {
+  opacity: 0.7;
+}
+:where([data-slot='kanban-ghost']) {
+  cursor: grabbing;
+  list-style: none;
+  box-shadow: 0 18px 40px -16px color-mix(in oklab, var(--foreground) 55%, transparent);
+}
+:where([data-slot='kanban-dropzone'][data-refused]) {
+  background-color: color-mix(in oklab, var(--destructive) 8%, transparent);
+  outline: 1px dashed var(--destructive);
+  outline-offset: -1px;
+}
+:where(body[data-kanban-dragging]) {
+  cursor: grabbing;
+  user-select: none;
+  -webkit-user-select: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where([data-slot='kanban-card'] > [data-slot='kanban-card-body']) {
+    transition: none;
+  }
+}

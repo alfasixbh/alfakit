@@ -2,8 +2,10 @@ import type { StandaloneComponentSchema } from '@alfakit/core'
 import { render, screen, within } from '@testing-library/svelte'
 import contactForm from '../../core/tests/fixtures/standalone/contact-form.json'
 import postsTable from '../../core/tests/fixtures/standalone/posts-table.json'
+import { showToast } from '../src/components/notifications/toast'
 import { configureAlfakit } from '../src/standalone'
 import CustomIcon from './CustomIcon.svelte'
+import DualToasterHarness from './DualToasterHarness.svelte'
 import StandaloneHarness from './StandaloneHarness.svelte'
 import StatusBadge from './StatusBadge.svelte'
 
@@ -62,5 +64,20 @@ describe('AlfakitComponent (outside panels)', () => {
 
     expect(screen.getByTestId('custom-layout')).toHaveTextContent('1 block')
     expect(screen.queryByLabelText(/Email/)).not.toBeInTheDocument()
+  })
+
+  it("shows a toast once although the app's layout mounts its own toaster", async () => {
+    render(DualToasterHarness)
+
+    showToast({ id: 'n1', title: 'Saved once', status: 'success' } as never)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    const toasts = Array.from(document.querySelectorAll('[data-sonner-toast]')).filter((toast) =>
+      toast.textContent?.includes('Saved once'),
+    )
+
+    expect(toasts).toHaveLength(1)
+    // In Alfakit's own toaster (top), not the app's id-less one (bottom).
+    expect(toasts[0]?.closest('[data-sonner-toaster]')?.getAttribute('data-y-position')).toBe('top')
   })
 })

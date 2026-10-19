@@ -17,11 +17,11 @@ EditAction::make()->undoable(seconds: 10);
 
 ## Built-in undos
 
-| Action                             | Undo                                                                                                                                 |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `DeleteAction`, `DeleteBulkAction` | Restores the records, on models that use `SoftDeletes` (only the records this run deleted). Models without soft deletes get no undo. |
-| `EditAction`                       | Puts back the attributes the save changed.                                                                                           |
-| The edit page's save               | Same, with `protected static bool $isSaveUndoable = true;` (and `$saveUndoSeconds`) on the `EditRecord` page.                        |
+| Action                             | Undo                                                                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DeleteAction`, `DeleteBulkAction` | Restores the records, on models that use `SoftDeletes` (only the records this run deleted). Models without soft deletes get no undo.                   |
+| `EditAction`                       | Puts back the attributes the save changed.                                                                                                             |
+| The edit page's save               | Same, with `protected static bool $isSaveUndoable = true;` (and `$saveUndoSeconds`) on the `EditRecord` page. The open form shows the restored values. |
 
 Edits are undone attribute by attribute (relationships are not tracked). Narrow it with `undoTrackedAttributes(['title', 'status'])`. When someone saved the record again in the meantime, the undo is refused with a message instead of overwriting their change.
 

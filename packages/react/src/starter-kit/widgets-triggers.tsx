@@ -49,7 +49,7 @@ export function SearchTrigger({ source, onLoad }: WidgetProps & { onLoad?: () =>
       <SearchIcon className="size-4" aria-hidden="true" />
       <span className="sr-only sm:not-sr-only sm:flex-1 sm:text-start">{placeholder}</span>
       {hydrated && binding && (
-        <kbd className="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline">
+        <kbd dir="ltr" className="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline">
           {formatKeyBinding(binding)}
         </kbd>
       )}

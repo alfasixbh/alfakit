@@ -2,12 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   CMS_PREVIEW_STORAGE_KEY,
   CmsAutosave,
+  callCmsAutosave,
   cmsPreviewFitsBeside,
   cmsPreviewOpensByDefault,
   cmsPreviewOpensOnLoad,
   rememberedCmsPreview,
   reserveCmsPreviewSpace,
 } from '../src/cms-live-preview'
+import { currentRecordVersion, setRecordVersion } from '../src/conflicts'
 
 describe('CmsAutosave', () => {
   beforeEach(() => vi.useFakeTimers())
@@ -150,5 +152,35 @@ describe('reserveCmsPreviewSpace', () => {
     release()
     expect(content.style.marginInlineEnd).toBe('')
     expect(content.style.width).toBe('')
+  })
+})
+
+describe('callCmsAutosave', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    setRecordVersion(null)
+  })
+
+  // The draft is this tab's own write: the next save must not be refused as a conflict.
+  it('sends the loaded record version and adopts the one after the draft', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          result: { savedAt: null, hasChanges: true, previewUrl: null, recordVersion: 'v2' },
+          notifications: [],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    setRecordVersion('v1')
+
+    await callCmsAutosave('cmsAutosave', { title: 'Typed' }, { token: 't', endpoint: '/call' })
+
+    expect(JSON.parse(fetchMock.mock.calls[0]![1].body as string).arguments).toEqual({
+      state: { title: 'Typed' },
+      recordVersion: 'v1',
+    })
+    expect(currentRecordVersion()).toBe('v2')
   })
 })

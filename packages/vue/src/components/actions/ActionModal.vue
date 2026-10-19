@@ -2,6 +2,7 @@
 import type { OpenModal } from '@alfakit/core'
 import {
   actionFormComponent,
+  formIdPrefix,
   actionFormParams,
   confirmModalClose,
   FormStore,
@@ -103,6 +104,8 @@ const form = (() => {
   return new FormStore(schema.value.form, {
     token: context.token,
     component: actionFormComponent(action, context),
+    // Own field ids: the modal opens over a form whose fields may share names.
+    idPrefix: formIdPrefix(actionFormComponent(action, context)),
     record: context.record ?? null,
     refreshUrl: panel.value.endpoints.schemaRefresh,
     optionsUrl: panel.value.endpoints.schemaOptions,
@@ -513,7 +516,6 @@ const hasBody = computed(() =>
           </Button>
         </div>
       </DialogFooter>
-      <span class="sr-only">{{ t('close', {}, 'Close') }}</span>
     </DialogContent>
   </Dialog>
 </template>

@@ -8,6 +8,13 @@ return [
         'saved' => 'Sıralama kaydedildi',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => ':title görüntüle',
+        'edit' => ':title düzenle',
+        'delete' => ':title sil',
+    ],
+
     'validation' => [
         'invalid' => 'Ağaç okunamadı.',
         'unknown_record' => 'Ağaçtaki bir kayıt artık mevcut değil. Sayfayı yeniden yükleyip tekrar deneyin.',

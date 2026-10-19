@@ -15,6 +15,7 @@ import GridComponent from '../src/components/layout/GridComponent.vue'
 import SchemaChildren from '../src/components/layout/SchemaChildren.vue'
 import SectionComponent from '../src/components/layout/SectionComponent.vue'
 import TabsComponent from '../src/components/layout/TabsComponent.vue'
+import SchemaRenderer from '../src/components/schema/SchemaRenderer.vue'
 import { flush, mountWithAlfakit } from './mocks'
 
 const text = (key: string, content: string) =>
@@ -151,6 +152,38 @@ describe('schema layout parity', () => {
     },
   )
 
+  it('keeps the active tab in the query string under its readable value', async () => {
+    window.history.replaceState(null, '', '/admin/orders')
+
+    const wrapper = mountWithAlfakit(() =>
+      h(TabsComponent, {
+        component: tabs({
+          queryStringKey: 'tab',
+          schema: [
+            {
+              type: 'Tab',
+              key: 'tabs-0.tab-0',
+              queryValue: 'billing-address',
+              label: 'One',
+              schema: [],
+            },
+            { type: 'Tab', key: 'tabs-0.tab-1', queryValue: 'shipping', label: 'Two', schema: [] },
+          ],
+        }),
+      }),
+    )
+    await flush()
+
+    expect(window.location.search).toBe('?tab=billing-address')
+
+    await wrapper.findAll('[role="tab"]')[1]!.trigger('mousedown', { button: 0 })
+    await flush()
+
+    expect(window.location.search).toBe('?tab=shipping')
+    wrapper.unmount()
+    window.history.replaceState(null, '', '/')
+  })
+
   it('renders callout icon size, footer alignment and controls', async () => {
     const callout = {
       type: 'Callout',
@@ -235,6 +268,53 @@ describe('schema layout parity', () => {
 
     const wrapper = mountWithAlfakit(() => h(Probe))
     expect(wrapper.text()).toBe('null|undefined')
+    wrapper.unmount()
+  })
+  it('marks tabs holding fields with errors and opens the first one when errors arrive', async () => {
+    const input = (name: string) =>
+      ({
+        type: 'TextInput',
+        key: name,
+        name,
+        statePath: name,
+        label: name,
+        inputType: 'text',
+      }) as unknown as SchemaComponent
+    const tabsComponent = {
+      type: 'Tabs',
+      key: 'tabs',
+      activeTab: 2,
+      schema: [
+        { type: 'Tab', key: 'one', label: 'One', schema: [input('email')] },
+        { type: 'Tab', key: 'two', label: 'Two', schema: [input('status')] },
+      ],
+    } as unknown as TabsSchema
+    const store = new FormStore(
+      { components: [tabsComponent], state: { email: '', status: '' } },
+      { token: 't', component: 'form' },
+    )
+    const Form = defineComponent({
+      setup() {
+        provideForm(store)
+
+        return () => h(SchemaRenderer, { components: [tabsComponent] })
+      },
+    })
+    const wrapper = mountWithAlfakit(() => h(Form))
+    await flush()
+
+    const tab = (label: string) =>
+      wrapper.findAll('[role="tab"]').find((node) => node.text().startsWith(label))!
+
+    expect(tab('Two').attributes('aria-selected')).toBe('true')
+
+    store.setErrors({ email: 'The email field is required.' })
+    await flush()
+
+    expect(tab('One').attributes('aria-selected')).toBe('true')
+    expect(tab('One').attributes('data-invalid')).toBeDefined()
+    expect(tab('One').text()).toMatch(/has.errors/)
+    expect(tab('Two').attributes('data-invalid')).toBeUndefined()
     wrapper.unmount()
   })
 })

@@ -201,6 +201,20 @@ export function applyFormRefresh(store: FormStore, state: Record<string, unknown
   })
 }
 
+/**
+ * Whether a page form reloads from the server's new schema after a visit it did not submit
+ * itself: another action (one embedded in a field, a table row in a relation manager)
+ * succeeded while the form held no edits. Its components may show server state that the
+ * action changed (a status, which actions are offered); with unsaved edits the form keeps
+ * what the user typed.
+ */
+export function shouldResyncForm(
+  flash: Pick<AlfakitFlash, 'alfakitAction'>,
+  store: Pick<FormStore, 'isDirty'>,
+): boolean {
+  return flash.alfakitAction?.status === 'success' && !store.isDirty
+}
+
 // ---------------------------------------------------------------- Wizard pages
 
 /** Whether a page form shows its buttons: always, except before a wizard form's last step. */

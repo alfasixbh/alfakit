@@ -7,6 +7,7 @@ import NotificationActionButton from '../src/components/notifications/Notificati
 import NotificationsMenu from '../src/components/notifications/NotificationsMenu.svelte'
 import StatCard from '../src/components/widgets/StatCard.svelte'
 import { actions, panel, setPageProps } from './mocks'
+import NotificationsCountHarness from './NotificationsCountHarness.svelte'
 import Wrapper from './Wrapper.svelte'
 
 const baseModal = {
@@ -50,6 +51,25 @@ describe('action modal options', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
     actions.store.set({ modals: [], loading: null })
+  })
+
+  it('names the modal close button once and focuses the submit button of a confirmation', async () => {
+    mockModals({ archive: { heading: 'Archive post', submitLabel: 'Archive it' } })
+
+    renderList(modalAction('archive', 'Archive'))
+    await fireEvent.click(screen.getByRole('button', { name: 'Archive' }))
+
+    const dialog = await screen.findByRole('dialog')
+    const closeTexts = Array.from(dialog.querySelectorAll('.sr-only')).filter(
+      (node) => node.textContent?.trim() === 'Close',
+    )
+
+    expect(closeTexts).toHaveLength(1)
+    expect(closeTexts[0]?.closest('button')).not.toBeNull()
+    // modalAutofocus() (on by default) focuses the submit button, like React and Vue.
+    await waitFor(() =>
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Archive it' })),
+    )
   })
 
   it('submits the modal with the arguments of a makeModalSubmitAction() button', async () => {
@@ -225,6 +245,17 @@ describe('notifications and widgets', () => {
     expect(await screen.findByText('You have no notifications.')).toBeInTheDocument()
 
     setPageProps({ alfakit: panel })
+  })
+
+  it('follows the unread count of each page visit (another user after impersonating)', async () => {
+    const { rerender } = render(NotificationsCountHarness, { props: { count: 1 } })
+    const bell = () => document.body.querySelector('button[aria-label^="Notifications"]')
+
+    await waitFor(() => expect(bell()?.textContent?.trim()).toBe('1'))
+
+    await rerender({ count: 0 })
+
+    await waitFor(() => expect(bell()?.textContent?.trim()).toBe(''))
   })
 
   it('shows a stat placeholder for an empty value', () => {

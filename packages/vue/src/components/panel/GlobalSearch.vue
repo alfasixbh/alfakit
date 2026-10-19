@@ -144,6 +144,7 @@ onBeforeUnmount(() => stopListening?.())
       >
       <kbd
         v-if="hydrated && suffix?.type === 'keyBinding'"
+        dir="ltr"
         class="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline"
         >{{ formatKeyBinding(suffix.keyBinding) }}</kbd
       >

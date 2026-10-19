@@ -4,6 +4,8 @@ import {
   bindsKeyBindings,
   formatKeyBinding,
   iconButtonSize,
+  isActionLoading,
+  isActionProcessing,
   registerKeyBindings,
   resolveActionSize,
 } from '@alfakit/core'
@@ -47,9 +49,12 @@ const props = withDefaults(defineProps<ActionButtonProps>(), {
 })
 
 const runner = useActionRunner()
-const loading = useStoreSelector(runner.store, (state) => state.loading === props.action.name)
+// Only this run (this record's button), not the same action in every table row.
+const loading = useStoreSelector(runner.store, (state) =>
+  isActionLoading(state, props.action, props.context),
+)
 const processing = useStoreSelector(runner.store, (state) =>
-  state.modals.some((modal) => modal.action.name === props.action.name && modal.processing),
+  isActionProcessing(state, props.action, props.context),
 )
 
 const variant = computed(
@@ -87,7 +92,7 @@ function buttonClasses(action: ActionSchema, kind: ActionSchema['variant']): str
       return colorClass(ghostButtonColorClasses, color, 'gray')
     case 'link':
       return cn(
-        'h-auto p-0 underline-offset-4 hover:underline',
+        'h-auto p-0 underline-offset-4 hover:underline has-[>svg]:px-0',
         colorClass(textColorClasses, color, 'primary'),
       )
     case 'icon-button':
@@ -278,9 +283,12 @@ const disabledTooltip = computed(() => Boolean(props.action.disabled && tooltip.
     </TooltipTrigger>
     <TooltipContent>
       {{ tooltip }}
-      <kbd v-if="shortcut" class="ms-2 rounded border border-white/20 px-1 font-mono text-[10px]">{{
-        formatKeyBinding(shortcut)
-      }}</kbd>
+      <kbd
+        v-if="shortcut"
+        dir="ltr"
+        class="ms-2 rounded border border-white/20 px-1 font-mono text-[10px]"
+        >{{ formatKeyBinding(shortcut) }}</kbd
+      >
     </TooltipContent>
   </Tooltip>
   <template v-else>

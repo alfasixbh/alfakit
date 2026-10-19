@@ -4,13 +4,22 @@
   import { cn } from '../../lib/utils'
 
   let { columns }: { columns: TableColumnSchema[] } = $props()
+
+  // A fixed `width()` (`9rem`, `120px`) is also the column's minimum, so the table scrolls
+  // sideways instead of squeezing its fields; percentages stay flexible.
+  const widthStyle = (width?: string | null) =>
+    !width
+      ? undefined
+      : width.trim().endsWith('%')
+        ? `width: ${width}`
+        : `width: ${width}; min-width: ${width}`
 </script>
 
 <!-- Header cells shared by the Repeater and RepeatableEntry tables. -->
 {#each columns as column, index (`${column.name ?? 'column'}-${index}`)}
   <th
     scope="col"
-    style={column.width ? `width: ${column.width}` : undefined}
+    style={widthStyle(column.width)}
     class={cn(
       'text-muted-foreground px-3 py-2 text-xs font-medium',
       tableColumnAlignmentClass(column),

@@ -13,6 +13,7 @@ import {
   registerFormSubmitter,
   registerPageForm,
   resolvePartialProps,
+  shouldResyncForm,
   wizardProgressStore,
 } from '@alfakit/core'
 import { router } from '@inertiajs/react'
@@ -93,6 +94,10 @@ export function FormBlock({ block }: { block: FormBlockSchema }) {
   const latestBlock = useRef(block)
   const submittedBlock = useRef<FormBlockSchema | null>(null)
   const refillPending = useRef(false)
+  // Another action succeeded and its new block has not arrived yet.
+  const resyncPending = useRef(false)
+  // The block when the latest non-GET visit started, to tell whether its response arrived.
+  const visitBlock = useRef<FormBlockSchema | null>(null)
 
   useEffect(() => {
     latestBlock.current = block
@@ -100,6 +105,12 @@ export function FormBlock({ block }: { block: FormBlockSchema }) {
     if (refillPending.current) {
       refillPending.current = false
       store.fill(block)
+    }
+
+    if (resyncPending.current) {
+      resyncPending.current = false
+
+      if (!store.isDirty) store.fill(block)
     }
   }, [block, store])
 
@@ -152,10 +163,23 @@ export function FormBlock({ block }: { block: FormBlockSchema }) {
       if (submitting.current && !submitVisit.current && visit.method !== 'get') {
         submitVisit.current = visit.id
       }
+
+      if (visit.method !== 'get') visitBlock.current = latestBlock.current
     })
 
     const offSuccess = router.on('success', (event) => {
       const id = submitVisit.current
+
+      // Another action changed the record: show the server's new form unless it holds edits.
+      if (!id && shouldResyncForm(pageFlash(event.detail.page), store)) {
+        if (latestBlock.current !== visitBlock.current) {
+          store.fill(latestBlock.current)
+        } else {
+          resyncPending.current = true
+        }
+
+        return
+      }
 
       if (!id || (event.detail.visitId ?? id) !== id) return
 

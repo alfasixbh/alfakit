@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+  import { useAppMounted } from '../../lib/hydration.svelte'
   import type { CommandSchema } from '@alfakit/core'
   import {
     commandShortcutId,
@@ -34,6 +35,8 @@
   let open = $state(false)
   // Undefined on the server and during hydration (nothing loads there), so the markup matches.
   let Overlay = $state(untrack(() => loader.current))
+  // Per app: another app on the page may have loaded it, but this one's server markup has none.
+  const appMounted = useAppMounted()
 
   // `?` (or the palette's "Keyboard shortcuts") before the code has arrived keeps `open`
   // set; the overlay mounts open once it has loaded.
@@ -119,6 +122,6 @@
   const customizable = $derived(Boolean(config && config.customizable && panel.endpoints.shortcuts))
 </script>
 
-{#if config && Overlay}
+{#if config && Overlay && appMounted.current}
   <Overlay bind:open {customizable} endpoint={panel.endpoints.shortcuts} />
 {/if}

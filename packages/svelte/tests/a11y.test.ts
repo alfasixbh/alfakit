@@ -2,6 +2,7 @@ import { FormStore, type SchemaComponent, type TableSchema } from '@alfakit/core
 import { CalendarDate } from '@internationalized/date'
 import { fireEvent, render, screen } from '@testing-library/svelte'
 import { tick } from 'svelte'
+import ShortcutKeys from '../src/components/panel/ShortcutKeys.svelte'
 import DataTable from '../src/components/table/DataTable.svelte'
 import { Calendar } from '../src/components/ui/calendar'
 import FormHarness from './FormHarness.svelte'
@@ -181,5 +182,18 @@ describe('table accessibility', () => {
     expect(rows[0]).toHaveTextContent('World')
     expect(rows[1]).toHaveTextContent('Hello')
     expect(screen.getByText('Row moved to position 2 of 2')).toBeInTheDocument()
+  })
+})
+
+describe('key bindings', () => {
+  it('keeps the keys of a binding in left-to-right order in right-to-left pages', async () => {
+    const { container } = render(Wrapper, {
+      props: { component: ShortcutKeys, props: { binding: 'mod+k' } },
+    })
+    await tick()
+
+    const keys = [...container.querySelectorAll('kbd')]
+    expect(keys.length).toBeGreaterThan(0)
+    expect(keys.every((key) => key.getAttribute('dir') === 'ltr')).toBe(true)
   })
 })

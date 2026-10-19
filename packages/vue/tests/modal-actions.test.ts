@@ -176,7 +176,7 @@ describe('action modals', () => {
     }))
     await settle()
 
-    expect(document.body.querySelector<HTMLInputElement>('input#alfakit-title')?.value).toBe('')
+    expect(document.body.querySelector<HTMLInputElement>('[role="dialog"] input')?.value).toBe('')
 
     wrapper.unmount()
   })

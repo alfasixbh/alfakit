@@ -54,6 +54,35 @@ beforeEach(() => {
 })
 
 describe('table summaries and grouping', () => {
+  it('shows the enum icon in its colour before a group title', async () => {
+    for (const collapsible of [true, false]) {
+      const { container, unmount } = render(Wrapper, {
+        props: {
+          component: DataTable,
+          props: {
+            table: {
+              ...grouped,
+              grouping: { ...grouped.grouping!, collapsible },
+              recordGroups: [
+                { key: 'draft', title: 'Status: Draft copy', icon: 'pencil', color: 'gray' },
+                { key: 'published', title: 'Status: Live', icon: 'circle-check', color: 'success' },
+              ],
+            },
+          },
+        },
+      })
+
+      const headings = container.querySelectorAll('[data-slot="table-group"]')
+      expect(headings[1]).toHaveTextContent('Status: Live')
+      await waitFor(() => {
+        expect(headings[1]?.querySelector('.text-success')).not.toBeNull()
+        expect(headings[0]?.querySelector('.text-muted-foreground.size-4')).not.toBeNull()
+      })
+
+      unmount()
+    }
+  })
+
   it('renders summary rows, group headings and collapses groups', async () => {
     const { container } = render(Wrapper, {
       props: { component: DataTable, props: { table: grouped } },

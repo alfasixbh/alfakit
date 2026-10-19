@@ -11,6 +11,7 @@
 
   const schema = $derived(props.column as TextInputColumnSchema)
   const updater = useCellUpdate(() => props)
+  const errorId = $props.id()
   const initial = $derived(
     props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
   )
@@ -61,7 +62,9 @@
         step={schema.step}
         inputmode={schema.inputMode as never}
         disabled={Boolean(props.cell.disabled) || updater.saving}
+        aria-label={props.column.label || props.column.name}
         aria-invalid={updater.error ? true : undefined}
+        aria-describedby={updater.error ? errorId : undefined}
         class={cn(
           'h-8 min-w-32',
           schema.prefixIcon && 'ps-8',
@@ -94,5 +97,6 @@
       >
     {/if}
   </span>
-  {#if updater.error}<span class="text-destructive block text-xs">{updater.error}</span>{/if}
+  {#if updater.error}<span id={errorId} class="text-destructive block text-xs">{updater.error}</span
+    >{/if}
 </span>

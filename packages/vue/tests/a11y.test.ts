@@ -3,6 +3,7 @@ import { CalendarDate } from '@internationalized/date'
 import { flushPromises } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
 import { provideForm } from '../src/components/form/form-context'
+import ShortcutKeys from '../src/components/panel/ShortcutKeys.vue'
 import SchemaRenderer from '../src/components/schema/SchemaRenderer.vue'
 import DataTable from '../src/components/table/DataTable.vue'
 import Calendar from '../src/components/ui/Calendar.vue'
@@ -186,5 +187,16 @@ describe('table accessibility', () => {
     expect(wrapper.text()).toContain('Row moved to position 2 of 2')
 
     wrapper.unmount()
+  })
+})
+
+describe('key bindings', () => {
+  it('keeps the keys of a binding in left-to-right order in right-to-left pages', async () => {
+    const wrapper = mountWithAlfakit(() => h(ShortcutKeys, { binding: 'mod+k' }))
+    await flushPromises()
+
+    const keys = wrapper.findAll('kbd')
+    expect(keys.length).toBeGreaterThan(0)
+    expect(keys.every((key) => key.attributes('dir') === 'ltr')).toBe(true)
   })
 })

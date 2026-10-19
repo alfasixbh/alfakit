@@ -37,7 +37,7 @@
   {...extraProps(component.extraAttributes, 'flex flex-col gap-1.5')}
 >
   {#if component.label}
-    <span id={labelId} class="text-sm leading-none font-medium select-none">
+    <span id={labelId} data-slot="label" class="text-sm leading-none font-medium select-none">
       {component.label}
     </span>
   {/if}

@@ -204,4 +204,21 @@ describe('tenant menu', () => {
     expect(document.body.textContent).toContain('Settings')
     wrapper.unmount()
   })
+
+  it("labels the profile and registration links with the pages' own labels", async () => {
+    withPanel({
+      tenancy: tenancy({
+        profileUrl: '/acme/settings',
+        profileLabel: 'Team settings',
+        registrationUrl: '/new',
+        registrationLabel: 'Create team',
+      }),
+    })
+    const wrapper = mountWithAlfakit(() => h(TenantMenu, { variant: 'topbar' }))
+    await openMenu(document.body.querySelector('[data-slot="tenant-menu"]'))
+
+    expect(document.body.textContent).toContain('Team settings')
+    expect(document.body.textContent).toContain('Create team')
+    wrapper.unmount()
+  })
 })

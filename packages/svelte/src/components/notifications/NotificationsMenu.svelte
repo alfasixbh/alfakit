@@ -75,6 +75,20 @@
     if (open) void center?.load()
   })
 
+  // Every visit brings the server's unread count (another user after impersonating, or
+  // notifications read in another tab): follow it instead of waiting for the next poll.
+  const serverUnreadCount = $derived(config?.unreadCount)
+
+  $effect(() => {
+    const count = serverUnreadCount
+
+    untrack(() => {
+      if (center && typeof count === 'number' && count !== center.store.get().unreadCount) {
+        center.store.update({ unreadCount: count })
+      }
+    })
+  })
+
   // Realtime notifications announce stored ones, so the unread count updates right away.
   $effect(() => (center ? onDatabaseNotificationsSent(() => void center.load()) : undefined))
 

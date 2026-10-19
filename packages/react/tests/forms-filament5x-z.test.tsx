@@ -143,8 +143,14 @@ describe('OneTimeCodeInput (A26)', () => {
     const input = screen.getByLabelText('Code')
 
     expect(input).toHaveAttribute('autocomplete', 'one-time-code')
+    // Themed like every other input (`data-inputs` design option).
+    expect(input).toHaveAttribute('data-input')
     expect(input).toHaveAttribute('inputmode', 'numeric')
+    // No maxlength: the browser would cut a pasted "12 34" before the separators are dropped.
+    expect(input).not.toHaveAttribute('maxlength')
 
+    fireEvent.change(input, { target: { value: '1 2-3' } })
+    expect(store.getValue('code')).toBe('123')
     fireEvent.change(input, { target: { value: '12a' } })
     expect(store.getValue('code')).toBe('12')
     fireEvent.change(input, { target: { value: '1234' } })

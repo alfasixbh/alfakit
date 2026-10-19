@@ -25,7 +25,6 @@ export function OneTimeCodeInputField({ component }: { component: OneTimeCodeInp
         inputMode="numeric"
         autoComplete="one-time-code"
         pattern="[0-9]*"
-        maxLength={component.length}
         value={value ?? ''}
         onChange={(event) => {
           const code = oneTimeCodeDigits(event.target.value, component.length)
@@ -45,6 +44,7 @@ export function OneTimeCodeInputField({ component }: { component: OneTimeCodeInp
         required={component.required}
         autoFocus={component.autofocus}
         data-slot="one-time-code-input"
+        data-input=""
         {...aria}
         {...extraProps(
           component.extraInputAttributes,

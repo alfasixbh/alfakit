@@ -34,13 +34,15 @@
       "import": "./dist/schema/index.js"
     },
     "./package.json": "./package.json",
-    "./themes.css": "./themes.css"
+    "./themes.css": "./themes.css",
+    "./components.css": "./components.css"
   },
   "files": [
     "dist",
     "README.md",
     "CHANGELOG.md",
-    "themes.css"
+    "themes.css",
+    "components.css"
   ],
   "scripts": {
     "build": "tsdown",

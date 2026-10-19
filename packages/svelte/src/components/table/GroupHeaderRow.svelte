@@ -3,6 +3,7 @@
   import ChevronDownIcon from '@lucide/svelte/icons/chevron-down'
   import ChevronRightIcon from '@lucide/svelte/icons/chevron-right'
   import { useT } from '../../context.svelte'
+  import { colorClass, textColorClasses } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
   import { Checkbox } from '../ui/checkbox'
   import { TableCell, TableRow } from '../ui/table'
@@ -31,13 +32,29 @@
   )
 </script>
 
-{#snippet content()}
+{#snippet text()}
   <span class="flex flex-col items-start">
     <span class="font-medium">{group.title}</span>
     {#if group.description}
       <span class="text-muted-foreground text-xs font-normal">{group.description}</span>
     {/if}
   </span>
+{/snippet}
+
+<!-- An enum group shows its `HasIcon` icon, in its `HasColor` colour, before the title. -->
+{#snippet content()}
+  {#if group.icon}
+    <span data-slot="table-group-title" class="flex items-center gap-2">
+      <Icon
+        name={group.icon}
+        class={`size-4 shrink-0 ${colorClass(textColorClasses, group.color, 'gray')}`}
+        aria-hidden="true"
+      />
+      {@render text()}
+    </span>
+  {:else}
+    {@render text()}
+  {/if}
 {/snippet}
 
 <TableRow data-slot="table-group" class="bg-muted/50 hover:bg-muted/50">

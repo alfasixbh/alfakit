@@ -470,15 +470,35 @@ This registers `sitemap.xml`, `robots.txt` and a catch-all route for published p
 Pages render the `Alfakit/CmsPage` Inertia component with a `cms` prop: the page (blocks, SEO, breadcrumbs, translations), the shared menus, the site (name, URL, language, direction, languages) and the renderers' strings. Register the component in your public site's Inertia app:
 
 ```tsx
-// resources/js/site.tsx (React; Vue and Svelte are the same)
+// resources/js/site.tsx (React; site.ts with @alfakit/vue or @alfakit/svelte is the same)
 import { CmsPage, createAlfakit } from '@alfakit/react'
-import '@alfakit/react/styles.css'
+import '../css/alfakit.css' // the panel stylesheet alfakit:install created (Tailwind + AlfaKit's styles)
 
 createAlfakit({
     pages: { 'Alfakit/CmsPage': CmsPage },
     components: { 'cms:block:pricing': PricingBlock },
 })
 ```
+
+Import a stylesheet that loads Tailwind first, like `resources/css/alfakit.css`: `@alfakit/*/styles.css` uses Tailwind utilities and can't be imported from JavaScript on its own. Load the entry from a Blade view of its own and add it to `laravel-vite-plugin`'s `input`:
+
+```blade
+{{-- resources/views/site.blade.php --}}
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        @vite(['resources/js/site.tsx'])
+        <x-inertia::head />
+    </head>
+    <body>
+        <x-inertia::app />
+    </body>
+</html>
+```
+
+Then render public pages with it: `CmsPlugin::make()->publicRoutes()->rootView('site')`. A Laravel starter kit's own root view (`app.blade.php`) loads `resources/js/pages/{component}`, which has no `Alfakit/CmsPage`.
 
 If your public pages use your own Inertia setup instead, add `CmsPage` to its `resolve()`: the component brings its own translations and works without a panel. Set the Blade root view of public pages with `->rootView('site')` when it isn't your Inertia middleware's, and the component name with `->inertiaComponent('Site/Page')` to render your own page:
 

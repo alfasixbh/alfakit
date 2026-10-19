@@ -70,7 +70,7 @@ $panel->scopeToUser('customer');                    // a BelongsTo (or any) rela
 $panel->scopeToUser('customer_id', fn (User $user) => $user->customer_id); // the owner is the user's customer
 ```
 
-What is scoped: the list (and its search, filters and exports), record pages (another customer's record is a 404) and global search, because they all go through `Resource::getEloquentQuery()`; relation managers only open on a record the customer can see. New records created on create pages and with `CreateAction` get the owner filled in. A user without an owner key (the closure returns `null`) sees nothing.
+What is scoped: the list (and its search, filters and exports), record pages (another customer's record is a 404) and global search, because they all go through `Resource::getEloquentQuery()`; relation managers only open on a record the customer can see. New records created on create pages and with `CreateAction` get the owner filled in, and saving on edit pages and with `EditAction` keeps it, so a form that shows the owner column can't move a record to another customer. Restoring an older [record version](../resources/versions) restores the content but keeps the current owner too (`Resource::getUserOwnerAttributes()`), so a record that staff reassigned isn't handed back to its earlier customer. Leave the owner out of your forms anyway: `make:alfakit-resource --generate --panel=portal` and `alfakit:generate` do. A user without an owner key (the closure returns `null`) sees nothing.
 
 Per resource:
 

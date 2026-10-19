@@ -59,6 +59,8 @@ describe('field behaviour', () => {
     })
 
     expect(store.getValue('color')).toBe('rgb(255, 128, 0)')
+    // The colour value reads left to right, also in right-to-left languages.
+    expect(container.querySelector('input#alfakit-color')).toHaveAttribute('dir', 'ltr')
   })
 
   it('locks read-only toggles, checkboxes and tags', () => {
@@ -110,5 +112,34 @@ describe('field behaviour', () => {
 
     expect(optionLabels).toHaveBeenCalledTimes(1)
     optionLabels.mockRestore()
+  })
+
+  it('shows the default placeholder in empty plain and native selects', () => {
+    const { container } = renderForm(
+      [
+        {
+          type: 'Select',
+          key: 'type',
+          name: 'type',
+          statePath: 'type',
+          label: 'Type',
+          options: [{ value: 'a', label: 'A' }],
+        } as SchemaComponent,
+        {
+          type: 'Select',
+          key: 'kind',
+          name: 'kind',
+          statePath: 'kind',
+          label: 'Kind',
+          native: true,
+          selectablePlaceholder: true,
+          options: [{ value: 'a', label: 'A' }],
+        } as SchemaComponent,
+      ],
+      { type: null, kind: null },
+    )
+
+    expect(screen.getByLabelText('Type')).toHaveTextContent('Select an option')
+    expect(container.querySelector('select option[value=""]')).toHaveTextContent('Select an option')
   })
 })

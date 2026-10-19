@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace AlfaSix\AlfakitBackup\Widgets;
 
+use AlfaSix\Alfakit\Support\NumberFormat;
 use AlfaSix\Alfakit\Widgets\StatsOverviewWidget;
 use AlfaSix\Alfakit\Widgets\StatsOverviewWidget\Stat;
 use AlfaSix\AlfakitBackup\BackupPlugin;
 use AlfaSix\AlfakitBackup\Support\BackupRepository;
-use Illuminate\Support\Number;
 use Spatie\Backup\Tasks\Monitor\BackupDestinationStatus;
 
 /**
@@ -59,7 +59,7 @@ class BackupDestinationsWidget extends StatsOverviewWidget
 
         $description = trans_choice('alfakit-backup::backup.destinations.summary', $backups->count(), [
             'count' => $backups->count(),
-            'size' => Number::fileSize($backups->size(), precision: 2),
+            'size' => NumberFormat::fileSize($backups->size(), 2),
             'newest' => $newest?->date()->diffForHumans() ?? '',
         ]);
 

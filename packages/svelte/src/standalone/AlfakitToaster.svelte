@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { resolveToastPosition, type ToastPosition } from '@alfakit/core'
+  import { resolveToastPosition, STARTER_KIT_TOASTER_ID, type ToastPosition } from '@alfakit/core'
   import { onMount } from 'svelte'
+  import { setToasterId } from '../components/notifications/toast'
   import { Toaster } from '../components/ui/sonner'
   import { useOptionalAlfakit } from '../context.svelte'
   import { claimToaster, createStandaloneContext, ensureFlashToasts } from './runtime'
@@ -40,10 +41,24 @@
 
     ensureFlashToasts(context.registry)
 
-    return () => release?.()
+    // Our own toaster gets an id, so a `<Toaster />` the app's layout already mounts (the
+    // starter kits have one) doesn't show every Alfakit toast a second time.
+    if (toaster) setToasterId(STARTER_KIT_TOASTER_ID)
+
+    return () => {
+      release?.()
+
+      if (toaster) setToasterId(undefined)
+    }
   })
 </script>
 
 {#if toaster}
-  <Toaster position={resolveToastPosition(position, dir)} {dir} richColors closeButton />
+  <Toaster
+    id={STARTER_KIT_TOASTER_ID}
+    position={resolveToastPosition(position, dir)}
+    {dir}
+    richColors
+    closeButton
+  />
 {/if}

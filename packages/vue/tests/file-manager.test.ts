@@ -132,6 +132,10 @@ describe('file manager', () => {
     expect(list.querySelectorAll('[role="option"]')).toHaveLength(4)
     expect(document.querySelector('nav[aria-label="Folders"]')).not.toBeNull()
     expect(document.querySelector('[data-slot="file-manager"]')).not.toBeNull()
+    // The path keeps a 12rem basis, so a full toolbar wraps instead of squeezing it under the search.
+    expect(document.querySelector('[data-slot="file-manager-breadcrumb"]')?.className).toContain(
+      'flex-[1_1_12rem]',
+    )
     wrapper.unmount()
   })
 

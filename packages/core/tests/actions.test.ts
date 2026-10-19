@@ -4,6 +4,8 @@ import {
   bindsKeyBindings,
   flattenActionGroup,
   iconButtonSize,
+  isActionLoading,
+  isActionProcessing,
   parseDropdownPlacement,
   resolveActionSize,
 } from '../src/actions'
@@ -51,6 +53,27 @@ describe('ActionRunner', () => {
     runner.execute(save, context)
 
     expect(calls).toHaveLength(2)
+  })
+
+  it('marks only the clicked row as loading or processing, not the same action in every row', () => {
+    const row1 = { token: 't', component: 'table', record: 1 }
+    const row2 = { token: 't', component: 'table', record: 2 }
+    const runner = new ActionRunner({ endpoints: { action: '/actions', modal: '/modal' } })
+
+    void runner.openModal(save, row1)
+
+    expect(runner.state.loading).toBe('save')
+    expect(isActionLoading(runner.state, save, row1)).toBe(true)
+    expect(isActionLoading(runner.state, save, row2)).toBe(false)
+
+    const state = {
+      loading: null,
+      loadingKey: null,
+      modals: [{ action: save, context: row1, modal: {}, errors: {}, processing: true }],
+    } as unknown as typeof runner.state
+
+    expect(isActionProcessing(state, save, row1)).toBe(true)
+    expect(isActionProcessing(state, save, row2)).toBe(false)
   })
 
   it('runs the same action for different records in parallel', () => {

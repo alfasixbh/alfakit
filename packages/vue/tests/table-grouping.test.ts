@@ -83,6 +83,32 @@ describe('table summaries and grouping', () => {
     wrapper.unmount()
   })
 
+  it('shows the enum icon in its colour before a group title', async () => {
+    for (const collapsible of [true, false]) {
+      const wrapper = mountWithAlfakit(() =>
+        h(DataTable, {
+          table: {
+            ...grouped,
+            grouping: { ...grouped.grouping!, collapsible },
+            recordGroups: [
+              { key: 'draft', title: 'Status: Draft copy', icon: 'pencil', color: 'gray' },
+              { key: 'published', title: 'Status: Live', icon: 'circle-check', color: 'success' },
+            ],
+          },
+        }),
+      )
+
+      const headings = wrapper.findAll('[data-slot="table-group"]')
+      expect(headings[1]!.text()).toContain('Status: Live')
+      await vi.waitFor(() => {
+        expect(headings[1]!.find('.text-success').exists()).toBe(true)
+        expect(headings[0]!.find('.text-muted-foreground.size-4').exists()).toBe(true)
+      })
+
+      wrapper.unmount()
+    }
+  })
+
   it('shows only headings for groups-only tables', () => {
     const wrapper = mountWithAlfakit(() =>
       h(DataTable, {

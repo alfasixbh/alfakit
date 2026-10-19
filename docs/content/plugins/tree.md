@@ -90,7 +90,7 @@ public static function getPages(): array
 }
 ```
 
-The tree shows the resource's records from its query (so tenancy and nested resources scope it) and the user needs the resource's `viewAny` ability. The page has a create action in its header (a link to the resource's create page, or a modal with `getFormSchema()`), and every node has edit and delete buttons. `content()` components are shown below the tree.
+The tree shows the resource's records from its query (so tenancy and nested resources scope it) and the user needs the resource's `viewAny` ability. The page has a create action in its header, and every node has edit and delete buttons (labelled with the node: "Edit Phones", "Delete Phones"). Create and edit open a modal with `getFormSchema()` when you define it, else the resource's create and edit pages when it has them, else a modal with the resource's `form()`, so a simple (modal) resource works as it is. `content()` components are shown below the tree.
 
 ## A tree widget
 

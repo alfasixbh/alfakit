@@ -1,5 +1,5 @@
 import { FormStore, type FormBlock as FormBlockSchema, type SchemaComponent } from '@alfakit/core'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, nextTick, shallowRef } from 'vue'
 import { provideForm } from '../src/components/form/form-context'
 import SchemaRenderer from '../src/components/schema/SchemaRenderer.vue'
 import { mountWithAlfakit } from './mocks'
@@ -153,5 +153,86 @@ describe('form block keyboard submit', () => {
 
     execute.mockRestore()
     wrapper.unmount()
+  })
+})
+
+describe('form block after another action', () => {
+  const block = (label: string): FormBlockSchema => ({
+    type: 'Form',
+    key: 'form',
+    component: 'form',
+    components: [
+      {
+        type: 'TextInput',
+        key: 'name',
+        name: 'name',
+        statePath: 'name',
+        label,
+        inputType: 'text',
+      } as SchemaComponent,
+    ],
+    state: { name: 'Home' },
+    actions: [{ type: 'Action', name: 'save', label: 'Save', hasAction: true }],
+    operation: 'edit',
+  })
+
+  // An embedded action (e.g. "Publish" in a field) changed the record the form shows.
+  async function runOtherAction(edit: boolean) {
+    const { default: FormBlock } = await import('../src/components/form/FormBlock.vue')
+    const { setPageProps } = await import('./mocks')
+    const { router } = await import('@inertiajs/vue3')
+    const handlers: Record<string, ((event: unknown) => void)[]> = {}
+    const emit = (name: string, event: unknown) =>
+      handlers[name]?.forEach((handler) => handler(event))
+    const on = vi.spyOn(router, 'on').mockImplementation(((
+      name: string,
+      callback: (event: unknown) => void,
+    ) => {
+      ;(handlers[name] ??= []).push(callback)
+
+      return () => {}
+    }) as never)
+
+    setPageProps({
+      page: { class: 'EditPage', layout: 'auth', title: 'Edit', content: [], token: 't' },
+    })
+    const current = shallowRef(block('Draft'))
+    const wrapper = mountWithAlfakit(() => h(FormBlock, { block: current.value }))
+
+    if (edit) await wrapper.find('input#alfakit-name').setValue('Typed')
+
+    emit('start', { detail: { visit: { id: 'v1', method: 'post' } } })
+    emit('success', {
+      detail: {
+        visitId: 'v1',
+        page: { props: {}, flash: { alfakitAction: { name: 'publish', status: 'success' } } },
+      },
+    })
+    current.value = block('Published')
+    await nextTick()
+
+    const result = {
+      label: wrapper.find('label[for="alfakit-name"]').text(),
+      value: (wrapper.find('input#alfakit-name').element as HTMLInputElement).value,
+    }
+
+    on.mockRestore()
+    wrapper.unmount()
+
+    return result
+  }
+
+  it('shows the server state when the form holds no edits', async () => {
+    const result = await runOtherAction(false)
+
+    expect(result.label).toContain('Published')
+    expect(result.value).toBe('Home')
+  })
+
+  it('keeps unsaved edits', async () => {
+    const result = await runOtherAction(true)
+
+    expect(result.label).toContain('Draft')
+    expect(result.value).toBe('Typed')
   })
 })

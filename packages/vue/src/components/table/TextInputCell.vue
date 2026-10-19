@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TextInputColumnSchema } from '@alfakit/core'
-import { computed, ref } from 'vue'
+import { computed, ref, useId } from 'vue'
 import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -10,9 +10,13 @@ import { useCellUpdate, type CellProps } from './cell-update'
 const props = defineProps<CellProps>()
 const schema = computed(() => props.column as TextInputColumnSchema)
 const { update, saving, error } = useCellUpdate(props)
-const initial =
-  props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state)
-const value = ref(initial)
+const errorId = useId()
+// The saved value: follows the cell after the table reloads, so changing the input back to
+// an earlier value is saved too.
+const initial = computed(() =>
+  props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
+)
+const value = ref(initial.value)
 // `prefix()` / `suffix()`: text affixes around the input, like the TextInput field.
 const grouped = computed(() => Boolean(props.cell.prefix || props.cell.suffix))
 </script>
@@ -57,7 +61,9 @@ const grouped = computed(() => Boolean(props.cell.prefix || props.cell.suffix))
           :step="schema.step"
           :inputmode="schema.inputMode"
           :disabled="Boolean(props.cell.disabled) || saving"
+          :aria-label="props.column.label || props.column.name"
           :aria-invalid="error ? true : undefined"
+          :aria-describedby="error ? errorId : undefined"
           :class="
             cn(
               'h-8 min-w-32',
@@ -92,6 +98,6 @@ const grouped = computed(() => Boolean(props.cell.prefix || props.cell.suffix))
         >{{ props.cell.suffix }}</span
       >
     </span>
-    <span v-if="error" class="text-destructive block text-xs">{{ error }}</span>
+    <span v-if="error" :id="errorId" class="text-destructive block text-xs">{{ error }}</span>
   </span>
 </template>

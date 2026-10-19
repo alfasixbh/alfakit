@@ -163,6 +163,6 @@ describe('form settings from PHP', () => {
     )
 
     expect(wrapper.find('img').exists()).toBe(false)
-    expect(wrapper.find('a[aria-label="Download"]').attributes('href')).toBe('/a.png')
+    expect(wrapper.find('a[aria-label="Download a.png"]').attributes('href')).toBe('/a.png')
   })
 })

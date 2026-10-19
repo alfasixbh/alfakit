@@ -95,6 +95,15 @@ export function resolveIcon(name: string | null | undefined): LucideIconComponen
   return key ? (registered[key] ?? loaded.get(key)) : undefined
 }
 
+/** The icon component if it is registered (`registerIcons()`): what the server renders too. */
+export function resolveRegisteredIcon(
+  name: string | null | undefined,
+): LucideIconComponent | undefined {
+  if (!name) return undefined
+
+  return registered[name] ?? (ALIASES[name] ? registered[ALIASES[name]] : undefined)
+}
+
 /** Load an icon by name; resolves to `undefined` for unknown names. */
 export function loadIcon(
   name: string | null | undefined,

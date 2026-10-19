@@ -28,6 +28,7 @@ export default defineConfig({
   copy: [
     { from: 'src/styles.css', to: 'dist' },
     { from: '../core/themes.css', to: 'dist' },
+    { from: '../core/components.css', to: 'dist' },
     { from: '../core/standalone.css', to: 'dist' },
   ],
 })

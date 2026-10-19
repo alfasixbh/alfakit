@@ -7,7 +7,7 @@ import type {
   TabsSchema,
 } from '@alfakit/core'
 import { FormStore } from '@alfakit/core'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { FormProvider } from '../src/components/form/form-context'
 import { useSchemaComponentContext } from '../src/components/layout/component-context'
 import { CalloutComponent } from '../src/components/layout/elements'
@@ -15,6 +15,7 @@ import { GridComponent } from '../src/components/layout/grid'
 import { SchemaChildren } from '../src/components/layout/schema-children'
 import { SectionComponent } from '../src/components/layout/section'
 import { TabsComponent } from '../src/components/layout/tabs'
+import { SchemaRenderer } from '../src/components/schema/schema-renderer'
 import { Wrapper } from './mocks'
 
 const text = (key: string, content: string) =>
@@ -159,6 +160,43 @@ describe('schema layout parity', () => {
     expect(store.getItem('alfakit.tabs.orders')).toBe('one')
   })
 
+  it('keeps the active tab in the query string under its readable value', async () => {
+    window.history.replaceState(null, '', '/admin/orders')
+
+    render(
+      <Wrapper>
+        <TabsComponent
+          component={tabs({
+            queryStringKey: 'tab',
+            schema: [
+              {
+                type: 'Tab',
+                key: 'tabs-0.tab-0',
+                queryValue: 'billing-address',
+                label: 'One',
+                schema: [],
+              },
+              {
+                type: 'Tab',
+                key: 'tabs-0.tab-1',
+                queryValue: 'shipping',
+                label: 'Two',
+                schema: [],
+              },
+            ],
+          })}
+        />
+      </Wrapper>,
+    )
+
+    await waitFor(() => expect(window.location.search).toBe('?tab=billing-address'))
+
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Two' }), { button: 0 })
+
+    await waitFor(() => expect(window.location.search).toBe('?tab=shipping'))
+    window.history.replaceState(null, '', '/')
+  })
+
   it('ignores a stored tab that no longer exists', () => {
     window.localStorage.setItem('alfakit.tabs.orders', 'gone')
 
@@ -263,5 +301,48 @@ describe('schema layout parity', () => {
     )
 
     expect(screen.getByText('null|undefined')).toBeInTheDocument()
+  })
+  it('marks tabs holding fields with errors and opens the first one when errors arrive', async () => {
+    const input = (name: string) =>
+      ({
+        type: 'TextInput',
+        key: name,
+        name,
+        statePath: name,
+        label: name,
+        inputType: 'text',
+      }) as unknown as SchemaComponent
+    const tabsComponent = {
+      type: 'Tabs',
+      key: 'tabs',
+      activeTab: 2,
+      schema: [
+        { type: 'Tab', key: 'one', label: 'One', schema: [input('email')] },
+        { type: 'Tab', key: 'two', label: 'Two', schema: [input('status')] },
+      ],
+    } as unknown as TabsSchema
+    const store = new FormStore(
+      { components: [tabsComponent], state: { email: '', status: '' } },
+      { token: 't', component: 'form' },
+    )
+
+    render(
+      <Wrapper>
+        <FormProvider store={store}>
+          <SchemaRenderer components={[tabsComponent]} />
+        </FormProvider>
+      </Wrapper>,
+    )
+
+    expect(screen.getByRole('tab', { name: /Two/ })).toHaveAttribute('aria-selected', 'true')
+
+    act(() => store.setErrors({ email: 'The email field is required.' }))
+
+    await waitFor(() =>
+      expect(screen.getByRole('tab', { name: /One/ })).toHaveAttribute('aria-selected', 'true'),
+    )
+    expect(screen.getByRole('tab', { name: /One/ })).toHaveAttribute('data-invalid')
+    expect(screen.getByRole('tab', { name: /One/ }).textContent).toMatch(/has.errors/)
+    expect(screen.getByRole('tab', { name: /Two/ })).not.toHaveAttribute('data-invalid')
   })
 })

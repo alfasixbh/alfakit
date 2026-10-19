@@ -116,6 +116,10 @@ describe('file manager', () => {
     expect(list).toHaveAttribute('aria-multiselectable', 'true')
     expect(within(list).getAllByRole('option')).toHaveLength(4)
     expect(screen.getByRole('navigation', { name: 'Folders' })).toBeInTheDocument()
+    // The path keeps a 12rem basis, so a full toolbar wraps instead of squeezing it under the search.
+    expect(document.querySelector('[data-slot="file-manager-breadcrumb"]')?.className).toContain(
+      'flex-[1_1_12rem]',
+    )
   })
 
   it('selects with clicks, Ctrl/Cmd and Shift', async () => {

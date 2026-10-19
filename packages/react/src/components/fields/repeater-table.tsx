@@ -7,6 +7,7 @@ import type {
   TableColumnSchema,
 } from '@alfakit/core'
 import { resolveItemAction, tableColumnAlignmentClass, tableColumnCells } from '@alfakit/core'
+import type { CSSProperties } from 'react'
 import { useT } from '../../context'
 import type { VirtualListBinding } from '../../hooks/use-virtual-list'
 import { cn } from '../../lib/utils'
@@ -41,6 +42,16 @@ export interface RepeaterTableProps {
   extraActionsFor?: (index: number) => ActionSchema[] | undefined
 }
 
+/**
+ * A fixed `width()` (`9rem`, `120px`) is also the column's minimum, so the table scrolls
+ * sideways instead of squeezing its fields; percentages stay flexible.
+ */
+function columnWidthStyle(width?: string | null): CSSProperties | undefined {
+  if (!width) return undefined
+
+  return width.trim().endsWith('%') ? { width } : { width, minWidth: width }
+}
+
 /** Header cells shared by the Repeater and RepeatableEntry tables. */
 export function TableColumnHeaders({ columns }: { columns: TableColumnSchema[] }) {
   return (
@@ -49,7 +60,7 @@ export function TableColumnHeaders({ columns }: { columns: TableColumnSchema[] }
         <th
           key={`${column.name ?? 'column'}-${index}`}
           scope="col"
-          style={column.width ? { width: column.width } : undefined}
+          style={columnWidthStyle(column.width)}
           className={cn(
             'text-muted-foreground px-3 py-2 text-xs font-medium',
             tableColumnAlignmentClass(column),

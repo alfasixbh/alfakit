@@ -398,6 +398,15 @@ return [
         'size' => 'Boyut',
         'no_tree' => 'Sunucu bu sayfa için şema ağacı göndermedi.',
     ],
+    // A file of a FileUpload, named in its buttons' labels.
+    'file_upload' => [
+        'remove' => ':name kaldır',
+        'move_up' => ':name yukarı taşı',
+        'move_down' => ':name aşağı taşı',
+        'edit' => ':name düzenle',
+        'open' => ':name aç',
+        'download' => ':name indir',
+    ],
     'image_editor' => [
         'title' => 'Görseli düzenle',
         'keyboard_hint' => 'Ok tuşları kırpma alanını taşır. Shift ve ok tuşları boyutunu değiştirir.',

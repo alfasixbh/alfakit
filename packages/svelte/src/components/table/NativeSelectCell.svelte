@@ -9,6 +9,7 @@
 
   const schema = $derived(props.column as SelectColumnSchema)
   const updater = useCellUpdate(() => props)
+  const errorId = $props.id()
   let value = $state(
     untrack(() =>
       props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
@@ -28,7 +29,9 @@
     bind:value
     disabled={Boolean(props.cell.disabled) || updater.saving}
     onchange={() => void updater.update(value === '' ? null : value)}
+    aria-label={props.column.label || props.column.name}
     aria-invalid={updater.error ? true : undefined}
+    aria-describedby={updater.error ? errorId : undefined}
     class={cn(
       'border-input focus-visible:ring-ring/50 dark:bg-input/30 h-8 min-w-32 rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]',
       updater.error && 'border-destructive',
@@ -39,5 +42,6 @@
       <option value={option.value} disabled={option.disabled}>{option.label}</option>
     {/each}
   </select>
-  {#if updater.error}<span class="text-destructive block text-xs">{updater.error}</span>{/if}
+  {#if updater.error}<span id={errorId} class="text-destructive block text-xs">{updater.error}</span
+    >{/if}
 </span>

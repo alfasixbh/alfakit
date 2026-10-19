@@ -211,4 +211,4 @@ $panel->toastPosition(ToastPosition::BottomEnd); // or 'bottom-end'
 
 ## Action notifications
 
-Prebuilt actions send success notifications automatically. Customise with `successNotificationTitle()`, `successNotification(fn (Notification $notification) => $notification->warning())`, or `failureNotification()`.
+Prebuilt actions send success notifications automatically. A custom action sends one when you give it `successNotificationTitle()` or `successNotification()` and its handler didn't send a notification itself. Customise with `successNotificationTitle()`, `successNotification(fn (Notification $notification) => $notification->warning())`, or `failureNotification()`.

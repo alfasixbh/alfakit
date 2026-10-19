@@ -44,7 +44,6 @@ use AlfaSix\Alfakit\Forms\Components\Textarea;
 use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Schemas\Schema;
 use AlfaSix\Alfakit\Standalone\Form;
-use App\Mail\ContactMessage;
 use Illuminate\Support\Facades\Mail;
 
 class ContactForm extends Form
@@ -59,7 +58,10 @@ class ContactForm extends Form
 
     public function submit(array $data): mixed
     {
-        Mail::to('support@example.com')->send(new ContactMessage($data));
+        Mail::raw($data['message'], fn ($mail) => $mail
+            ->to('support@example.com')
+            ->replyTo($data['email'])
+            ->subject('Contact form'));
 
         Notification::make()->success()->title(__('Thanks, we will reply soon.'))->send();
 

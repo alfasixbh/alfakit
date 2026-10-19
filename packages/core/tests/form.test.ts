@@ -3,6 +3,7 @@ import {
   cloneIndexedState,
   cloneRepeaterItem,
   collectFields,
+  componentHasErrors,
   findFieldByPath,
   formIdentity,
   FormStore,
@@ -11,6 +12,9 @@ import {
   moveRepeaterItem,
   removeIndexedState,
   removeRepeaterItem,
+  tabFromQuery,
+  tabQueryValue,
+  tabToReveal,
   wizardStepToReveal,
 } from '../src/form'
 import type { SchemaComponent } from '../src/schema/components'
@@ -485,5 +489,65 @@ describe('wizard error navigation', () => {
     expect(wizardStepToReveal(steps, { a: ['x'], b: ['y'] }, { b: ['y'] })).toBeNull()
     expect(wizardStepToReveal(steps, { b: ['y'] }, { b: ['y'] })).toBeNull()
     expect(wizardStepToReveal(steps, {}, { other: ['y'] })).toBeNull()
+  })
+})
+
+describe('tab error navigation', () => {
+  const tabs: SchemaComponent[] = [
+    {
+      type: 'Tab',
+      key: 'inputs',
+      schema: [
+        { type: 'TextInput', key: 'email', name: 'email', statePath: 'email' } as SchemaComponent,
+      ],
+    },
+    {
+      type: 'Tab',
+      key: 'items',
+      schema: [
+        {
+          type: 'Repeater',
+          key: 'lines',
+          name: 'lines',
+          statePath: 'lines',
+          items: [],
+        } as unknown as SchemaComponent,
+      ],
+    },
+    { type: 'Tab', key: 'later', deferred: true, deferredPaths: ['notes'] },
+  ]
+
+  it('tells which tabs hold a field with an error', () => {
+    expect(componentHasErrors(tabs[0]!, { email: ['Invalid'] })).toBe(true)
+    expect(componentHasErrors(tabs[0]!, { emails: ['Invalid'] })).toBe(false)
+    // An item field of a repeater in the tab.
+    expect(componentHasErrors(tabs[1]!, { 'lines.0.sku': ['Required'] })).toBe(true)
+    // A deferred tab answers from its field paths.
+    expect(componentHasErrors(tabs[2]!, { notes: ['Required'] })).toBe(true)
+    expect(componentHasErrors(tabs[0]!, {})).toBe(false)
+  })
+
+  it('reads and writes readable tab values in the query string, accepting old keys', () => {
+    const list = [
+      { key: 'tabs-0.tab-0', queryValue: 'billing-address' },
+      { key: 'tabs-0.tab-1', queryValue: 'shipping' },
+      { key: 'tabs-0.tab-2' },
+    ]
+
+    expect(tabFromQuery(list, 'shipping')).toBe('tabs-0.tab-1')
+    // Links written before tabs had readable values.
+    expect(tabFromQuery(list, 'tabs-0.tab-0')).toBe('tabs-0.tab-0')
+    expect(tabFromQuery(list, 'gone')).toBeNull()
+    expect(tabFromQuery(list, null)).toBeNull()
+    expect(tabQueryValue(list[0]!)).toBe('billing-address')
+    expect(tabQueryValue(list[2]!)).toBe('tabs-0.tab-2')
+  })
+
+  it('reveals the first tab with an error unless the active one has one', () => {
+    expect(tabToReveal(tabs, 'items', {}, { email: ['x'] })).toBe('inputs')
+    expect(tabToReveal(tabs, 'items', {}, { email: ['x'], 'lines.1.qty': ['y'] })).toBeNull()
+    // Errors only went away: stay where the user is.
+    expect(tabToReveal(tabs, 'items', { email: ['x'] }, { email: ['x'] })).toBeNull()
+    expect(tabToReveal(tabs, 'inputs', {}, { other: ['x'] })).toBeNull()
   })
 })

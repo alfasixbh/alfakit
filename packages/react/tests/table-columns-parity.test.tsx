@@ -160,6 +160,49 @@ describe('column parity', () => {
     expect(container.querySelector('[data-slot="input-group"] input')).not.toBeNull()
   })
 
+  it('names editable cells after their column and ties the error to them', async () => {
+    const fetchMock = vi.fn(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ message: 'Invalid', errors: { state: ['Too low'] } }), {
+          status: 422,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      ),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    cell(
+      {
+        type: 'TextInputColumn',
+        name: 'price',
+        label: 'Price',
+        editable: true,
+        inputType: 'number',
+      } as ColumnSchema,
+      { state: '10' },
+    )
+    cell(
+      {
+        type: 'SelectColumn',
+        name: 'status',
+        label: 'Status',
+        editable: true,
+        native: true,
+        options: [{ value: 'a', label: 'A' }],
+      } as ColumnSchema,
+      { state: 'a' },
+    )
+
+    const input = screen.getByRole('spinbutton', { name: 'Price' })
+    expect(screen.getByRole('combobox', { name: 'Status' })).toBeInTheDocument()
+
+    fireEvent.change(input, { target: { value: '-5' } })
+    fireEvent.blur(input)
+
+    await waitFor(() => expect(input).toHaveAccessibleDescription('Too low'))
+    vi.unstubAllGlobals()
+  })
+
   it('honours copyMessageDuration on text entries', async () => {
     vi.useFakeTimers()
     Object.assign(navigator, { clipboard: { writeText: vi.fn(() => Promise.resolve()) } })

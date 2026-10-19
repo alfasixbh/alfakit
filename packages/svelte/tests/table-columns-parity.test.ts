@@ -22,6 +22,49 @@ const cell = (column: ColumnSchema, data: CellSchema) =>
   })
 
 describe('column parity', () => {
+  it('names editable cells after their column and ties the error to them', async () => {
+    const fetchMock = vi.fn(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ message: 'Invalid', errors: { state: ['Too low'] } }), {
+          status: 422,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      ),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    cell(
+      {
+        type: 'TextInputColumn',
+        name: 'price',
+        label: 'Price',
+        editable: true,
+        inputType: 'number',
+      } as ColumnSchema,
+      { state: '10' },
+    )
+    cell(
+      {
+        type: 'SelectColumn',
+        name: 'status',
+        label: 'Status',
+        editable: true,
+        native: true,
+        options: [{ value: 'a', label: 'A' }],
+      } as ColumnSchema,
+      { state: 'a' },
+    )
+
+    const input = screen.getByRole('spinbutton', { name: 'Price' })
+    expect(screen.getByRole('combobox', { name: 'Status' })).toBeInTheDocument()
+
+    await fireEvent.input(input, { target: { value: '-5' } })
+    await fireEvent.blur(input)
+
+    await waitFor(() => expect(input).toHaveAccessibleDescription('Too low'))
+    vi.unstubAllGlobals()
+  })
+
   it('copies a color column swatch with the copy message and duration', async () => {
     vi.useFakeTimers()
     const writeText = vi.fn(() => Promise.resolve())

@@ -40,6 +40,7 @@ const errors = computed(() =>
     <span
       v-if="props.component.label"
       :id="labelId"
+      data-slot="label"
       class="text-sm leading-none font-medium select-none"
     >
       {{ props.component.label }}

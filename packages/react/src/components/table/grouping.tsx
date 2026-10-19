@@ -14,6 +14,7 @@ import {
 import { ChevronDownIcon, ChevronRightIcon, LayersIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useT } from '../../context'
+import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
 import { Checkbox } from '../ui/checkbox'
@@ -183,13 +184,26 @@ export function GroupHeaderRow({
   selection?: { checked: boolean | 'indeterminate'; onChange: (checked: boolean) => void }
 }) {
   const t = useT()
-  const content = (
+  const text = (
     <span className="flex flex-col items-start">
       <span className="font-medium">{group.title}</span>
       {group.description && (
         <span className="text-muted-foreground text-xs font-normal">{group.description}</span>
       )}
     </span>
+  )
+  // An enum group shows its `HasIcon` icon, in its `HasColor` colour, before the title.
+  const content = group.icon ? (
+    <span data-slot="table-group-title" className="flex items-center gap-2">
+      <Icon
+        name={group.icon}
+        className={cn('size-4 shrink-0', colorClass(textColorClasses, group.color, 'gray'))}
+        aria-hidden="true"
+      />
+      {text}
+    </span>
+  ) : (
+    text
   )
 
   return (

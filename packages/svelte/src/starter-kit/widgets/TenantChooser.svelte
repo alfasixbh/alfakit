@@ -66,7 +66,7 @@
         {/if}
         <DropdownMenuItem onSelect={() => router.visit(registrationUrl)}>
           <Icon name="alfakit::panels.tenant-menu.registration-button" fallback={PlusIcon} />
-          {t('tenancy.register', {}, 'New')}
+          {tenancy.registrationLabel ?? t('tenancy.register', {}, 'New')}
         </DropdownMenuItem>
       {/if}
     </DropdownMenuContent>

@@ -11,6 +11,7 @@ import {
   formRefreshFor,
   openDefaultAction,
   registerFormSubmitter,
+  shouldResyncForm,
   submitFormById,
   withoutDefaultActionQuery,
 } from '../src/page-actions'
@@ -227,5 +228,21 @@ describe('deferred tab badges', () => {
       { key: 'open', label: 'Open', badgeDeferred: true, badge: 7, badgeColor: 'danger' },
     ])
     expect(withDeferredTabBadges(tabs, {})[1]!.badge).toBeUndefined()
+  })
+})
+
+describe('shouldResyncForm', () => {
+  it('resyncs a form without edits after another action succeeded', () => {
+    const success = { alfakitAction: { name: 'publish', status: 'success' as const } }
+
+    expect(shouldResyncForm(success, { isDirty: false })).toBe(true)
+    expect(shouldResyncForm(success, { isDirty: true })).toBe(false)
+    expect(
+      shouldResyncForm(
+        { alfakitAction: { name: 'publish', status: 'halted' } },
+        { isDirty: false },
+      ),
+    ).toBe(false)
+    expect(shouldResyncForm({}, { isDirty: false })).toBe(false)
   })
 })

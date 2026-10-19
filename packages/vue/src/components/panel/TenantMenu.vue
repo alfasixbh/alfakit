@@ -154,7 +154,7 @@ const tenants = computed(() =>
       <DropdownMenuItem v-else-if="tenancy.profileUrl" as-child>
         <Link :href="tenancy.profileUrl" class="w-full"
           ><Icon name="alfakit::panels.tenant-menu.profile-button" :fallback="SettingsIcon" />
-          {{ t('tenancy.profile', {}, 'Settings') }}</Link
+          {{ tenancy.profileLabel ?? t('tenancy.profile', {}, 'Settings') }}</Link
         >
       </DropdownMenuItem>
       <MenuItemEntries v-if="tenancy.menu" :items="tenancy.menu" menu="tenantMenu" />
@@ -162,7 +162,7 @@ const tenants = computed(() =>
       <DropdownMenuItem v-else-if="tenancy.registrationUrl" as-child>
         <Link :href="tenancy.registrationUrl" class="w-full"
           ><Icon name="alfakit::panels.tenant-menu.registration-button" :fallback="PlusIcon" />
-          {{ t('tenancy.register', {}, 'New') }}</Link
+          {{ tenancy.registrationLabel ?? t('tenancy.register', {}, 'New') }}</Link
         >
       </DropdownMenuItem>
     </DropdownMenuContent>

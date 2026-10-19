@@ -36,7 +36,7 @@ It works without the activity log plugin: it only listens to Eloquent events.
 
 ## The History action
 
-Seeing the history needs the `view` (or `update`) ability on the record. Restoring needs `update`: it writes the tracked attributes of the version back (other attributes stay), saves the record and stores a new version marked as restored. On tenancy panels only versions written in the current tenant (or outside any tenant, e.g. from the console) are listed or restorable, and the record itself is loaded through the resource's tenant-scoped query.
+Seeing the history needs the `view` (or `update`) ability on the record. Restoring needs `update`: it writes the tracked attributes of the version back (other attributes stay), saves the record and stores a new version marked as restored. On a [customer portal](../panels/customer-portal) (`scopeToUser()`) the owner column keeps its current value, so restoring never moves a record to the customer who owned it in that version. Outside panels, `$record->restoreRecordVersion($version, except: ['team_id'])` leaves the attributes you name alone. On tenancy panels only versions written in the current tenant (or outside any tenant, e.g. from the console) are listed or restorable, and the record itself is loaded through the resource's tenant-scoped query.
 
 Turn it off for a resource (the model keeps writing versions):
 

@@ -3,6 +3,8 @@ import {
   bindsKeyBindings,
   formatKeyBinding,
   iconButtonSize,
+  isActionLoading,
+  isActionProcessing,
   registerKeyBindings,
   resolveActionSize,
 } from '@alfakit/core'
@@ -71,7 +73,7 @@ function buttonClasses(action: ActionSchema, variant: ActionSchema['variant']): 
       return colorClass(ghostButtonColorClasses, color, 'gray')
     case 'link':
       return cn(
-        'h-auto p-0 underline-offset-4 hover:underline',
+        'h-auto p-0 underline-offset-4 hover:underline has-[>svg]:px-0',
         colorClass(textColorClasses, color, 'primary'),
       )
     case 'icon-button':
@@ -95,9 +97,10 @@ export function ActionButton({
 }: ActionButtonProps) {
   const runner = useActionRunner()
   const t = useT()
-  const loading = useStoreSelector(runner.store, (state) => state.loading === action.name)
+  // Only this run (this record's button), not the same action in every table row.
+  const loading = useStoreSelector(runner.store, (state) => isActionLoading(state, action, context))
   const processing = useStoreSelector(runner.store, (state) =>
-    state.modals.some((modal) => modal.action.name === action.name && modal.processing),
+    isActionProcessing(state, action, context),
   )
 
   const variant =
@@ -244,7 +247,7 @@ export function ActionButton({
       <TooltipContent>
         {tooltip}
         {shortcut && (
-          <kbd className="ms-2 rounded border border-white/20 px-1 font-mono text-[10px]">
+          <kbd dir="ltr" className="ms-2 rounded border border-white/20 px-1 font-mono text-[10px]">
             {formatKeyBinding(shortcut)}
           </kbd>
         )}

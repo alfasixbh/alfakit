@@ -300,3 +300,86 @@ describe('form block after its own submit', () => {
     expect(await submitAndRespond('halted')).toBe('Noor')
   })
 })
+
+describe('form block after another action', () => {
+  const block = (label: string, name: string | null): FormBlockSchema => ({
+    type: 'Form',
+    key: 'form',
+    component: 'form',
+    components: [
+      {
+        type: 'TextInput',
+        key: 'name',
+        name: 'name',
+        statePath: 'name',
+        label,
+        inputType: 'text',
+      } as SchemaComponent,
+    ],
+    state: { name },
+    actions: [{ type: 'Action', name: 'save', label: 'Save', hasAction: true }],
+    operation: 'edit',
+  })
+
+  // An embedded action (e.g. "Publish" in a field) changed the record the form shows.
+  async function runOtherAction(edit: boolean) {
+    const { router } = await import('@inertiajs/react')
+    const handlers: Record<string, (event: unknown) => void> = {}
+    const on = vi.spyOn(router, 'on').mockImplementation(((
+      name: string,
+      callback: (event: unknown) => void,
+    ) => {
+      handlers[name] = callback
+
+      return () => {}
+    }) as never)
+
+    setPageProps({
+      page: { class: 'EditPage', layout: 'auth', title: 'Edit', content: [], token: 't' },
+    })
+    const { rerender, unmount } = render(
+      <Wrapper>
+        <FormBlock block={block('Draft', 'Home')} />
+      </Wrapper>,
+    )
+
+    if (edit) fireEvent.change(screen.getByLabelText(/Draft/), { target: { value: 'Typed' } })
+
+    act(() => handlers.start?.({ detail: { visit: { id: 'v1', method: 'post' } } }))
+    act(() =>
+      handlers.success?.({
+        detail: {
+          visitId: 'v1',
+          page: { props: {}, flash: { alfakitAction: { name: 'publish', status: 'success' } } },
+        },
+      }),
+    )
+    rerender(
+      <Wrapper>
+        <FormBlock block={block('Published', 'Home')} />
+      </Wrapper>,
+    )
+
+    const input = screen.getByRole('textbox') as HTMLInputElement
+    const result = { label: input.labels?.[0]?.textContent ?? '', value: input.value }
+
+    on.mockRestore()
+    unmount()
+
+    return result
+  }
+
+  it('shows the server state when the form holds no edits', async () => {
+    const result = await runOtherAction(false)
+
+    expect(result.label).toContain('Published')
+    expect(result.value).toBe('Home')
+  })
+
+  it('keeps unsaved edits', async () => {
+    const result = await runOtherAction(true)
+
+    expect(result.label).toContain('Draft')
+    expect(result.value).toBe('Typed')
+  })
+})

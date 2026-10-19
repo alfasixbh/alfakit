@@ -115,3 +115,23 @@ describe('table helpers', () => {
     expect(primaryColumnName([{ name: 'title', type: 'TextInputColumn' }])).toBeNull()
   })
 })
+
+describe('field DOM ids', () => {
+  it('scopes field ids by the form id prefix', async () => {
+    const { fieldDomId, formIdPrefix, FormStore } = await import('../src')
+
+    expect(fieldDomId('alfakit', 'items.0.sku')).toBe('alfakit-items-0-sku')
+    expect(formIdPrefix('action:field.category_id.createOption')).toBe(
+      'alfakit-action-field-category_id-createOption',
+    )
+    expect(
+      new FormStore({ components: [], state: {} }, { token: '', component: 'form' }).idPrefix,
+    ).toBe('alfakit')
+    expect(
+      new FormStore(
+        { components: [], state: {} },
+        { token: '', component: 'x', idPrefix: 'alfakit-modal' },
+      ).idPrefix,
+    ).toBe('alfakit-modal')
+  })
+})

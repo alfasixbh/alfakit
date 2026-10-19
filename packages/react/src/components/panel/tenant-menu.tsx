@@ -151,7 +151,7 @@ export function TenantMenu({ variant = 'sidebar' }: { variant?: 'sidebar' | 'top
             <DropdownMenuItem asChild>
               <Link href={tenancy.profileUrl} className="w-full">
                 <Icon name="alfakit::panels.tenant-menu.profile-button" fallback={SettingsIcon} />{' '}
-                {t('tenancy.profile', {}, 'Settings')}
+                {tenancy.profileLabel ?? t('tenancy.profile', {}, 'Settings')}
               </Link>
             </DropdownMenuItem>
           )
@@ -164,7 +164,7 @@ export function TenantMenu({ variant = 'sidebar' }: { variant?: 'sidebar' | 'top
             <DropdownMenuItem asChild>
               <Link href={tenancy.registrationUrl} className="w-full">
                 <Icon name="alfakit::panels.tenant-menu.registration-button" fallback={PlusIcon} />{' '}
-                {t('tenancy.register', {}, 'New')}
+                {tenancy.registrationLabel ?? t('tenancy.register', {}, 'New')}
               </Link>
             </DropdownMenuItem>
           )

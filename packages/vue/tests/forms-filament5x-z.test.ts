@@ -89,7 +89,13 @@ describe('OneTimeCodeInput (A26)', () => {
     const input = wrapper.find('input')
 
     expect(input.attributes('autocomplete')).toBe('one-time-code')
+    // Themed like every other input (`data-inputs` design option).
+    expect(input.attributes('data-input')).toBeDefined()
+    // No maxlength: the browser would cut a pasted "12 34" before the separators are dropped.
+    expect(input.attributes('maxlength')).toBeUndefined()
 
+    await input.setValue('1 2-3')
+    expect(store.getValue('code')).toBe('123')
     await input.setValue('12a')
     expect(store.getValue('code')).toBe('12')
     await input.setValue('1234')

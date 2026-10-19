@@ -111,6 +111,21 @@ describe('action modal options', () => {
     )
   })
 
+  it('names the modal close button once, with no stray screen-reader text', async () => {
+    mockModals({ archive: { heading: 'Archive post' } })
+
+    renderAction('archive', 'Archive')
+    fireEvent.click(screen.getByRole('button', { name: 'Archive' }))
+
+    const dialog = await screen.findByRole('dialog')
+    const closeTexts = Array.from(dialog.querySelectorAll('.sr-only')).filter(
+      (node) => node.textContent?.trim() === 'Close',
+    )
+
+    expect(closeTexts).toHaveLength(1)
+    expect(closeTexts[0]?.closest('button')).not.toBeNull()
+  })
+
   it('opens a slide-over from the start side and puts attributes on the backdrop', async () => {
     mockModals({
       filters: {

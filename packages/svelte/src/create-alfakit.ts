@@ -33,6 +33,7 @@ import {
   type AnyComponent,
 } from './context.svelte'
 import { discoverComponents } from './lib/discovery'
+import { APP_MOUNTED, createAppMounted } from './lib/hydration.svelte'
 import { preloadIcons } from './lib/icons'
 import AlfakitPage from './pages/AlfakitPage.svelte'
 import { builtInComponents, createDefaultRegistry } from './registry'
@@ -203,6 +204,8 @@ export function bootAlfakit(
       }
 
       context.set(ALFAKIT_CONTEXT, value)
+      // Per app: lazily loaded parts render their server markup until this app hydrated.
+      context.set(APP_MOUNTED, createAppMounted())
       options.withApp?.(context, value)
     },
   }) as Promise<void | AlfakitRenderFunction>

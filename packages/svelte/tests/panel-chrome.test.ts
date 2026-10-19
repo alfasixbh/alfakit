@@ -180,4 +180,22 @@ describe('tenant menu', () => {
     expect(await screen.findByText('Settings')).toBeInTheDocument()
     expect(screen.queryByText('Switch')).toBeNull()
   })
+
+  it("labels the profile and registration links with the pages' own labels", async () => {
+    withPanel({
+      tenancy: tenancy({
+        profileUrl: '/acme/settings',
+        profileLabel: 'Team settings',
+        registrationUrl: '/new',
+        registrationLabel: 'Create team',
+      }),
+    })
+    const { container } = render(Wrapper, {
+      props: { component: TenantMenu, props: { variant: 'topbar' } },
+    })
+    open(container)
+
+    expect(await screen.findByText('Team settings')).toBeInTheDocument()
+    expect(await screen.findByText('Create team')).toBeInTheDocument()
+  })
 })

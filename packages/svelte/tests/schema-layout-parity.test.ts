@@ -15,6 +15,7 @@ import SectionComponent from '../src/components/layout/SectionComponent.svelte'
 import TabsComponent from '../src/components/layout/TabsComponent.svelte'
 import ContextFormHarness from './ContextFormHarness.svelte'
 import ContextProbe from './ContextProbe.svelte'
+import FormHarness from './FormHarness.svelte'
 import Wrapper from './Wrapper.svelte'
 
 const text = (key: string, content: string) =>
@@ -138,6 +139,35 @@ describe('schema layout parity', () => {
     },
   )
 
+  it('keeps the active tab in the query string under its readable value', async () => {
+    window.history.replaceState(null, '', '/admin/orders')
+
+    mount(TabsComponent, {
+      component: tabs({
+        queryStringKey: 'tab',
+        schema: [
+          {
+            type: 'Tab',
+            key: 'tabs-0.tab-0',
+            queryValue: 'billing-address',
+            label: 'One',
+            schema: [],
+          },
+          { type: 'Tab', key: 'tabs-0.tab-1', queryValue: 'shipping', label: 'Two', schema: [] },
+        ],
+      }),
+    })
+
+    await waitFor(() => expect(window.location.search).toBe('?tab=billing-address'))
+
+    await fireEvent.pointerDown(screen.getByRole('tab', { name: 'Two' }), { button: 0 })
+    await fireEvent.mouseDown(screen.getByRole('tab', { name: 'Two' }), { button: 0 })
+    await fireEvent.click(screen.getByRole('tab', { name: 'Two' }))
+
+    await waitFor(() => expect(window.location.search).toBe('?tab=shipping'))
+    window.history.replaceState(null, '', '/')
+  })
+
   it('renders callout icon size, footer alignment and controls', async () => {
     const callout = {
       type: 'Callout',
@@ -191,5 +221,52 @@ describe('schema layout parity', () => {
     mount(ContextProbe, {})
 
     expect(screen.getByTestId('probe')).toHaveTextContent('||undefined|undefined|undefined|true')
+  })
+  it('marks tabs holding fields with errors and opens the first one when errors arrive', async () => {
+    const input = (name: string) =>
+      ({
+        type: 'TextInput',
+        key: name,
+        name,
+        statePath: name,
+        label: name,
+        inputType: 'text',
+      }) as unknown as SchemaComponent
+    const store = new FormStore(
+      {
+        components: [
+          tabs({
+            activeTab: 2,
+            schema: [
+              { type: 'Tab', key: 'one', label: 'One', schema: [input('email')] },
+              { type: 'Tab', key: 'two', label: 'Two', schema: [input('status')] },
+            ],
+          } as Partial<TabsSchema>),
+        ],
+        state: { email: '', status: '' },
+      },
+      { token: 't', component: 'form' },
+    )
+
+    render(Wrapper, { props: { component: FormHarness, props: { store } } })
+
+    expect(screen.getByRole('tab', { name: /Two/ })).toHaveAttribute('aria-selected', 'true')
+
+    store.setErrors({ email: 'The email field is required.' })
+
+    await waitFor(() =>
+      expect(screen.getByRole('tab', { name: /One/ })).toHaveAttribute('aria-selected', 'true'),
+    )
+    expect(screen.getByRole('tab', { name: /One/ })).toHaveAttribute('data-invalid')
+    expect(screen.getByRole('tab', { name: /One/ }).textContent).toMatch(/has.errors/)
+    expect(screen.getByRole('tab', { name: /Two/ })).not.toHaveAttribute('data-invalid')
+
+    // Errors in the open tab too: stay on it.
+    await fireEvent.click(screen.getByRole('tab', { name: /Two/ }))
+    store.setErrors({ email: 'Required', status: 'Required' })
+    await waitFor(() =>
+      expect(screen.getByRole('tab', { name: /Two/ })).toHaveAttribute('data-invalid'),
+    )
+    expect(screen.getByRole('tab', { name: /Two/ })).toHaveAttribute('aria-selected', 'true')
   })
 })

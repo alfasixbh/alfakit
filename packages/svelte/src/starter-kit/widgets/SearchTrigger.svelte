@@ -33,7 +33,7 @@
   <SearchIcon class="size-4" aria-hidden="true" />
   <span class="sr-only sm:not-sr-only sm:flex-1 sm:text-start">{placeholder}</span>
   {#if hydrated.current && binding}
-    <kbd class="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline">
+    <kbd dir="ltr" class="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline">
       {formatKeyBinding(binding)}
     </kbd>
   {/if}

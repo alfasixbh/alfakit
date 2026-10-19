@@ -36,6 +36,7 @@ Rebuild the frontend and the panel renders your copy. The command is idempotent:
 
 ## Notes
 
+- The copied files and the entries the component is registered in are formatted with your app's own formatter (`vp fmt` with a `fmt` section in `vite.config`, Oxfmt or Prettier from `node_modules/.bin`), so they pass the starter kits' `npm run check`. Without a formatter they keep the package's style.
 - `column:<Type>` keys share one cell renderer (`TableCellContent`), which switches on the column type. Eject it once and register it for each column type you want to change; the other types keep working because the switch is in the copy.
 - An ejected `TextInput` imports `@alfakit/core`, `react` (or `vue`, `svelte`) and `lucide-react` (`@lucide/vue`, `@lucide/svelte`) directly. With npm and Yarn these are hoisted from `@alfakit/<adapter>`; with pnpm's strict layout add them to your own `package.json`. The command ends with a warning that names the packages the copy imports but `package.json` does not list, with the `pnpm add` / `npm install` line to run.
 - The copy depends on the package's public API, which follows semantic versioning, not on its internals: a package update never changes files under `resources/js/alfakit/components/`. Re-eject with `--force` to pick up upstream changes to the component itself (your edits are lost; keep them in version control).

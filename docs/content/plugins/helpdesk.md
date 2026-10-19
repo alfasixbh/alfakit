@@ -184,6 +184,8 @@ Under `/{prefix}` (`support` by default, `config/alfakit-helpdesk.php`):
 
 Pages are AlfaKit [standalone components](../standalone/overview) rendered by the Inertia page `config('alfakit-helpdesk.page')` (`php artisan alfakit-helpdesk:pages` creates it for your renderer). Guests are sent to `portal.login_url` (the `login` route by default).
 
+The generated page has its own header (app name and the portal links) and opts out of your app's default Inertia layout, so the portal and the contact form don't show a starter kit's `AppLayout` sidebar to customers and guests: `HelpdeskPortal.layout = (page: ReactNode) => <>{page}</>` in React, `defineOptions({ layout: (_h: unknown, page: unknown) => page as VNode })` in Vue, `export const layout = (_h: unknown, page: unknown) => page` in a `<script module>` block in Svelte. Delete that line to render the pages inside the app's default layout, or set your own layout there (`(page: ReactNode) => <SiteLayout>{page}</SiteLayout>`, `layout: SiteLayout`, `export const layout = SiteLayout`).
+
 A customer's tickets are those they requested, plus those sent from their email address when it is **verified** (`MustVerifyEmail`, `portal.match_verified_email`). Another requester's ticket is a 404. Customers only ever receive public replies: notes and events are never loaded.
 
 The contact form has a honeypot input, a minimum fill time (`spam.min_seconds`) and a rate limit per IP address (`rate_limits.contact`). Spam gets the normal confirmation and stores nothing.

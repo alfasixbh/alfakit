@@ -13,6 +13,7 @@
     registerFormSubmitter,
     registerPageForm,
     resolvePartialProps,
+    shouldResyncForm,
     wizardProgressStore,
   } from '@alfakit/core'
   import { router } from '@inertiajs/svelte'
@@ -80,6 +81,8 @@
   // block may arrive before or after Inertia's `success` event, so handle both orders.
   let submittedBlock: FormBlockSchema | null = null
   let refillPending = false
+  // Another action succeeded and its new block has not arrived yet.
+  let resyncPending = false
 
   $effect(() => {
     const next = block
@@ -88,6 +91,12 @@
       if (refillPending) {
         refillPending = false
         store.fill(next)
+      }
+
+      if (resyncPending) {
+        resyncPending = false
+
+        if (!store.isDirty) store.fill(next)
       }
     })
   })
@@ -132,6 +141,8 @@
   // Track this form's own submit visit so unrelated reloads finishing meanwhile (polling,
   // relation-manager paging) neither end its processing state nor count as its success.
   let submitVisit: string | null = null
+  // The block when the latest non-GET visit started, to tell whether its response arrived.
+  let visitBlock: FormBlockSchema | null = null
 
   const offStart = router.on('start', (event) => {
     const visit = event.detail.visit
@@ -139,10 +150,25 @@
     if (submitting && !submitVisit && visit.method !== 'get') {
       submitVisit = visit.id
     }
+
+    if (visit.method !== 'get') visitBlock = untrack(() => block)
   })
 
   const offSuccess = router.on('success', (event) => {
     const id = submitVisit
+
+    // Another action changed the record: show the server's new form unless it holds edits.
+    if (!id && shouldResyncForm(pageFlash(event.detail.page), store)) {
+      const current = untrack(() => block)
+
+      if (current !== visitBlock) {
+        store.fill(current)
+      } else {
+        resyncPending = true
+      }
+
+      return
+    }
 
     if (!id || (event.detail.visitId ?? id) !== id) return
 

@@ -22,8 +22,8 @@
     fieldMemory,
     fileUploadAccept,
     filesFromClipboard,
+    fileManagerSize,
     fileUploadPaths,
-    formatBytes,
     insertUploadedFile,
     moveRepeaterItem,
     requestJson,
@@ -41,7 +41,7 @@
   import PencilIcon from '@lucide/svelte/icons/pencil'
   import XIcon from '@lucide/svelte/icons/x'
   import { untrack } from 'svelte'
-  import { useChoice, usePanel, useT } from '../../context.svelte'
+  import { useChoice, useFormatter, usePanel, useT } from '../../context.svelte'
   import { useStore } from '../../hooks/store.svelte'
   import { cn } from '../../lib/utils'
   import { useField, useFormStore } from '../form/form-context.svelte'
@@ -60,6 +60,7 @@
   let { component }: { component: FileUploadSchema } = $props()
 
   const t = useT()
+  const formatter = useFormatter()
   const choice = useChoice()
   const panel = usePanel()
   const field = useField<string | string[] | null>(() => component)
@@ -397,7 +398,9 @@
   const hints = $derived(
     [
       component.acceptedFileTypes?.join(', '),
-      component.maxSize ? `≤ ${formatBytes(component.maxSize * 1024, 0)}` : null,
+      component.maxSize
+        ? `≤ ${fileManagerSize(component.maxSize * 1024, formatter.current)}`
+        : null,
       component.minFiles
         ? choice(
             'form.min_files',
@@ -432,7 +435,7 @@
       variant={circle ? 'secondary' : 'ghost'}
       size="icon-xs"
       class={cn(circle && 'rounded-full shadow')}
-      aria-label={t('remove', {}, 'Remove')}
+      aria-label={t('file_upload.remove', { name: file.name }, 'Remove :name')}
       onclick={() => {
         if (file.error || file.progress !== undefined) {
           releasePreview(file.preview)
@@ -506,7 +509,7 @@
                       : file.progress !== undefined && !file.error
                         ? (component.uploadingMessage ?? t('form.uploading', {}, 'Uploading…'))
                         : file.size
-                          ? formatBytes(file.size)
+                          ? fileManagerSize(file.size, formatter.current)
                           : file.temporary
                             ? t('form.uploading', {}, 'Pending')
                             : '')}
@@ -521,7 +524,7 @@
                   type="button"
                   variant="ghost"
                   size="icon-xs"
-                  aria-label={t('form.move_up', {}, 'Move up')}
+                  aria-label={t('file_upload.move_up', { name: file.name }, 'Move :name up')}
                   disabled={fileIndex === 0}
                   onclick={() => move(fileIndex, fileIndex - 1)}><ChevronUpIcon /></Button
                 >
@@ -529,7 +532,7 @@
                   type="button"
                   variant="ghost"
                   size="icon-xs"
-                  aria-label={t('form.move_down', {}, 'Move down')}
+                  aria-label={t('file_upload.move_down', { name: file.name }, 'Move :name down')}
                   disabled={fileIndex === files.length - 1}
                   onclick={() => move(fileIndex, fileIndex + 1)}><ChevronDownIcon /></Button
                 >
@@ -540,7 +543,7 @@
                   variant={circle ? 'secondary' : 'ghost'}
                   size="icon-xs"
                   class={cn(circle && 'rounded-full shadow')}
-                  aria-label={t('image_editor.title', {}, 'Edit image')}
+                  aria-label={t('file_upload.edit', { name: file.name }, 'Edit :name')}
                   title={t('image_editor.title', {}, 'Edit image')}
                   data-action="edit-image"
                   onclick={() => void editExisting(file)}><PencilIcon /></Button
@@ -554,7 +557,7 @@
                   rel="noopener noreferrer"
                   variant="ghost"
                   size="icon-xs"
-                  aria-label={`${t('open', {}, 'Open')} ${t('opens_in_new_tab', {}, '(opens in a new tab)')}`}
+                  aria-label={`${t('file_upload.open', { name: file.name }, 'Open :name')} ${t('opens_in_new_tab', {}, '(opens in a new tab)')}`}
                   ><ExternalLinkIcon /></Button
                 >
               {/if}
@@ -565,7 +568,8 @@
                   download
                   variant="ghost"
                   size="icon-xs"
-                  aria-label={t('download', {}, 'Download')}><DownloadIcon /></Button
+                  aria-label={t('file_upload.download', { name: file.name }, 'Download :name')}
+                  ><DownloadIcon /></Button
                 >
               {/if}
               {#if circle || !removeAtStart}{@render removeButton(file)}{/if}

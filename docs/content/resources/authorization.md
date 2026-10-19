@@ -19,6 +19,8 @@ AlfaKit uses Laravel policies. When a policy exists for the resource model, each
 | `forceDelete` / `forceDeleteAny` | `ForceDeleteAction` / `ForceDeleteBulkAction`           |
 | `replicate`                      | `ReplicateAction`                                       |
 
+To lock a resource down without a policy, override its `canViewAny()`, `canCreate()`, `canEdit()`, `canView()`, `canDelete()` or `canDeleteAny()`: pages, the prebuilt actions, bulk actions, table links and undo all ask these methods (`Resource::authorizes($ability, $record)`), and they fall back to the policy.
+
 Tables without a resource (relation managers, widgets, custom pages) check the model's policy directly. Missing policies and policy methods are treated as allowed, unless the panel uses `strictAuthorization()`:
 
 ```php

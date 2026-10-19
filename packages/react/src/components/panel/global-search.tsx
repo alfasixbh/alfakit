@@ -133,7 +133,7 @@ export function GlobalSearch({ variant = 'topbar' }: { variant?: 'topbar' | 'sid
           </span>
         )}
         {hydrated && suffix?.type === 'keyBinding' && (
-          <kbd className="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline">
+          <kbd dir="ltr" className="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline">
             {formatKeyBinding(suffix.keyBinding)}
           </kbd>
         )}

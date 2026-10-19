@@ -45,6 +45,8 @@ class User extends Authenticatable implements Commenter
 }
 ```
 
+`HasComments` adds a `comments()` relationship (a `MorphMany` to the plugin's `Comment`). A model that already has its own `comments()` (a `HasMany` to your `Comment` model, as in the quick start's blog) fails with "Declaration of …::comments() must be compatible": rename your relationship first (and its relation manager's `$relationship`).
+
 `Commenter` is optional: without it, names and avatars come from the panel (`userName()`, `HasName`, `HasAvatar`, an `avatar_url` attribute, `defaultAvatarProvider()`), falling back to an initials avatar drawn on the server. Implement the two methods yourself to show something else.
 
 Register the plugin to configure it (optional; the defaults apply without it):

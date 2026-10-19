@@ -113,6 +113,16 @@ describe('FileUpload options', () => {
     )
   })
 
+  it('formats file sizes and the size limit with the locale formatter', () => {
+    renderUpload(
+      upload({ maxSize: 2048, files: [{ path: 'a.pdf', name: 'A.pdf', url: '/a', size: 1536 }] }),
+      ['a.pdf'],
+    )
+
+    expect(document.body.textContent).toContain('≤ 2 MB')
+    expect(document.body.textContent).toContain('1.5 kB')
+  })
+
   it('links open and download to their own URLs and flags missing files', () => {
     renderUpload(
       upload({
@@ -133,12 +143,35 @@ describe('FileUpload options', () => {
     )
 
     const opens = screen.getAllByRole('link', { name: /Open/ })
-    const downloads = screen.getAllByRole('link', { name: 'Download' })
+    const downloads = screen.getAllByRole('link', { name: /^Download / })
 
     expect(opens[0]).toHaveAttribute('href', '/view/a')
     expect(downloads[0]).toHaveAttribute('href', '/dl/a')
     expect(opens[1]).toHaveAttribute('href', '/b')
     expect(screen.getByText('This file no longer exists.')).toBeInTheDocument()
+  })
+
+  // Screen readers hear which file a button acts on ("Remove Report.pdf").
+  it('names the file in its buttons', () => {
+    renderUpload(
+      upload({
+        reorderable: true,
+        downloadable: true,
+        files: [
+          { path: 'a.pdf', name: 'Report.pdf', url: '/a', downloadUrl: '/dl/a' },
+          { path: 'b.pdf', name: 'Notes.pdf', url: '/b' },
+        ],
+      }),
+      ['a.pdf', 'b.pdf'],
+    )
+
+    for (const name of ['Remove Report.pdf', 'Move Report.pdf down', 'Move Notes.pdf up']) {
+      expect(screen.getByRole('button', { name })).toBeInTheDocument()
+    }
+    expect(screen.getByRole('link', { name: 'Download Report.pdf' })).toHaveAttribute(
+      'href',
+      '/dl/a',
+    )
   })
 
   it('applies the layout options and the MIME type map to the picker', () => {
@@ -163,7 +196,7 @@ describe('FileUpload options', () => {
     )
     expect(zone.style.aspectRatio).toBe('2 / 1')
     expect(zone).toHaveClass('items-end')
-    expect(item.firstElementChild).toHaveAccessibleName('Remove')
+    expect(item.firstElementChild).toHaveAccessibleName('Remove Report.pdf')
     expect(container.querySelector('input[type="file"]')).toHaveAttribute(
       'accept',
       'application/vnd.sketchup.skp,.skp',

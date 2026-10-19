@@ -52,8 +52,8 @@ enum OrderStatus: string implements HasLabel, HasColor, HasIcon, HasDescription
 | Contract         | Method                                          | Used by                                                                                                              |
 | ---------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `HasLabel`       | `getLabel(): string\|Htmlable\|null`            | Options of every choice field, select columns and filters; text columns and entries; group titles; navigation groups |
-| `HasColor`       | `getColor(): Color\|string\|array\|null`        | Text columns and entries (best with `badge()`), icon columns and entries, `ToggleButtons`                            |
-| `HasIcon`        | `getIcon(): string\|BackedEnum\|Htmlable\|null` | Text columns and entries, icon columns and entries, `ToggleButtons`, navigation groups                               |
+| `HasColor`       | `getColor(): Color\|string\|array\|null`        | Text columns and entries (best with `badge()`), icon columns and entries, `ToggleButtons`, group title icons         |
+| `HasIcon`        | `getIcon(): string\|BackedEnum\|Htmlable\|null` | Text columns and entries, icon columns and entries, `ToggleButtons`, navigation groups, group titles                 |
 | `HasDescription` | `getDescription(): string\|Htmlable\|null`      | `Radio` and `CheckboxList` options                                                                                   |
 
 Colours are the panel's semantic names (`primary`, `success`, `warning`, `danger`, `info`, `gray`) or a `Support\Enums\Color` case; icons are [Lucide](https://lucide.dev/icons) names or registered aliases. Without `HasLabel` the label is the headlined case name (`UrgentHigh` → "Urgent High"). Enums that only declare the methods, without the interfaces, work too.
@@ -101,7 +101,7 @@ TextColumn::make('status')
     ->color(fn (OrderStatus $state): string => $state === OrderStatus::Pending ? 'warning' : $state->getColor());
 ```
 
-Grouping a table by an enum attribute titles each group with the enum label.
+Grouping a table by an enum attribute titles each group with the enum label (the headlined case name without `HasLabel`) and shows the enum's icon in its colour before the title; for a raw stored value use `Group::make('status')->enum(OrderStatus::class)`.
 
 ## Navigation groups
 

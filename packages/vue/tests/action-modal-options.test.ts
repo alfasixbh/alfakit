@@ -1,11 +1,12 @@
 import type { ActionModalSchema, StatSchema } from '@alfakit/core'
 import { openDatabaseNotifications } from '@alfakit/core'
-import { h } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import ActionList from '../src/components/actions/ActionList.vue'
 import ActionModals from '../src/components/actions/ActionModals.vue'
 import NotificationActionButton from '../src/components/notifications/NotificationActionButton.vue'
 import NotificationsMenu from '../src/components/notifications/NotificationsMenu.vue'
 import StatCard from '../src/components/widgets/StatCard.vue'
+import { provideStandalone } from '../src/context'
 import { actions, flush, mountWithAlfakit, panel, setPageProps } from './mocks'
 
 const baseModal = {
@@ -274,6 +275,76 @@ describe('notifications and widgets', () => {
 
     wrapper.unmount()
     setPageProps({ alfakit: panel })
+  })
+
+  it('follows the unread count of each page visit (another user after impersonating)', async () => {
+    // A reactive panel, as Inertia's page props are after a visit.
+    const current = ref({ ...panel, databaseNotifications: { unreadCount: 1 } })
+    const Provider = defineComponent({
+      setup: () => {
+        provideStandalone({ panel: current, page: ref({}) as never })
+
+        return () => h(NotificationsMenu)
+      },
+    })
+
+    const wrapper = mountWithAlfakit(() => h(Provider))
+    await flush()
+
+    const bell = () => document.body.querySelector('button[aria-label^="Notifications"]')
+
+    expect(bell()?.textContent?.trim()).toBe('1')
+
+    current.value = { ...panel, databaseNotifications: { unreadCount: 0 } }
+    await settle()
+
+    expect(bell()?.textContent?.trim()).toBe('')
+
+    wrapper.unmount()
+  })
+
+  it('names the modal close button once, with no stray screen-reader text', async () => {
+    mockModals({ archive: { heading: 'Archive post' } })
+
+    const wrapper = mountAction('archive', 'Archive')
+    button('Archive')?.click()
+    await settle()
+
+    const dialog = document.body.querySelector('[role="dialog"]')
+    const closeTexts = Array.from(dialog?.querySelectorAll('.sr-only') ?? []).filter(
+      (node) => node.textContent?.trim() === 'Close',
+    )
+
+    expect(closeTexts).toHaveLength(1)
+    expect(closeTexts[0]?.closest('button')).not.toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('gives modal fields their own ids, apart from the page form behind the modal', async () => {
+    mockModals({
+      createOption: {
+        heading: 'Create category',
+        form: {
+          state: { slug: '' },
+          components: [
+            { type: 'TextInput', key: 'slug', name: 'slug', statePath: 'slug', label: 'Slug' },
+          ],
+        },
+      },
+    })
+
+    const wrapper = mountAction('createOption', 'New category')
+    button('New category')?.click()
+    await settle()
+
+    const input = document.body.querySelector<HTMLInputElement>('[role="dialog"] input')
+    const label = document.body.querySelector('[role="dialog"] label')
+
+    expect(input?.id).toBe('alfakit-action-createOption-slug')
+    expect(label?.getAttribute('for')).toBe(input?.id)
+
+    wrapper.unmount()
   })
 
   it('shows a stat placeholder for an empty value', async () => {

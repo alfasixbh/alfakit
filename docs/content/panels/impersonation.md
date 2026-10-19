@@ -81,6 +81,7 @@ use AlfaSix\Alfakit\Auth\Impersonation\Impersonation;
 Impersonation::isImpersonating($panel);   // or $panel->isImpersonating()
 Impersonation::getImpersonator($panel);   // the real user
 Impersonation::canImpersonate($panel, $user, $target);
+Impersonation::isSwitching();               // true inside the Login event of starting or leaving
 ```
 
 Required [multi-factor authentication](multi-factor-authentication) is not enforced while impersonating.

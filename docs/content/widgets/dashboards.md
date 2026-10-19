@@ -9,7 +9,7 @@ description: Dashboard filters shared by widgets, and several dashboards per pan
 
 ## Filters
 
-Add `HasFiltersForm` to your own dashboard class and define the fields in `filtersForm()`. The form appears above the widgets with **Apply filters** and **Reset** buttons:
+Add `HasFiltersForm` to your own dashboard class and define the fields in `filtersForm()`. The form appears above the widgets with **Apply filters** and **Reset** buttons. A class in `app/Alfakit/Pages` is discovered, and a subclass of `Dashboard` on the same route replaces the `Dashboard::class` the generated provider registers, so there is nothing else to change:
 
 ```php
 namespace App\Alfakit\Pages;

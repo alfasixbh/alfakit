@@ -36,7 +36,9 @@ Users pick a group (or none) and its direction from the **Group by** menu in the
 | `scopeQueryByKeyUsing(fn (Builder $query, ?string $key) => …)`      | limit a query to one group's rows                                                                                                                                                               |
 | `groupQueryUsing(fn (Builder $query) => $query->groupBy('status'))` | group a query by the group: `groupsOnly()` tables find their groups with this one grouped query instead of reading every record (the group column is selected when the closure selects nothing) |
 
-A dotted name (`author.name`) groups by a relationship attribute: rows are ordered with a sub-select and the relationship is eager loaded. Rows without a value form a "No value" group. Enum attributes use their `getLabel()`.
+A dotted name (`author.name`) groups by a relationship attribute: rows are ordered with a sub-select and the relationship is eager loaded. Rows without a value form a "No value" group.
+
+An attribute cast to an [enum](/docs/advanced/enums) is titled with the enum's label (`HasLabel`, or the headlined case name: `archived` → "Archived"), and the enum's icon (`HasIcon`) is shown before the title in its colour (`HasColor`). For a raw stored value (an uncast column, a JSON path, a `records()` array), name the enum: `Group::make('status')->enum(OrderStatus::class)`. The group key (`?group=` and the records' `group`) stays the backing value.
 
 ## Table options
 

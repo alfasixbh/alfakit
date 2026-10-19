@@ -8,6 +8,13 @@ return [
         'saved' => 'ترتیب ذخیره شد',
     ],
 
+    // Node buttons: they name the node, like the move buttons.
+    'actions' => [
+        'view' => 'مشاهده :title',
+        'edit' => 'ویرایش :title',
+        'delete' => 'حذف :title',
+    ],
+
     'validation' => [
         'invalid' => 'درخت خوانده نشد.',
         'unknown_record' => 'یکی از رکوردهای درخت دیگر وجود ندارد. صفحه را دوباره بارگذاری کنید و دوباره تلاش کنید.',

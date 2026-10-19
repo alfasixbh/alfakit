@@ -1,5 +1,5 @@
 import { FormStore, type CellSchema, type ColumnSchema, type TableSchema } from '@alfakit/core'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, reactive } from 'vue'
 import ImageEntryComponent from '../src/components/entries/ImageEntryComponent.vue'
 import QueryBuilderRulesField from '../src/components/fields/QueryBuilderRulesField.vue'
 import { provideForm } from '../src/components/form/form-context'
@@ -20,6 +20,54 @@ function cell(column: ColumnSchema, data: CellSchema) {
 }
 
 describe('column parity', () => {
+  it('names editable cells after their column and ties the error to them', async () => {
+    const fetchMock = vi.fn(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ message: 'Invalid', errors: { state: ['Too low'] } }), {
+          status: 422,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      ),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    const price = cell(
+      {
+        type: 'TextInputColumn',
+        name: 'price',
+        label: 'Price',
+        editable: true,
+        inputType: 'number',
+      } as ColumnSchema,
+      { state: '10' },
+    )
+    const status = cell(
+      {
+        type: 'SelectColumn',
+        name: 'status',
+        label: 'Status',
+        editable: true,
+        native: true,
+        options: [{ value: 'a', label: 'A' }],
+      } as ColumnSchema,
+      { state: 'a' },
+    )
+
+    expect(status.find('select').attributes('aria-label')).toBe('Status')
+
+    const input = price.find('input')
+    expect(input.attributes('aria-label')).toBe('Price')
+
+    await input.setValue('-5')
+    await input.trigger('blur')
+    await flush()
+
+    const describedBy = input.attributes('aria-describedby')
+    expect(describedBy).toBeTruthy()
+    expect(document.getElementById(describedBy as string)?.textContent).toBe('Too low')
+    vi.unstubAllGlobals()
+  })
+
   it('copies a color column swatch with the copy message and duration', async () => {
     vi.useFakeTimers()
     const writeText = vi.fn(() => Promise.resolve())
@@ -130,6 +178,43 @@ describe('column parity', () => {
     )
     expect(hidden.find('[data-slot="image-remaining"]').exists()).toBe(false)
     hidden.unmount()
+  })
+
+  it('saves a text input cell changed back to its earlier value after a reload', async () => {
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({}), { status: 200 }))
+    vi.stubGlobal('fetch', fetchMock)
+    const data = reactive<CellSchema>({ state: '364' })
+    const wrapper = mountWithAlfakit(() =>
+      h(TableCellContent, {
+        column: {
+          type: 'TextInputColumn',
+          name: 'views',
+          label: 'Views',
+          inputType: 'number',
+        } as ColumnSchema,
+        cell: data,
+        recordKey: 1,
+        token: 't',
+        component: 'table',
+      }),
+    )
+    const input = wrapper.find('input')
+
+    await input.setValue('777')
+    await input.trigger('blur')
+    await flush()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+
+    // The table reloads with the saved value; the user types the old value again.
+    data.state = '777'
+    await flush()
+    await input.setValue('364')
+    await input.trigger('blur')
+    await flush()
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+
+    wrapper.unmount()
+    vi.unstubAllGlobals()
   })
 
   it('renders text input column prefix and suffix text', () => {
