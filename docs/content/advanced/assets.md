@@ -41,6 +41,13 @@ Assets::register([
     Css::make('map-picker', __DIR__.'/../resources/dist/map-picker.css')->loadedOnRequest(),
     Js::make('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js')->loadedOnRequest(),
 ], package: 'acme/maps');
+```
+
+```php
+namespace Acme\Maps\Forms\Components;
+
+use AlfaSix\Alfakit\Forms\Components\Field;
+use AlfaSix\Alfakit\Support\Assets\Assets;
 
 class MapPicker extends Field
 {

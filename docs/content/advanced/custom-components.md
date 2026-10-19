@@ -98,6 +98,10 @@ The adapter comes from `package.json`. Use `--adapter=react|vue|svelte` to choos
 A field binds its state with `useField()`. Validation, hydration and saving stay in PHP.
 
 ```php
+namespace App\Alfakit\Forms\Components;
+
+use AlfaSix\Alfakit\Forms\Components\Field;
+
 class ColorWheel extends Field
 {
     /** @var list<string> */

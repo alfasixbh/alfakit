@@ -75,12 +75,18 @@ What is scoped: the list (and its search, filters and exports), record pages (an
 Per resource:
 
 ```php
+namespace App\Alfakit\Portal\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+
 class InvoiceResource extends Resource
 {
     // A different column than the panel's, or `false` to opt out of the panel's scope.
     protected static string|false|null $userOwnership = 'billing_contact_id';
 }
+```
 
+```php
 // Or from code, e.g. in a service provider:
 InvoiceResource::scopeToUser('billing_contact_id');
 ```
@@ -125,6 +131,13 @@ The [app auth kit](../standalone/auth-kit) has the same option for your app's ow
 Widgets that query through the resource are scoped too:
 
 ```php
+namespace App\Alfakit\Portal\Widgets;
+
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget\Stat;
+use App\Alfakit\Resources\OrderResource;
+use Illuminate\Support\Number;
+
 class OrderStats extends StatsOverviewWidget
 {
     protected function getStats(): array

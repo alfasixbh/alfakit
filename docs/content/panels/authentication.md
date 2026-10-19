@@ -14,6 +14,11 @@ $panel->login()->registration()->passwordReset()->emailVerification()->profile()
 Every auth page is a regular schema-driven [page](../pages/custom-pages) with the `auth` layout, so it is rendered by the same components as the rest of the panel and can be extended:
 
 ```php
+namespace App\Alfakit\Pages\Auth;
+
+use AlfaSix\Alfakit\Forms\Components\Checkbox;
+use AlfaSix\Alfakit\Schemas\Schema;
+
 class Login extends \AlfaSix\Alfakit\Auth\Pages\Login
 {
     public function form(Schema $schema): Schema
@@ -29,7 +34,9 @@ class Login extends \AlfaSix\Alfakit\Auth\Pages\Login
         return ['username' => $data['email'], 'password' => $data['password']];
     }
 }
+```
 
+```php
 $panel->login(Login::class);
 ```
 
@@ -71,16 +78,32 @@ $panel
 ```
 
 ```php
+namespace App\Alfakit\Pages;
+
+use AlfaSix\Alfakit\Pages\Page;
+
 class StatusPage extends Page
 {
     protected static bool $isGuestAccessible = true;
 }
+```
+
+```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
 
 class ProductResource extends Resource
 {
     // Every page of the resource opens to guests.
     protected static bool $isGuestAccessible = true;
 }
+```
+
+```php
+namespace App\Alfakit\Resources\OrderResource\Pages;
+
+use AlfaSix\Alfakit\Resources\Pages\ListRecords;
 
 class ListOrders extends ListRecords
 {

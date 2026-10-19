@@ -65,13 +65,19 @@ Each writes the PHP class (in `app/Alfakit`, or your `alfakit.file_generation` n
 A layout component holds other components: subclass `Component`, set `$type`, and pass children with `->schema([...])`. In the renderer, `<SchemaChildren>` renders the children in the component's grid (`columns()`, `dense()`, `gap(false)`), so your component only draws the frame:
 
 ```php
+namespace App\Alfakit\Schemas\Components;
+
+use AlfaSix\Alfakit\Schemas\Components\Component;
+
 class ShippingPanel extends Component
 {
     protected ?string $type = 'shipping-panel';
 
     protected function getSchemaProps(): array { return ['tone' => 'muted']; }
 }
+```
 
+```php
 ShippingPanel::make()->schema([TextInput::make('street'), TextInput::make('city')])->columns(2);
 ```
 

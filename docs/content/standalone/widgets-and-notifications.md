@@ -8,6 +8,12 @@ description: Stats, charts and table widgets in your own pages, with lazy loadin
 ## Widgets
 
 ```php
+namespace App\Alfakit\Standalone;
+
+use App\Alfakit\Widgets\TeamMembers;
+use App\Alfakit\Widgets\TeamRevenue;
+use App\Models\Team;
+
 class AccountStats extends \AlfaSix\Alfakit\Standalone\Widgets
 {
     public Team $team;
@@ -25,7 +31,9 @@ class AccountStats extends \AlfaSix\Alfakit\Standalone\Widgets
         return ['default' => 1, 'md' => 3];
     }
 }
+```
 
+```php
 // Controller
 'stats' => AccountStats::make(['team' => $team]),
 ```

@@ -16,6 +16,13 @@ php artisan make:alfakit-resource Post --generate --view --soft-deletes
 ```php
 namespace App\Alfakit\Resources;
 
+use AlfaSix\Alfakit\Resources\Resource;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tables\Table;
+use App\Alfakit\Resources\PostResource\Pages;
+use App\Alfakit\Resources\PostResource\RelationManagers;
+use App\Models\Post;
+
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
@@ -176,6 +183,8 @@ PostResource::hasPage('view');
 One resource class can be registered several times, each registration with a key and its own options: its own URL, navigation item and, through your code, its own query, labels or behaviour. Create a configuration class with the options you need:
 
 ```php
+namespace App\Alfakit\Resources;
+
 use AlfaSix\Alfakit\Resources\ResourceConfiguration;
 
 class OrderResourceConfiguration extends ResourceConfiguration
@@ -213,6 +222,11 @@ class OrderResourceConfiguration extends ResourceConfiguration
 Link it to the resource and read the active registration with `static::getConfiguration()` (null for the plain registration) or `static::hasConfiguration()`:
 
 ```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+use Illuminate\Database\Eloquent\Builder;
+
 class OrderResource extends Resource
 {
     protected static ?string $configurationClass = OrderResourceConfiguration::class;

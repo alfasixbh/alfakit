@@ -24,6 +24,10 @@ AlfaKit's [tenancy](tenancy) scopes queries in one shared database by default. I
 Models that live in every tenant database use the `tenant` connection; `User`, `Team` and the membership table stay on `central` (the panel looks the tenant up and checks membership before switching).
 
 ```php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
 class Project extends Model
 {
     protected $connection = 'tenant';

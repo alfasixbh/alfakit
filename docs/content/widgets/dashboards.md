@@ -61,14 +61,22 @@ Override `applyFilters(array $data)` or `resetFilters()` to change what happens 
 
 #### Keeping filters in the URL instead of the session
 
-Set `$persistsFiltersInSession` to `false` (or override `persistsFiltersInSession()`) to keep the applied filters in the page URL (`?filters[startDate]=2026-01-01`) instead of the session. They then last only as long as that URL, and a filtered dashboard can be bookmarked or shared:
+Override `persistsFiltersInSession()` to return `false` to keep the applied filters in the page URL (`?filters[startDate]=2026-01-01`) instead of the session. They then last only as long as that URL, and a filtered dashboard can be bookmarked or shared:
 
 ```php
+namespace App\Alfakit\Pages;
+
+use AlfaSix\Alfakit\Pages\Dashboard as BaseDashboard;
+use AlfaSix\Alfakit\Pages\Dashboard\Concerns\HasFiltersForm;
+
 class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
 
-    protected static bool $persistsFiltersInSession = false;
+    public function persistsFiltersInSession(): bool
+    {
+        return false;
+    }
 }
 ```
 
@@ -116,6 +124,11 @@ Invalid values are not applied (the widgets keep the last applied filters) and s
 A panel can have any number of dashboards. Each one has its own route, navigation item and widgets:
 
 ```php
+namespace App\Alfakit\Pages;
+
+use App\Alfakit\Widgets\RevenueChart;
+use App\Alfakit\Widgets\TopProducts;
+
 class SalesDashboard extends \AlfaSix\Alfakit\Pages\Dashboard
 {
     protected static ?string $navigationIcon = 'chart-line';
@@ -125,7 +138,9 @@ class SalesDashboard extends \AlfaSix\Alfakit\Pages\Dashboard
         return [RevenueChart::class, TopProducts::class];
     }
 }
+```
 
+```php
 $panel->pages([Dashboard::class, SalesDashboard::class]);
 ```
 

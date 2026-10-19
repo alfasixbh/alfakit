@@ -8,6 +8,10 @@ description: Sidebar groups, items, badges and the user menu.
 Resources and pages register themselves in the sidebar automatically. Control placement with static properties:
 
 ```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+
 class PostResource extends Resource
 {
     protected static ?string $navigationIcon = 'file-text';   // Lucide icon name

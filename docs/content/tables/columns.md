@@ -175,6 +175,10 @@ The component receives the cell's `state`, the `viewData()` props (a closure is 
 A custom column class can send per-record data to its renderer by overriding `getCellProps()` (static, per-column data goes in `getSchemaProps()`):
 
 ```php
+namespace App\Alfakit\Tables\Columns;
+
+use AlfaSix\Alfakit\Tables\Columns\Column;
+
 class ProgressColumn extends Column
 {
     protected function getCellProps(): array

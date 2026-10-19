@@ -14,6 +14,14 @@ php artisan make:alfakit-widget BlogStats --type=stats   # stats | chart | table
 ## StatsOverviewWidget
 
 ```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget\Stat;
+use App\Alfakit\Resources\PostResource;
+use App\Models\Post;
+use Illuminate\Support\Number;
+
 class BlogStats extends StatsOverviewWidget
 {
     protected ?string $heading = 'This month';
@@ -43,6 +51,11 @@ class BlogStats extends StatsOverviewWidget
 ## ChartWidget
 
 ```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Widgets\ChartWidget;
+use App\Models\Post;
+
 class ViewsChart extends ChartWidget
 {
     protected ?string $heading = 'Views';
@@ -218,13 +231,20 @@ The chart card carries `data-chart-type="line|bar|…"`, the canvas wrapper `dat
 ## TableWidget
 
 ```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Table;
+use AlfaSix\Alfakit\Widgets\TableWidget;
+use App\Models\Post;
+
 class LatestPosts extends TableWidget
 {
     protected ?string $heading = 'Latest posts';
 
     public function table(Table $table): Table
     {
-        return $table->query(Post::latest()->limit(5))->columns([...])->paginated(false);
+        return $table->query(Post::latest()->limit(5))->columns([TextColumn::make('title'), TextColumn::make('created_at')->since()])->paginated(false);
     }
 }
 ```
@@ -232,6 +252,10 @@ class LatestPosts extends TableWidget
 ## Custom widgets
 
 ```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Widgets\Widget;
+
 class Welcome extends Widget
 {
     protected static ?string $component = 'Welcome';   // resources/js/alfakit/widgets/Welcome.tsx
@@ -251,6 +275,12 @@ class Welcome extends Widget
 Pass values to a widget with `make()`. Each key sets a public property of the widget, so one widget class can appear several times with different settings, on a dashboard (`getWidgets()` of a `Dashboard` subclass), on a resource page or on a custom page (`getHeaderWidgets()` / `getFooterWidgets()`):
 
 ```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget\Stat;
+use App\Models\Order;
+
 class OrdersByStatus extends StatsOverviewWidget
 {
     public ?string $status = null;
@@ -260,7 +290,9 @@ class OrdersByStatus extends StatsOverviewWidget
         return [Stat::make(ucfirst($this->status), Order::query()->where('status', $this->status)->count())];
     }
 }
+```
 
+```php
 protected function getHeaderWidgets(): array
 {
     return [

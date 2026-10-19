@@ -94,6 +94,14 @@ or pass `--shared=Currency --shared=App\Models\Plan`. The exit code is `1` on an
 Both are abstract pages you extend with a `form()` and, for registration, `handleRegistration()`. `tenantRegistration()` and `tenantProfile()` take your page class (pass `null` to turn the page off); a class that doesn't extend `RegisterTenant` / `EditTenantProfile`, or is abstract, throws an `InvalidArgumentException` when the panel is configured:
 
 ```php
+namespace App\Alfakit\Pages\Tenancy;
+
+use AlfaSix\Alfakit\Forms\Components\TextInput;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tenancy\Pages\RegisterTenant;
+use App\Models\Team;
+use Illuminate\Database\Eloquent\Model;
+
 class RegisterTeam extends RegisterTenant
 {
     public static function getLabel(): string { return 'Create team'; }

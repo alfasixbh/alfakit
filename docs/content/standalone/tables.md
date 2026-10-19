@@ -12,6 +12,19 @@ php artisan make:alfakit-table OrdersTable --model=Order
 A standalone table extends `AlfaSix\Alfakit\Standalone\Table` and defines `table(Table $table)` exactly like a [resource table](../tables/overview): columns, filters, grouping, summaries, record and bulk actions, inline edits (`ToggleColumn`, `SelectColumn`, `TextInputColumn`), reordering, column toggles, pagination modes, `deferLoading()` and `poll()`.
 
 ```php
+namespace App\Alfakit\Standalone;
+
+use AlfaSix\Alfakit\Actions\Action;
+use AlfaSix\Alfakit\Actions\BulkAction;
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Filters\SelectFilter;
+use AlfaSix\Alfakit\Tables\Table;
+use App\Enums\OrderStatus;
+use App\Jobs\Export;
+use App\Models\Customer;
+use App\Models\Order;
+use Illuminate\Database\Eloquent\Collection;
+
 class OrdersTable extends \AlfaSix\Alfakit\Standalone\Table
 {
     public Customer $customer;

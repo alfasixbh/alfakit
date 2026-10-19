@@ -108,6 +108,11 @@ Grouping a table by an enum attribute titles each group with the enum label.
 A navigation group can be an enum case implementing `HasLabel` (the group label) and, optionally, `HasIcon` (the group icon):
 
 ```php
+namespace App\Enums;
+
+use AlfaSix\Alfakit\Support\Contracts\HasIcon;
+use AlfaSix\Alfakit\Support\Contracts\HasLabel;
+
 enum NavigationGroup implements HasLabel, HasIcon
 {
     case Shop;
@@ -123,6 +128,14 @@ enum NavigationGroup implements HasLabel, HasIcon
         return $this === self::Shop ? 'shopping-bag' : 'file-text';
     }
 }
+```
+
+```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+use App\Enums\NavigationGroup;
+use UnitEnum;
 
 class ProductResource extends Resource
 {

@@ -67,6 +67,10 @@ $panel
 Override `getAvailableWidgets()` on a dashboard to offer a different set. Every widget is still filtered by its `canView()`, both in the library and when a stored layout is shown, so a user never sees (or saves) a widget they may not view. Name a widget in the library with `$libraryLabel` / `$libraryDescription` (the heading is used otherwise):
 
 ```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Widgets\ChartWidget;
+
 class TrafficSources extends ChartWidget
 {
     protected static ?string $libraryLabel = 'Traffic sources';
@@ -80,11 +84,17 @@ class TrafficSources extends ChartWidget
 By default a widget may span from one column to the whole grid. Limit the choices with `$columnSpanOptions` (or `allowedColumnSpans()` on an instance); `'full'` is the whole row:
 
 ```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Widgets\ChartWidget;
+
 class RevenueChart extends ChartWidget
 {
     protected static ?array $columnSpanOptions = [1, 2, 'full'];
 }
+```
 
+```php
 // In getWidgets() or availableDashboardWidgets():
 StatsOverview::make()->allowedColumnSpans([1, 'full']);
 ```

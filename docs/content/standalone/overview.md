@@ -44,6 +44,8 @@ use AlfaSix\Alfakit\Forms\Components\Textarea;
 use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Schemas\Schema;
 use AlfaSix\Alfakit\Standalone\Form;
+use App\Mail\ContactMessage;
+use Illuminate\Support\Facades\Mail;
 
 class ContactForm extends Form
 {

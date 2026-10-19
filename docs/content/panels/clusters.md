@@ -36,12 +36,24 @@ A cluster is a page, so register it like one: `->pages([Settings::class])`, or d
 Put pages and resources in the cluster with `$cluster`:
 
 ```php
+namespace App\Alfakit\Pages;
+
+use AlfaSix\Alfakit\Pages\Page;
+use App\Alfakit\Clusters\Settings;
+
 class GeneralSettings extends Page
 {
     protected static ?string $cluster = Settings::class;
 
     protected static ?string $navigationIcon = 'sliders-horizontal';
 }
+```
+
+```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+use App\Alfakit\Clusters\Settings;
 
 class TagResource extends Resource
 {

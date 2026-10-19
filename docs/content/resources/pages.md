@@ -10,6 +10,13 @@ Every resource page extends a base class in `AlfaSix\Alfakit\Resources\Pages` an
 ## ListRecords
 
 ```php
+namespace App\Alfakit\Resources\PostResource\Pages;
+
+use AlfaSix\Alfakit\Actions\CreateAction;
+use AlfaSix\Alfakit\Resources\Pages\ListRecords;
+use AlfaSix\Alfakit\Tables\Table;
+use App\Alfakit\Resources\PostResource;
+
 class ListPosts extends ListRecords
 {
     protected static string $resource = PostResource::class;

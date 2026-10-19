@@ -32,6 +32,10 @@ With strict authorization, forgetting `restore()` on a policy hides the restore 
 By default a resource first looks for a policy method and allows the ability when there is none. Set `$shouldCheckPolicyExistence` to `false` to send every check straight to Laravel's Gate instead, so `Gate::before()` callbacks and `Gate::define()` abilities decide, and a missing policy or policy method denies:
 
 ```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+
 class PostResource extends Resource
 {
     protected static bool $shouldCheckPolicyExistence = false;

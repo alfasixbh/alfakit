@@ -133,6 +133,14 @@ Widgets follow models the same way:
 
 ```php
 StatsOverview::make()->live([Order::class]);
+```
+
+```php
+namespace App\Alfakit\Widgets;
+
+use AlfaSix\Alfakit\Widgets\ChartWidget;
+use App\Models\Order;
+use Closure;
 
 class OrdersChart extends ChartWidget
 {

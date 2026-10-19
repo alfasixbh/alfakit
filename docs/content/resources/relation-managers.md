@@ -12,6 +12,19 @@ php artisan make:alfakit-relation-manager PostResource comments body
 ```
 
 ```php
+namespace App\Alfakit\Resources\PostResource\RelationManagers;
+
+use AlfaSix\Alfakit\Actions\CreateAction;
+use AlfaSix\Alfakit\Actions\DeleteAction;
+use AlfaSix\Alfakit\Actions\DeleteBulkAction;
+use AlfaSix\Alfakit\Actions\EditAction;
+use AlfaSix\Alfakit\Forms\Components\Textarea;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
+use AlfaSix\Alfakit\Resources\RelationManagers\RelationManager;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Table;
+
 class CommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
@@ -52,6 +65,14 @@ public static function getRelations(): array
         'pending' => CommentsRelationManager::make(['status' => 'pending']),
     ];
 }
+```
+
+```php
+namespace App\Alfakit\Resources\PostResource\RelationManagers;
+
+use AlfaSix\Alfakit\Resources\RelationManagers\RelationManager;
+use AlfaSix\Alfakit\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CommentsRelationManager extends RelationManager
 {
@@ -194,6 +215,11 @@ public function isReadOnly(): bool
 A page shows the resource's `getRelations()`. Override `getAllRelationManagers()` on an Edit or View page to show others there:
 
 ```php
+namespace App\Alfakit\Resources\PostResource\Pages;
+
+use AlfaSix\Alfakit\Resources\Pages\ViewRecord;
+use App\Alfakit\Resources\PostResource\RelationManagers\CommentsRelationManager;
+
 class ViewPost extends ViewRecord
 {
     public function getAllRelationManagers(): array

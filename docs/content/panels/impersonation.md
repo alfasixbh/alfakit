@@ -37,6 +37,12 @@ Impersonation is refused (the action is hidden and its endpoint answers 403) unl
 Use the policy to stop people impersonating higher roles:
 
 ```php
+namespace App\Models;
+
+use AlfaSix\Alfakit\Contracts\CanBeImpersonated;
+use AlfaSix\Alfakit\Contracts\CanImpersonate;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 class User extends Authenticatable implements CanImpersonate, CanBeImpersonated
 {
     public function canImpersonate(): bool
@@ -49,6 +55,12 @@ class User extends Authenticatable implements CanImpersonate, CanBeImpersonated
         return ! $this->hasRole('super-admin');
     }
 }
+```
+
+```php
+namespace App\Policies;
+
+use App\Models\User;
 
 class UserPolicy
 {

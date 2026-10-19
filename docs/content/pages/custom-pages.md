@@ -12,6 +12,19 @@ php artisan make:alfakit-page Settings
 ## Schema-driven pages
 
 ```php
+namespace App\Alfakit\Pages;
+
+use AlfaSix\Alfakit\Actions\Action;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
+use AlfaSix\Alfakit\Forms\Components\Toggle;
+use AlfaSix\Alfakit\Notifications\Notification;
+use AlfaSix\Alfakit\Pages\Page;
+use AlfaSix\Alfakit\Schemas\Components\Html;
+use AlfaSix\Alfakit\Schemas\Components\Section;
+use AlfaSix\Alfakit\Schemas\Schema;
+use App\Alfakit\Widgets\SystemStats;
+use App\Models\Setting;
+
 class Settings extends Page
 {
     protected static ?string $navigationIcon = 'settings';
@@ -73,6 +86,11 @@ public function table(Table $table): Table
 ## Your own frontend component
 
 ```php
+namespace App\Alfakit\Pages;
+
+use AlfaSix\Alfakit\Pages\Page;
+use App\Models\Order;
+
 class Reports extends Page
 {
     protected static ?string $component = 'Pages/Reports';   // registered in createAlfakit({ pages })

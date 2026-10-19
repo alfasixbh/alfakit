@@ -93,6 +93,10 @@ WebhooksPlugin::make()
 The payload is `{"object": …}`; `updated` events add `"previous_attributes"` with the old values of the changed attributes (an update that only touches `updated_at` sends nothing). `object` is the model's `toWebhookPayload(string $event)` when it defines one, else `toArray()`, so `$hidden` attributes stay out:
 
 ```php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
 class Order extends Model
 {
     public function toWebhookPayload(string $event): array

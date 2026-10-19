@@ -14,6 +14,15 @@ php artisan make:alfakit-infolist OrderDetails --model=Order
 An infolist extends `AlfaSix\Alfakit\Standalone\Infolist`, reads the record you bind, and can carry [actions](../actions/overview):
 
 ```php
+namespace App\Alfakit\Standalone;
+
+use AlfaSix\Alfakit\Actions\Action;
+use AlfaSix\Alfakit\Infolists\Components\RepeatableEntry;
+use AlfaSix\Alfakit\Infolists\Components\TextEntry;
+use AlfaSix\Alfakit\Schemas\Components\Section;
+use AlfaSix\Alfakit\Schemas\Schema;
+use App\Models\Order;
+
 class OrderDetails extends \AlfaSix\Alfakit\Standalone\Infolist
 {
     public function infolist(Schema $schema): Schema
@@ -44,7 +53,9 @@ class OrderDetails extends \AlfaSix\Alfakit\Standalone\Infolist
         ];
     }
 }
+```
 
+```php
 // Controller
 'details' => OrderDetails::make(['record' => $order]),
 ```
@@ -56,6 +67,13 @@ class OrderDetails extends \AlfaSix\Alfakit\Standalone\Infolist
 Any component may define `actions()`. A component with only actions is a toolbar: the buttons post to the action endpoint, open modals (forms, confirmations, wizards, nested modal actions) and redirect back with a notification.
 
 ```php
+namespace App\Alfakit\Standalone;
+
+use AlfaSix\Alfakit\Actions\Action;
+use AlfaSix\Alfakit\Forms\Components\Select;
+use App\Models\Plan;
+use App\Models\Team;
+
 class BillingActions extends \AlfaSix\Alfakit\Standalone\Component
 {
     public Team $team;
@@ -81,6 +99,16 @@ php artisan make:alfakit-component AccountOverview --model=Team
 `AlfaSix\Alfakit\Standalone\Component` is the base of every standalone type and a headless [custom page](../pages/custom-pages): combine `form()`, `table()`, `infolist()`, `content()` (sections, text, callouts, HTML, custom views), `actions()`, `widgets()` and `footerWidgets()` in one payload. Blocks render in this order: header widgets, form, infolist, table, content, footer widgets.
 
 ```php
+namespace App\Alfakit\Standalone;
+
+use AlfaSix\Alfakit\Infolists\Components\TextEntry;
+use AlfaSix\Alfakit\Schemas\Components\Callout;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Table;
+use App\Alfakit\Widgets\TeamStats;
+use App\Models\Team;
+
 class AccountOverview extends \AlfaSix\Alfakit\Standalone\Component
 {
     public Team $team;

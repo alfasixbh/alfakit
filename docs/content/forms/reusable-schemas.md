@@ -59,6 +59,12 @@ AddressFields::make()->columns(2)->columnSpanFull();
 Fragments take constructor arguments through `make()`, so one class can serve variations:
 
 ```php
+namespace App\Alfakit\Schemas;
+
+use AlfaSix\Alfakit\Forms\Components\Select;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
+use AlfaSix\Alfakit\Schemas\Fragment;
+
 class AddressFields extends Fragment
 {
     public function __construct(private readonly bool $withCountry = true)
@@ -74,7 +80,9 @@ class AddressFields extends Fragment
         ]));
     }
 }
+```
 
+```php
 AddressFields::make(withCountry: false);
 ```
 

@@ -10,6 +10,11 @@ Press <kbd>⌘K</kbd> / <kbd>Ctrl+K</kbd> to open the command palette. Every res
 The palette also lists page actions, panel commands, navigation, "create" links and recent records: see [Command palette](../panels/command-palette.md).
 
 ```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
+
 class PostResource extends Resource
 {
     protected static ?string $recordTitleAttribute = 'title';
@@ -65,6 +70,10 @@ Disable per resource with `protected static bool $isGloballySearchable = false;`
 ## Order, phrases and opting in
 
 ```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+
 class PostResource extends Resource
 {
     // This resource's results come first (lower first; resources without one follow in panel order).

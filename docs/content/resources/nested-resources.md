@@ -8,6 +8,12 @@ description: Resources whose pages live under a record of another resource.
 A nested resource manages records that belong to a record of another resource, at URLs under that record: `/posts/{post}/comments/create`, `/posts/{post}/comments/{record}/edit`. Use it when the child records need full pages of their own (a long form, relation managers) rather than modals in a relation manager.
 
 ```php
+namespace App\Alfakit\Resources;
+
+use AlfaSix\Alfakit\Resources\Resource;
+use App\Alfakit\Resources\CommentResource\Pages;
+use App\Models\Comment;
+
 class CommentResource extends Resource
 {
     protected static ?string $model = Comment::class;
@@ -71,6 +77,15 @@ Access the parent record with `CommentResource::getParentRecord()` or `$this->ge
 Point a relation manager (or a `ManageRelatedRecords` page) at the nested resource with `$relatedResource`. Its `CreateAction` and `EditAction` then link to the nested pages under the owner record instead of opening modals:
 
 ```php
+namespace App\Alfakit\Resources\PostResource\RelationManagers;
+
+use AlfaSix\Alfakit\Actions\CreateAction;
+use AlfaSix\Alfakit\Actions\EditAction;
+use AlfaSix\Alfakit\Resources\RelationManagers\RelationManager;
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Table;
+use App\Alfakit\Resources\CommentResource;
+
 class CommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
@@ -79,7 +94,7 @@ class CommentsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return $table->columns([...])
+        return $table->columns([TextColumn::make('body')])
             ->headerActions([CreateAction::make()])
             ->recordActions([EditAction::make()]);
     }

@@ -13,6 +13,16 @@ php artisan make:alfakit-form ProfileForm --model=User   # a form that edits a r
 A standalone form extends `AlfaSix\Alfakit\Standalone\Form`. It uses every [field](../forms/fields), [layout component](../forms/layout) and feature of panel forms: `live()` fields and `afterStateUpdated()`, searchable and relationship selects, `FileUpload`, `Repeater`, `Builder`, `RichEditor`, wizards, [field actions](../forms/field-actions) and validation rules. They all talk to the same internal endpoints as a panel form.
 
 ```php
+namespace App\Alfakit\Standalone;
+
+use AlfaSix\Alfakit\Forms\Components\Select;
+use AlfaSix\Alfakit\Forms\Components\Textarea;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
+use AlfaSix\Alfakit\Notifications\Notification;
+use AlfaSix\Alfakit\Schemas\Components\Utilities\Get;
+use AlfaSix\Alfakit\Schemas\Schema;
+use App\Models\ContactRequest;
+
 class ContactForm extends \AlfaSix\Alfakit\Standalone\Form
 {
     public function form(Schema $schema): Schema
@@ -71,6 +81,13 @@ ContactForm::make()->fill(['email' => $user->email, 'topic' => 'support']);
 Bind a model and the form fills from it, validates as an `edit` operation (`unique(ignoreRecord: true)`, `exists()`, relationship fields all work) and passes the record to actions as `$record`:
 
 ```php
+namespace App\Alfakit\Standalone;
+
+use AlfaSix\Alfakit\Forms\Components\FileUpload;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
+use AlfaSix\Alfakit\Notifications\Notification;
+use AlfaSix\Alfakit\Schemas\Schema;
+
 class ProfileForm extends \AlfaSix\Alfakit\Standalone\Form
 {
     public function form(Schema $schema): Schema
@@ -91,7 +108,9 @@ class ProfileForm extends \AlfaSix\Alfakit\Standalone\Form
         return back();
     }
 }
+```
 
+```php
 // In the controller:
 'profile' => ProfileForm::make(['record' => $request->user()]),
 // or

@@ -70,6 +70,11 @@ return $panel
 **4. Scope your resources.** Give tenant-owned models a `team_id` column and a `team()` relationship; AlfaKit scopes every resource to the current team and fills `team_id` on create:
 
 ```php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Project extends Model
 {
     public function team(): BelongsTo
