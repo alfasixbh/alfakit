@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-10-19
+
+### Added
+
+- `make:alfakit-resource --generate` and `alfakit:generate` warn when the model does not allow mass assignment of the generated form fields (the first save would fail with a `MassAssignmentException`), and the installation guide explains `$fillable`.
+
 ## [0.1.2] - 2026-10-19
 
 ### Added
@@ -946,7 +952,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/alfasixbh/alfakit/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/alfasixbh/alfakit/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/alfasixbh/alfakit/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/alfasixbh/alfakit/releases/tag/v0.1.0

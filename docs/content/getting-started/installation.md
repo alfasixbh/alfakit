@@ -91,6 +91,8 @@ It asks for a name, email address and password and creates the user with your ap
 php artisan make:alfakit-resource Post --generate
 ```
 
+The resource saves its form with Eloquent's `create()` and `update()`, so the model must allow mass assignment of the fields: list them in `protected $fillable = [...]` (or use `protected $guarded = [];`). `--generate` warns when the model would refuse a field.
+
 `--generate` inspects the `posts` table and creates sensible form fields and table columns. Add `--view` for a view page, `--soft-deletes` for the trashed filter and restore actions (the model must use `SoftDeletes`), or `--simple` for modal-based CRUD on a single page.
 
 ## 6. Build and visit
