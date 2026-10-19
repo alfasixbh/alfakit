@@ -195,7 +195,7 @@ public static function canViewForRecord(Model $ownerRecord, string $pageClass): 
 
 ### Read-only on View pages
 
-Relation managers are read-only on View pages and when the user can't update the owner record: create, edit, delete, restore, replicate, attach, detach, associate and dissociate actions are hidden. Let every manager of the panel write on View pages (they stay read-only for users who may not update the record):
+Relation managers are read-only on View pages and when the user can't update the owner record: create, edit, delete, restore, replicate, attach, detach, associate and dissociate actions are hidden. A manager that points at a [nested resource](nested-resources#linking-from-the-parent) is the exception: its actions open the nested resource's own pages, which check that resource's policies, so it keeps them on View pages too. Let every manager of the panel write on View pages (they stay read-only for users who may not update the record):
 
 ```php
 $panel->readOnlyRelationManagersOnResourceViewPagesByDefault(false);

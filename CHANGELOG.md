@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Fixed
+
+- Nested resources from the parent: the generated relation manager lists the child's first text column (rich text as plain text) instead of the ID, stays usable on the parent's View page (it only links to the nested resource's own pages), and its rows open the record.
+
 ## [0.1.4] - 2026-10-19
 
 ### Added
