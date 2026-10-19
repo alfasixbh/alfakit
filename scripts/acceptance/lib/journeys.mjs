@@ -334,26 +334,26 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
   })
 
   // ---------------------------------------------------------------- Arabic / RTL
+  const route = routes.find((r) => /^admin\/_alfakit\/locale$/.test(r.uri) && r.method.includes('POST'))
+  const switchTo = async (locale) => {
+    const token = (await session.context.cookies()).find((c) => c.name === 'XSRF-TOKEN')?.value
+    if (!token) throw new Error('No XSRF-TOKEN cookie')
+    const response = await page.request.post(`/${route.uri}`, {
+      form: { locale },
+      headers: { 'X-XSRF-TOKEN': decodeURIComponent(token), Referer: `${session.baseURL}${PANEL}/posts`, Accept: 'text/html' },
+      maxRedirects: 0,
+      failOnStatusCode: false,
+    })
+    if (response.status() >= 400) throw new Error(`POST /${route.uri} (locale=${locale}) answered HTTP ${response.status()}`)
+  }
+  const direction = () =>
+    page.evaluate(() => ({
+      html: document.documentElement.getAttribute('dir'),
+      lang: document.documentElement.getAttribute('lang'),
+      content: document.querySelector('[data-slot="content"]')?.closest('[dir]')?.getAttribute('dir') ?? null,
+    }))
   await step('B28', 'Switch to Arabic: the panel renders right to left', async () => {
-    const route = routes.find((r) => /^admin\/_alfakit\/locale$/.test(r.uri) && r.method.includes('POST'))
     if (!route) throw new Error('No POST admin/_alfakit/locale route (->locales() not applied?)')
-    const switchTo = async (locale) => {
-      const token = (await session.context.cookies()).find((c) => c.name === 'XSRF-TOKEN')?.value
-      if (!token) throw new Error('No XSRF-TOKEN cookie')
-      const response = await page.request.post(`/${route.uri}`, {
-        form: { locale },
-        headers: { 'X-XSRF-TOKEN': decodeURIComponent(token), Referer: `${session.baseURL}${PANEL}/posts`, Accept: 'text/html' },
-        maxRedirects: 0,
-        failOnStatusCode: false,
-      })
-      if (response.status() >= 400) throw new Error(`POST /${route.uri} (locale=${locale}) answered HTTP ${response.status()}`)
-    }
-    const direction = () =>
-      page.evaluate(() => ({
-        html: document.documentElement.getAttribute('dir'),
-        lang: document.documentElement.getAttribute('lang'),
-        content: document.querySelector('[data-slot="content"]')?.closest('[dir]')?.getAttribute('dir') ?? null,
-      }))
     try {
       await switchTo('ar')
       await open(`${PANEL}/posts`)
@@ -384,6 +384,23 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
       if (layout.content && (layout.content.left < -1 || layout.content.right > layout.viewport + 1)) problems.push('the content area is cut off by the viewport')
       if (problems.length) throw new Error(`RTL layout is broken: ${problems.join('; ')}\n${JSON.stringify({ dir: rtl, layout })}`)
       return `ar: ${JSON.stringify(rtl)} layout ${JSON.stringify(layout)}`
+    } finally {
+      await switchTo('en').catch(() => {})
+    }
+  })
+
+  await step('B29', "Starter kit: AlfaKit's Arabic does not leak into the app's own pages", async () => {
+    if (mode !== 'starter-kit') skip('starter-kit mode only')
+    if (!route) throw new Error('No locale route')
+    try {
+      await switchTo('ar')
+      await open(`${PANEL}/posts`)
+      // Client-side (Inertia) navigation to the app's own dashboard, as a user clicks it.
+      await page.getByRole('link', { name: 'Dashboard', exact: true }).first().click()
+      await waitUrl(/\/dashboard$/, 'the app dashboard')
+      const dir = await direction()
+      if (dir.html === 'rtl') throw new Error(`The app's /dashboard (not an AlfaKit page) keeps <html dir="rtl" lang="${dir.lang}"> after visiting an AlfaKit page in Arabic`)
+      return JSON.stringify(dir)
     } finally {
       await switchTo('en').catch(() => {})
     }

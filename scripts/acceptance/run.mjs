@@ -209,7 +209,16 @@ async function runCell(renderer, mode) {
       return tail(result.output, 25)
     }, { blocks: 'setup' })
 
-    await cli('A06', 'Setup built the frontend: the Vite manifest has the AlfaKit entry', () => {
+    await cli('A05a', 'Panel mode: setup created the admin user from --admin-email', () => {
+      if (mode !== 'panel') skip('starter-kit mode: users register with the app')
+      const exists = app.php(`App\\Models\\User::where('email', '${credentials.email}')->exists()`)
+      if (exists) return `${credentials.email} exists`
+      // Recovery so the journeys can run: the documented make:alfakit-user.
+      const result = app.artisan(['make:alfakit-user', `--name=${credentials.name}`, `--email=${credentials.email}`, `--password=${credentials.password}`])
+      throw new Error(`No user ${credentials.email} after alfakit:setup. Recovery: php artisan make:alfakit-user --name --email --password → exit ${result.code}\n${tail(result.output.replaceAll(credentials.password, '••••'), 5)}`)
+    })
+
+    await cli('A06','Setup built the frontend: the Vite manifest has the AlfaKit entry', () => {
       const manifest = app.read('public/build/manifest.json')
       const entry = mode === 'panel' ? /resources\/js\/alfakit\/app\.(tsx|ts)$/ : /resources\/js\/pages\/Alfakit\/Page\.(tsx|vue|svelte)$/
       const keys = manifest ? Object.keys(JSON.parse(manifest)) : []
