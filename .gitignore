@@ -93,3 +93,6 @@ FILAMENT-PARITY.md
 QA-LOG.md
 QA-JOURNEY.md
 e2e/.p2tmp/
+
+# Fresh-install acceptance harness output (see scripts/acceptance/README.md)
+scripts/acceptance/reports/
