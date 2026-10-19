@@ -55,6 +55,7 @@ The installer:
 
 - publishes `config/alfakit.php`;
 - creates `app/Providers/Alfakit/AdminPanelProvider.php` and registers it in `bootstrap/providers.php`;
+- creates the migration for Laravel's `notifications` table (the generated panel turns on database notifications), unless the app already has one; run `php artisan migrate` afterwards;
 - creates a **dedicated Vite entry** for the panel — `resources/js/alfakit/app.tsx` (React) or `app.ts` (Vue, Svelte) — and `resources/css/alfakit.css`, and adds both to `laravel-vite-plugin`'s `input`;
 - installs the npm renderer (`@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte`), detected from your `package.json`; pass `--adapter=vue` to force one, or `--no-npm` to skip;
 - with `--ssr`, also sets up [server-side rendering](../advanced/ssr): `resources/js/alfakit/ssr.*`, the Vite SSR entry and a `build:ssr` script.
@@ -106,14 +107,14 @@ composer require alfasix/alfakit-translations
 
 Then list the languages on your panel: `->locales(['en', 'ar', 'fr'])`. See [Localization](../localization/overview).
 
-## Database notifications (optional)
+## Database notifications
+
+The generated panel calls `->databaseNotifications()`, and `alfakit:install` creates the `notifications` table migration for it. If you set up a panel by hand, create the table yourself:
 
 ```bash
 php artisan make:notifications-table
 php artisan migrate
 ```
-
-Then enable them on the panel with `->databaseNotifications()`.
 
 ## Updating
 

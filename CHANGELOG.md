@@ -102,6 +102,7 @@ First public beta.
 
 ### Fixed (beyond Filament)
 
+- `alfakit:install` creates the `notifications` table migration (the generated panel turns on database notifications), and `alfakit:setup` offers to run it; signing in to a fresh panel failed with "no such table: notifications".
 - Vue: icons and lazily loaded components no longer cause hydration mismatches when another app on the page already loaded them; the "mounted" gate is now per app.
 - Deferred navigation badges on tenancy panels: the badges prop was decided before the tenant was identified, so it was never sent and the sidebar kept its placeholders. It is now resolved with the response.
 - Svelte Select, Tooltip and DropdownMenu (sub)content follow the panel direction (bits-ui defaults to left to right), like Popover.
