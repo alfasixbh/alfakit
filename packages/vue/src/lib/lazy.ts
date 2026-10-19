@@ -1,9 +1,10 @@
-import { defineAsyncComponent, defineComponent, h, onMounted, ref, type Component } from 'vue'
+import { defineAsyncComponent, defineComponent, h, type Component } from 'vue'
+import { useAppMounted } from './hydration'
 
 /**
  * A component whose code (and heavy dependencies such as Tiptap or Chart.js) loads on
  * first use. The server render and hydration show `fallback` and never start the import;
- * once loaded, later renders show the component straight away.
+ * once the app has mounted, a loaded component renders straight away.
  */
 export function lazyComponent(
   name: string,
@@ -27,11 +28,9 @@ export function lazyComponent(
     name,
     inheritAttrs: false,
     setup(_, { attrs }) {
-      const mounted = ref(false)
+      const mounted = useAppMounted()
 
-      onMounted(() => (mounted.value = true))
-
-      return () => h(loaded ?? (mounted.value ? Async : fallback), attrs)
+      return () => h(mounted.value ? (loaded ?? Async) : fallback, attrs)
     },
   })
 }

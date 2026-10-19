@@ -1,4 +1,4 @@
-import { defineAsyncComponent, ref, shallowRef, type Component } from 'vue'
+import { defineAsyncComponent, shallowRef, type Component } from 'vue'
 import type * as IconModules from './icon-modules'
 
 /**
@@ -13,7 +13,7 @@ import type * as IconModules from './icon-modules'
 export type IconMap = typeof IconModules
 
 const loadedMap = shallowRef<IconMap | null>(null)
-const mounted = ref(false)
+
 let pending: Promise<IconMap> | undefined
 
 const cache = new Map<string, Component | null>()
@@ -37,19 +37,14 @@ export function preloadIcons(): void {
   loadIconMap()
 }
 
-/** `<Icon>`s call this once mounted: from then on named icons render (after hydration). */
-export function markIconsMounted(): void {
-  mounted.value = true
-}
-
 /**
- * The icon map once it has loaded in the browser and the page has hydrated, else `null`
- * (reactive). Starts loading it.
+ * The icon map once it has loaded in the browser and the `<Icon>`'s app has mounted
+ * (`useAppMounted()`), else `null` (reactive). Starts loading it.
  */
-export function iconMap(): IconMap | null {
+export function iconMap(mounted: boolean): IconMap | null {
   if (!loadedMap.value) loadIconMap()
 
-  return mounted.value ? loadedMap.value : null
+  return mounted ? loadedMap.value : null
 }
 
 /**

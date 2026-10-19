@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { iconAlias, iconAliasOverride, iconSource, isIconAlias } from '@alfakit/core'
-import { computed, onMounted, type Component, type HTMLAttributes } from 'vue'
+import { computed, type Component, type HTMLAttributes } from 'vue'
 import { useOptionalRegistry } from '../context'
-import { iconMap, markIconsMounted, resolveIcon } from './icons'
+import { useAppMounted } from './hydration'
+import { iconMap, resolveIcon } from './icons'
 import { cn } from './utils'
 
 /**
@@ -22,8 +23,8 @@ const props = defineProps<{
 // `createAlfakit({ components: { 'panel:icon': MyIcon } })` renders every named icon with
 // another icon set; it receives `name`, `fallback` and `class`.
 const custom = useOptionalRegistry()?.resolve('panel:icon')
-// Named icons render once the page has hydrated (the server render shows none).
-onMounted(markIconsMounted)
+// Named icons render once this app has hydrated (the server render shows none).
+const mounted = useAppMounted()
 
 const fallbackName = computed(() =>
   typeof props.fallback === 'string' ? props.fallback : undefined,
@@ -49,7 +50,7 @@ const source = computed(() =>
 const component = computed(() => {
   if (source.value?.type !== 'name' || custom) return null
 
-  const icons = iconMap()
+  const icons = iconMap(mounted.value)
 
   // Nothing until the icon map has loaded (and during the server render and hydration).
   if (!icons) return null
