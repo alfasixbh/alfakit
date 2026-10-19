@@ -11,6 +11,18 @@ description: Install the PHP package and the renderer for your framework.
 - Node 22+, a package manager (npm, pnpm, bun or yarn)
 - An Inertia application using Tailwind CSS 4 — the official **React**, **Vue** or **Svelte** starter kits are the supported baseline (`laravel new my-app --react`)
 
+## Choose how to use AlfaKit
+
+AlfaKit runs in one of three modes. The [setup wizard](setup-wizard) asks which one you want and picks starter kit mode by default when it finds a starter kit.
+
+| Mode                        | What you get                                                                                              | Sign in                                                                           | Pick it when                                                                                                                         |
+| --------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Admin panel**             | A separate panel at `/admin` with its own login, layout, navigation and theme                             | AlfaKit's own login page; create your user with `make:alfakit-user`               | You want a classic back office next to your app (like Filament)                                                                      |
+| **Inside your starter kit** | AlfaKit pages inside your app's own layout: listed in its sidebar, using its theme and light/dark setting | Your app's own login and registration (Fortify), including its email verification | Your app is made from Laravel's React, Vue or Svelte starter kit and admins already use it. See [Inside a starter kit](starter-kits) |
+| **Standalone**              | AlfaKit forms, tables, actions and widgets in your own Inertia pages, without a panel                     | Your app's own auth                                                               | You only want AlfaKit components in pages you build yourself. See [Outside panels](../standalone/overview)                           |
+
+You can add a separate admin panel to a starter kit app too: choose **Admin panel** in the wizard (`--mode=panel`). Both can live in one app.
+
 ## 1. Install the Composer package
 
 ```bash
