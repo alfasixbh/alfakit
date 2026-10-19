@@ -59,6 +59,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Otherwise the saved GITHUB_TOKEN header overrides SPLIT_TOKEN on push.
+          persist-credentials: false
       # A plain subtree split and push: the same history as the seeded repositories, and a
       # refused push fails the job (the previous split action reported success anyway).
       - name: Split and push
