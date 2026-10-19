@@ -6,6 +6,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- `make:alfakit-resource --nested=PostResource` links the nested resource from its parent: it generates a relation manager pointing at it (`$relatedResource`) and registers it in the parent's `getRelations()`, so the records show on the parent's pages instead of being reachable only by URL. `make:alfakit-relation-manager` gains `--related=` and `--register`.
+- `alfakit:install` (and so `alfakit:setup`) builds the frontend after installing the renderer, unless a Vite dev server is running, and only lists the build as a next step when it is still needed.
+
+### Fixed
+
+- Starter-kit mode: a missing AlfaKit Vite entry (frontend not rebuilt after the install) now explains how to build it, like the admin panel already did.
+- `--generate --nested` left the parent's foreign key in the form when the child's relationship had no return type.
+
 ## [0.1.3] - 2026-10-19
 
 ### Added

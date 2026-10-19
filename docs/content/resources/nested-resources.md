@@ -31,7 +31,11 @@ class CommentResource extends Resource
 }
 ```
 
-Register the nested resource in the panel like any other resource. Generate one with `php artisan make:alfakit-resource Comment --nested=PostResource` (with `--generate`, the foreign key to the parent is left out of the form and table: the pages create records under the parent record in the URL).
+Register the nested resource in the panel like any other resource. Generate one with `php artisan make:alfakit-resource Comment --nested=PostResource`. With `--generate`, the foreign key to the parent is left out of the form and table: the pages create records under the parent record in the URL.
+
+Nested resources have no navigation item, so the generator also links it from the parent: it writes `PostResource\RelationManagers\CommentsRelationManager` (pointing at the nested resource, see [Linking from the parent](#linking-from-the-parent)) and adds it to `PostResource::getRelations()`. The comments then appear on the post's edit and view pages, and **New comment** opens the nested create page. Nesting goes as deep as you need: generate `Reply --nested=CommentResource` next for `/posts/{post}/comments/{comment}/replies`.
+
+Declare the relationships on the models (`Post::comments()` returning `HasMany`, `Comment::post()` returning `BelongsTo`) and list the fields in `$fillable`.
 
 ## Relationships
 
