@@ -94,3 +94,5 @@ QA-LOG.md
 QA-JOURNEY.md
 QA-INVENTORY.md
 e2e/.p2tmp/
+QA-RESULTS-*.md
+qa-evidence/
