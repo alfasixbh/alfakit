@@ -2,13 +2,17 @@ import { describe, expect, it } from 'vitest'
 import {
   applyPanelTheme,
   isStarterKitPanel,
+  standaloneWidgetCount,
   starterKitBreadcrumbsFromProps,
+  starterKitDashboardWidgets,
   starterKitNavigation,
   toStarterKitBreadcrumbs,
   toStarterKitNavGroups,
   type PanelSchema,
+  type StandaloneComponentSchema,
   type StarterKitNavigationSchema,
 } from '../src'
+import dashboard from './fixtures/standalone/starter-kit-dashboard.json'
 
 const navigation: StarterKitNavigationSchema = {
   id: 'admin',
@@ -107,5 +111,29 @@ describe('starter kit mode', () => {
     expect(root.hasAttribute('data-panel')).toBe(false)
     expect(root.style.getPropertyValue('--radius')).toBe('')
     expect(root.style.getPropertyValue('--alfakit-success')).toBe('oklch(0.6 0.2 150)')
+  })
+})
+
+describe('starter kit dashboard widgets', () => {
+  const component = dashboard as unknown as StandaloneComponentSchema
+
+  it('picks the first panel, or the named one, from the shared prop', () => {
+    const props = {
+      alfakitWidgets: [
+        { id: 'admin', component },
+        { id: 'crm', component: { ...component, token: 'crm' } },
+      ],
+    }
+
+    expect(starterKitDashboardWidgets(props)).toBe(component)
+    expect(starterKitDashboardWidgets(props, 'crm')?.token).toBe('crm')
+    expect(starterKitDashboardWidgets(props, 'other')).toBeNull()
+    expect(starterKitDashboardWidgets({ alfakitWidgets: null })).toBeNull()
+    expect(starterKitDashboardWidgets(undefined)).toBeNull()
+  })
+
+  it('counts the widgets of a payload', () => {
+    expect(standaloneWidgetCount(component)).toBe(1)
+    expect(standaloneWidgetCount({ ...component, content: [] })).toBe(0)
   })
 })

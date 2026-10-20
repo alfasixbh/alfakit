@@ -35,8 +35,47 @@ class AccountStats extends \AlfaSix\Alfakit\Standalone\Widgets
 
 ```php
 // Controller
-'stats' => AccountStats::make(['team' => $team]),
+return Inertia::render('Account/Show', [
+    'stats' => AccountStats::make(['team' => $team]),
+]);
 ```
+
+The page renders the prop with `<AlfakitComponent>`, like any standalone component:
+
+```tsx
+// React: resources/js/pages/Account/Show.tsx
+import { AlfakitComponent, type StandaloneComponentSchema } from '@alfakit/react'
+
+export default function Show({ stats }: { stats: StandaloneComponentSchema }) {
+    return <AlfakitComponent component={stats} className="p-4" />
+}
+```
+
+```vue
+<!-- Vue: resources/js/pages/Account/Show.vue -->
+<script setup lang="ts">
+import { AlfakitComponent, type StandaloneComponentSchema } from '@alfakit/vue'
+
+defineProps<{ stats: StandaloneComponentSchema }>()
+</script>
+
+<template>
+    <AlfakitComponent :component="stats" class="p-4" />
+</template>
+```
+
+```svelte
+<!-- Svelte: resources/js/pages/Account/Show.svelte -->
+<script lang="ts">
+    import { AlfakitComponent, type StandaloneComponentSchema } from '@alfakit/svelte'
+
+    let { stats }: { stats: StandaloneComponentSchema } = $props()
+</script>
+
+<AlfakitComponent component={stats} class="p-4" />
+```
+
+The widgets render in a grid of `widgetColumns()` columns with your app's shadcn tokens. Custom widgets need their frontend component: pass it as `components={{ RevenueWidget }}` (`:components` in Vue) or register it once with `configureAlfakit({ components })`. In an app made from a Laravel starter kit with a `starterKit()` panel, the panel's own widgets already show on `/dashboard` through `<AlfakitWidgets />` (see [Widgets on your dashboard](../getting-started/starter-kits#widgets-on-your-dashboard)).
 
 Any [widget](../widgets/overview) works: `StatsOverviewWidget`, `ChartWidget`, `TableWidget` and custom widgets with their own frontend component. Plugin widgets (the [Kanban board](../plugins/kanban) and the [calendar](../plugins/calendar)) work too once the plugin is listed in `alfakit.standalone.plugins` (see the [component kit](component-kit#kanban-boards-and-calendars)). Widgets receive the component through `$this->page` as they would receive a page, and the bound record through `$this->record`.
 
