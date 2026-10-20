@@ -1,0 +1,89 @@
+name: Fresh-install acceptance
+
+# Slow (a fresh `laravel new` + install + browser journeys per cell), so not on every push:
+# on demand, nightly and for release tags. See scripts/acceptance/README.md.
+on:
+  workflow_dispatch:
+    inputs:
+      renderer:
+        description: 'react, vue, svelte or all'
+        default: all
+      mode:
+        description: 'starter-kit, panel or all'
+        default: all
+  schedule:
+    - cron: '30 2 * * *'
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: acceptance-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      renderers: ${{ steps.pick.outputs.renderers }}
+      modes: ${{ steps.pick.outputs.modes }}
+    steps:
+      - id: pick
+        run: |
+          r="${{ github.event.inputs.renderer || 'all' }}"
+          m="${{ github.event.inputs.mode || 'all' }}"
+          [ "$r" = all ] && r='react,vue,svelte'
+          [ "$m" = all ] && m='starter-kit,panel'
+          echo "renderers=$(jq -cn --arg v "$r" '$v | split(",")')" >> "$GITHUB_OUTPUT"
+          echo "modes=$(jq -cn --arg v "$m" '$v | split(",")')" >> "$GITHUB_OUTPUT"
+
+  acceptance:
+    name: ${{ matrix.renderer }} × ${{ matrix.mode }}
+    needs: matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        renderer: ${{ fromJson(needs.matrix.outputs.renderers) }}
+        mode: ${{ fromJson(needs.matrix.outputs.modes) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # git describe --tags gives the path repository its version
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl, gd
+          tools: composer:v2, laravel/installer
+          coverage: none
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install the Playwright browser
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run the acceptance harness
+        env:
+          COMPOSER_NO_INTERACTION: '1'
+        run: >
+          node scripts/acceptance/run.mjs
+          --renderer=${{ matrix.renderer }}
+          --mode=${{ matrix.mode }}
+          --serve
+          --apps-dir=${{ runner.temp }}/acceptance-apps
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: acceptance-${{ matrix.renderer }}-${{ matrix.mode }}
+          path: scripts/acceptance/reports
+          retention-days: 14

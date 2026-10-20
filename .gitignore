@@ -96,3 +96,6 @@ QA-INVENTORY.md
 e2e/.p2tmp/
 QA-RESULTS-*.md
 qa-evidence/
+
+# Fresh-install acceptance harness output (see scripts/acceptance/README.md)
+scripts/acceptance/reports/
