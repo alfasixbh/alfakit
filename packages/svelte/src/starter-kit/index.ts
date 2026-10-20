@@ -1,4 +1,5 @@
 export { default as AlfakitStarterKitRoot } from './AlfakitStarterKitRoot.svelte'
+export { default as AlfakitWidgets } from './AlfakitWidgets.svelte'
 export { useAlfakitNavigation, type AlfakitNavigation } from './navigation'
 export { createStarterKitLayout, type StarterKitPageOptions } from './starter-kit'
 export { default as StarterKitContentLayout } from './StarterKitContentLayout.svelte'

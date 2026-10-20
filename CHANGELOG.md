@@ -6,6 +6,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- Starter-kit mode: the panel's widgets appear on the starter kit's own `/dashboard`. `<AlfakitWidgets />` (React, Vue, Svelte) renders them from the new `alfakitWidgets` prop, which is shared only on the routes given to `->starterKitDashboard()` (the `dashboard` route by default; pass `false` to turn it off). Lazy widgets and polling go through the panel's own `/_alfakit/standalone/components` endpoint, which checks the user, `canAccessPanel()` and the panel's auth middleware. `alfakit:install --starter-kit` wraps the kit's placeholder boxes in `<AlfakitWidgets>` (block marked `alfakit:widgets`; skip it with `--no-dashboard-widgets`), so the boxes stay until the panel has widgets.
+
+### Fixed
+
+- Starter-kit mode: a widget made with `make:alfakit-widget` showed up nowhere. It now appears on `/dashboard`, and the command prints where to find it.
+- `/admin` on a panel without a dashboard failed with a UrlGenerationException when the first resource alphabetically was a nested one (its list needs the parent record); nested resources no longer register navigation items and are never the panel home.
+- `alfakit:add` and `alfakit:setup --plugins=` refused ai, analytics, file-manager, helpdesk, invoices, mail-templates, teams and workflows as unknown in apps installed from Packagist.
+
 ## [0.1.5] - 2026-10-19
 
 ### Fixed

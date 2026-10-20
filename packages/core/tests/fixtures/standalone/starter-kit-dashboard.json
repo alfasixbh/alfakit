@@ -1,0 +1,83 @@
+{
+  "alfakit": "standalone",
+  "class": "AlfaSix\\Alfakit\\Standalone\\StarterKitDashboard",
+  "content": [
+    {
+      "type": "Widgets",
+      "key": "headerWidgets",
+      "columns": {
+        "default": 1,
+        "lg": 2
+      },
+      "widgets": [
+        {
+          "type": "StatsOverviewWidget",
+          "key": "blog-stats",
+          "id": "blog-stats",
+          "columnSpan": {
+            "default": "full"
+          },
+          "stats": [
+            {
+              "label": "Posts",
+              "value": 0,
+              "color": "primary",
+              "icon": "file-text",
+              "chartColor": "primary"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "token": "token",
+  "endpoints": {
+    "action": "/admin/_alfakit/actions",
+    "modal": "/admin/_alfakit/actions/modal",
+    "schemaRefresh": "/admin/_alfakit/schema/refresh",
+    "schemaOptions": "/admin/_alfakit/schema/options",
+    "schemaValidate": "/admin/_alfakit/schema/validate",
+    "schemaDeferred": "/admin/_alfakit/schema/deferred",
+    "tableCell": "/admin/_alfakit/table/cell",
+    "tableReorder": "/admin/_alfakit/table/reorder",
+    "tableColumns": "/admin/_alfakit/table/columns",
+    "tableTotals": "/admin/_alfakit/table/totals",
+    "tableViews": "/admin/_alfakit/table/views",
+    "tableCells": "/admin/_alfakit/table/cells",
+    "locale": "/admin/_alfakit/locale",
+    "pageCall": "/admin/_alfakit/pages/call",
+    "undo": "/admin/_alfakit/actions/undo",
+    "dashboardLayout": "/admin/_alfakit/dashboard/layout",
+    "conflicts": "/admin/_alfakit/conflicts",
+    "upload": "/admin/_alfakit/uploads",
+    "uploadDestroy": "/admin/_alfakit/uploads",
+    "uploadChunks": "/admin/_alfakit/uploads/chunks",
+    "globalSearch": "/admin/_alfakit/global-search",
+    "commandPalette": "/admin/_alfakit/command-palette",
+    "shortcuts": "/admin/_alfakit/shortcuts",
+    "notifications": "/admin/_alfakit/notifications",
+    "notificationsReadAll": "/admin/_alfakit/notifications/read-all",
+    "notificationsDestroyAll": "/admin/_alfakit/notifications",
+    "logout": "/admin/logout",
+    "components": "/admin/_alfakit/standalone/components"
+  },
+  "uploadChunkSize": 5242880,
+  "localization": {
+    "code": "en",
+    "tag": "en",
+    "label": "English",
+    "direction": "ltr",
+    "fallbackLocale": "en",
+    "firstDayOfWeek": 0,
+    "currency": "USD",
+    "timezone": "UTC",
+    "switcher": false,
+    "switcherPosition": "user-menu",
+    "locales": []
+  },
+  "translations": {
+    "loading": "Loading\u2026"
+  },
+  "csrf": "csrf",
+  "flashKey": "alfakitNotifications"
+}

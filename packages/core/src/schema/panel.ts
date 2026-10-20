@@ -9,6 +9,7 @@ import type { NotificationSchema } from './notifications'
 import type { PwaSchema } from './pwa'
 import type { ConflictsSchema, PresenceSchema, RealtimeSchema } from './realtime'
 import type { DeferredTabBadges } from './resources'
+import type { StandaloneComponentSchema } from './standalone'
 import type { RelationManagerSchema, RelationManagersBlock, TableBlock } from './table'
 import type { WidgetSchema, WidgetsBlock } from './widgets'
 
@@ -69,6 +70,14 @@ export interface NavigationStateSchema {
 }
 
 /** One `starterKit()` panel's navigation, as shared with the host application's pages. */
+/** One `starterKit()` panel's dashboard widgets on a host page (`alfakitWidgets` prop). */
+export interface StarterKitDashboardWidgetsSchema {
+  /** The panel id. */
+  id: string
+  /** A standalone widgets payload bound to the panel (lazy loading and polling included). */
+  component: StandaloneComponentSchema
+}
+
 export interface StarterKitNavigationSchema {
   /** The panel id. */
   id: string
@@ -570,6 +579,12 @@ export interface AlfakitPageProps {
    * page (the host's own pages too) for the host sidebar. Null for guests.
    */
   alfakitNavigation?: StarterKitNavigationSchema[] | null
+  /**
+   * `starterKit()` panels: their dashboard widgets on the host's dashboard
+   * (`starterKitDashboard()`), for `<AlfakitWidgets />`. Null on other pages, for guests
+   * and users who may not open the panel.
+   */
+  alfakitWidgets?: StarterKitDashboardWidgetsSchema[] | null
   /**
    * The developer debug panel's data (`Page::DEBUG_PROP`): schema tree with visibility and
    * authorisation, evaluated closures and server timings. Only present while the panel's

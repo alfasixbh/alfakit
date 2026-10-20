@@ -2,9 +2,12 @@ import { requestJson } from './http'
 import type {
   PageSchema,
   PanelSchema,
+  StarterKitDashboardWidgetsSchema,
   StarterKitNavigationSchema,
   StarterKitWidgetsSchema,
 } from './schema/panel'
+import type { StandaloneComponentSchema } from './schema/standalone'
+import type { WidgetsBlock } from './schema/widgets'
 import { SHORTCUT_IDS, shortcuts } from './shortcuts'
 import { starterKitNavigations } from './starter-kit'
 
@@ -160,4 +163,36 @@ export function openRequestedStarterKitSearch(): boolean {
   searchRequested = false
 
   return shortcuts.trigger(SHORTCUT_IDS.palette)
+}
+
+// ---------------------------------------------------------------- Dashboard widgets
+
+/**
+ * The dashboard widgets of a `starterKit()` panel on the host's dashboard
+ * (`<AlfakitWidgets />`, the `alfakitWidgets` prop): a standalone widgets payload bound to
+ * the panel, the first panel's unless `panelId` is given. Null on other pages, for guests,
+ * users who may not open the panel and panels without widgets.
+ */
+export function starterKitDashboardWidgets(
+  props: unknown,
+  panelId?: string,
+): StandaloneComponentSchema | null {
+  const value = (props as { alfakitWidgets?: unknown } | null | undefined)?.alfakitWidgets
+
+  if (!Array.isArray(value)) return null
+
+  const entry = (value as StarterKitDashboardWidgetsSchema[]).find(
+    (item) => panelId === undefined || item.id === panelId,
+  )
+
+  return entry?.component ?? null
+}
+
+/** How many widgets a dashboard widgets payload has (placeholders before its code loads). */
+export function standaloneWidgetCount(component: StandaloneComponentSchema): number {
+  return component.content.reduce(
+    (total, block) =>
+      total + (block.type === 'Widgets' ? (block as WidgetsBlock).widgets.length : 0),
+    0,
+  )
 }

@@ -1,3 +1,4 @@
+export { AlfakitWidgets, type AlfakitWidgetsProps } from './dashboard-widgets'
 export { useAlfakitNavigation, type AlfakitNavigation } from './navigation'
 export {
   AlfakitStarterKitRoot,

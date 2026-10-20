@@ -11,6 +11,7 @@ Laravel's [starter kits](https://laravel.com/docs/starter-kits) (`laravel new my
 - AlfaKit pages render inside the app's `AppLayout`, with its sidebar, header and breadcrumbs;
 - the panel's resources and pages (groups, icons, badges, active state) are listed in the app sidebar, on the app's own pages too;
 - AlfaKit's command palette and global search, its notifications bell and (for tenancy panels) its tenant switcher drop into the app header, on every page;
+- the panel's widgets show on the app's own dashboard (`/dashboard`);
 - the app's shadcn theme tokens and its appearance setting (light, dark, system) apply to AlfaKit pages. AlfaKit sets no theme attributes, fonts, favicon or colour scheme on the document.
 
 ## Install
@@ -31,10 +32,11 @@ npm run build   # or npm run dev
 | `resources/js/components/alfakit-nav.tsx` (`AlfakitNav.vue`, `AlfakitNav.svelte`)                    | The panel navigation, built from your own `@/components/ui/sidebar` primitives                                           |
 | `resources/js/components/app-sidebar.tsx` (`AppSidebar.vue`, `.svelte`)                              | `<AlfakitNav />` after `<NavMain />`, in a block marked `alfakit:nav`                                                    |
 | `resources/js/components/app-sidebar-header.tsx`, `app-header.tsx` (`AppSidebarHeader`, `AppHeader`) | `<AlfakitSearch />` and `<AlfakitNotifications />` in the header of both app layouts, in a block marked `alfakit:header` |
+| `resources/js/pages/dashboard.tsx` (`Dashboard.vue`, `Dashboard.svelte`)                             | The row of placeholder boxes wrapped in `<AlfakitWidgets>`, in a block marked `alfakit:widgets`                          |
 | `resources/css/app.css`                                                                              | `@import '@alfakit/<kit>/standalone.css'` and the `@source` of the renderer's components                                 |
 | `app/Providers/Alfakit/AdminPanelProvider.php`                                                       | A panel with `->starterKit()` at `/admin` (`--panel=` and `--path=` change it), registered in `bootstrap/providers.php`  |
 
-Your entry file (`resources/js/app.tsx` or `app.ts`) needs no change. Inertia's Vite plugin resolves pages from `resources/js/pages`, and the root view preloads `resources/js/pages/{component}`, so AlfaKit's page is a page file like your own. Page resolution, code splitting and SSR work the same for both. Pass `--no-npm` to install `@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte` yourself, `--no-header-widgets` to leave your headers alone, and `--force` to rewrite the generated files.
+Your entry file (`resources/js/app.tsx` or `app.ts`) needs no change. Inertia's Vite plugin resolves pages from `resources/js/pages`, and the root view preloads `resources/js/pages/{component}`, so AlfaKit's page is a page file like your own. Page resolution, code splitting and SSR work the same for both. Pass `--no-npm` to install `@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte` yourself, `--no-header-widgets` to leave your headers alone, `--no-dashboard-widgets` to leave your dashboard alone, and `--force` to rewrite the generated files.
 
 Then create a resource and open it from the sidebar:
 
@@ -55,6 +57,8 @@ public function panel(Panel $panel): Panel
         ->path('admin')
         ->starterKit()
         ->discoverResources(in: app_path('Alfakit/Resources'), for: 'App\\Alfakit\\Resources')
+        ->discoverPages(in: app_path('Alfakit/Pages'), for: 'App\\Alfakit\\Pages')
+        ->discoverWidgets(in: app_path('Alfakit/Widgets'), for: 'App\\Alfakit\\Widgets')
         ->middleware(['web'])
         // Like the starter kit's dashboard: signed in with a verified email address.
         ->authMiddleware(['verified']);
@@ -66,6 +70,7 @@ public function panel(Panel $panel): Panel
 - renders through the app's Inertia root view (`resources/views/app.blade.php`) instead of `alfakit::app`, so its fonts, appearance script and Vite entry load;
 - sends guests to the `login` route (Fortify's) and turns AlfaKit's own auth pages off. Call `->login()` or `->profile()` after `starterKit()` to bring one back;
 - shares the navigation with every Inertia page as the `alfakitNavigation` prop, with what the header components need before they load (`widgets`). It is null for guests and for users who may not open the panel. On tenancy panels the navigation groups are empty outside a tenant (their links point to tenant routes);
+- shares the panel's widgets with the app's dashboard as the `alfakitWidgets` prop (see [Widgets on your dashboard](#widgets-on-your-dashboard));
 - ignores `->multiFactorAuthentication()` while the app signs users in (see [Two-factor authentication](#two-factor-authentication)).
 
 `->embedded()` is an alias. Every other panel option works as usual. In production your `User` model must implement `AlfaSix\Alfakit\Contracts\CanAccessPanel`, as for any panel.
@@ -155,6 +160,76 @@ The palette in the header leaves out what needs an AlfaKit page around it or Alf
 
 The data comes from the panel's `/{path}/_alfakit/starter-kit` endpoint (signed-in users only, `Cache-Control: no-store`), requested once per full page load. The installer adds the search field and the bell to both header components of the kit (the sidebar layout's `app-sidebar-header` and the header layout's `app-header`, before the user menu). The header layout of the kits also has a placeholder search button you can remove.
 
+## Widgets on your dashboard
+
+A starter kit panel has no dashboard page of its own: your app has one (`/dashboard`). The panel's widgets show there instead. Make one and open `/dashboard`:
+
+```bash
+php artisan make:alfakit-widget BlogStats --type=stats
+```
+
+```php
+// app/Alfakit/Widgets/BlogStats.php
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget\Stat;
+use App\Models\User;
+
+class BlogStats extends StatsOverviewWidget
+{
+    protected function getStats(): array
+    {
+        return [
+            Stat::make('Users', User::count()),
+        ];
+    }
+}
+```
+
+Nothing else needs registering: the generated panel provider discovers `app/Alfakit/Widgets` (`->discoverWidgets()`), and `->widgets([...])` adds more. The installer wrapped the kit's row of placeholder boxes in `<AlfakitWidgets>`:
+
+```tsx
+// resources/js/pages/dashboard.tsx
+import { AlfakitWidgets } from '@alfakit/react'
+
+;<div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+    <AlfakitWidgets>{/* the kit's three placeholder boxes */}</AlfakitWidgets>
+    {/* the kit's large placeholder box */}
+</div>
+```
+
+```vue
+<!-- resources/js/pages/Dashboard.vue -->
+<script setup lang="ts">
+import { AlfakitWidgets } from '@alfakit/vue'
+</script>
+
+<template>
+    <AlfakitWidgets>
+        <!-- the kit's three placeholder boxes -->
+    </AlfakitWidgets>
+</template>
+```
+
+```svelte
+<!-- resources/js/pages/Dashboard.svelte -->
+<script lang="ts">
+    import { AlfakitWidgets } from '@alfakit/svelte'
+</script>
+
+<AlfakitWidgets>
+    <!-- the kit's three placeholder boxes -->
+</AlfakitWidgets>
+```
+
+The widgets take the place of the placeholder row, in the panel's widget grid (two columns from `lg`), with your app's theme. Its children (the boxes) render while there are no widgets to show: the panel has none, the user is a guest or may not open the panel. Without children it renders nothing then. Replace the large box below with your own content, or delete the children once you have widgets.
+
+- **Which widgets**: the panel's (`widgets()`, `discoverWidgets()`), each filtered by its `canView()`, ordered by `$sort` and sized by `$columnSpan`, as on a panel dashboard. If you register a `Dashboard` page in the panel, its `getWidgets()` and `getColumns()` are used instead.
+- **Which pages**: the prop is built only on the routes of `->starterKitDashboard()`, by name or pattern (`'dashboard'` by default, `['dashboard', 'teams.*']`), and is null everywhere else, so other pages pay nothing. `->starterKitDashboard(false)` turns it off.
+- **Loading**: the component's code loads in the browser; the server render (SSR) and hydration show placeholder boxes. Lazy widgets (the default) and `poll()` are fetched from the panel's `/{path}/_alfakit/standalone/components` endpoint by context token, which re-checks the user, `canAccessPanel()` and the panel's `authMiddleware()` (`verified`) on every request. Table widget actions run through the panel's own endpoints.
+- **Props**: `panel` (a panel id, when the app has more than one `starterKit()` panel), `components` (the frontend components of custom widgets, as for [`<AlfakitComponent>`](../standalone/overview); the `components` of `createStarterKitPage()` only apply to AlfaKit pages) and `className` (`class` in Vue and Svelte) on the widget grid's wrapper. It emits `data-slot="starter-kit-widgets"` (and `starter-kit-widgets-placeholder` while loading).
+
+`make:alfakit-widget` prints where a starter kit panel's widget appears. To put widgets on another page of your app, add `<AlfakitWidgets />` to it and list its route in `starterKitDashboard()`, or build your own [standalone widgets](../standalone/widgets-and-notifications).
+
 ## Two-factor authentication
 
 Sign-in, and so its second factor, is the app's: use the starter kit's two-factor settings (Fortify, on its `settings/security` page with passkeys), which protect every page including AlfaKit's. AlfaKit's own multi-factor authentication belongs to its login and profile pages, which are off in starter kit mode, so `->multiFactorAuthentication()` is ignored there (`hasMultiFactorAuthentication()` is false and its `isRequired` redirect never runs). The two never conflict: Fortify keeps its `two_factor_*` columns, AlfaKit's providers theirs. Bring AlfaKit's back only together with its own login (`->starterKit()->login()->profile()->multiFactorAuthentication([...])`). To require two-factor authentication for the panel, add a middleware to `->authMiddleware()` that checks Fortify's `two_factor_confirmed_at` and redirects to `security.edit`.
@@ -168,6 +243,6 @@ Sign-in, and so its second factor, is the app's: use the starter kit's two-facto
 - AlfaKit's own chrome is not rendered: no AlfaKit sidebar, top bar or user menu. Your app layout owns those, and takes AlfaKit's search, bell and tenant switcher as [header components](#search-notifications-and-tenants-in-the-header). Flashed and realtime notifications still show as toasts on AlfaKit pages.
 - The appearance switcher is the app's (`settings/appearance`). `->darkMode()` and `->defaultThemeMode()` do not apply.
 - Pages with the `auth` layout (multi-factor challenge, email verification prompt) are not used: authentication and its settings are the app's (Fortify). Email change verification needs AlfaKit's profile page, so leave it off.
-- Tenancy panels work, but the shared navigation is empty outside a tenant. `<AlfakitTenantSwitcher />` links to the user's tenants from any page.
+- Tenancy panels work, but the shared navigation is empty outside a tenant, and their widgets (tenant-scoped) are not shown on the app's dashboard. `<AlfakitTenantSwitcher />` links to the user's tenants from any page.
 - One `alfakitNavigation` entry is shared per `starterKit()` panel. `useAlfakitNavigation()` returns the first one unless you pass a panel id.
-- `alfakit:install --starter-kit` recognises the files of the official kits. If your sidebar no longer has a `<NavMain … />` element, the step is skipped and reported: add `<AlfakitNav />` yourself.
+- `alfakit:install --starter-kit` recognises the files of the official kits. If your sidebar no longer has a `<NavMain … />` element, the step is skipped and reported: add `<AlfakitNav />` yourself. The same goes for a dashboard page without the kit's row of placeholder boxes: add `<AlfakitWidgets />` where the widgets should go.
