@@ -163,6 +163,7 @@ async function runCell(renderer, mode) {
     let routes = []
     let session = null
     let logMark = 0
+    let crawlResult = null
     const cli = (id, title, fn, options = {}) =>
         report.step(id, title, fn, { needs: ['app'], ...options })
 
@@ -695,6 +696,7 @@ async function runCell(renderer, mode) {
                 'Route crawl: every GET route under /admin (signed in) answers < 500',
                 async () => {
                     const result = await crawl({ app, session, routes, ids })
+                    crawlResult = result
                     writeFileSync(
                         report.artifact('crawl.txt'),
                         [
@@ -715,6 +717,26 @@ async function runCell(renderer, mode) {
                     if (result.server.length)
                         throw new Error(`${summary}\n${result.server.join('\n')}`)
                     return `${summary}\n4xx:\n${result.client.join('\n') || '(none)'}\nskipped:\n${result.skipped.join('\n') || '(none)'}`
+                },
+                { needs: ['app', 'auth'] },
+            )
+
+            await report.step(
+                'C02',
+                'Response headers stay under 16 KB (Node, proxies and nginx buffers refuse larger ones)',
+                () => {
+                    if (!crawlResult) skip('no crawl')
+                    const big = crawlResult.headers.map(
+                        (h) => `${h.path}: ${h.bytes} bytes of headers (Link: ${h.link} bytes)`,
+                    )
+                    const tooBig = crawlResult.headers.filter((h) => h.bytes > 16_384)
+                    if (tooBig.length)
+                        throw new Error(
+                            `${tooBig.length} response(s) over 16 KB:\n${big.join('\n')}`,
+                        )
+                    return big.length
+                        ? `over 8 KB (nginx's default fastcgi/proxy buffer):\n${big.join('\n')}`
+                        : 'all under 8 KB'
                 },
                 { needs: ['app', 'auth'] },
             )

@@ -622,7 +622,7 @@ export async function crawl({ app, session, routes, ids }) {
         user: ids.user,
         note: ids.note,
     }
-    const results = { ok: [], client: [], server: [], skipped: [] }
+    const results = { ok: [], client: [], server: [], skipped: [], headers: [] }
 
     const candidates = routes.filter(
         (r) =>
@@ -654,25 +654,52 @@ export async function crawl({ app, session, routes, ids }) {
             continue
         }
         const path = `/${filled.join('/')}`
+        let response
+        let via = 'request'
         try {
-            const response = await session.page.request.get(path, {
+            response = await session.page.request.get(path, {
                 failOnStatusCode: false,
                 maxRedirects: 5,
                 timeout: 30_000,
             })
-            const line = `${response.status()} GET ${path}  [${route.name ?? route.uri}]`
-            if (response.status() >= 500) {
-                const body = (await response.text().catch(() => '')).replace(/\s+/g, ' ')
-                const message =
-                    body.match(/"message":"([^"]{0,300})/)?.[1] ??
-                    body.match(/<title>([^<]{0,200})/)?.[1] ??
-                    ''
-                results.server.push(`${line}${message ? ` — ${message}` : ''}`)
-            } else if (response.status() >= 400) results.client.push(line)
-            else results.ok.push(line)
         } catch (error) {
-            results.server.push(`ERR GET ${path}: ${error.message.split('\n')[0]}`)
+            if (!/Header overflow/i.test(error.message)) {
+                results.server.push(`ERR GET ${path}: ${error.message.split('\n')[0]}`)
+                continue
+            }
+            // Node's HTTP parser (16 KB) refuses the response headers; a browser accepts
+            // them. Measure them there and report the size separately (C02).
+            via = 'browser (headers too large for Node)'
+            const probe = await session.context.newPage()
+            try {
+                response = await probe.goto(path, { waitUntil: 'commit', timeout: 30_000 })
+                if (!response) throw new Error('no response')
+                await response.headersArray()
+            } finally {
+                await probe.close().catch(() => {})
+            }
         }
+        const headers = await response.headersArray()
+        const bytes = headers.reduce(
+            (sum, { name, value }) => sum + name.length + value.length + 4,
+            0,
+        )
+        if (bytes > 8192) {
+            const link = headers
+                .filter((h) => h.name.toLowerCase() === 'link')
+                .reduce((sum, h) => sum + h.value.length, 0)
+            results.headers.push({ path, bytes, link })
+        }
+        const line = `${response.status()} GET ${path}  [${route.name ?? route.uri}]${via === 'request' ? '' : ` via ${via}`}`
+        if (response.status() >= 500) {
+            const body = (await response.text().catch(() => '')).replace(/\s+/g, ' ')
+            const message =
+                body.match(/"message":"([^"]{0,300})/)?.[1] ??
+                body.match(/<title>([^<]{0,200})/)?.[1] ??
+                ''
+            results.server.push(`${line}${message ? ` — ${message}` : ''}`)
+        } else if (response.status() >= 400) results.client.push(line)
+        else results.ok.push(line)
     }
     return results
 }
