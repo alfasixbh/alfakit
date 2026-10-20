@@ -64,6 +64,7 @@ export function startProcess(command, args, { cwd, env } = {}) {
         cwd,
         env: { ...process.env, ...env },
         stdio: ['ignore', 'pipe', 'pipe'],
+        detached: true, // its own process group, so stop() also ends the php -S child
     })
     child.stdout.on('data', (chunk) => logOutput(chunk.toString()))
     child.stderr.on('data', (chunk) => logOutput(chunk.toString()))

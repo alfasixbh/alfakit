@@ -24,6 +24,15 @@ import {
     startProcess,
 } from './util.mjs'
 
+/** Kills `php artisan serve` and the `php -S` it starts (one process group). */
+function killGroup(child) {
+    try {
+        process.kill(-child.pid, 'SIGTERM')
+    } catch {
+        child.kill('SIGTERM')
+    }
+}
+
 export const HERD_SITES = join(homedir(), 'Library/Application Support/Herd/config/valet/Sites')
 export const APP_PREFIX = 'alfakit-acc-'
 
@@ -128,7 +137,7 @@ export class App {
                 ['artisan', 'serve', '--host=127.0.0.1', `--port=${port}`, '--no-reload'],
                 {
                     cwd: this.dir,
-                    env: { PHP_CLI_SERVER_WORKERS: '4' },
+                    env: {},
                 },
             )
         } else {
@@ -151,7 +160,7 @@ export class App {
     /** Restarts `php artisan serve` (it caches nothing, but .env changes need a new process). */
     async restart() {
         if (!this.server) return
-        this.server.kill('SIGTERM')
+        killGroup(this.server)
         await sleep(500)
         const port = new URL(this.url).port
         this.server = startProcess(
@@ -159,7 +168,7 @@ export class App {
             ['artisan', 'serve', '--host=127.0.0.1', `--port=${port}`, '--no-reload'],
             {
                 cwd: this.dir,
-                env: { PHP_CLI_SERVER_WORKERS: '4' },
+                env: {},
             },
         )
     }
@@ -273,7 +282,7 @@ export class App {
 
     async stop() {
         if (this.server) {
-            this.server.kill('SIGTERM')
+            killGroup(this.server)
             this.server = null
         }
     }

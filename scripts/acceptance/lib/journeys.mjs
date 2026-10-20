@@ -672,9 +672,19 @@ export async function crawl({ app, session, routes, ids }) {
             via = 'browser (headers too large for Node)'
             const probe = await session.context.newPage()
             try {
-                response = await probe.goto(path, { waitUntil: 'commit', timeout: 30_000 })
-                if (!response) throw new Error('no response')
-                await response.headersArray()
+                const navigation = await probe.goto(path, { waitUntil: 'commit', timeout: 30_000 })
+                if (!navigation) throw new Error('no response', { cause: error })
+                // Read everything before the probe page closes.
+                const [status, headers, text] = [
+                    navigation.status(),
+                    await navigation.headersArray(),
+                    navigation.status() >= 500 ? await navigation.text().catch(() => '') : '',
+                ]
+                response = {
+                    status: () => status,
+                    headersArray: async () => headers,
+                    text: async () => text,
+                }
             } finally {
                 await probe.close().catch(() => {})
             }
