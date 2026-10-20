@@ -417,9 +417,32 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
             throw new Error(
                 `The installer knows about the dashboard but ${file} has no AlfaKit widgets`,
             )
+        if (!dashboard.includes('alfakit:widgets'))
+            throw new Error(
+                `${file} has no alfakit:widgets block after alfakit:setup --mode=starter-kit`,
+            )
         await open('/dashboard')
-        await see(page.getByText('This month'), 'the "This month" widget heading on /dashboard')
-        await see(page.getByText('Revenue'), 'the Revenue stat on /dashboard')
+        const widgets = page.locator('[data-slot="starter-kit-widgets"]')
+        await see(widgets, 'the [data-slot="starter-kit-widgets"] container on /dashboard')
+        const posts = app.php('App\\Models\\Post::count()')
+        await see(widgets.getByText('This month'), 'the "This month" heading inside the widgets')
+        await see(
+            widgets.getByText('Posts', { exact: true }),
+            'the Posts stat label inside the widgets',
+        )
+        await see(
+            widgets.getByText(String(posts), { exact: true }),
+            `the Posts value ${posts} inside the widgets`,
+        )
+        await see(
+            widgets.getByText('Revenue', { exact: true }),
+            'the Revenue stat inside the widgets',
+        )
+        await see(
+            widgets.getByText('$48,210.00'),
+            'the Revenue value $48,210.00 inside the widgets',
+        )
+        return `posts=${posts}`
     })
 
     // ---------------------------------------------------------------- users resource
