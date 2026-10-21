@@ -83,7 +83,7 @@ jobs:
           E2E_SVELTE_URL: http://127.0.0.1:${{ env.PORT }}
         run: pnpm exec playwright test
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-${{ matrix.renderer }}
