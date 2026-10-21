@@ -723,20 +723,21 @@ async function runCell(renderer, mode) {
 
             await report.step(
                 'C02',
-                'Response headers stay under 16 KB (Node, proxies and nginx buffers refuse larger ones)',
+                'Response headers stay under 8 KB (nginx buffers, Node and proxies refuse larger ones)',
                 () => {
                     if (!crawlResult) skip('no crawl')
                     const big = crawlResult.headers.map(
                         (h) => `${h.path}: ${h.bytes} bytes of headers (Link: ${h.link} bytes)`,
                     )
-                    const tooBig = crawlResult.headers.filter((h) => h.bytes > 16_384)
+                    // AlfaKit pages cap the preload `Link` header (`alfakit.inertia.preload_link_limit`).
+                    const tooBig = crawlResult.headers.filter((h) => h.bytes > 8192)
                     if (tooBig.length)
                         throw new Error(
-                            `${tooBig.length} response(s) over 16 KB:\n${big.join('\n')}`,
+                            `${tooBig.length} response(s) over 8 KB:\n${big.join('\n')}`,
                         )
                     return big.length
-                        ? `over 8 KB (nginx's default fastcgi/proxy buffer):\n${big.join('\n')}`
-                        : 'all under 8 KB'
+                        ? `over 4 KB (nginx's default buffer on 4 KB-page systems):\n${big.join('\n')}`
+                        : 'all under 4 KB'
                 },
                 { needs: ['app', 'auth'] },
             )

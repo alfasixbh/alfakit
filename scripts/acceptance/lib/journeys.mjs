@@ -529,14 +529,20 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
             await switchTo('ar')
             await open(`${PANEL}/posts`)
             const rtl = await direction()
+            // Panel mode: the whole document mirrors. Starter kit mode: the app owns the
+            // document (its own pages and sidebar are not translated), so AlfaKit mirrors only
+            // its own content root and leaves `<html dir>` alone.
             const ok =
-                mode === 'panel' ? rtl.html === 'rtl' : rtl.content === 'rtl' || rtl.html === 'rtl'
+                mode === 'panel' ? rtl.html === 'rtl' : rtl.content === 'rtl' && rtl.html !== 'rtl'
             if (!ok)
                 throw new Error(
-                    `Expected dir=rtl after switching to Arabic, got ${JSON.stringify(rtl)}`,
+                    mode === 'panel'
+                        ? `Expected <html dir="rtl"> after switching to Arabic, got ${JSON.stringify(rtl)}`
+                        : `Expected AlfaKit's content root dir="rtl" and the app's <html> untouched, got ${JSON.stringify(rtl)}`,
                 )
-            // The layout must mirror, not break: the sidebar sits right of the content and they
-            // do not overlap, nothing scrolls sideways.
+            // The layout must not break: no overlap, nothing scrolls sideways, and in panel mode
+            // the sidebar sits right of the content (mirrored). In starter kit mode the app's
+            // sidebar keeps its own side.
             const layout = await page.evaluate(() => {
                 const box = (el) => {
                     if (!el) return null
@@ -558,7 +564,7 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
                     `the page scrolls horizontally (${layout.scrollWidth}px > ${layout.viewport}px)`,
                 )
             if (layout.sidebar && layout.content) {
-                if (layout.sidebar.left < layout.content.left)
+                if (mode === 'panel' && layout.sidebar.left < layout.content.left)
                     problems.push('the sidebar is left of the content (not mirrored)')
                 if (
                     layout.sidebar.left < layout.content.right &&
@@ -602,6 +608,53 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
             } finally {
                 await switchTo('en').catch(() => {})
             }
+        },
+    )
+
+    // ---------------------------------------------------------------- tables
+    await step(
+        'B30',
+        'Posts table: the bulk "Delete" asks for confirmation; Cancel keeps the posts',
+        async () => {
+            const count = () => app.php('App\\Models\\Post::count()')
+            const before = count()
+            await open(`${PANEL}/posts`)
+            const rows = page.locator('[data-slot="table-body"] [data-slot="table-row"]')
+            await see(rows, 'the posts rows')
+            await rows.nth(0).getByRole('checkbox').click()
+            await rows.nth(1).getByRole('checkbox').click()
+            const bar = page
+                .getByRole('button', { name: 'Deselect all', exact: true })
+                .locator('xpath=..')
+            await see(bar, 'the selection bar')
+            await bar.getByRole('button', { name: /^Delete$/ }).click()
+            const modal = dialog().filter({ hasText: 'Delete selected records' })
+            await see(modal, 'the "Delete selected records" confirmation')
+            await modal.getByRole('button', { name: 'Cancel', exact: true }).first().click()
+            await modal.first().waitFor({ state: 'hidden', timeout: 10_000 })
+            const after = count()
+            if (after !== before) throw new Error(`Cancel changed the posts: ${before} -> ${after}`)
+            return `confirmation opened for 2 selected posts, Cancel kept ${after}`
+        },
+    )
+
+    await step(
+        'B31',
+        "The app's stylesheet has the table classes defined in @alfakit/core",
+        async () => {
+            await open(`${PANEL}/posts`)
+            const hrefs = await page
+                .locator('link[rel="stylesheet"]')
+                .evaluateAll((links) => links.map((link) => link.href))
+            let css = ''
+            for (const href of hrefs) css += await (await page.request.get(href)).text()
+            // stackedOnMobile() rows and filtersFormWidth() come from core's class lists.
+            const missing = ['max-md\\:flex-col', 'sm\\:w-lg'].filter((c) => !css.includes(c))
+            if (missing.length)
+                throw new Error(
+                    `${missing.join(', ')} missing from ${hrefs.length} stylesheet(s): the renderer's styles.css doesn't scan @alfakit/core`,
+                )
+            return `${hrefs.length} stylesheet(s) include them`
         },
     )
 }
@@ -694,7 +747,8 @@ export async function crawl({ app, session, routes, ids }) {
             (sum, { name, value }) => sum + name.length + value.length + 4,
             0,
         )
-        if (bytes > 8192) {
+        // Listed from 4 KB (nginx's default buffer is one memory page, 4 or 8 KB); C02 fails above 8 KB.
+        if (bytes > 4096) {
             const link = headers
                 .filter((h) => h.name.toLowerCase() === 'link')
                 .reduce((sum, h) => sum + h.value.length, 0)
