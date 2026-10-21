@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6fded2903e6914842835f7babee90eb4",
+    "content-hash": "4b120e9d8f3295f28f3551f85fe67780",
     "packages": [
         {
             "name": "alfasix/alfakit",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/alfakit",
-                "reference": "88b90ccda57821c81af581d5e5e10431a9a7e4c5"
+                "reference": "5bf35058a9db8f86869105c33f87148a70d1fcf5"
             },
             "require": {
                 "bacon/bacon-qr-code": "^3.1",
@@ -20,7 +20,7 @@
                 "illuminate/contracts": "^13.0",
                 "illuminate/support": "^13.0",
                 "inertiajs/inertia-laravel": "^3.5",
-                "php": "^8.3",
+                "php": "^8.4",
                 "symfony/html-sanitizer": "^7.3|^8.0"
             },
             "suggest": {
@@ -181,12 +181,12 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/ai",
-                "reference": "c71c117c9796aef84941073798197e30dc1d5e17"
+                "reference": "2a8b71259871a7f5f5c0e9cb8d3c343175222f4d"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
                 "laravel/ai": "^1.2",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "alfasix/alfakit-api": "MCP clients can authenticate with the API plugin's personal access tokens.",
@@ -281,11 +281,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/analytics",
-                "reference": "f6a0ead192024ef4e9158cdf12fe0d09d91ea711"
+                "reference": "fde0ab20ced7d83d7522f07af18c13dc3d1d5d51"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "geoip2/geoip2": "Resolve visitor countries from a MaxMind GeoLite2 / GeoIP2 database (see the docs for a resolver)."
@@ -379,11 +379,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/api",
-                "reference": "0ab637d7ad12f359b30066c92fb2009f478665f4"
+                "reference": "93d215e02f496a194ed779b72e168bab80a015b6"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "laravel/sanctum": "Not required: the plugin ships its own hashed personal access tokens. Implement the TokenRepository contract to issue Sanctum tokens instead."
@@ -475,11 +475,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/backup",
-                "reference": "52d1847dadb9bfb2d9ae526aa3bbd8107f9a3ec9"
+                "reference": "ad1c6e501327848e964773b2060e5fda1e9c3263"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3",
+                "php": "^8.4",
                 "spatie/laravel-backup": "^10.0"
             },
             "type": "library",
@@ -566,11 +566,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/billing",
-                "reference": "8e3041036a59e7c0d37017e52416d5598c3932e1"
+                "reference": "278875ba7c6038907c3822e5607331250c8dfd00"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "laravel/cashier": "For the StripeBillingProvider (Stripe, ^15.0|^16.0).",
@@ -665,11 +665,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/calendar",
-                "reference": "217b0cc9a78fcc49a1dcc950e8cc660d27ffc76a"
+                "reference": "536949d50d6a163f8b173512124dbe8aa13017ac"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -758,11 +758,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/cms",
-                "reference": "ad319ea041de1d4c47d7d1f7a295f6e1f71d8617"
+                "reference": "008ef742867f08c33129cb4a22e7562c16212a40"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -855,11 +855,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/comments",
-                "reference": "b582a60a4db30557744597f93c41c5fef56927ec"
+                "reference": "8c25e32b287c99488fca78740794c951177c52af"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -948,12 +948,12 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/feature-flags",
-                "reference": "e1c1849c62dca2c2223d315c1716e43a9802eb43"
+                "reference": "c7c8d49778ebfc6783454a7ff3e4892df789cc2a"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
                 "laravel/pennant": "^1.26",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "alfasix/alfakit-activity-log": "Also writes every feature flag change to the activity log."
@@ -1046,12 +1046,12 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/file-manager",
-                "reference": "e603e85e5d757215c5c0f8519b47f36af7a6d7c6"
+                "reference": "cf1278e7d1ddd01c019e28c5bdb41cc9520426a8"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
                 "ext-fileinfo": "*",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "alfasix/alfakit-media-library": "Add files picked with FileManagerPicker to a Spatie media library collection.",
@@ -1147,11 +1147,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/forms",
-                "reference": "f30d04c83157807108b2693066144926df80606d"
+                "reference": "1f3f5d5b8b49210e00affd5c0e551f9423287832"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -1241,11 +1241,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/health",
-                "reference": "0bc12fa0bfbfd55e32f56be6ae31ada86f76e2fc"
+                "reference": "13c3e13ce2b3f13dff33d6c2134de94d1c50fc50"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3",
+                "php": "^8.4",
                 "spatie/laravel-health": "^1.30"
             },
             "type": "library",
@@ -1331,11 +1331,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/helpdesk",
-                "reference": "40263760b74286f5b3cddeba082abc76bec57641"
+                "reference": "58bafde97b843c5c5f57f3ba241ef9f800432077"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "alfasix/alfakit-tags": "Tag tickets with spatie/laravel-tags (the ticket model must use Spatie\\Tags\\HasTags).",
@@ -1431,13 +1431,13 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/invoices",
-                "reference": "047fb7f41af947005f8f810e62694c9c46746245"
+                "reference": "59cc7aaee922bb443c728b8887f3433e1fdd9f30"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
                 "brick/math": "^0.11|^0.12|^0.13|^0.14|^0.15|^0.16|^0.17|^0.18|^0.19|^0.20|^1.0",
                 "ext-intl": "*",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "alfasix/alfakit-billing": "A \"Pay now\" button on the customer invoice page through your billing provider.",
@@ -1535,11 +1535,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/kanban",
-                "reference": "3075df7256e9c04ac38d3385acd4b8128b00caf2"
+                "reference": "bd2cfcffc580a54782101d13de66fddd9450829c"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -1628,11 +1628,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/mail-templates",
-                "reference": "6bb5a3841c83e854239da8f5971896fcd7b87795"
+                "reference": "bf5066c2d6f9a6cf9944a1f66eeaeca6510b18b4"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -1721,11 +1721,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/media-library",
-                "reference": "5f53e9629be5667342ab420526915c343610afdb"
+                "reference": "2f6789b17102b8ea2630aa44de49322cd2425116"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3",
+                "php": "^8.4",
                 "spatie/laravel-medialibrary": "^11.0"
             },
             "type": "library",
@@ -1813,11 +1813,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/ops",
-                "reference": "72fead1d20e1980a4a2f71b2bc2ae5871ed5d0c8"
+                "reference": "e2b9969eb68e36f23f05bb3eba013d741acf25d9"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -1908,11 +1908,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/settings",
-                "reference": "702224bae4a11d5cc4ecc8a499eda4d25ad97321"
+                "reference": "e7ebfc83514e215c90480e58ca425f65ec1149f4"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3",
+                "php": "^8.4",
                 "spatie/laravel-settings": "^3.0"
             },
             "type": "library",
@@ -1998,11 +1998,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/shield",
-                "reference": "f56859f889fdec48bd7d385dc5ec6f6167b62335"
+                "reference": "07c54d00de23250596c85a3f645bb14ddbbef66d"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3",
+                "php": "^8.4",
                 "spatie/laravel-permission": "^8.3"
             },
             "type": "library",
@@ -2091,11 +2091,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/tags",
-                "reference": "f354223cf1e4ce2bceae09ac60191f750cfb56bf"
+                "reference": "7a5cd8ad0c491826f813553aeb39f122f18aa0e6"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3",
+                "php": "^8.4",
                 "spatie/laravel-tags": "^4.0"
             },
             "type": "library",
@@ -2177,11 +2177,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/teams",
-                "reference": "6fbcc0f56baf8bbe8df2a4d770fb0e8c663edd1e"
+                "reference": "7e1eabb3b689d6d0c27f7de5c822c150d49a3b7c"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "alfasix/alfakit-billing": "Per-team subscriptions: derive seats from the plan and sync the subscription quantity.",
@@ -2275,11 +2275,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/translation-manager",
-                "reference": "8dfad208182aca5d5c0609469c0c85747be42339"
+                "reference": "adf1866e39c6629be2dd9a776c9cd3a93e7d966d"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "laravel/ai": "Required for \"Translate missing with AI\" (^1.2)."
@@ -2371,11 +2371,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/translations",
-                "reference": "d5faa5ca03da093fbae3d1284fe8988357141ba7"
+                "reference": "e451d4744b3578918de97df0fe8aeb16f1adb070"
             },
             "require": {
                 "alfasix/alfakit": "*",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -2425,11 +2425,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/tree",
-                "reference": "529f1d92f36197f43bb86ed7ecd9bab857843a26"
+                "reference": "99d9f124695c276e3d30aa2afe3d53a5f28cc5ad"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -2515,11 +2515,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/webhooks",
-                "reference": "16a0b9862054c584bd595e981688cdb2923f8022"
+                "reference": "cdff681c9e13430aa6424cfda1c71b4bde0b9dd9"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -2608,11 +2608,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/workflows",
-                "reference": "f53ba7c65b68881ffd2bdc5e41af8a4c7761c311"
+                "reference": "11f37f0da57567b9d6de41b49556deed976f626c"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -14324,7 +14324,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

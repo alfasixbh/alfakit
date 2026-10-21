@@ -75,7 +75,7 @@ AlfaKit's PHP API is inspired by [Filament](https://filamentphp.com), so if you 
 
 |              | Version                              |
 | ------------ | ------------------------------------ |
-| PHP          | 8.3+                                 |
+| PHP          | 8.4+                                 |
 | Laravel      | 13                                   |
 | Inertia.js   | 3 (`inertiajs/inertia-laravel` ^3.5) |
 | Node         | 22+                                  |

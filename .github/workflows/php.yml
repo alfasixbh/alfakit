@@ -16,7 +16,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Pest 5 needs PHP 8.4, so PHP 8.3 can't be tested here.
         php: ['8.4', '8.5']
         stability: [lowest, highest]
     steps:

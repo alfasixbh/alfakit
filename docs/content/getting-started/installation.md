@@ -7,7 +7,7 @@ description: Install the PHP package and the renderer for your framework.
 
 ## Requirements
 
-- PHP 8.3 or newer, Laravel 13
+- PHP 8.4 or newer, Laravel 13
 - Node 22+, a package manager (npm, pnpm, bun or yarn)
 - An Inertia application using Tailwind CSS 4 — the official **React**, **Vue** or **Svelte** starter kits are the supported baseline (`laravel new my-app --react`)
 

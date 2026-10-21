@@ -26,6 +26,10 @@ Apps inside a Laravel starter kit (`->starterKit()`) also need these changes. Ne
 
 Apps with realtime: run `php artisan alfakit:realtime --force` once. The panel entry now loads Echo on demand.
 
+### Changed
+
+- AlfaKit now requires PHP 8.4 or newer (core, translations and every first-party plugin). Its test tools (Pest 5) already needed 8.4, so 8.3 was never tested. `alfakit:doctor` reports older versions.
+
 ### Added
 
 - Starter-kit mode: `<AlfakitCopilot />` (React, Vue, Svelte) puts the AI plugin's copilot in the app header, on every page, as `<AlfakitSearch />` does for the palette: a lightweight button at once, its code and the panel data once in the browser, and `copilotKeyBindings()` (`mod+j`) that work before it loaded. Before, the copilot lived in the panel's top bar slot, which starter kits never render, so `AiPlugin::make()->copilot()` showed nothing there. `alfakit:install --starter-kit` adds it to the `alfakit:header` block (it renders nothing until the copilot is on), and `alfakit:add ai` adds it to header blocks written earlier. Plugins can share their own header components' data with `Panel::starterKitWidget($name, fn ($user, $tenant) => [...])` (`alfakitNavigation.widgets.{name}`). In Vue and Svelte the loaded header components now come in one chunk (as in React), which keeps the host's AlfaKit share within its budget.

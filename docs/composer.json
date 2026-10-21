@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "alfasix/alfakit": "@dev",
         "alfasix/alfakit-analytics": "@dev",
         "alfasix/alfakit-forms": "@dev",

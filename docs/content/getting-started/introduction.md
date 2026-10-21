@@ -44,4 +44,4 @@ Livewire is a great choice when your application is Blade-based. AlfaKit exists 
 
 ## Supported stack
 
-AlfaKit v1 supports PHP 8.3+, Laravel 13 and Inertia.js 3 with Tailwind CSS 4. Each renderer tracks its ecosystem: React 19 with shadcn/ui, Vue 3.5 with shadcn-vue, Svelte 5 with shadcn-svelte.
+AlfaKit v1 supports PHP 8.4+, Laravel 13 and Inertia.js 3 with Tailwind CSS 4. Each renderer tracks its ecosystem: React 19 with shadcn/ui, Vue 3.5 with shadcn-vue, Svelte 5 with shadcn-svelte.

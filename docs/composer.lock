@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "82249ef5cb0e80b3d22fef6ae515d5b2",
+    "content-hash": "fe26da538b13d1ca1acf55008ff950f4",
     "packages": [
         {
             "name": "alfasix/alfakit",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/alfakit",
-                "reference": "ea1ecb03cbc1268673c4eaa8064d2235474fe30f"
+                "reference": "5bf35058a9db8f86869105c33f87148a70d1fcf5"
             },
             "require": {
                 "bacon/bacon-qr-code": "^3.1",
@@ -20,7 +20,7 @@
                 "illuminate/contracts": "^13.0",
                 "illuminate/support": "^13.0",
                 "inertiajs/inertia-laravel": "^3.5",
-                "php": "^8.3",
+                "php": "^8.4",
                 "symfony/html-sanitizer": "^7.3|^8.0"
             },
             "suggest": {
@@ -89,11 +89,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/analytics",
-                "reference": "95dded4edcf2aedee634ccf2531f85dd97df6358"
+                "reference": "fde0ab20ced7d83d7522f07af18c13dc3d1d5d51"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "geoip2/geoip2": "Resolve visitor countries from a MaxMind GeoLite2 / GeoIP2 database (see the docs for a resolver)."
@@ -187,11 +187,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/forms",
-                "reference": "5d89567c014226e6b4bf215e83638d9d49f120a8"
+                "reference": "1f3f5d5b8b49210e00affd5c0e551f9423287832"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -281,11 +281,11 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/helpdesk",
-                "reference": "95a4366c523cbc29acbe0ea6fb97634976b601f1"
+                "reference": "58bafde97b843c5c5f57f3ba241ef9f800432077"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "suggest": {
                 "alfasix/alfakit-tags": "Tag tickets with spatie/laravel-tags (the ticket model must use Spatie\\Tags\\HasTags).",
@@ -6619,12 +6619,12 @@
             "version": "v5.7.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/vlucas/phpdotenv.git",
+                "url": "https://github.com/phpdotenv/phpdotenv.git",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
+                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40",
                 "shasum": ""
             },
@@ -10765,7 +10765,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

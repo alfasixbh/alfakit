@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c83f3cc9a664f0c7f7dbd592967b2d47",
+    "content-hash": "3a98416c1fec8ec12f6bd6efd23f3c84",
     "packages": [
         {
             "name": "alfasix/alfakit",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/alfakit",
-                "reference": "88b90ccda57821c81af581d5e5e10431a9a7e4c5"
+                "reference": "5bf35058a9db8f86869105c33f87148a70d1fcf5"
             },
             "require": {
                 "bacon/bacon-qr-code": "^3.1",
@@ -20,7 +20,7 @@
                 "illuminate/contracts": "^13.0",
                 "illuminate/support": "^13.0",
                 "inertiajs/inertia-laravel": "^3.5",
-                "php": "^8.3",
+                "php": "^8.4",
                 "symfony/html-sanitizer": "^7.3|^8.0"
             },
             "suggest": {
@@ -89,11 +89,11 @@
             "dist": {
                 "type": "path",
                 "url": "packages/translations",
-                "reference": "d5faa5ca03da093fbae3d1284fe8988357141ba7"
+                "reference": "e451d4744b3578918de97df0fe8aeb16f1adb070"
             },
             "require": {
                 "alfasix/alfakit": "*",
-                "php": "^8.3"
+                "php": "^8.4"
             },
             "type": "library",
             "extra": {
@@ -14624,7 +14624,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
