@@ -63,7 +63,7 @@ $panel->locales([
 For each request, the first match wins:
 
 1. A `resolveLocaleUsing()` callback, if you set one.
-2. The language picked in the menu during this session.
+2. The language picked in the menu during this session. The pick is stored in the session and the `alfakit_locale` cookie; while the session holds a pick, the cookie decides, so a request that was still running during the switch can't put the old language back.
 3. The signed-in user's preference: Laravel's `HasLocalePreference::preferredLocale()`.
 4. The `alfakit_locale` cookie, which remembers the choice for guests.
 5. The browser's `Accept-Language` header. Turn this off with `->detectBrowserLocale(false)`.

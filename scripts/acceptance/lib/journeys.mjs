@@ -1,5 +1,6 @@
 // The browser journeys a new user goes through, then the route crawl.
 import { skip } from './report.mjs'
+import { log } from './util.mjs'
 
 const PANEL = '/admin'
 
@@ -495,6 +496,9 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
         (r) => /^admin\/_alfakit\/locale$/.test(r.uri) && r.method.includes('POST'),
     )
     const switchTo = async (locale) => {
+        // Requests still in flight (header and widget data) carry the old session; finishing
+        // after the switch, they would write the old locale back.
+        await page.waitForLoadState('networkidle').catch(() => {})
         const token = (await session.context.cookies()).find((c) => c.name === 'XSRF-TOKEN')?.value
         if (!token) throw new Error('No XSRF-TOKEN cookie')
         const response = await page.request.post(`/${route.uri}`, {
@@ -583,7 +587,9 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
                 )
             return `ar: ${JSON.stringify(rtl)} layout ${JSON.stringify(layout)}`
         } finally {
-            await switchTo('en').catch(() => {})
+            await switchTo('en').catch((error) =>
+                log(`switching back to en failed: ${error.message}`),
+            )
         }
     })
 
@@ -606,7 +612,9 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
                     )
                 return JSON.stringify(dir)
             } finally {
-                await switchTo('en').catch(() => {})
+                await switchTo('en').catch((error) =>
+                    log(`switching back to en failed: ${error.message}`),
+                )
             }
         },
     )

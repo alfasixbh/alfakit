@@ -44,3 +44,6 @@ packages/plugins/analytics/resources/js/script.js
 # Internal QA evidence and agent scratch files (git-ignored).
 qa-evidence/
 scripts/acceptance/reports/
+
+# Written by the Vite dev server (laravel-vite-plugin fonts), git-ignored.
+**/public/fonts-manifest*.json

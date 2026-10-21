@@ -148,6 +148,37 @@ export class App {
         }
     }
 
+    /**
+     * Herd's dev tools helper runs `composer dev` (Vite, `artisan serve`, a queue listener,
+     * Pail) in every newly linked site. Its Vite writes `public/hot`, so setup skips the
+     * build and pages load from a dev server that may be gone. Stop what it started in this
+     * app and remove `public/hot`, so the run sees what a plain install produces.
+     */
+    stopForeignDevServers() {
+        if (this.serve) return 0
+        const listing = run('ps', ['-axo', 'pid=,command='], { timeout: 10_000 }).output
+        const pattern =
+            /(@laravel\/multiplex|multiplex --title|npm run dev|vp dev|vite|artisan (serve|queue:listen|pail)|tail -F .*pail)/
+        let stopped = 0
+        for (const line of listing.split('\n')) {
+            const match = /^\s*(\d+)\s+(.*)$/.exec(line)
+            // `npm exec @laravel/multiplex --title artisan dev · <name>` names the app, its children the path.
+            const ours = match && (match[2].includes(this.dir) || match[2].includes(this.name))
+            if (!ours || !pattern.test(match[2])) continue
+            try {
+                process.kill(Number(match[1]), 'SIGTERM')
+                stopped++
+            } catch {
+                // Already gone.
+            }
+        }
+        const hot = this.path('public/hot')
+        if (existsSync(hot)) unlinkSync(hot)
+        if (stopped > 0)
+            log(`stopped ${stopped} dev server process(es) another tool started in ${this.name}`)
+        return stopped
+    }
+
     configureEnv() {
         setEnv(this.path('.env'), {
             APP_URL: this.url,
@@ -292,6 +323,8 @@ export class App {
         if (!basename(this.dir).startsWith(APP_PREFIX))
             throw new Error(`Refusing to delete ${this.dir}`)
         if (this.linked && existsSync(this.dir)) run('herd', ['unlink'], { cwd: this.dir })
+        // A `composer dev` still running in the app would recreate files after the delete.
+        this.stopForeignDevServers()
         const site = join(HERD_SITES, this.name)
         try {
             if (lstatSync(site).isSymbolicLink()) unlinkSync(site)

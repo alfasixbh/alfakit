@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-10-21
+
 ### Upgrading from 0.1.5
 
 Update the packages, then clear caches and rebuild:
@@ -40,6 +42,8 @@ Apps with realtime: run `php artisan alfakit:realtime --force` once. The panel e
 
 ### Fixed
 
+- Switching language could be undone by a request that was still running during the switch (a polled widget, the starter kit's header data): it saved its old session when it finished. While the session holds a pick, the `alfakit_locale` cookie, which only the switch writes, now decides.
+- `alfakit:install` and `alfakit:setup` no longer skip the frontend build because of a `public/hot` left by a dev server that has stopped (for example one Herd's dev tools started and stopped): they check the dev server answers, remove the stale file and build.
 - `alfakit:install --scaffold --ssr` now installs `@inertiajs/vite` and adds `inertia({ ssr })` to `vite.config`, so `npm run dev` renders server side without the manual step.
 - Saving an edit page no longer blanks a model's `$hidden` attributes (a password, an API token): their fields load empty, and an empty value now keeps the stored one.
 - Icons: replacing a repeater, builder or key-value item button alias (`alfakit::forms.components.repeater.actions.delete`, …) with `Icons::register()` had no effect unless the action was also customised; the default buttons now draw the replacement in React, Vue and Svelte.
@@ -1101,7 +1105,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/alfasixbh/alfakit/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/alfasixbh/alfakit/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/alfasixbh/alfakit/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/alfasixbh/alfakit/compare/v0.1.2...v0.1.3

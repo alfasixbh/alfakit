@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.1.6
+
+### Patch Changes
+
+- Released with AlfaKit 0.1.6 (the npm and PHP versions now match). Fixes from the full verification in React, Vue and Svelte: starter-kit copilot, dashboard widgets and discovered components, per-item form errors, stable template schemas in new blocks, CSP nonces, WCAG AA badge contrast, plural kanban counts and more (see the AlfaKit changelog for 0.1.6).
+
 ## 0.1.2
 
 ### Patch Changes

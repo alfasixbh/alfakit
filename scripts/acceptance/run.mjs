@@ -211,6 +211,9 @@ async function runCell(renderer, mode) {
                     const request = await playwright.request.newContext()
                     try {
                         const status = await app.waitUntilUp(request)
+                        // Give Herd's dev tools helper time to start `composer dev`, then stop it.
+                        await new Promise((done) => setTimeout(done, 5_000))
+                        app.stopForeignDevServers()
                         return `${app.url} answered HTTP ${status}`
                     } finally {
                         await request.dispose()
@@ -265,6 +268,7 @@ async function runCell(renderer, mode) {
                 'A05',
                 `php artisan ${setupArgs.join(' ').replace(credentials.password, '••••')}`,
                 () => {
+                    app.stopForeignDevServers()
                     const result = app.artisan(setupArgs, { timeout: 1_200_000 })
                     writeFileSync(
                         report.artifact('setup-output.txt'),
@@ -688,6 +692,7 @@ async function runCell(renderer, mode) {
             )
         } else {
             await app.restart()
+            app.stopForeignDevServers()
             session = await openSession(playwright, { baseURL: app.url, report })
             await runJourneys({ app, report, session, ids, credentials, routes })
 
