@@ -80,16 +80,25 @@ export function AlfakitComponent({
   const context = useMemo<AlfakitContextValue>(() => {
     const poll = (target: string, interval: string | number | null | undefined) =>
       state.poll(target, interval)
+    const refresh = (targets: string[]) => state.refresh(targets)
 
     if (parent) {
-      return { ...parent, registry: createStandaloneRegistry(components, parent.registry), poll }
+      return {
+        ...parent,
+        registry: createStandaloneRegistry(components, parent.registry),
+        poll,
+        refresh,
+      }
     }
 
-    return createStandaloneContext(
-      { action: component.endpoints.action, modal: component.endpoints.modal },
-      components,
-      poll,
-    )
+    return {
+      ...createStandaloneContext(
+        { action: component.endpoints.action, modal: component.endpoints.modal },
+        components,
+        poll,
+      ),
+      refresh,
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parent, state, overrideKeys])
 
@@ -122,7 +131,9 @@ export function AlfakitComponent({
   useEffect(() => registerStandaloneProp(propName ?? null), [propName])
 
   useEffect(() => {
-    void state.loadLazy()
+    void state.loadLazy(component)
+    // The token identifies a new payload.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, component.token])
 
   // Toasts: use the layout's <AlfakitToaster /> when there is one, else the first component

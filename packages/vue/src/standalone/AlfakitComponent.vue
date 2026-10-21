@@ -67,14 +67,23 @@ const version = ref(0)
 const state = new StandaloneComponentState(props.component, () => version.value++)
 const poll = (target: string, interval: string | number | null | undefined) =>
   state.poll(target, interval)
+const refresh = (targets: string[]) => state.refresh(targets)
 
 const context: AlfakitContextValue = parent
-  ? { ...parent, registry: createStandaloneRegistry(props.components, parent.registry), poll }
-  : createStandaloneContext(
-      { action: props.component.endpoints.action, modal: props.component.endpoints.modal },
-      props.components,
+  ? {
+      ...parent,
+      registry: createStandaloneRegistry(props.components, parent.registry),
       poll,
-    )
+      refresh,
+    }
+  : {
+      ...createStandaloneContext(
+        { action: props.component.endpoints.action, modal: props.component.endpoints.modal },
+        props.components,
+        poll,
+      ),
+      refresh,
+    }
 
 provide(ALFAKIT_KEY, context)
 
@@ -124,9 +133,11 @@ onMounted(() => {
     { immediate: true },
   )
 
+  // The watcher runs before the new payload renders: hand it over, or the response would
+  // count as stale and lazy widgets (a calendar after its action) keep their old schema.
   watch(
     () => props.component.token,
-    () => void state.loadLazy(),
+    () => void state.loadLazy(props.component),
     { immediate: true },
   )
 

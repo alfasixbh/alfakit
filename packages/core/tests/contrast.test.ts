@@ -60,7 +60,7 @@ describe('theme contrast (WCAG 2.1 AA)', () => {
     const tokens = resolveTheme(base, themes, theme, mode)
     const failures = CONTRAST_PAIRS.map((pair) => ({
       ...pair,
-      ratio: contrast(tokens, pair.foreground, pair.background),
+      ratio: contrast(tokens, pair.foreground, pair.background, pair.tint?.[mode] ?? 1),
     }))
       .filter((pair) => pair.ratio < pair.minimum)
       .map(

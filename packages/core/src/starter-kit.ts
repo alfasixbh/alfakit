@@ -70,6 +70,18 @@ export function toStarterKitBreadcrumbs(
 }
 
 /** The breadcrumbs of an Alfakit page from its Inertia props (`props.page.breadcrumbs`). */
+/**
+ * Whether an Alfakit page renders inside the host layout (`createStarterKitPage({ layout })`).
+ * Pages with the `auth` layout (sign-in, registration, password reset, multi-factor
+ * challenge, email verification, `->login()` brought back after `starterKit()`) stand on
+ * their own, like the host's auth pages: the host layout expects a signed-in user.
+ */
+export function usesStarterKitHostLayout(props: unknown): boolean {
+  const page = (props as { page?: { layout?: string } } | null | undefined)?.page
+
+  return page?.layout !== 'auth'
+}
+
 export function starterKitBreadcrumbsFromProps(props: unknown): StarterKitBreadcrumb[] {
   const page = (props as { page?: { breadcrumbs?: BreadcrumbSchema[] } } | null | undefined)?.page
 
@@ -86,7 +98,35 @@ export function starterKitNavigations(props: unknown): StarterKitNavigationSchem
   return Array.isArray(value) ? (value as StarterKitNavigationSchema[]) : []
 }
 
-/** One panel's navigation (the first starter kit panel when no id is given), or null. */
+/**
+ * The panel of the open AlfaKit page (`props.alfakit.id`), or undefined on the host's own
+ * pages. With several `starterKit()` panels, components without a `panel` follow it.
+ */
+export function currentStarterKitPanelId(props: unknown): string | undefined {
+  const id = (props as { alfakit?: { id?: unknown } } | null | undefined)?.alfakit?.id
+
+  return typeof id === 'string' ? id : undefined
+}
+
+/**
+ * Order panel entries for components without a `panel` id: the open AlfaKit page's panel
+ * first (an `/app` page of a second `starterKit()` panel shows that panel's navigation and
+ * tenant menu), then the others in registration order.
+ */
+export function preferCurrentStarterKitPanel<T extends { id: string }>(
+  entries: T[],
+  props: unknown,
+): T[] {
+  const current = currentStarterKitPanelId(props)
+  const index = current === undefined ? -1 : entries.findIndex((entry) => entry.id === current)
+
+  return index <= 0 ? entries : [entries[index]!, ...entries.filter((_, i) => i !== index)]
+}
+
+/**
+ * One panel's navigation, or null. Without an id: the open AlfaKit page's panel, else the
+ * first starter kit panel.
+ */
 export function starterKitNavigation(
   props: unknown,
   panelId?: string,
@@ -95,7 +135,7 @@ export function starterKitNavigation(
 
   return (
     (panelId === undefined
-      ? navigations[0]
+      ? preferCurrentStarterKitPanel(navigations, props)[0]
       : navigations.find((navigation) => navigation.id === panelId)) ?? null
   )
 }

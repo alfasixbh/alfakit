@@ -107,6 +107,53 @@ describe('kanban', () => {
     expect(region.querySelector('[data-slot="kanban-card-body"]')).toHaveAttribute('tabindex', '0')
   })
 
+  it('says 1 card and 2 cards, and the limit in the singular', async () => {
+    renderWith(
+      <RenderComponent
+        component={
+          board({
+            columns: [
+              {
+                key: 'one',
+                label: 'One',
+                count: 1,
+                total: 1,
+                cards: [{ key: '1', title: 'Solo' }],
+              },
+              {
+                key: 'two',
+                label: 'Two',
+                count: 2,
+                total: 2,
+                cards: [
+                  { key: '2', title: 'A' },
+                  { key: '3', title: 'B' },
+                ],
+              },
+              {
+                key: 'over',
+                label: 'Over',
+                count: 2,
+                total: 2,
+                wipLimit: 1,
+                cards: [
+                  { key: '4', title: 'C' },
+                  { key: '5', title: 'D' },
+                ],
+              },
+            ],
+          }) as never
+        }
+      />,
+    )
+
+    await screen.findByText('Solo')
+    expect(document.body.textContent).toContain('1 card')
+    expect(document.body.textContent).not.toContain('1 cards')
+    expect(document.body.textContent).toContain('2 cards')
+    expect(document.body.textContent).toContain('Over the limit of 1 card')
+  })
+
   it('picks up a card with Space, moves it with the arrows and saves the drop', async () => {
     const executeJson = vi.spyOn(actions, 'executeJson').mockResolvedValue({ ok: true })
     renderWith(<RenderComponent component={board() as never} />)

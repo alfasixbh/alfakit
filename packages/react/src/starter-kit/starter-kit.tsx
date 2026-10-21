@@ -8,6 +8,7 @@ import {
   resolveRequestErrorNotification,
   starterKitBreadcrumbsFromProps,
   syncStarterKitPage,
+  usesStarterKitHostLayout,
   type AlfakitOptions,
   type AlfakitPageProps,
   type StarterKitBreadcrumb,
@@ -23,7 +24,11 @@ import {
   type AnyComponent,
 } from '../context'
 import { AlfakitRoot } from '../create-alfakit'
-import { MAX_WIDTHS, type AppLayoutProps } from '../layouts/app-layout'
+import type { AppLayoutProps } from '../layouts/app-layout'
+import { AuthLayout } from '../layouts/auth-layout'
+import { lazyPanelLayouts } from '../layouts/lazy-layouts'
+import { MAX_WIDTHS } from '../layouts/max-widths'
+import { discoverComponents } from '../lib/discovery'
 import { preloadIcons } from '../lib/icons'
 import { cn } from '../lib/utils'
 import { AlfakitPage } from '../pages/page'
@@ -45,6 +50,12 @@ export interface StarterKitPageOptions extends Pick<
    * `null` renders the pages without a host layout.
    */
   layout?: StarterKitLayout | null
+  /**
+   * Auto-registered custom components, as for `createAlfakit({ discover })`: pass
+   * `import.meta.glob('../../alfakit/{fields,columns,entries,widgets,pages,components,blocks}/**\/*.tsx')`
+   * from `resources/js/pages/Alfakit/Page.tsx` and every file there registers under its name.
+   */
+  discover?: AlfakitOptions<AnyComponent>['discover']
 }
 
 /**
@@ -78,14 +89,21 @@ export function StarterKitContentLayout({ children, maxContentWidth }: AppLayout
 let browserContext: AlfakitContextValue | null = null
 
 function createStarterKitContext(options: StarterKitPageOptions): AlfakitContextValue {
+  // The host's layout replaces the panel's. Auth pages (invitations, tenant registration)
+  // keep the panel's card; the fullscreen layout loads on demand.
+  // Auto-registered files sit between the built-ins and the explicit `components` / `pages`.
+  const discovered = discoverComponents(options.discover)
   const registry = createDefaultRegistry()
+    .registerMany(lazyPanelLayouts)
+    .register('layout:auth', AuthLayout)
     .register('layout:app', StarterKitContentLayout)
+    .registerMany(discovered.components)
     .registerMany(options.components ?? {})
   const translator = new Translator()
 
   return {
     registry,
-    pages: { 'Alfakit/Page': AlfakitPage, ...options.pages },
+    pages: { 'Alfakit/Page': AlfakitPage, ...discovered.pages, ...options.pages },
     translator,
     actions: new ActionRunner({
       endpoints: { action: '', modal: '' },
@@ -155,7 +173,16 @@ export function AlfakitStarterKitRoot({
 
   return (
     <AlfakitProvider value={context}>
-      <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>{children}</AlfakitRoot>
+      {/* The reading direction and language of Alfakit's content only: the host layout around
+          it (sidebar, header) and the app's own pages keep the document's. */}
+      <div
+        data-slot="starter-kit-root"
+        dir={panel?.localization?.direction ?? 'ltr'}
+        lang={panel?.localization?.tag}
+        className="contents"
+      >
+        <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>{children}</AlfakitRoot>
+      </div>
     </AlfakitProvider>
   )
 }
@@ -186,7 +213,7 @@ export function createStarterKitPage(options: StarterKitPageOptions = {}) {
 
   // A layout callback: the host layout (with the page's breadcrumbs), then Alfakit's root.
   AlfakitStarterKitPage.layout = (props: Record<string, unknown>) => [
-    ...(options.layout
+    ...(options.layout && usesStarterKitHostLayout(props)
       ? [[options.layout, { breadcrumbs: starterKitBreadcrumbsFromProps(props) }] as const]
       : []),
     [AlfakitStarterKitRoot, { options }] as const,

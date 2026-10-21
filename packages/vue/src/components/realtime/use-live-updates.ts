@@ -6,7 +6,7 @@ import {
   type RecordKey,
 } from '@alfakit/core'
 import { onMounted, onScopeDispose, shallowRef, watch, type ShallowRef } from 'vue'
-import { usePollComponent } from '../../context'
+import { usePollComponent, useRefreshComponents } from '../../context'
 
 /**
  * Follow `live()` updates of a table or widget: refresh it in place when its records
@@ -22,6 +22,7 @@ export function useLiveUpdates(
   },
 ): { controller: ShallowRef<LiveUpdates | null>; state: ShallowRef<LiveUpdatesState> } {
   const poll = usePollComponent()
+  const refresh = useRefreshComponents()
   const controller = shallowRef<LiveUpdates | null>(null)
   const state = shallowRef<LiveUpdatesState>({ pending: 0, connected: false })
   let stop: (() => void) | null = null
@@ -68,6 +69,7 @@ export function useLiveUpdates(
           target,
           polling,
           poll,
+          refresh,
         })
 
         controller.value = next

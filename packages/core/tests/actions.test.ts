@@ -14,15 +14,19 @@ import type { ActionSchema } from '../src/schema/actions'
 import { isField, type SchemaComponent } from '../src/schema/components'
 
 const calls: { url: string; finish: () => void }[] = []
-const jsonCalls: { url: string; body: Record<string, unknown> }[] = []
+const jsonCalls: { url: string; body: Record<string, unknown>; query?: Record<string, unknown> }[] =
+  []
 
 vi.mock('../src/http', async (importOriginal) => {
   const original = await importOriginal<typeof Http>()
 
   return {
     ...original,
-    requestJson: async (url: string, options: { body?: Record<string, unknown> } = {}) => {
-      jsonCalls.push({ url, body: options.body ?? {} })
+    requestJson: async (
+      url: string,
+      options: { body?: Record<string, unknown>; query?: Record<string, unknown> } = {},
+    ) => {
+      jsonCalls.push({ url, body: options.body ?? {}, query: options.query })
 
       return { result: 'ok' }
     },
@@ -104,6 +108,29 @@ it('sends the all-records selection with JSON actions', async () => {
   await runner.executeJson(save, { token: 't', component: 'table', records: [], allRecords: true })
 
   expect(jsonCalls[0]?.body).toMatchObject({ allRecords: 1, bulk: 1 })
+})
+
+it('sends the bulk selection when it opens a bulk action modal', async () => {
+  const runner = new ActionRunner({ endpoints: { action: '/actions', modal: '/modal' } })
+  const activate: ActionSchema = { type: 'BulkAction', name: 'activate', hasAction: true }
+
+  jsonCalls.length = 0
+  await runner.openModal(activate, { token: 't', component: 'table', records: [3, 5] })
+  expect(jsonCalls[0]?.url).toBe('/modal')
+  expect(jsonCalls[0]?.query).toMatchObject({ action: 'activate', bulk: 1, records: [3, 5] })
+
+  jsonCalls.length = 0
+  await runner.openModal(activate, {
+    token: 't',
+    component: 'table',
+    records: [],
+    allRecords: true,
+  })
+  expect(jsonCalls[0]?.query).toMatchObject({ bulk: 1, allRecords: 1 })
+
+  jsonCalls.length = 0
+  await runner.openModal(save, { token: 't', component: 'table', record: 3 })
+  expect(jsonCalls[0]?.query).not.toHaveProperty('bulk', 1)
 })
 
 it('binds key bindings only outside record rows', () => {

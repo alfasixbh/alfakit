@@ -1,5 +1,5 @@
 import type { BaseField, FieldAriaAttributes, FormState, FormStore } from '@alfakit/core'
-import { fieldAria, fieldDomId } from '@alfakit/core'
+import { fieldAria, fieldDomId, fieldError } from '@alfakit/core'
 import {
   computed,
   inject,
@@ -70,7 +70,7 @@ export function useField<T = unknown>(field: MaybeRefOrGetter<BaseField>): Field
     return current as T
   })
 
-  const error = computed(() => state.value.errors[path]?.[0])
+  const error = computed(() => fieldError(state.value.errors, path))
   // Fields stay enabled during a live refresh: the store keeps edits made while the request
   // is in flight, so locking inputs would only swallow keystrokes.
   const disabled = computed(() => Boolean(toValue(field).disabled))

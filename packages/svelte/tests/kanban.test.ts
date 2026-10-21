@@ -81,6 +81,43 @@ describe('kanban', () => {
     expect(await screen.findByText('Write docs')).toBeInTheDocument()
   })
 
+  it('says 1 card and 2 cards, and the limit in the singular', async () => {
+    renderBoard(
+      board({
+        columns: [
+          { key: 'one', label: 'One', count: 1, total: 1, cards: [{ key: '1', title: 'Solo' }] },
+          {
+            key: 'two',
+            label: 'Two',
+            count: 2,
+            total: 2,
+            cards: [
+              { key: '2', title: 'A' },
+              { key: '3', title: 'B' },
+            ],
+          },
+          {
+            key: 'over',
+            label: 'Over',
+            count: 2,
+            total: 2,
+            wipLimit: 1,
+            cards: [
+              { key: '4', title: 'C' },
+              { key: '5', title: 'D' },
+            ],
+          },
+        ],
+      }),
+    )
+
+    await screen.findByText('Solo')
+    expect(document.body.textContent).toContain('1 card')
+    expect(document.body.textContent).not.toContain('1 cards')
+    expect(document.body.textContent).toContain('2 cards')
+    expect(document.body.textContent).toContain('Over the limit of 1 card')
+  })
+
   it('renders columns and cards for a widget', async () => {
     const widget: KanbanWidgetSchema = {
       type: 'Kanban',
@@ -174,6 +211,23 @@ describe('kanban', () => {
       'false',
     )
     trigger.mockRestore()
+  })
+
+  it('marks the filters button with its theming hook', async () => {
+    renderBoard(
+      board({
+        filters: {
+          components: [
+            { type: 'TextInput', key: 'q', name: 'q', statePath: 'q', label: 'Owner' } as never,
+          ],
+          state: { q: null },
+        },
+      }),
+    )
+
+    const button = await screen.findByRole('button', { name: /Filters/ })
+
+    expect(button).toHaveAttribute('data-slot', 'kanban-filters')
   })
 
   it('searches through the fetch action', async () => {

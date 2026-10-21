@@ -341,6 +341,44 @@ describe('Builder block search', () => {
 })
 
 describe('Builder block actions menu', () => {
+  it('refreshes the server-made summary when an item of a block with a summary collapses', async () => {
+    const { store } = renderForm(
+      [
+        field('Builder', 'content', {
+          items: [],
+          blocks: [
+            { name: 'note', label: 'Note', schema: [], state: { type: 'note', data: {} } },
+            {
+              name: 'quote',
+              label: 'Quote',
+              schema: [],
+              state: { type: 'quote', data: {} },
+              summary: true,
+            },
+          ],
+          blockLabels: true,
+          collapsible: true,
+          addable: true,
+          deletable: true,
+          reorderable: true,
+        }),
+      ],
+      {
+        content: [
+          { type: 'note', data: {} },
+          { type: 'quote', data: {} },
+        ],
+      },
+    )
+    const refresh = vi.spyOn(store, 'refresh').mockResolvedValue(undefined as never)
+
+    await fireEvent.click(screen.getAllByRole('button', { name: 'Collapse' })[0]!)
+    expect(refresh).not.toHaveBeenCalled()
+
+    await fireEvent.click(screen.getAllByRole('button', { name: 'Collapse' })[0]!)
+    expect(refresh).toHaveBeenCalledWith('content')
+  })
+
   it('puts the item actions in a menu, shows the summary and adds the first search match', async () => {
     const { store } = renderForm(
       [

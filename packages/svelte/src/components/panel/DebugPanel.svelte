@@ -76,8 +76,8 @@
           variant="ghost"
           size="icon"
           aria-label={t('debug.open', {}, 'Open debug panel')}
-          data-slot="debug-toggle"
           {...triggerProps}
+          data-slot="debug-toggle"
         >
           <BugIcon />
         </Button>

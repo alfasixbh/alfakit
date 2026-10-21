@@ -394,11 +394,19 @@ export class ActionRunner {
     action: ActionSchema,
     context: ActionContext,
   ): Promise<ActionModalSchema | ActionModalCancelledResponse> {
+    // Bulk actions send their selection (and, for "select all", the page's table state), so
+    // the server resolves the bulk action rather than a record action and fills `$records`.
+    const records = context.records
+    const isBulk = records !== undefined
     const params = {
       token: context.token,
       component: context.component,
       action: actionPath(action, context),
       record: context.record ?? undefined,
+      records: records !== undefined && records.length > 0 ? records : undefined,
+      allRecords: context.allRecords ? 1 : undefined,
+      bulk: isBulk ? 1 : undefined,
+      tableQuery: isBulk ? currentPageQuery() : undefined,
       arguments: context.arguments,
     }
     const mountedData = this.mountedData(context)

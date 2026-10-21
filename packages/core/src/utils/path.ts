@@ -131,11 +131,18 @@ export function joinPath(...segments: PathSegment[]): string {
 
 /**
  * Replace the Repeater template placeholder with a concrete index, deeply, in any
- * string value of the object (state paths, keys, ids).
+ * string value of the object (state paths, keys, ids). Only the first placeholder of each
+ * string is this level's: a repeater inside a builder block template has item paths like
+ * `content.__INDEX__.data.items.__INDEX__.question`, whose second placeholder is filled
+ * in when an item is added to that repeater.
  */
 export function replacePlaceholder<T>(value: T, placeholder: string, replacement: string): T {
   if (typeof value === 'string') {
-    return value.split(placeholder).join(replacement) as T
+    const at = value.indexOf(placeholder)
+
+    return (
+      at === -1 ? value : value.slice(0, at) + replacement + value.slice(at + placeholder.length)
+    ) as T
   }
 
   if (Array.isArray(value)) {
@@ -153,4 +160,33 @@ export function replacePlaceholder<T>(value: T, placeholder: string, replacement
   }
 
   return value
+}
+
+// Instances of a template per index, kept while the template object lives (it is replaced
+// when the server sends a new schema).
+const templateInstances = new WeakMap<object, Map<string, unknown>>()
+
+/**
+ * A Repeater or Builder template with the item index filled in (`replacePlaceholder()`),
+ * the same object for the same template and index. Items the server hasn't seen yet render
+ * from their template on every render: new objects each time made every field below them
+ * render again (and restart work such as the image editor's loading).
+ */
+export function templateForIndex<T extends object>(template: T, index: number | string): T {
+  let instances = templateInstances.get(template)
+
+  if (!instances) {
+    instances = new Map()
+    templateInstances.set(template, instances)
+  }
+
+  const key = String(index)
+  let instance = instances.get(key) as T | undefined
+
+  if (instance === undefined) {
+    instance = replacePlaceholder(template, '__INDEX__', key)
+    instances.set(key, instance)
+  }
+
+  return instance
 }

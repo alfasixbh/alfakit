@@ -14,12 +14,13 @@ import {
   ChevronsRightIcon,
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { useT } from '../../context'
+import { useFormatter, useT } from '../../context'
 import { Icon } from '../../lib/icons'
 import { Button } from '../ui/button'
 
 export function TablePagination({ table }: { table: TableSchema }) {
   const t = useT()
+  const format = useFormatter()
   const pagination = table.pagination
 
   if (!pagination) {
@@ -41,13 +42,17 @@ export function TablePagination({ table }: { table: TableSchema }) {
   const summary = numbered
     ? t(
         'table.showing',
-        { first: pagination.from, last: pagination.to, total: pagination.total },
-        `Showing ${pagination.from}–${pagination.to} of ${pagination.total}`,
+        {
+          first: format.number(pagination.from),
+          last: format.number(pagination.to),
+          total: format.number(pagination.total),
+        },
+        'Showing :first–:last of :total',
       )
     : t(
         'table.showing_range',
-        { first: pagination.from, last: pagination.to },
-        `Showing ${pagination.from}–${pagination.to}`,
+        { first: format.number(pagination.from), last: format.number(pagination.to) },
+        'Showing :first–:last',
       )
 
   return (
@@ -114,7 +119,7 @@ export function TablePagination({ table }: { table: TableSchema }) {
                   onClick={() => visitTable(table.identifier, { page }, ['page'])}
                   aria-current={page === pagination.currentPage ? 'page' : undefined}
                 >
-                  {page}
+                  {format.number(page)}
                 </Button>
               ),
             )}
@@ -169,6 +174,7 @@ function PerPageSelect({
   pagination: AnyPaginationSchema
 }) {
   const t = useT()
+  const format = useFormatter()
 
   if (pagination.pageOptions.length <= 1) return null
 
@@ -188,7 +194,7 @@ function PerPageSelect({
       >
         {pagination.pageOptions.map((option) => (
           <option key={option} value={String(option)}>
-            {option === 'all' ? t('table.all', {}, 'All') : option}
+            {option === 'all' ? t('table.all', {}, 'All') : format.number(option)}
           </option>
         ))}
       </select>
@@ -210,6 +216,7 @@ function AppendingPagination({
   pagination: Extract<AnyPaginationSchema, { mode: 'load-more' | 'infinite' }>
 }) {
   const t = useT()
+  const format = useFormatter()
   const sentinel = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
   const [failed, setFailed] = useState(false)
@@ -290,8 +297,8 @@ function AppendingPagination({
         <span>
           {t(
             'table.showing_range',
-            { first: pagination.from, last: pagination.to },
-            `Showing ${pagination.from}–${pagination.to}`,
+            { first: format.number(pagination.from), last: format.number(pagination.to) },
+            'Showing :first–:last',
           )}
         </span>
         <PerPageSelect table={table} pagination={pagination} />

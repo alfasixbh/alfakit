@@ -4,7 +4,7 @@
 
   // The component's code loads once it is mounted in the browser (never during SSR).
   const loader = lazyLoader<{ source: StarterKitWidgets }>(() =>
-    import('./LoadedTenantSwitcher.svelte').then((module) => module.default),
+    import('./loaded').then((module) => module.LoadedTenantSwitcher),
   )
 </script>
 
@@ -12,6 +12,7 @@
   import { starterKitWidgets } from '@alfakit/core'
   import { page } from '@inertiajs/svelte'
   import Lazy from '../../lib/Lazy.svelte'
+  import { impersonationBannerLoader } from './banner-loader'
   import TenantSwitcherTrigger from './TenantSwitcherTrigger.svelte'
 
   /**
@@ -20,11 +21,19 @@
    */
   let {
     panel,
-  }: { /** The `starterKit()` panel to use (the first one by default). */ panel?: string } =
-    $props()
+  }: {
+    /** The `starterKit()` panel to use (by default the open AlfaKit page's panel, else the first one that has this component). */ panel?: string
+  } = $props()
 
-  const source = $derived(starterKitWidgets(page.props, panel))
+  const source = $derived(starterKitWidgets(page.props, panel, 'tenancy'))
 </script>
+
+<!-- While impersonating, the first header component shows the banner on host pages. -->
+{#if source?.widgets.impersonation}
+  <Lazy loader={impersonationBannerLoader} props={{ source }}>
+    {#snippet fallback()}{/snippet}
+  </Lazy>
+{/if}
 
 {#if source?.widgets.tenancy}
   {@const value = source}

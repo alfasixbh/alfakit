@@ -15,6 +15,10 @@
   const t = useT()
   const sortable = $derived(columns.filter((column) => column.sortable))
   const direction = $derived(table.sort?.direction ?? 'asc')
+  // A default sort on a column the select doesn't list (`created_at`) shows the placeholder.
+  const selected = $derived(
+    sortable.some((column) => column.name === table.sort?.column) ? (table.sort?.column ?? '') : '',
+  )
 </script>
 
 {#if sortable.length > 0}
@@ -22,7 +26,7 @@
     <label class="flex items-center gap-2 text-sm">
       <span class="sr-only">{t('table.sort_by', {}, 'Sort by')}</span>
       <select
-        value={table.sort?.column ?? ''}
+        value={selected}
         class="border-input h-8 rounded-md border bg-transparent px-2 text-sm"
         onchange={(event) => {
           const value = event.currentTarget.value

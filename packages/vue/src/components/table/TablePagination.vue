@@ -10,12 +10,13 @@ import {
 } from '@alfakit/core'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from '@lucide/vue'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { useT } from '../../context'
+import { useFormatter, useT } from '../../context'
 import { Icon } from '../../lib/icons'
 import Button from '../ui/Button.vue'
 
 const props = defineProps<{ table: TableSchema }>()
 const t = useT()
+const format = useFormatter()
 const pagination = computed(() => props.table.pagination)
 
 function pageWindow(current: number, last: number): Array<number | null> {
@@ -66,13 +67,17 @@ const summary = computed(() => {
   return numbered.value
     ? t(
         'table.showing',
-        { first: value.from, last: value.to, total: numbered.value.total },
-        `Showing ${value.from}–${value.to} of ${numbered.value.total}`,
+        {
+          first: format.value.number(value.from),
+          last: format.value.number(value.to),
+          total: format.value.number(numbered.value.total),
+        },
+        'Showing :first–:last of :total',
       )
     : t(
         'table.showing_range',
-        { first: value.from, last: value.to },
-        `Showing ${value.from}–${value.to}`,
+        { first: format.value.number(value.from), last: format.value.number(value.to) },
+        'Showing :first–:last',
       )
 })
 const goTo = (page: number) => visitTable(props.table.identifier, { page }, ['page'])
@@ -173,7 +178,7 @@ onBeforeUnmount(() => observer?.disconnect())
           @change="setPerPage"
         >
           <option v-for="option in pagination.pageOptions" :key="option" :value="String(option)">
-            {{ option === 'all' ? t('table.all', {}, 'All') : option }}
+            {{ option === 'all' ? t('table.all', {}, 'All') : format.number(option) }}
           </option>
         </select>
       </label>
@@ -251,7 +256,7 @@ onBeforeUnmount(() => observer?.disconnect())
             size="icon-sm"
             :aria-current="page === numbered.currentPage ? 'page' : undefined"
             @click="goTo(page)"
-            >{{ page }}</Button
+            >{{ format.number(page) }}</Button
           >
         </template>
       </template>

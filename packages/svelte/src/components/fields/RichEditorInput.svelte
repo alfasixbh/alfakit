@@ -24,6 +24,7 @@
     toolbarPanel,
     panelUploadOptions,
     uploadTemporaryFile,
+    documentNonce,
   } from '@alfakit/core'
   import EraserIcon from '@lucide/svelte/icons/eraser'
   import { Editor, type Extensions } from '@tiptap/core'
@@ -182,6 +183,8 @@
 
     editor = new Editor({
       element,
+      // TipTap injects its base CSS; with the page's CSP nonce a nonce-based policy allows it.
+      injectNonce: documentNonce(),
       extensions: [
         StarterKit.configure({ link: false }),
         Link.configure(linkExtensionOptions(untrack(() => component.linkProtocols))),
@@ -259,21 +262,26 @@
     rich.suggestions.destroy()
   })
 
-  // Keep editor in sync when the server refreshes the state.
+  // Keep editor in sync when the server refreshes the state. Only `field.value` and the
+  // editor are dependencies: `setContent()` mounts node views (resizable images) whose
+  // reads would otherwise become this effect's, and re-run it until Svelte gives up
+  // (effect_update_depth_exceeded, seen after saving a form with an uploaded image).
   $effect(() => {
     const value = field.value
     const instance = editor
 
     if (!instance) return
 
-    const current = editorToState(instance)
-    const same = untrack(() => isJson)
-      ? JSON.stringify(toEditorDocument(value)) === JSON.stringify(current)
-      : (value ?? '') === (current ?? '')
+    untrack(() => {
+      const current = editorToState(instance)
+      const same = isJson
+        ? JSON.stringify(toEditorDocument(value)) === JSON.stringify(current)
+        : (value ?? '') === (current ?? '')
 
-    if (!same) {
-      instance.commands.setContent(stateToContent(value), { emitUpdate: false })
-    }
+      if (!same) {
+        instance.commands.setContent(stateToContent(value), { emitUpdate: false })
+      }
+    })
   })
 
   $effect(() => {

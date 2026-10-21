@@ -1,7 +1,7 @@
 import { LiveUpdates, shownRecordKeys, type LiveUpdatesSchema, type RecordKey } from '@alfakit/core'
 import { ArrowUpIcon } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
-import { useChoice, usePollComponent } from '../../context'
+import { useChoice, usePollComponent, useRefreshComponents } from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { Button } from '../ui/button'
 
@@ -16,15 +16,16 @@ export function useLiveUpdates(
   options: { polling?: boolean; records?: ReadonlyArray<{ key?: RecordKey }> | null } = {},
 ): LiveUpdates | null {
   const poll = usePollComponent()
+  const refresh = useRefreshComponents()
   const key = live ? JSON.stringify(live) : ''
   const polling = options.polling
   const records = options.records
 
   const controller = useMemo(
-    () => (live ? new LiveUpdates({ live, target, polling, poll }) : null),
+    () => (live ? new LiveUpdates({ live, target, polling, poll, refresh }) : null),
     // `live` is compared by value (`key`): a reload brings a new object with the same settings.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [key, target, polling, poll],
+    [key, target, polling, poll, refresh],
   )
 
   // Updates of records on other pages don't refresh the table.

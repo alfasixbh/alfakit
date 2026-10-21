@@ -56,7 +56,7 @@ const registry = useOptionalRegistry()
 const form = useOptionalFormStore()
 const context = useFieldActionContext(() => props.component)
 const runItemAction = useRunItemAction(context)
-const fallbacks = useItemActionFallbacks()
+const fallbacks = useItemActionFallbacks('builder')
 const serverItemOf = (index: number) => {
   const server = props.component.items[index]
 
@@ -195,6 +195,19 @@ const onDrop = (index: number) => {
 }
 const setAllCollapsed = (value: boolean) => {
   collapsed.value = Object.fromEntries(items.value.map((_, index) => [index, value]))
+  if (value) refreshSummaries(items.value.map((_, index) => index))
+}
+// Summaries are made on the server: collapsing items whose block has one brings them up
+// to date with the edits.
+const refreshSummaries = (indexes: number[]) => {
+  if (indexes.some((index) => blockOf(items.value[index]?.type ?? '')?.summary)) {
+    void form?.refresh(props.component.statePath)
+  }
+}
+const toggleCollapsed = (index: number) => {
+  const collapse = !isCollapsed(index)
+  collapsed.value = { ...collapsed.value, [index]: collapse }
+  if (collapse) refreshSummaries([index])
 }
 
 // Previews (`blockPreviews()`): server HTML or a registered `builder-preview:{name}`.
@@ -356,7 +369,7 @@ const previewIsButton = computed(() => !props.component.interactivePreviews && !
                 @move="moves.moveWithButton"
                 @clone="cloneItem(index)"
                 @delete="removeItem(index)"
-                @toggle="collapsed = { ...collapsed, [index]: !isCollapsed(index) }"
+                @toggle="toggleCollapsed(index)"
               >
                 <Button
                   v-if="hasPreview(index) && !locked"

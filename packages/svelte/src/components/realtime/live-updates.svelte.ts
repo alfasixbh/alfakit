@@ -6,7 +6,7 @@ import {
   type RecordKey,
 } from '@alfakit/core'
 import { untrack } from 'svelte'
-import { usePollComponent } from '../../context.svelte'
+import { usePollComponent, useRefreshComponents } from '../../context.svelte'
 
 export interface LiveUpdatesBinding {
   readonly controller: LiveUpdates | null
@@ -27,6 +27,7 @@ export function useLiveUpdates(
   },
 ): LiveUpdatesBinding {
   const poll = usePollComponent()
+  const refresh = useRefreshComponents()
   let controller = $state.raw<LiveUpdates | null>(null)
   let state = $state.raw<LiveUpdatesState>({ pending: 0, connected: false })
 
@@ -53,6 +54,7 @@ export function useLiveUpdates(
       target,
       polling,
       poll,
+      refresh,
     })
 
     controller = next

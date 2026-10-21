@@ -13,13 +13,14 @@
   import ChevronRightIcon from '@lucide/svelte/icons/chevron-right'
   import ChevronsLeftIcon from '@lucide/svelte/icons/chevrons-left'
   import ChevronsRightIcon from '@lucide/svelte/icons/chevrons-right'
-  import { useT } from '../../context.svelte'
+  import { useFormatter, useT } from '../../context.svelte'
   import Icon from '../../lib/Icon.svelte'
   import { Button } from '../ui/button'
 
   let { table }: { table: TableSchema } = $props()
 
   const t = useT()
+  const format = useFormatter()
   const pagination = $derived(table.pagination)
 
   function pageWindow(current: number, last: number): Array<number | null> {
@@ -129,13 +130,20 @@
         >{numbered
           ? t(
               'table.showing',
-              { first: pagination.from, last: pagination.to, total: numbered.total },
-              `Showing ${pagination.from}–${pagination.to} of ${numbered.total}`,
+              {
+                first: format.current.number(pagination.from),
+                last: format.current.number(pagination.to),
+                total: format.current.number(numbered.total),
+              },
+              'Showing :first–:last of :total',
             )
           : t(
               'table.showing_range',
-              { first: pagination.from, last: pagination.to },
-              `Showing ${pagination.from}–${pagination.to}`,
+              {
+                first: format.current.number(pagination.from),
+                last: format.current.number(pagination.to),
+              },
+              'Showing :first–:last',
             )}</span
       >
       {#if pagination.mode === 'simple' && pagination.pendingTotal}
@@ -165,7 +173,9 @@
           >
             {#each pagination.pageOptions as option, optionIndex (uniqueKey(pagination.pageOptions, optionIndex, valueKey))}
               <option value={String(option)}
-                >{option === 'all' ? t('table.all', {}, 'All') : option}</option
+                >{option === 'all'
+                  ? t('table.all', {}, 'All')
+                  : format.current.number(option)}</option
               >
             {/each}
           </select>
@@ -236,7 +246,7 @@
                 onclick={() => visitTable(table.identifier, { page }, ['page'])}
                 aria-current={page === numbered.currentPage ? 'page' : undefined}
               >
-                {page}
+                {format.current.number(page)}
               </Button>
             {/if}
           {/each}

@@ -4,7 +4,7 @@
   import ChevronsLeftRightIcon from '@lucide/svelte/icons/chevrons-left-right'
   import ChevronsRightLeftIcon from '@lucide/svelte/icons/chevrons-right-left'
   import PlusIcon from '@lucide/svelte/icons/plus'
-  import { useT } from '../../context.svelte'
+  import { useChoice, useT } from '../../context.svelte'
   import { cssColor } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
   import { cn } from '../../lib/utils'
@@ -30,6 +30,7 @@
   } = $props()
 
   const t = useT()
+  const choice = useChoice()
   const wip = $derived(kanbanWipState(column))
   const shown = $derived(
     column.wipLimit !== undefined ? column.count : filtered ? column.total : column.count,
@@ -43,7 +44,7 @@
             { shown: column.total, count: column.count },
             ':shown of :count cards',
           )
-        : t('kanban.count', { count: column.count }, ':count cards'),
+        : choice('kanban.count', column.count, {}, '{1} :count card|[0,*] :count cards'),
   )
   const style = $derived(column.color ? `border-top-color: ${cssColor(column.color)}` : undefined)
   const toggleLabel = $derived(
@@ -136,7 +137,12 @@
     {/if}
     {#if wip === 'over'}
       <p class="text-destructive text-xs">
-        {t('kanban.wip_over', { limit: column.wipLimit ?? 0 }, 'Over the limit of :limit cards')}
+        {choice(
+          'kanban.wip_over',
+          column.wipLimit ?? 0,
+          { limit: column.wipLimit ?? 0 },
+          '{1} Over the limit of :limit card|[0,*] Over the limit of :limit cards',
+        )}
       </p>
     {/if}
     {#if wip === 'full' && column.wipStrict}

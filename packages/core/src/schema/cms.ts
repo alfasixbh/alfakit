@@ -254,6 +254,8 @@ export interface CmsLivePreviewSchema {
   changedStatus?: CmsEditorStatusSchema | null
   /** The editor's main actions ("Save draft", "Publish"…), run as page actions. */
   actions?: ActionSchema[]
+  /** The actions once the draft differs from the live page ("Publish changes"). */
+  changedActions?: ActionSchema[] | null
 }
 
 /** The page editor's status line: a badge and a plain-language explanation. */

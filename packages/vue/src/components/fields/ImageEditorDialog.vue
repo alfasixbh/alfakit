@@ -11,7 +11,7 @@ import type {
   ImageEditorDragMode,
   ImageEditorState,
 } from '@alfakit/core'
-import { ImageEditor, loadEditorImage } from '@alfakit/core'
+import { ImageEditor, imageEditorOptionsKey, loadEditorImage } from '@alfakit/core'
 import {
   FlipHorizontal2Icon,
   FlipVertical2Icon,
@@ -81,10 +81,14 @@ const release = () => {
   state.value = null
 }
 
+// Restart only for another image or other settings: the schema object itself is new on
+// every render of a template item (a new builder block), which kept restarting the load.
 watch(
-  () => [props.request, props.options] as const,
-  ([request, options], _previous, onCleanup) => {
+  [() => props.request, () => imageEditorOptionsKey(props.options)],
+  ([request], _previous, onCleanup) => {
     if (!request) return
+
+    const options = props.options
 
     let cancelled = false
 

@@ -138,6 +138,46 @@ describe('command palette', () => {
     wrapper.unmount()
   })
 
+  it('highlights the first search result when it arrives, so Enter opens it', async () => {
+    vi.mocked(fetch).mockImplementation(async (url: string | URL | Request) =>
+      String(url).startsWith('/g')
+        ? respond({
+            groups: [
+              { label: 'Orders', results: [{ title: 'Order #42', url: '/admin/orders/42/edit' }] },
+            ],
+          })
+        : respond({ create: [], recent: [] }),
+    )
+    setPageProps({
+      alfakit: {
+        ...panel,
+        ...paletteProps,
+        globalSearch: { keyBindings: ['mod+k'], placeholder: 'Search', debounce: 0 },
+      },
+      page,
+    })
+    const wrapper = mountWithAlfakit(() => h(GlobalSearch))
+    await wrapper.find('button').trigger('click')
+    await until(() => document.querySelector('[role="dialog"] input') !== null)
+    const input = document.querySelector<HTMLInputElement>('[role="dialog"] input')!
+
+    input.value = 'Order 42'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    for (let i = 0; i < 4 && !document.body.textContent?.includes('Order #42'); i++)
+      await until(() => document.body.textContent?.includes('Order #42') ?? false)
+    await until(
+      () =>
+        document
+          .querySelector('[data-slot="command-item"][data-highlighted]')
+          ?.textContent?.includes('Order #42') ?? false,
+    )
+
+    expect(
+      document.querySelector('[data-slot="command-item"][data-highlighted]')?.textContent,
+    ).toContain('Order #42')
+    wrapper.unmount()
+  })
+
   it('opens with mod+k, also while typing', async () => {
     const wrapper = mountWithAlfakit(() => [h('input', { 'aria-label': 'Name' }), h(GlobalSearch)])
 

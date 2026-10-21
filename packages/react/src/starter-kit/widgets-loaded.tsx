@@ -7,8 +7,10 @@ import {
   loadStarterKitPanel,
   loadedStarterKitPanel,
   openRequestedStarterKitSearch,
+  starterKitCopilot,
   starterKitWidgetsPage,
   starterKitWidgetsPanel,
+  takeRequestedStarterKitCopilot,
   tenantNameText,
   type PanelSchema,
   type StarterKitWidgets,
@@ -17,6 +19,7 @@ import { router, usePage } from '@inertiajs/react'
 import { ChevronsUpDownIcon, PlusIcon } from 'lucide-react'
 import { Direction } from 'radix-ui'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { AiCopilot } from '../components/ai/copilot'
 import { NotificationsMenu } from '../components/notifications/notifications-menu'
 import { RealtimeNotifications } from '../components/notifications/realtime-notifications'
 import { GlobalSearch } from '../components/panel/global-search'
@@ -41,6 +44,7 @@ import {
 } from '../context'
 import { Icon } from '../lib/icons'
 import {
+  CopilotTrigger,
   NotificationsTrigger,
   SearchTrigger,
   TenantSwitcherTrigger,
@@ -158,6 +162,24 @@ export function LoadedTenantSwitcher({ source }: WidgetProps) {
   return (
     <WidgetShell panel={panel}>
       {panel.tenancy?.current ? <TenantMenu variant="topbar" /> : <TenantChooser panel={panel} />}
+    </WidgetShell>
+  )
+}
+
+/** The AI copilot (the panel pages' `topbar.end` slot component). */
+export function LoadedCopilot({ source }: WidgetProps) {
+  const panel = useWidgetsPanel(source)
+  // A click or the key bindings before the copilot loaded open it at once.
+  const [autoOpen] = useState(() => takeRequestedStarterKitCopilot())
+  const component = useMemo(() => (panel ? starterKitCopilot(panel) : null), [panel])
+
+  if (!panel) return <CopilotTrigger source={source} />
+
+  if (!component) return null
+
+  return (
+    <WidgetShell panel={panel}>
+      <AiCopilot component={component} autoOpen={autoOpen || takeRequestedStarterKitCopilot()} />
     </WidgetShell>
   )
 }

@@ -8,7 +8,12 @@ import { router } from '@inertiajs/vue3'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { h } from 'vue'
-import { AlfakitNotifications, AlfakitSearch, AlfakitTenantSwitcher } from '../src/starter-kit'
+import {
+  AlfakitCopilot,
+  AlfakitNotifications,
+  AlfakitSearch,
+  AlfakitTenantSwitcher,
+} from '../src/starter-kit'
 import { flush, panel, setPageProps } from './mocks'
 
 const navigation: StarterKitNavigationSchema = {
@@ -91,6 +96,37 @@ afterEach(() => {
 })
 
 describe('starter kit header components', () => {
+  it('shows the impersonation banner once on host pages, with Leave', async () => {
+    const post = vi.spyOn(router, 'post').mockImplementation(() => {})
+    const impersonation = {
+      label: 'Signed in as Dana',
+      leaveLabel: 'Leave',
+      leaveUrl: '/admin/impersonation/leave',
+    }
+    setPageProps({
+      alfakit: undefined,
+      page: undefined,
+      alfakitNavigation: [{ ...navigation, widgets: { ...navigation.widgets!, impersonation } }],
+    })
+
+    const wrapper = mount(() => [h(AlfakitSearch), h(AlfakitNotifications)], {
+      attachTo: document.body,
+    })
+    // The banner's code loads lazily (only while impersonating).
+    await vi.waitFor(async () => {
+      await flush()
+      expect(wrapper.findAll('[data-slot="impersonation-banner"]')).toHaveLength(1)
+    })
+
+    const banners = wrapper.findAll('[data-slot="impersonation-banner"]')
+    expect(banners).toHaveLength(1)
+    expect(banners[0]!.text()).toContain('Signed in as Dana')
+    await banners[0]!.find('button').trigger('click')
+    expect(post).toHaveBeenCalledWith('/admin/impersonation/leave', {}, expect.anything())
+
+    wrapper.unmount()
+  })
+
   it('render nothing for guests', () => {
     setPageProps({ alfakitNavigation: undefined })
 
@@ -180,6 +216,95 @@ describe('starter kit header components', () => {
 
     await until(() => wrapper.text().includes('Choose a tenant'))
     expect(wrapper.text()).toContain('Choose a tenant')
+    wrapper.unmount()
+  })
+
+  it('shows the team menu of a second starterKit() panel without a panel prop', async () => {
+    setPageProps({
+      alfakitNavigation: [
+        navigation,
+        {
+          ...navigation,
+          id: 'app',
+          url: '/app',
+          widgets: {
+            endpoint: '/app/_alfakit/starter-kit',
+            tenancy: { current: null, tenants: [{ id: 1, name: 'Acme', url: '/app/1' }] },
+          },
+        },
+      ],
+    })
+    fetchMock.mockImplementation(async () =>
+      respond({ ...loaded, tenancy: { current: null, tenants: [] } }),
+    )
+
+    const wrapper = mount(AlfakitTenantSwitcher, { attachTo: document.body })
+
+    await until(() => wrapper.text().includes('Choose a tenant'))
+    expect(wrapper.text()).toContain('Choose a tenant')
+    wrapper.unmount()
+  })
+
+  it('opens the AI copilot with mod+j pressed before its code loaded', async () => {
+    const copilot = {
+      type: 'ai:copilot',
+      key: 'ai-copilot',
+      endpoints: {
+        conversations: '/admin/_ai/copilot/conversations',
+        conversation: '/admin/_ai/copilot/conversations/__ID__',
+        send: '/admin/_ai/copilot/messages',
+        confirm: '/admin/_ai/copilot/actions/__ID__/confirm',
+        reject: '/admin/_ai/copilot/actions/__ID__/reject',
+        delete: '/admin/_ai/copilot/conversations/__ID__',
+      },
+      placeholder: '__ID__',
+      keyBindings: ['mod+j'],
+      canUse: true,
+      notice: { status: 'warning', heading: "AI isn't set up yet" },
+    }
+    setPageProps({
+      alfakitNavigation: [
+        {
+          ...navigation,
+          widgets: {
+            ...navigation.widgets!,
+            copilot: { label: 'Open AI copilot', keyBindings: ['mod+j'] },
+          },
+        },
+      ],
+    })
+    fetchMock.mockImplementation(async (url: string) =>
+      url.startsWith('/admin/_alfakit/starter-kit')
+        ? respond({
+            ...loaded,
+            slots: { 'topbar.end': [{ type: 'component', component: copilot }] },
+          })
+        : respond({ conversations: [] }),
+    )
+
+    const wrapper = mount(AlfakitCopilot, { attachTo: document.body })
+
+    expect(document.querySelector('[data-slot="starter-kit-copilot"]')).not.toBeNull()
+    expect(wrapper.find('button[aria-label="Open AI copilot"]').exists()).toBe(true)
+    expect(shortcuts.has('ai.copilot')).toBe(true)
+
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'j', code: 'KeyJ', ctrlKey: true, bubbles: true }),
+    )
+
+    await until(
+      () => document.querySelector('[role="dialog"]')?.textContent?.includes('set up') ?? false,
+    )
+
+    expect(fetchMock).toHaveBeenCalledWith('/admin/_alfakit/starter-kit', expect.anything())
+    expect(document.querySelector('[role="dialog"]')!.textContent).toContain("AI isn't set up yet")
+    wrapper.unmount()
+  })
+
+  it('renders no copilot without the AI plugin', () => {
+    const wrapper = mount(AlfakitCopilot)
+
+    expect(wrapper.html()).toBe('')
     wrapper.unmount()
   })
 })

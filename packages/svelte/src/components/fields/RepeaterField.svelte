@@ -13,7 +13,7 @@
     removeIndexedState,
     removeRepeaterItem,
     reorderedItemKeys,
-    replacePlaceholder,
+    templateForIndex,
     resolveItemAction,
     virtualizeOptions,
     fieldActionContext,
@@ -98,8 +98,7 @@
   useScrollToErroredItem(virtual, () => component.statePath)
 
   const schemaFor = (index: number): SchemaComponent[] =>
-    component.items[index]?.schema ??
-    replacePlaceholder(component.template, '__INDEX__', String(index))
+    component.items[index]?.schema ?? templateForIndex(component.template, index)
 
   const canAdd = $derived(
     component.addable &&

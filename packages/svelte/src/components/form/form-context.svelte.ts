@@ -1,5 +1,5 @@
 import type { BaseField, FieldAriaAttributes, FormState, FormStore } from '@alfakit/core'
-import { fieldAria, fieldDomId, getPath } from '@alfakit/core'
+import { fieldAria, fieldDomId, fieldError, getPath } from '@alfakit/core'
 import { getContext, hasContext, setContext } from 'svelte'
 import { useStore, type StoreBinding } from '../../hooks/store.svelte'
 
@@ -55,7 +55,7 @@ export function useField<T = unknown>(field: BaseField | (() => BaseField)): Fie
   const schema = $derived(typeof field === 'function' ? field() : field)
   const path = $derived(schema.statePath)
   const value = $derived(getPath<T>(state.current.values, path))
-  const error = $derived(state.current.errors[path]?.[0])
+  const error = $derived(fieldError(state.current.errors, path))
   const id = $derived(schema.id ?? fieldDomId(store.idPrefix, path))
   // Fields stay enabled during a live refresh: the store keeps edits made while the request
   // is in flight, so locking inputs would only swallow keystrokes.

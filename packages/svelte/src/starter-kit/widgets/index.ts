@@ -6,13 +6,15 @@
  *
  * ```svelte
  * <script lang="ts">
- *   import { AlfakitNotifications, AlfakitSearch } from '@alfakit/svelte'
+ *   import { AlfakitCopilot, AlfakitNotifications, AlfakitSearch } from '@alfakit/svelte'
  * </script>
  *
  * <AlfakitSearch />
  * <AlfakitNotifications />
+ * <AlfakitCopilot />
  * ```
  */
+export { default as AlfakitCopilot } from './AlfakitCopilot.svelte'
 export { default as AlfakitNotifications } from './AlfakitNotifications.svelte'
 export { default as AlfakitSearch } from './AlfakitSearch.svelte'
 export { default as AlfakitTenantSwitcher } from './AlfakitTenantSwitcher.svelte'

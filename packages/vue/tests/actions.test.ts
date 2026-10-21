@@ -56,6 +56,38 @@ describe('actions', () => {
     wrapper.unmount()
   })
 
+  it('positions the menu of a group with a tooltip at its trigger', async () => {
+    const wrapper = mountWithAlfakit(
+      () =>
+        h(ActionList, {
+          actions: [
+            {
+              type: 'ActionGroup',
+              tooltip: 'Add reaction',
+              icon: 'smile-plus',
+              actions: [{ type: 'Action', name: 'react', label: 'React with 👍' }],
+            },
+          ],
+          context: { token: 't', component: 'page' },
+        }),
+      { attachTo: document.body },
+    )
+
+    document.body
+      .querySelector('button[aria-label="Add reaction"]')
+      ?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    await flush()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flush()
+
+    const menu = document.body.querySelector('[role="menu"]')
+    expect(menu?.textContent).toContain('React with')
+    // Unanchored, reka-ui leaves the menu at its off-screen start position.
+    expect(menu?.parentElement?.getAttribute('style') ?? '').not.toContain('-200%')
+
+    wrapper.unmount()
+  })
+
   it('opens a confirmation modal fetched from the server and submits it', async () => {
     const fetchMock = vi.fn<(input: RequestInfo | URL) => Promise<Response>>(
       async () =>

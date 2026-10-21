@@ -19,6 +19,32 @@ function renderForm(components: SchemaComponent[], state: Record<string, unknown
 }
 
 describe('field behaviour', () => {
+  it('shows the error of one tag (nestedRecursiveRules) on the tags field', async () => {
+    const { store, wrapper } = renderForm(
+      [
+        {
+          type: 'TagsInput',
+          key: 'labels',
+          name: 'labels',
+          statePath: 'labels',
+          label: 'Labels',
+          splitKeys: ['Enter'],
+        } as SchemaComponent,
+      ],
+      { labels: ['valid', 'ab'] },
+    )
+
+    store.setErrors({ 'labels.1': 'The Labels field must be at least 5 characters.' })
+    await nextTick()
+
+    expect(wrapper.text()).toContain('The Labels field must be at least 5 characters.')
+
+    store.setValue('labels', ['valid'])
+    await nextTick()
+
+    expect(wrapper.text()).not.toContain('The Labels field must be at least 5 characters.')
+  })
+
   it('keeps fields enabled while a live refresh is in flight', async () => {
     const { store, wrapper } = renderForm(
       [

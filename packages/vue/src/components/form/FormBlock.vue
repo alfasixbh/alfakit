@@ -151,7 +151,8 @@ const trigger = async (action: ActionSchema, ctx: ActionContext) => {
   submitting = true
   submittedBlock = props.block
   store.setProcessing(true)
-  runner.execute(action, ctx, store.state.values)
+  // A click that blurred a live field started a refresh: send the state it returns.
+  store.whenSettled(() => runner.execute(action, ctx, store.state.values))
 }
 
 // Track this form's own submit visit so unrelated reloads finishing meanwhile (polling,

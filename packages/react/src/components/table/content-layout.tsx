@@ -313,13 +313,17 @@ export function ContentLayoutSort({
   if (sortable.length === 0) return null
 
   const direction = table.sort?.direction ?? 'asc'
+  // A default sort on a column the select doesn't list (`created_at`) shows the placeholder.
+  const selected = sortable.some((column) => column.name === table.sort?.column)
+    ? (table.sort?.column ?? '')
+    : ''
 
   return (
     <div className="flex items-center gap-1">
       <label className="flex items-center gap-2 text-sm">
         <span className="sr-only">{t('table.sort_by', {}, 'Sort by')}</span>
         <select
-          value={table.sort?.column ?? ''}
+          value={selected}
           onChange={(event) =>
             visitTable(
               table.identifier,

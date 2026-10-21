@@ -1,5 +1,6 @@
 import {
   fieldIds,
+  itemActionIcon,
   moveRepeaterItem,
   reorderedItemKeys,
   resolveItemAction,
@@ -51,11 +52,11 @@ export function KeyValueField({ component }: { component: KeyValueSchema }) {
   })
   const deleteAction = resolveItemAction('delete', component, undefined, {
     label: t('form.remove_row', {}, 'Remove row'),
-    icon: 'trash-2',
+    icon: itemActionIcon('key-value', 'delete', 'trash-2'),
   })
   const reorderAction = resolveItemAction('reorder', component, undefined, {
     label: t('form.reorder_item', {}, 'Reorder'),
-    icon: 'grip-vertical',
+    icon: itemActionIcon('key-value', 'reorder', 'grip-vertical'),
   })
 
   const update = (next: Row[]) => setValue(next)

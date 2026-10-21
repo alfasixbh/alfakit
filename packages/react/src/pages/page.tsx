@@ -47,11 +47,15 @@ import { DataTable } from '../components/table/table-block'
 import { Badge } from '../components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { WidgetGrid } from '../components/widgets/widgets-block'
-import { useActionRunner, useAlfakit, useAlfakitProps, usePanel, useT } from '../context'
-import { AppLayout } from '../layouts/app-layout'
-import { AuthLayout } from '../layouts/auth-layout'
+import {
+  useActionRunner,
+  useAlfakit,
+  useAlfakitProps,
+  usePanel,
+  useT,
+  type AnyComponent,
+} from '../context'
 import { BlankLayout } from '../layouts/blank-layout'
-import { FullscreenLayout } from '../layouts/fullscreen-layout'
 import { badgeColorClasses, colorClass } from '../lib/colors'
 import { Icon } from '../lib/icons'
 import { cn } from '../lib/utils'
@@ -138,6 +142,15 @@ export function useBodyAttributes(attributes: Record<string, string> | undefined
   )
 }
 
+/**
+ * The registered layout: `createAlfakit()` registers the panel's (`panelLayouts`), the starter
+ * kit its content layout. Without one the page renders bare: importing the panel layouts here
+ * would put the sidebar and top bar in every starter kit page.
+ */
+function layout(registry: { resolve(key: string): AnyComponent | undefined }, key: string) {
+  return registry.resolve(key) ?? BlankLayout
+}
+
 export function PageShell({ page, children }: { page: PageSchema; children: ReactNode }) {
   const { registry } = useAlfakit()
 
@@ -146,26 +159,22 @@ export function PageShell({ page, children }: { page: PageSchema; children: Reac
   // Each layout can be replaced: createAlfakit({ components: { 'layout:app': MyLayout } }).
   if (page.layout === 'auth') {
     return createElement(
-      registry.resolve('layout:auth') ?? AuthLayout,
+      layout(registry, 'layout:auth'),
       { heading: page.heading ?? page.title, subheading: page.subheading, page },
       children,
     )
   }
 
   if (page.layout === 'blank') {
-    return createElement(registry.resolve('layout:blank') ?? BlankLayout, { page }, children)
+    return createElement(layout(registry, 'layout:blank'), { page }, children)
   }
 
   if (page.layout === 'fullscreen') {
-    return createElement(
-      registry.resolve('layout:fullscreen') ?? FullscreenLayout,
-      { page },
-      children,
-    )
+    return createElement(layout(registry, 'layout:fullscreen'), { page }, children)
   }
 
   return createElement(
-    registry.resolve('layout:app') ?? AppLayout,
+    layout(registry, 'layout:app'),
     { breadcrumbs: page.breadcrumbs, maxContentWidth: page.maxContentWidth, page },
     <>
       {/* `?` overlay, `/`, `g d` and panel command shortcuts (`keyboardShortcuts()`). */}

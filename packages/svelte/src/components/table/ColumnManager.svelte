@@ -247,24 +247,27 @@
     reorder(name, moveColumnInManager(names, name, offset, table.columnGroups))
   }
 
-  const apply = () => {
-    if (orderDraft && orderChanged) void save(orderDraft)
-
-    if (draft && columnDraftChanged(table.visibleColumns, draft)) {
-      visitTable(table.identifier, { columns: draft }, ['page'])
-    }
+  // The order is saved before the visibility visit: both requests share the session, and a
+  // visit running alongside the save would write the old order back when it finishes.
+  const apply = async () => {
+    const order = orderDraft && orderChanged ? orderDraft : null
+    const columns = draft && columnDraftChanged(table.visibleColumns, draft) ? draft : null
 
     draft = null
     orderDraft = null
     announcement = ''
     open = false
+
+    if (order) await save(order)
+
+    if (columns) visitTable(table.identifier, { columns }, ['page'])
   }
 
   // Reset: the defined column order and, for toggleable columns, the default visibility.
-  const reset = () => {
+  const reset = async () => {
     if (reorderable) {
       orderDraft = null
-      void save([])
+      await save([])
     }
 
     if (toggleable) {
@@ -296,7 +299,7 @@
       disabled={saving}
       data-slot="column-manager-reset"
       class={cn(!applyView && 'w-full')}
-      onclick={reset}
+      onclick={() => void reset()}
     />
   {/if}
 {/snippet}
@@ -411,7 +414,7 @@
             view={applyView}
             data-slot="column-manager-apply"
             disabled={!orderChanged && (!draft || !columnDraftChanged(table.visibleColumns, draft))}
-            onclick={apply}
+            onclick={() => void apply()}
           />
         {/if}
       </div>

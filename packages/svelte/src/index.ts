@@ -93,6 +93,8 @@ export { default as Icon } from './lib/Icon.svelte'
 export { loadIcon, registerIcons, resolveIcon, type LucideIconComponent } from './lib/icons'
 export { cn } from './lib/utils'
 export * from './pages'
+// `createAlfakit()` registers these; a registry built by hand for `AlfakitPage` needs them too.
+export { panelLayouts } from './layouts/panel-layouts'
 export { createDefaultRegistry } from './registry'
 export * from './standalone'
 export * from './starter-kit'

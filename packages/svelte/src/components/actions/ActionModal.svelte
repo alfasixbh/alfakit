@@ -176,6 +176,15 @@
   const footerContext = nestedActionContext(context, action)
 
   const run = (createAnother: boolean) => {
+    // A click that blurred a live field started a refresh: send the state it returns.
+    if (form) {
+      form.whenSettled(() => execute(createAnother))
+    } else {
+      execute(createAnother)
+    }
+  }
+
+  const execute = (createAnother: boolean) => {
     const values = form?.state.values ?? {}
     const options = {
       ...(schema.passwordConfirmation ? { password } : {}),

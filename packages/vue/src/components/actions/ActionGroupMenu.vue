@@ -13,7 +13,7 @@ import {
   registerKeyBindings,
   resolveActionSize,
 } from '@alfakit/core'
-import { computed, watchEffect } from 'vue'
+import { computed, useTemplateRef, watchEffect } from 'vue'
 import { useActionRunner, useT } from '../../context'
 import { colorClass, ghostButtonColorClasses, outlineButtonColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
@@ -38,6 +38,16 @@ const props = withDefaults(
     onTrigger?: (action: ActionSchema, context: ActionContext) => void | Promise<void>
   }>(),
   { size: 'default' },
+)
+
+// With a tooltip, the menu's trigger sits inside the tooltip's popper, so reka-ui hands the
+// trigger to the tooltip as its anchor and the menu would open off screen (at its unpositioned
+// `translate(0, -200%)`): anchor the menu to the button explicitly.
+const tooltipTrigger = useTemplateRef<{ $el?: Element }>('tooltipTrigger')
+const tooltipTriggerElement = computed(() =>
+  props.group.tooltip && tooltipTrigger.value?.$el instanceof Element
+    ? tooltipTrigger.value.$el
+    : undefined,
 )
 
 /** `dropdownWidth()`: widths of the dropdown, spelled out for Tailwind. */
@@ -155,6 +165,7 @@ watchEffect((onCleanup) => {
       <TooltipTrigger as-child>
         <DropdownMenuTrigger as-child>
           <Button
+            ref="tooltipTrigger"
             type="button"
             :variant="props.group.variant === 'button' ? 'outline' : 'ghost'"
             :size="buttonSize"
@@ -189,6 +200,7 @@ watchEffect((onCleanup) => {
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent
+      :reference="tooltipTriggerElement"
       :side="placement.side"
       :align="placement.align"
       :side-offset="props.group.dropdownOffset ?? undefined"

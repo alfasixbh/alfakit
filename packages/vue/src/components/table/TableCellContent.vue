@@ -22,7 +22,9 @@ import TextInputCell from './TextInputCell.vue'
 const props = defineProps<CellProps>()
 const registry = useRegistry()
 // A component registered as `column:<type>` replaces the built-in cell renderer.
-const custom = computed(() => registry.resolve(columnRegistryKey(props.column)))
+const custom = computed(() =>
+  props.fromRegistry ? undefined : registry.resolve(columnRegistryKey(props.column)),
+)
 const t = useT()
 // `ViewColumn`: the application component registered under the column's `view()` name.
 const viewName = computed(() => (props.column as { component?: string }).component ?? '')
@@ -106,7 +108,7 @@ const descriptionPosition = computed(
 </script>
 
 <template>
-  <component :is="custom" v-if="custom" v-bind="props" />
+  <component :is="custom" v-if="custom" v-bind="props" :from-registry="true" />
   <component
     :is="view"
     v-else-if="view"

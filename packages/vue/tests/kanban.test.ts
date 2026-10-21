@@ -106,6 +106,46 @@ describe('kanban', () => {
     expect(html).not.toContain('Write docs')
   })
 
+  it('says 1 card and 2 cards, and the limit in the singular', async () => {
+    mountWithAlfakit(() =>
+      h(RenderComponent, {
+        component: board({
+          columns: [
+            { key: 'one', label: 'One', count: 1, total: 1, cards: [{ key: '1', title: 'Solo' }] },
+            {
+              key: 'two',
+              label: 'Two',
+              count: 2,
+              total: 2,
+              cards: [
+                { key: '2', title: 'A' },
+                { key: '3', title: 'B' },
+              ],
+            },
+            {
+              key: 'over',
+              label: 'Over',
+              count: 2,
+              total: 2,
+              wipLimit: 1,
+              cards: [
+                { key: '4', title: 'C' },
+                { key: '5', title: 'D' },
+              ],
+            },
+          ],
+        }) as never,
+      }),
+    )
+    await settle()
+
+    expect(document.body.textContent).toContain('Solo')
+    expect(document.body.textContent).toContain('1 card')
+    expect(document.body.textContent).not.toContain('1 cards')
+    expect(document.body.textContent).toContain('2 cards')
+    expect(document.body.textContent).toContain('Over the limit of 1 card')
+  })
+
   it('renders columns and cards for a widget', async () => {
     const widget: KanbanWidgetSchema = {
       type: 'Kanban',
@@ -157,6 +197,34 @@ describe('kanban', () => {
       record: '1',
       arguments: { kanban: { column: 'doing', position: 'end' } },
     })
+    executeJson.mockRestore()
+    wrapper.unmount()
+  })
+
+  it('keeps the keyboard focus on a picked card moved to another column', async () => {
+    const executeJson = vi.spyOn(actions, 'executeJson').mockResolvedValue({ ok: true })
+    const wrapper = mountWithAlfakit(() => h(RenderComponent, { component: board() as never }))
+    await settle()
+
+    card('Write docs').focus()
+    // The keys go to the focused element, as they do in a browser. To the right, then back
+    // to the left: a column before the card's own is patched (and mounts the card) first.
+    for (const [arrow, column] of [
+      ['ArrowRight', 'doing'],
+      ['ArrowLeft', 'todo'],
+    ] as const) {
+      await key(document.activeElement as HTMLElement, ' ')
+      await key(document.activeElement as HTMLElement, arrow)
+      await flush()
+
+      expect(titles(column)).toContain('Write docs')
+      expect(document.activeElement).toBe(card('Write docs'))
+
+      await key(document.activeElement as HTMLElement, ' ')
+      await flush()
+    }
+
+    await vi.waitFor(() => expect(executeJson).toHaveBeenCalledTimes(2))
     executeJson.mockRestore()
     wrapper.unmount()
   })

@@ -2,6 +2,7 @@ import {
   configureCharts,
   registerRichEditorExtensions,
   starterKitBreadcrumbsFromProps,
+  usesStarterKitHostLayout,
 } from '@alfakit/core'
 import { defineComponent, h, markRaw } from 'vue'
 import AlfakitPage from '../pages/AlfakitPage.vue'
@@ -38,7 +39,7 @@ export function createStarterKitPage(options: StarterKitPageOptions = {}) {
   // A layout callback: the host layout (with the page's breadcrumbs), then Alfakit's root.
   return Object.assign(page, {
     layout: (props: Record<string, unknown>) => [
-      ...(options.layout
+      ...(options.layout && usesStarterKitHostLayout(props)
         ? [[markRaw(options.layout), { breadcrumbs: starterKitBreadcrumbsFromProps(props) }]]
         : []),
       [AlfakitStarterKitRoot, { options }],

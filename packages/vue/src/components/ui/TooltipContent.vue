@@ -4,6 +4,7 @@ import {
   TooltipArrow,
   TooltipContent,
   TooltipPortal,
+  useDirection,
   useForwardPropsEmits,
   type TooltipContentEmits,
   type TooltipContentProps,
@@ -21,13 +22,16 @@ defineOptions({ inheritAttrs: false })
 
 const emits = defineEmits<TooltipContentEmits>()
 const forwarded = useForwardPropsEmits(reactiveOmit(props, 'class'), emits)
+// Portaled outside Alfakit's root: carry the reading direction (starter kit pages and
+// standalone components leave <html dir> to the host).
+const dir = useDirection()
 </script>
 
 <template>
   <TooltipPortal>
     <TooltipContent
       data-slot="tooltip-content"
-      v-bind="{ ...forwarded, ...$attrs }"
+      v-bind="{ dir, ...forwarded, ...$attrs }"
       :class="
         cn(
           'bg-foreground text-background animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--reka-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance',

@@ -89,7 +89,7 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
   const context = useFieldActionContext(component)
   const runner = useActionRunner()
   const runItemAction = useRunItemAction(context)
-  const fallbacks = useItemActionFallbacks(component.addActionLabel)
+  const fallbacks = useItemActionFallbacks(component.addActionLabel, 'builder')
   const resolve = useItemActions(component, fallbacks)
   // Long lists render only the visible blocks (plus a few around them).
   const virtual = useVirtualList(
@@ -142,6 +142,13 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
   }
 
   const blockOf = (type: string) => component.blocks.find((block) => block.name === type)
+  // Summaries are made on the server: collapsing items whose block has one brings them up
+  // to date with the edits.
+  const refreshSummaries = (indexes: number[]) => {
+    if (indexes.some((index) => blockOf(items[index]?.type ?? '')?.summary)) {
+      void form?.refresh(component.statePath)
+    }
+  }
   const underMax = component.maxItems == null || items.length < component.maxItems
   const canAdd = component.addable && !locked && underMax
   const canDelete =
@@ -197,9 +204,10 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
           <CollapseAllActions
             context={context}
             resolve={(name) => resolve(name)}
-            onCollapseAll={() =>
+            onCollapseAll={() => {
               setCollapsed(Object.fromEntries(items.map((_, index) => [index, true])))
-            }
+              refreshSummaries(items.map((_, index) => index))
+            }}
             onExpandAll={() =>
               setCollapsed(Object.fromEntries(items.map((_, index) => [index, false])))
             }
@@ -317,9 +325,10 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
                       onMove={moveWithButton}
                       onClone={() => cloneItem(index)}
                       onDelete={() => removeItem(index)}
-                      onToggle={() =>
+                      onToggle={() => {
                         setCollapsed((state) => ({ ...state, [index]: !isCollapsed }))
-                      }
+                        if (!isCollapsed) refreshSummaries([index])
+                      }}
                     >
                       {hasPreview && !locked && (
                         <Button

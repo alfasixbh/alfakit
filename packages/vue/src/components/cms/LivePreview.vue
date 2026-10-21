@@ -65,6 +65,12 @@ const status = computed(() =>
     ? props.component.changedStatus
     : props.component.status,
 )
+// "Publish changes" appears as soon as an autosave makes the draft differ.
+const actions = computed(() =>
+  snapshot.value.hasChanges && props.component.changedActions
+    ? props.component.changedActions
+    : props.component.actions,
+)
 /** Badge colours of the status (the server's `PageState` colours). */
 const STATUS_COLORS: Record<string, string> = {
   gray: 'border-border bg-muted text-foreground',
@@ -227,8 +233,8 @@ onBeforeUnmount(() => {
             : t('cms.live_preview', {}, 'Live preview')
         }}
       </Button>
-      <div v-if="props.component.actions?.length" @pointerdown.capture="autosave?.flush()">
-        <ActionList :actions="props.component.actions" :context="actionContext" size="sm" />
+      <div v-if="actions?.length" @pointerdown.capture="autosave?.flush()">
+        <ActionList :actions="actions" :context="actionContext" size="sm" />
       </div>
     </div>
     <section

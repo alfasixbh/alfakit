@@ -13,7 +13,7 @@ import {
   removeIndexedState,
   removeRepeaterItem,
   reorderedItemKeys,
-  replacePlaceholder,
+  templateForIndex,
   resolveItemAction,
   virtualizeOptions,
   type ItemActionName,
@@ -82,8 +82,7 @@ const virtual = useVirtualList(
 useScrollToErroredItem(virtual, () => props.component.statePath)
 
 const schemaFor = (index: number): SchemaComponent[] =>
-  props.component.items[index]?.schema ??
-  replacePlaceholder(props.component.template, '__INDEX__', String(index))
+  props.component.items[index]?.schema ?? templateForIndex(props.component.template, index)
 const isCollapsed = (index: number) => collapsed.value[index] ?? props.component.collapsed ?? false
 
 const canAdd = computed(

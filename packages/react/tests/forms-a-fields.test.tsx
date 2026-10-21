@@ -144,6 +144,33 @@ describe('Builder', () => {
     expect(store.getValue('content')).toHaveLength(3)
   })
 
+  it('refreshes the server-made summary when an item of a block with a summary collapses', () => {
+    const base = builder({ collapsible: true })
+    const blocks = (base as unknown as { blocks: Array<Record<string, unknown>> }).blocks
+    const { store } = renderForm(
+      [{ ...base, blocks: [blocks[0]!, { ...blocks[1]!, summary: true }] } as SchemaComponent],
+      {
+        content: [
+          { type: 'heading', data: { text: 'a' } },
+          { type: 'paragraph', data: { text: 'b' } },
+        ],
+      },
+    )
+    const refresh = vi.spyOn(store, 'refresh').mockResolvedValue(undefined as never)
+
+    // The heading block has no summary: nothing to refresh.
+    fireEvent.click(screen.getAllByRole('button', { name: 'Collapse' })[0]!)
+    expect(refresh).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Collapse' })[0]!)
+    expect(refresh).toHaveBeenCalledWith('content')
+
+    // Expanding does not.
+    refresh.mockClear()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Expand' })[0]!)
+    expect(refresh).not.toHaveBeenCalled()
+  })
+
   it('moves through the picker with the keyboard and adds the first search match', () => {
     const { store } = renderForm([builder({ blockSearch: true })], { content: [] })
     const search = screen.getByRole('textbox', { name: 'Search blocks…' })

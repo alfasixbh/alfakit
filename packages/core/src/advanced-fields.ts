@@ -11,7 +11,7 @@ import type { AnyPaginationSchema } from './schema/table'
 import type { TableQuery } from './table'
 import { tableQueryKey } from './table'
 import { cloneState } from './utils/clone'
-import { replacePlaceholder } from './utils/path'
+import { templateForIndex } from './utils/path'
 
 // ---------------------------------------------------------------- Builder
 
@@ -125,7 +125,7 @@ export function builderItemSchema(
 
   const block = component.blocks.find((candidate) => candidate.name === type)
 
-  return block ? replacePlaceholder(block.schema, '__INDEX__', String(index)) : []
+  return block ? templateForIndex(block.schema, index) : []
 }
 
 /** Label of the item at `index`: the server's when it describes the same block. */

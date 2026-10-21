@@ -36,6 +36,11 @@ export interface AlfakitContextValue {
    * their own schemas by token.
    */
   poll?: (target: string, interval: string | number | null | undefined) => () => void
+  /**
+   * Fetches fresh schemas of components now (`live()` tables and widgets after a record
+   * change). Panels leave it out (a partial reload); components outside panels fetch theirs.
+   */
+  refresh?: (targets: string[]) => Promise<void>
 }
 
 export const ALFAKIT_KEY: InjectionKey<AlfakitContextValue> = Symbol('alfakit')
@@ -67,6 +72,11 @@ export function useOptionalAlfakit(): AlfakitContextValue | null {
 /** Poll a component (`table`, `widget:<id>`); the returned function stops it. */
 export function usePollComponent(): NonNullable<AlfakitContextValue['poll']> {
   return inject(ALFAKIT_KEY, null)?.poll ?? pollComponent
+}
+
+/** How `live()` components refresh: their own fetch outside panels, else a partial reload. */
+export function useRefreshComponents(): AlfakitContextValue['refresh'] {
+  return inject(ALFAKIT_KEY, null)?.refresh
 }
 
 export function provideAlfakit(value: AlfakitContextValue): void {

@@ -52,7 +52,15 @@ watch(
   { immediate: true, flush: 'sync' },
 )
 
-watch(localization, (value) => applyDocumentLocale(value), { immediate: true })
+// Starter kit mode: the host app owns `<html lang dir>` (its own pages and layout are not
+// mirrored); `AlfakitStarterKitRoot` puts the direction on Alfakit's own root element.
+watch(
+  localization,
+  (value) => {
+    if (panel.value?.starterKit !== true) applyDocumentLocale(value)
+  },
+  { immediate: true },
+)
 watch(panel, (value) => applyPanelTheme(value), { immediate: true })
 </script>
 

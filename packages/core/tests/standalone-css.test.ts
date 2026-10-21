@@ -47,4 +47,20 @@ describe('standalone.css', () => {
       expect(css.startsWith("@import './components.css';")).toBe(true)
     }
   })
+
+  // Class lists defined in core (stacked-on-mobile tables, filter widths) are only generated
+  // when the app's Tailwind build scans core's dist, next to the renderer's dist.
+  it('scans the core build from every renderer stylesheet', () => {
+    const scansCore = /^@source '\.\.\/\.\.\/core\/dist';$/m
+
+    for (const css of [
+      read('../standalone.css'),
+      read('../../react/src/styles.css'),
+      read('../../vue/src/styles.css'),
+      read('../../svelte/src/styles.css'),
+    ]) {
+      expect(css).toMatch(scansCore)
+    }
+    expect(read('../src/table.ts')).toContain("row: 'max-md:flex max-md:flex-col")
+  })
 })

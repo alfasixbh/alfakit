@@ -10,8 +10,8 @@ import { Link } from '@inertiajs/react'
 import { ChevronDownIcon, MenuIcon } from 'lucide-react'
 import { createElement, useState, type ReactNode } from 'react'
 import { NotificationsMenu } from '../components/notifications/notifications-menu'
-import { Brand } from '../components/panel/app-sidebar'
 import { BottomNav } from '../components/panel/bottom-nav'
+import { Brand } from '../components/panel/brand'
 import { DebugPanelSlot } from '../components/panel/debug-panel-slot'
 import { GlobalSearch } from '../components/panel/global-search'
 import { TopbarLocaleSwitcher } from '../components/panel/locale-switcher'
@@ -34,7 +34,7 @@ import { extraProps } from '../lib/attributes'
 import { Icon } from '../lib/icons'
 import { NewTabHint } from '../lib/new-tab-hint'
 import { cn } from '../lib/utils'
-import { MAX_WIDTHS } from './app-layout'
+import { MAX_WIDTHS } from './max-widths'
 
 export interface TopNavLayoutProps {
   children: ReactNode

@@ -2,57 +2,93 @@
   "headroomPercent": 10,
   "entries": {
     "host:react": {
-      "limitGzipBytes": 24582,
+      "limitGzipBytes": 27117,
+      "limitChunks": 16,
       "baseline": {
-        "rawBytes": 58786,
-        "gzipBytes": 22347,
-        "chunks": 10,
-        "measuredAt": "2026-10-15T14:40:49.245Z"
+        "rawBytes": 63238,
+        "gzipBytes": 24651,
+        "chunks": 14,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
       }
     },
     "host:vue": {
-      "limitGzipBytes": 24345,
+      "limitGzipBytes": 26858,
+      "limitChunks": 11,
       "baseline": {
-        "rawBytes": 58578,
-        "gzipBytes": 22131,
-        "chunks": 7,
-        "measuredAt": "2026-10-15T14:40:49.245Z"
+        "rawBytes": 63707,
+        "gzipBytes": 24416,
+        "chunks": 10,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
       }
     },
     "host:svelte": {
-      "limitGzipBytes": 26641,
+      "limitGzipBytes": 28954,
+      "limitChunks": 16,
       "baseline": {
-        "rawBytes": 63677,
-        "gzipBytes": 24219,
-        "chunks": 11,
-        "measuredAt": "2026-10-15T14:40:49.245Z"
+        "rawBytes": 69647,
+        "gzipBytes": 26321,
+        "chunks": 14,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
       }
     },
     "panel:react": {
-      "limitGzipBytes": 403063,
+      "limitGzipBytes": 403802,
+      "limitChunks": 112,
       "baseline": {
-        "rawBytes": 1115970,
-        "gzipBytes": 366420,
-        "chunks": 97,
-        "measuredAt": "2026-10-15T14:40:49.245Z"
+        "rawBytes": 1113270,
+        "gzipBytes": 367092,
+        "chunks": 101,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
       }
     },
     "panel:vue": {
-      "limitGzipBytes": 379351,
+      "limitGzipBytes": 379296,
+      "limitChunks": 79,
       "baseline": {
-        "rawBytes": 1092958,
-        "gzipBytes": 344864,
-        "chunks": 68,
-        "measuredAt": "2026-10-15T14:40:49.245Z"
+        "rawBytes": 1091009,
+        "gzipBytes": 344814,
+        "chunks": 71,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
       }
     },
     "panel:svelte": {
-      "limitGzipBytes": 400956,
+      "limitGzipBytes": 403091,
+      "limitChunks": 105,
       "baseline": {
-        "rawBytes": 1148191,
-        "gzipBytes": 364505,
-        "chunks": 91,
-        "measuredAt": "2026-10-15T14:40:49.245Z"
+        "rawBytes": 1146113,
+        "gzipBytes": 366446,
+        "chunks": 95,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
+      }
+    },
+    "starter-kit:react": {
+      "limitGzipBytes": 240777,
+      "limitChunks": 126,
+      "baseline": {
+        "rawBytes": 604289,
+        "gzipBytes": 218888,
+        "chunks": 114,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
+      }
+    },
+    "starter-kit:vue": {
+      "limitGzipBytes": 276265,
+      "limitChunks": 147,
+      "baseline": {
+        "rawBytes": 734334,
+        "gzipBytes": 251150,
+        "chunks": 133,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
+      }
+    },
+    "starter-kit:svelte": {
+      "limitGzipBytes": 314496,
+      "limitChunks": 146,
+      "baseline": {
+        "rawBytes": 906518,
+        "gzipBytes": 285905,
+        "chunks": 132,
+        "measuredAt": "2026-10-21T10:22:21.174Z"
       }
     }
   }

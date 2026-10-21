@@ -1,4 +1,4 @@
-import { Popover as PopoverPrimitive } from 'radix-ui'
+import { Direction, Popover as PopoverPrimitive } from 'radix-ui'
 import type { ComponentProps } from 'react'
 import { cn } from '../../lib/utils'
 
@@ -16,9 +16,13 @@ function PopoverContent({
   sideOffset = 4,
   ...props
 }: ComponentProps<typeof PopoverPrimitive.Content>) {
+  // Portaled outside Alfakit's root: carry the reading direction (starter kit pages and
+  // standalone components leave <html dir> to the host).
+  const dir = Direction.useDirection()
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
+        dir={dir}
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}

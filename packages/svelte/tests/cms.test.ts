@@ -5,6 +5,8 @@ import { CmsPage } from '../src/components/cms'
 import CmsContactForm from './CmsContactForm.svelte'
 import CmsLivePreviewHarness from './CmsLivePreviewHarness.svelte'
 import CmsPricingBlock from './CmsPricingBlock.svelte'
+import StandaloneMarkerHarness from './StandaloneMarkerHarness.svelte'
+import Wrapper from './Wrapper.svelte'
 
 describe('CMS page', () => {
   it('renders the header, breadcrumbs, blocks and footer of a page', () => {
@@ -145,6 +147,99 @@ describe('CMS live preview and admin bar', () => {
     )
     await fireEvent.click(within(bar).getByRole('button', { name: 'Hide editing bar' }))
     expect(within(bar).queryByRole('link', { name: 'Edit this page' })).toBeNull()
+  })
+
+  it('switches to "Publish changes" once an autosave makes the draft differ', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          result: { savedAt: '2026-10-14T10:00:00+00:00', hasChanges: true, previewUrl: null },
+          notifications: [],
+          errors: null,
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    )
+    globalThis.__alfakitPageProps = {
+      page: { token: 'tok' },
+      alfakit: { endpoints: { pageCall: '/admin/_alfakit/pages/call' } },
+    }
+    const store = new FormStore(
+      { components: [], state: { title: 'Hi' } },
+      { token: 'tok', component: 'form' },
+    )
+    const save = { type: 'Action', name: 'save', label: 'Save draft' } as const
+
+    render(Wrapper, {
+      props: {
+        component: CmsLivePreviewHarness,
+        props: {
+          store,
+          component: {
+            type: 'CmsLivePreview',
+            key: 'p',
+            previewUrl: null,
+            autosaveMethod: 'cmsAutosave',
+            debounce: 10,
+            hasChanges: false,
+            actions: [save],
+            changedActions: [save, { type: 'Action', name: 'publish', label: 'Publish changes' }],
+          },
+        },
+      },
+    })
+
+    expect(screen.queryByRole('button', { name: 'Publish changes' })).toBeNull()
+
+    store.setValue('title', 'Hello')
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Publish changes' })).toBeInTheDocument(),
+    )
+    expect(screen.getByRole('button', { name: 'Save draft' })).toBeInTheDocument()
+  })
+
+  it("autosaves with the page's token although a standalone widget mounted elsewhere", async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          result: { savedAt: '2026-10-14T10:00:00+00:00', hasChanges: true, previewUrl: null },
+          notifications: [],
+          errors: null,
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    )
+    globalThis.__alfakitPageProps = {
+      page: { token: 'page-token' },
+      alfakit: { endpoints: { pageCall: '/admin/_alfakit/pages/call' } },
+    }
+    // A starter kit's header widgets are standalone components.
+    render(StandaloneMarkerHarness)
+    const store = new FormStore(
+      { components: [], state: { title: 'Hi' } },
+      { token: 'tok', component: 'form' },
+    )
+
+    render(CmsLivePreviewHarness, {
+      props: {
+        store,
+        component: {
+          type: 'CmsLivePreview',
+          key: 'p',
+          previewUrl: null,
+          autosaveMethod: 'cmsAutosave',
+          debounce: 10,
+        },
+      },
+    })
+
+    store.setValue('title', 'Hello')
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalled())
+
+    expect(JSON.parse(String(fetchMock.mock.calls[0]![1]!.body))).toMatchObject({
+      token: 'page-token',
+      method: 'cmsAutosave',
+    })
   })
 
   it('autosaves form changes and opens a resizable preview pane', async () => {

@@ -60,15 +60,22 @@ export interface CellProps {
   recordKey: RecordKey
   token: string
   component: string
+  /**
+   * Set when this renderer was picked from the registry (`column:<type>`): it then renders
+   * the built-in cell instead of looking itself up again, so an ejected `TableCellContent`
+   * registered for a column type doesn't render itself forever.
+   */
+  fromRegistry?: boolean
 }
 
 export function TableCellContent(props: CellProps) {
   const { column } = props
+  const registry = useRegistry()
   // A component registered as `column:<type>` replaces the built-in cell renderer.
-  const Custom = useRegistry().resolve(columnRegistryKey(column))
+  const Custom = props.fromRegistry ? undefined : registry.resolve(columnRegistryKey(column))
 
   if (Custom) {
-    return createElement(Custom, props)
+    return createElement(Custom, { ...props, fromRegistry: true })
   }
 
   switch (column.type) {

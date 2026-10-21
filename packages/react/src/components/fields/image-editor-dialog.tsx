@@ -4,7 +4,7 @@ import type {
   ImageEditorData,
   ImageEditorDragMode,
 } from '@alfakit/core'
-import { ImageEditor, loadEditorImage } from '@alfakit/core'
+import { ImageEditor, imageEditorOptionsKey, loadEditorImage } from '@alfakit/core'
 import {
   FlipHorizontal2Icon,
   FlipVertical2Icon,
@@ -63,9 +63,14 @@ export function ImageEditorDialog({
   const [saving, setSaving] = useState(false)
   const hintId = useId()
 
+  // Restart only for another image or other settings: the schema object itself is new on
+  // every render of a template item (a new builder block), which kept restarting the load.
+  const optionsKey = imageEditorOptionsKey(options)
+
   useEffect(() => {
     if (!request) return
 
+    const options = JSON.parse(optionsKey) as FileUploadImageEditorSchema
     let cancelled = false
 
     loadEditorImage(request.file)
@@ -97,7 +102,7 @@ export function ImageEditorDialog({
         return null
       })
     }
-  }, [request, options])
+  }, [request, optionsKey])
 
   const finish = (file: File | null) => {
     request?.resolve(file)

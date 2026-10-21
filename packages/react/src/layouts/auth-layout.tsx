@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
-import { Brand } from '../components/panel/app-sidebar'
+import { Brand } from '../components/panel/brand'
 import { LocaleSwitcher } from '../components/panel/locale-switcher'
 import { Slot } from '../components/panel/slot'
 import { ThemeToggle } from '../components/panel/theme-toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { usePanel } from '../context'
 import { cn } from '../lib/utils'
-import { MAX_WIDTHS } from './app-layout'
+import { MAX_WIDTHS } from './max-widths'
 
 export interface AuthLayoutProps {
   children: ReactNode

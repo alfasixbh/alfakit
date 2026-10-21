@@ -2,6 +2,8 @@ export interface Debounced<TArgs extends unknown[]> {
   (...args: TArgs): void
   cancel: () => void
   flush: () => void
+  /** A call is waiting for its timer. */
+  readonly pending: boolean
 }
 
 export function debounce<TArgs extends unknown[]>(
@@ -37,6 +39,8 @@ export function debounce<TArgs extends unknown[]>(
 
     pending = null
   }
+
+  Object.defineProperty(debounced, 'pending', { get: () => timer !== null && pending !== null })
 
   debounced.flush = () => {
     if (timer !== null && pending) {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { ColumnSchema, TableSchema } from '@alfakit/core'
-import { ariaSort, columnVisibilityClasses, visitTable } from '@alfakit/core'
+import { ariaSort, columnVisibilityClasses, debounce, visitTable } from '@alfakit/core'
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from '@lucide/vue'
 import { createReusableTemplate } from '@vueuse/core'
-import { ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 import { useT } from '../../context'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -47,17 +47,26 @@ const sort = () => {
   })
 }
 
+// The column search applies after the same pause as the table search; Enter applies at once.
+const pushColumnSearch = debounce(
+  (value: string) =>
+    visitTable(
+      props.table.identifier,
+      { columnSearch: { ...(props.table.columnSearches ?? {}), [props.column.name]: value } },
+      ['page'],
+    ),
+  props.table.searchDebounce,
+)
+
+onBeforeUnmount(() => pushColumnSearch.cancel())
+
+const onColumnSearchInput = (value: string) => {
+  if (!props.table.searchOnBlur) pushColumnSearch(value)
+}
+
 const columnSearch = (event: Event) => {
-  visitTable(
-    props.table.identifier,
-    {
-      columnSearch: {
-        ...(props.table.columnSearches ?? {}),
-        [props.column.name]: (event.target as HTMLInputElement).value,
-      },
-    },
-    ['page'],
-  )
+  pushColumnSearch((event.target as HTMLInputElement).value)
+  pushColumnSearch.flush()
 }
 </script>
 
@@ -138,6 +147,8 @@ const columnSearch = (event: Event) => {
         :placeholder="t('search', {}, 'Search')"
         :aria-label="`${t('search', {}, 'Search')} ${props.column.label}`"
         class="h-7 text-xs font-normal"
+        @update:model-value="onColumnSearchInput"
+        @blur="props.table.searchOnBlur && columnSearch($event)"
         @keydown.enter="columnSearch"
       />
     </div>

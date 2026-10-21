@@ -261,24 +261,28 @@ const move = (name: string, offset: -1 | 1, event: MouseEvent) => {
   reorder(name, moveColumnInManager(names.value, name, offset, props.table.columnGroups))
 }
 
-const apply = () => {
-  if (orderDraft.value && orderChanged.value) void save(orderDraft.value)
-
-  if (draft.value && columnDraftChanged(props.table.visibleColumns, draft.value)) {
-    visitTable(props.table.identifier, { columns: draft.value }, ['page'])
-  }
+// The order is saved before the visibility visit: both requests share the session, and a
+// visit running alongside the save would write the old order back when it finishes.
+const apply = async () => {
+  const order = orderDraft.value && orderChanged.value ? orderDraft.value : null
+  const columns =
+    draft.value && columnDraftChanged(props.table.visibleColumns, draft.value) ? draft.value : null
 
   draft.value = null
   orderDraft.value = null
   announcement.value = ''
   open.value = false
+
+  if (order) await save(order)
+
+  if (columns) visitTable(props.table.identifier, { columns }, ['page'])
 }
 
 // Reset: the defined column order and, for toggleable columns, the default visibility.
-const reset = () => {
+const reset = async () => {
   if (reorderable.value) {
     orderDraft.value = null
-    void save([])
+    await save([])
   }
 
   if (toggleable.value) {

@@ -9,6 +9,7 @@ import {
   attachToolbarKeyboard,
   commandLabel,
   detailsNodeConfigs,
+  documentNonce,
   EditorAttachments,
   fieldIds,
   fileAttachmentError,
@@ -403,6 +404,8 @@ function RichEditorInput({
   useEffect(() => () => attachments.destroy(), [attachments])
 
   const editor = useEditor({
+    // TipTap injects its base CSS; with the page's CSP nonce a nonce-based policy allows it.
+    injectNonce: documentNonce(),
     extensions: [
       StarterKit.configure({ link: false }),
       Link.configure(linkExtensionOptions(component.linkProtocols)),

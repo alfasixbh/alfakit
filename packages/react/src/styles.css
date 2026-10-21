@@ -11,7 +11,20 @@
 /* Built-in themes (alfakit, minimal, soft, corporate, filament); neutral is below. */
 @import './themes.css';
 
+/*
+ * Toast styles, as in the Vue renderer. Sonner also injects them at runtime, which a
+ * nonce-based Content Security Policy blocks; from the stylesheet they always apply.
+ */
+@import 'sonner/dist/styles.css';
+
 @custom-variant dark (&:is(.dark *));
+
+/*
+ * Class lists that live in @alfakit/core (stacked-on-mobile tables, filter and column manager
+ * widths in `table.ts`, …): scan core's build too. Relative to this file in
+ * node_modules/@alfakit/<renderer>/dist, next to node_modules/@alfakit/core.
+ */
+@source '../../core/dist';
 
 /*
  * Grid classes are composed at runtime from schema breakpoints (`columns`, `columnSpan`),
@@ -116,10 +129,10 @@
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.54 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: var(--alfakit-danger, oklch(0.55 0.245 27.325));
+  --destructive: var(--alfakit-danger, oklch(0.5 0.245 27.325));
   --destructive-foreground: var(--alfakit-danger-foreground, oklch(0.985 0 0));
   --border: oklch(0.922 0 0);
   --input: oklch(0.64 0 0);

@@ -5,6 +5,7 @@ import {
   reorderedItemKeys,
   resolveItemAction,
   type KeyValueSchema,
+  itemActionIcon,
 } from '@alfakit/core'
 import { ChevronDownIcon, ChevronUpIcon } from '@lucide/vue'
 import { computed, ref } from 'vue'
@@ -60,13 +61,13 @@ const addAction = computed(() =>
 const deleteAction = computed(() =>
   resolveItemAction('delete', props.component, undefined, {
     label: t('form.remove_row', {}, 'Remove row'),
-    icon: 'trash-2',
+    icon: itemActionIcon('key-value', 'delete', 'trash-2'),
   }),
 )
 const reorderAction = computed(() =>
   resolveItemAction('reorder', props.component, undefined, {
     label: t('form.reorder_item', {}, 'Reorder'),
-    icon: 'grip-vertical',
+    icon: itemActionIcon('key-value', 'reorder', 'grip-vertical'),
   }),
 )
 const deletable = computed(

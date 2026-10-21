@@ -29,7 +29,14 @@ export function useCopilotState(controller: CopilotController): CopilotState {
  * a chat slide-over. Questions, tools and actions run on the server; proposed actions
  * run only when the user confirms them in the chat.
  */
-export function AiCopilot({ component }: { component: AiCopilotSchema }) {
+export function AiCopilot({
+  component,
+  autoOpen = false,
+}: {
+  component: AiCopilotSchema
+  /** Open once mounted (starter kit header: clicked or `mod+j` before its code loaded). */
+  autoOpen?: boolean
+}) {
   const t = useT()
   // One controller per panel: Inertia visits pass new props objects.
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,6 +48,12 @@ export function AiCopilot({ component }: { component: AiCopilotSchema }) {
 
   // The panel mounts the first time the copilot opens (button or shortcut), then stays.
   useEffect(() => controller.subscribe((next) => next.open && setMounted(true)), [controller])
+
+  useEffect(() => {
+    if (autoOpen && component.canUse !== false) controller.open()
+    // Only when it mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [controller])
 
   useEffect(() => {
     const bindings = JSON.parse(keys) as string[]

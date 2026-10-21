@@ -257,6 +257,36 @@ export function tabToReveal(
   return tabs.find((tab) => componentHasErrors(tab, errors))?.key ?? null
 }
 
+/** Whether `key` is the error of one item of the list field at `path` (`labels.2`). */
+function isItemErrorKey(key: string, path: string): boolean {
+  return (
+    key.length > path.length + 1 &&
+    key.startsWith(`${path}.`) &&
+    /^\d+$/.test(key.slice(path.length + 1))
+  )
+}
+
+/**
+ * The validation message a field shows: its own, else the first of its items' (`labels.2`
+ * for a tag refused by `nestedRecursiveRules()`, `attachments.0` for one upload). Those
+ * errors have no field of their own, so without this the form refused to save with no
+ * message anywhere. Deeper paths (`items.0.name`) belong to item fields and are left out.
+ */
+export function fieldError(
+  errors: Readonly<Record<string, readonly string[] | undefined>>,
+  path: string,
+): string | undefined {
+  const own = errors[path]?.[0]
+
+  if (own) return own
+
+  for (const key of Object.keys(errors)) {
+    if (isItemErrorKey(key, path) && errors[key]?.[0]) return errors[key][0]
+  }
+
+  return undefined
+}
+
 /**
  * Framework-agnostic form state: values addressed by `statePath`, validation errors,
  * dirty tracking and server round-trips for `live()` fields.
@@ -403,6 +433,11 @@ export class FormStore {
       const errors = { ...state.errors }
       delete errors[path]
 
+      // Item errors of a list field (`labels.2` from `nestedRecursiveRules()`) go with it.
+      for (const key of Object.keys(errors)) {
+        if (isItemErrorKey(key, path)) delete errors[key]
+      }
+
       return { ...state, values: setPath(state.values, path, value), dirty, errors }
     })
 
@@ -456,7 +491,7 @@ export class FormStore {
   }
 
   getError(path: string): string | undefined {
-    return this.state.errors[path]?.[0]
+    return fieldError(this.state.errors, path)
   }
 
   setProcessing(processing: boolean): void {
@@ -490,7 +525,49 @@ export class FormStore {
    * Send the current state to the server, which re-evaluates closures and
    * `afterStateUpdated` hooks, and replace components + values with the response.
    */
-  async refresh(path?: string): Promise<void> {
+  refresh(path?: string): Promise<void> {
+    const request = this.sendRefresh(path)
+    this.refreshInFlight = request
+
+    void request.finally(() => {
+      if (this.refreshInFlight === request) this.refreshInFlight = null
+    })
+
+    return request
+  }
+
+  /**
+   * Resolves once no live refresh is waiting or in flight: debounced refreshes are sent
+   * now and awaited. Submits wait for it, so a click that blurs a `live(onBlur: true)` field
+   * sends the state the server computed (`$set` in `afterStateUpdated`), not the one before.
+   */
+  async settle(): Promise<void> {
+    for (const debounced of this.liveDebouncers.values()) debounced.flush()
+
+    while (this.refreshInFlight) {
+      await this.refreshInFlight.catch(() => undefined)
+    }
+  }
+
+  /**
+   * Run `callback` once the form is settled (see `settle()`): straight away when no live
+   * refresh is waiting or in flight, so a submit stays synchronous in the usual case.
+   */
+  whenSettled(callback: () => void): void {
+    const waiting = [...this.liveDebouncers.values()].some((debounced) => debounced.pending)
+
+    if (!waiting && !this.refreshInFlight) {
+      callback()
+
+      return
+    }
+
+    void this.settle().then(callback)
+  }
+
+  private refreshInFlight: Promise<void> | null = null
+
+  private async sendRefresh(path?: string): Promise<void> {
     if (!this.options.refreshUrl) {
       return
     }
@@ -531,7 +608,7 @@ export class FormStore {
       if (!this.applyResponse(response, sent, edits)) {
         // The patches didn't fit the tree: ask for the whole form instead.
         this.fingerprints = undefined
-        await this.refresh(path)
+        await this.sendRefresh(path)
 
         return
       }

@@ -172,6 +172,34 @@ describe('RichEditor toolbar buttons', () => {
     )
   })
 
+  it('takes server content with resizable images without re-running its sync forever', async () => {
+    const errors: unknown[] = []
+    const onError = (event: ErrorEvent) => errors.push(event.error ?? event.message)
+    window.addEventListener('error', onError)
+    const { store, editor } = await renderEditor(
+      editorSchema({ resizableImages: true }),
+      '<p>a</p>',
+    )
+
+    // A save answers with the stored image URL (the editor showed a local preview before).
+    store.setValue(
+      'content',
+      '<p>a</p><img src="/storage/01J0000000000000000000000Z.png?signature=1" alt="x">',
+    )
+    await tick()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    store.setValue(
+      'content',
+      '<p>b</p><img src="/storage/01J0000000000000000000000Z.png?signature=2" alt="x">',
+    )
+    await tick()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    window.removeEventListener('error', onError)
+    expect(errors).toEqual([])
+    expect(editor().getHTML()).toContain('signature=2')
+  })
+
   it('refuses attachments of the wrong type or size before uploading', async () => {
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)

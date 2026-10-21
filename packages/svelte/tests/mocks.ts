@@ -1,6 +1,7 @@
 import type { ComponentRegistry } from '@alfakit/core'
 import { ActionRunner, Translator, type AlfakitPageProps, type PanelSchema } from '@alfakit/core'
 import type { AlfakitContextValue, AnyComponent } from '../src/context.svelte'
+import { panelLayouts } from '../src/layouts/panel-layouts'
 import { createDefaultRegistry } from '../src/registry'
 
 export const panel: PanelSchema = {
@@ -67,7 +68,9 @@ export function setPageProps(props: Partial<AlfakitPageProps>): void {
   globalThis.__alfakitPageProps = { ...globalThis.__alfakitPageProps, ...props }
 }
 
-export const registry: ComponentRegistry<AnyComponent> = createDefaultRegistry()
+// The panel's layouts up front, as `createAlfakit()` registers them.
+export const registry: ComponentRegistry<AnyComponent> =
+  createDefaultRegistry().registerMany(panelLayouts)
 export const actions = new ActionRunner({ endpoints: { action: '/a', modal: '/m' } })
 
 export const context: AlfakitContextValue = {

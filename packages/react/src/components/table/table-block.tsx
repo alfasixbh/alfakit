@@ -202,6 +202,20 @@ export function DataTable({
     [table.identifier, table.searchDebounce],
   )
 
+  // Column searches (`searchable(isIndividual: true)`) apply after the same pause as the table
+  // search; Enter applies at once. Callers pass every column's search (the others unchanged).
+  const pushColumnSearch = useMemo(
+    () =>
+      debounce(
+        (columnSearch: Record<string, string>) =>
+          visitTable(table.identifier, { columnSearch }, ['page']),
+        table.searchDebounce,
+      ),
+    [table.identifier, table.searchDebounce],
+  )
+  const searchColumn = (name: string, value: string) =>
+    pushColumnSearch({ ...(table.columnSearches ?? {}), [name]: value })
+
   // Polls refresh only this table (a partial reload of its own schema), share one request
   // with other components on the same interval and pause while the tab is hidden.
   const pollComponent = usePollComponent()
@@ -619,19 +633,18 @@ export function DataTable({
               placeholder={t('search', {}, 'Search')}
               aria-label={`${t('search', {}, 'Search')} ${column.label}`}
               className="h-7 text-xs font-normal"
-              onKeyDown={(event) =>
-                event.key === 'Enter' &&
-                visitTable(
-                  table.identifier,
-                  {
-                    columnSearch: {
-                      ...(table.columnSearches ?? {}),
-                      [column.name]: (event.target as HTMLInputElement).value,
-                    },
-                  },
-                  ['page'],
-                )
+              onChange={(event) => {
+                if (!table.searchOnBlur) searchColumn(column.name, event.target.value)
+              }}
+              onBlur={(event) =>
+                table.searchOnBlur && searchColumn(column.name, event.target.value)
               }
+              onKeyDown={(event) => {
+                if (event.key !== 'Enter') return
+
+                searchColumn(column.name, (event.target as HTMLInputElement).value)
+                pushColumnSearch.flush()
+              }}
             />
           )}
         </div>

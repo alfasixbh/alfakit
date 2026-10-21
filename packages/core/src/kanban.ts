@@ -625,7 +625,9 @@ export class KanbanController {
       const columns = moveKanbanCard(this.state.columns, key, origin) ?? this.state.columns
       const message =
         error instanceof HttpError && error.status === 422
-          ? error.errors[this.board.argumentsKey]?.[0]
+          ? // A `ValidationException` from `beforeCardMoved()` under any key (`move`).
+            (error.errors[this.board.argumentsKey]?.[0] ??
+            Object.values(error.errors).find((messages) => messages?.[0])?.[0])
           : error instanceof HttpError && error.status === 403
             ? this.env.t('kanban.forbidden', {}, 'You are not allowed to move this card.')
             : undefined

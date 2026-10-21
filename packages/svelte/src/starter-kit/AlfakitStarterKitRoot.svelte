@@ -55,6 +55,15 @@
   })
 </script>
 
-<AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>
-  {@render children?.()}
-</AlfakitRoot>
+<!-- The reading direction and language of Alfakit's content only: the host layout around it
+     (sidebar, header) and the app's own pages keep the document's. -->
+<div
+  data-slot="starter-kit-root"
+  dir={pageProps.alfakit?.localization?.direction ?? 'ltr'}
+  lang={pageProps.alfakit?.localization?.tag}
+  class="contents"
+>
+  <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>
+    {@render children?.()}
+  </AlfakitRoot>
+</div>

@@ -1,4 +1,5 @@
 import { requestJson } from './http'
+import type { AiCopilotSchema } from './schema/ai'
 import type {
   PageSchema,
   PanelSchema,
@@ -9,14 +10,15 @@ import type {
 import type { StandaloneComponentSchema } from './schema/standalone'
 import type { WidgetsBlock } from './schema/widgets'
 import { SHORTCUT_IDS, shortcuts } from './shortcuts'
-import { starterKitNavigations } from './starter-kit'
+import { preferCurrentStarterKitPanel, starterKitNavigations } from './starter-kit'
 
 /**
  * The drop-in header components of starter kit mode: `<AlfakitSearch />` (the command
- * palette and global search), `<AlfakitNotifications />` (the database notifications bell)
- * and `<AlfakitTenantSwitcher />`. They render on every page of the host application, from
- * the `widgets` of the shared `alfakitNavigation` prop; their code and the panel data
- * (translations, endpoints, the palette, realtime) load the first time one of them renders.
+ * palette and global search), `<AlfakitNotifications />` (the database notifications bell),
+ * `<AlfakitTenantSwitcher />` and `<AlfakitCopilot />` (the AI plugin's copilot). They render
+ * on every page of the host application, from the `widgets` of the shared
+ * `alfakitNavigation` prop; their code and the panel data (translations, endpoints, the
+ * palette, realtime) load the first time one of them renders.
  * Shared by the three renderers.
  */
 
@@ -27,13 +29,24 @@ export interface StarterKitWidgets {
 }
 
 /**
- * The header components' data of a `starterKit()` panel (the first one with any unless
- * `panelId` is given), or null for guests and pages of other panels.
+ * The header components' data of a `starterKit()` panel, or null for guests and pages of
+ * other panels. Without `panelId`: the open AlfaKit page's panel, else the first one with
+ * any; with `part` (`'tenancy'` for the tenant switcher), the first panel that has that
+ * part when the preferred one hasn't, so a team workspace on a second panel still gets its
+ * switcher on the host's own pages.
  */
-export function starterKitWidgets(props: unknown, panelId?: string): StarterKitWidgets | null {
-  const navigation = starterKitNavigations(props).find(
+export function starterKitWidgets(
+  props: unknown,
+  panelId?: string,
+  part?: keyof StarterKitWidgetsSchema,
+): StarterKitWidgets | null {
+  const entries = preferCurrentStarterKitPanel(starterKitNavigations(props), props).filter(
     (entry) => entry.widgets !== undefined && (panelId === undefined || entry.id === panelId),
   )
+  const navigation =
+    (part !== undefined && panelId === undefined
+      ? entries.find((entry) => entry.widgets?.[part] !== undefined)
+      : undefined) ?? entries[0]
 
   return navigation?.widgets ? { navigation, widgets: navigation.widgets } : null
 }
@@ -55,22 +68,36 @@ export function loadStarterKitPanel(endpoint: string): Promise<PanelSchema> {
   let request = requests.get(endpoint)
 
   if (!request) {
-    request = requestJson<PanelSchema>(endpoint).then(
-      (panel) => {
+    request = requestJson<unknown>(endpoint)
+      .then((panel) => {
+        // A redirect to the sign-in page (expired or ended session) answers HTML, not the
+        // panel: refuse it, so the components keep their trigger instead of crashing.
+        if (!isPanelData(panel)) {
+          throw new Error(`The starter kit endpoint ${endpoint} did not answer the panel data.`)
+        }
+
         panels.set(endpoint, panel)
 
         return panel
-      },
-      (error: unknown) => {
+      })
+      .catch((error: unknown) => {
         // A failed request (offline, expired session) is retried by the next render.
         requests.delete(endpoint)
         throw error
-      },
-    )
+      })
     requests.set(endpoint, request)
   }
 
   return request
+}
+
+function isPanelData(value: unknown): value is PanelSchema {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as { endpoints?: unknown }).endpoints === 'object' &&
+    (value as { endpoints?: unknown }).endpoints !== null
+  )
 }
 
 /** The panel data once loaded, or null (so remounts render straight away). */
@@ -163,6 +190,67 @@ export function openRequestedStarterKitSearch(): boolean {
   searchRequested = false
 
   return shortcuts.trigger(SHORTCUT_IDS.palette)
+}
+
+// ---------------------------------------------------------------- Copilot
+
+/** The copilot's shortcut id (the loaded `ai:copilot` component registers the same one). */
+export const STARTER_KIT_COPILOT_SHORTCUT = 'ai.copilot'
+
+let copilotRequested = false
+
+/**
+ * Register the copilot's key bindings (`mod+j`) before its code has loaded: pressing them
+ * (or clicking the button) records the request, and the copilot opens once it has loaded.
+ * The loaded copilot registers the same id, so it replaces this registration.
+ */
+export function registerStarterKitCopilotShortcut(
+  keys: string[],
+  label: string,
+  onRequest?: () => void,
+): () => void {
+  if (keys.length === 0) return () => {}
+
+  return shortcuts.register({
+    id: STARTER_KIT_COPILOT_SHORTCUT,
+    keys,
+    label,
+    group: 'general',
+    allowInInputs: true,
+    handler: () => {
+      requestStarterKitCopilot()
+      onRequest?.()
+    },
+  })
+}
+
+/** Ask for the copilot to open as soon as it has loaded. */
+export function requestStarterKitCopilot(): void {
+  copilotRequested = true
+}
+
+/** Whether the copilot was asked for before it loaded (and forget the request). */
+export function takeRequestedStarterKitCopilot(): boolean {
+  const requested = copilotRequested
+
+  copilotRequested = false
+
+  return requested
+}
+
+/**
+ * The copilot component in the loaded panel data: the panel's own pages show it in the
+ * `topbar.end` slot, which starter kit hosts don't render. Null without the AI plugin's
+ * copilot (or when the user may not use it).
+ */
+export function starterKitCopilot(panel: PanelSchema): AiCopilotSchema | null {
+  for (const item of panel.slots?.['topbar.end'] ?? []) {
+    if (item.type === 'component' && item.component.type === 'ai:copilot') {
+      return item.component as unknown as AiCopilotSchema
+    }
+  }
+
+  return null
 }
 
 // ---------------------------------------------------------------- Dashboard widgets

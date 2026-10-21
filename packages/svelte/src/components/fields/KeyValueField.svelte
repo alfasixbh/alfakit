@@ -6,6 +6,7 @@
     reorderedItemKeys,
     resolveItemAction,
     type KeyValueSchema,
+    itemActionIcon,
   } from '@alfakit/core'
   import ChevronDownIcon from '@lucide/svelte/icons/chevron-down'
   import ChevronUpIcon from '@lucide/svelte/icons/chevron-up'
@@ -64,13 +65,13 @@
   const deleteAction = $derived(
     resolveItemAction('delete', component, undefined, {
       label: t('form.remove_row', {}, 'Remove row'),
-      icon: 'trash-2',
+      icon: itemActionIcon('key-value', 'delete', 'trash-2'),
     }),
   )
   const reorderAction = $derived(
     resolveItemAction('reorder', component, undefined, {
       label: t('form.reorder_item', {}, 'Reorder'),
-      icon: 'grip-vertical',
+      icon: itemActionIcon('key-value', 'reorder', 'grip-vertical'),
     }),
   )
   const deletable = $derived(component.deletable && !field.readOnly && deleteAction !== null)

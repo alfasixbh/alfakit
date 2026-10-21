@@ -60,6 +60,17 @@ export async function fetchEditableImage(
   }
 }
 
+/**
+ * The image editor's settings as a value, for the editor dialogs to restart only when they
+ * really change. Schemas rendered from a template (a block or repeater item the server
+ * hasn't seen yet) are new objects on every render: depending on the object restarted the
+ * image's loading on each render, so inside a new CMS block the dialog never left its
+ * spinner.
+ */
+export function imageEditorOptionsKey(options: object | null | undefined): string {
+  return JSON.stringify(options ?? null)
+}
+
 /** Decode a file for the editor (EXIF orientation applied by the browser). */
 export async function loadEditorImage(file: Blob): Promise<ImageBitmap> {
   return createImageBitmap(file)

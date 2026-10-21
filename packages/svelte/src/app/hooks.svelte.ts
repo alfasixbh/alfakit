@@ -17,7 +17,7 @@ import {
 } from '@alfakit/core'
 import { untrack } from 'svelte'
 import { showToast } from '../components/notifications/toast'
-import { usePageSchema, usePanel, useT } from '../context.svelte'
+import { usePageReader, useT } from '../context.svelte'
 
 /**
  * Helpers for custom page components (`Page::$component`): call `#[Expose]` methods, reload
@@ -28,12 +28,14 @@ import { usePageSchema, usePanel, useT } from '../context.svelte'
 
 function useRuntime(): () => PageMethodRuntime {
   const t = useT()
+  // Calls start outside initialisation (click handlers, timers): read through a reader.
+  const reader = usePageReader()
 
   // The token is re-issued with every response, so it is read when the call starts.
   return () => ({
-    token: usePageSchema()?.token ?? '',
-    panel: usePanel(),
-    page: usePageSchema(),
+    token: reader.page()?.token ?? '',
+    panel: reader.panel(),
+    page: reader.page(),
     showToast: (notification) => showToast(notification),
     t,
   })

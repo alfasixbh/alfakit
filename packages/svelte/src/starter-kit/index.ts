@@ -3,4 +3,9 @@ export { default as AlfakitWidgets } from './AlfakitWidgets.svelte'
 export { useAlfakitNavigation, type AlfakitNavigation } from './navigation'
 export { createStarterKitLayout, type StarterKitPageOptions } from './starter-kit'
 export { default as StarterKitContentLayout } from './StarterKitContentLayout.svelte'
-export { AlfakitNotifications, AlfakitSearch, AlfakitTenantSwitcher } from './widgets'
+export {
+  AlfakitCopilot,
+  AlfakitNotifications,
+  AlfakitSearch,
+  AlfakitTenantSwitcher,
+} from './widgets'

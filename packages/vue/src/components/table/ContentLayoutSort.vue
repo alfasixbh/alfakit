@@ -14,6 +14,12 @@ const props = defineProps<{ table: TableSchema; columns: ColumnSchema[] }>()
 const t = useT()
 const sortable = computed(() => props.columns.filter((column) => column.sortable))
 const direction = computed(() => props.table.sort?.direction ?? 'asc')
+// A default sort on a column the select doesn't list (`created_at`) shows the placeholder.
+const selected = computed(() =>
+  sortable.value.some((column) => column.name === props.table.sort?.column)
+    ? (props.table.sort?.column ?? '')
+    : '',
+)
 
 const sortBy = (event: Event) => {
   const value = (event.target as HTMLSelectElement).value
@@ -39,7 +45,7 @@ const flip = () =>
     <label class="flex items-center gap-2 text-sm">
       <span class="sr-only">{{ t('table.sort_by', {}, 'Sort by') }}</span>
       <select
-        :value="props.table.sort?.column ?? ''"
+        :value="selected"
         class="border-input h-8 rounded-md border bg-transparent px-2 text-sm"
         @change="sortBy"
       >

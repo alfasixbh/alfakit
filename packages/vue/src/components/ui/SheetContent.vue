@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogOverlay,
   DialogPortal,
+  useDirection,
   useForwardPropsEmits,
   type DialogContentEmits,
   type DialogContentProps,
@@ -35,6 +36,9 @@ const forwarded = useForwardPropsEmits(
   reactiveOmit(props, 'class', 'side', 'showCloseButton'),
   emits,
 )
+// Portaled outside Alfakit's root: carry the reading direction (starter kit pages and
+// standalone components leave <html dir> to the host).
+const dir = useDirection()
 const t = useT()
 </script>
 
@@ -46,7 +50,7 @@ const t = useT()
     />
     <DialogContent
       data-slot="sheet-content"
-      v-bind="{ ...forwarded, ...$attrs }"
+      v-bind="{ dir, ...forwarded, ...$attrs }"
       :class="
         cn(
           'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500',

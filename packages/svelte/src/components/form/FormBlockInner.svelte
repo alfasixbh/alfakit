@@ -118,7 +118,8 @@
     submitting = true
     submittedBlock = untrack(() => block)
     store.setProcessing(true)
-    runner.execute(action, ctx, store.state.values)
+    // A click that blurred a live field started a refresh: send the state it returns.
+    store.whenSettled(() => runner.execute(action, ctx, store.state.values))
   }
 
   // Buttons elsewhere with `formId('form')` (a header "Save") submit through this form.

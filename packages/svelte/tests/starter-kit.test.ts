@@ -5,6 +5,7 @@ import {
   createStarterKitLayout,
   useAlfakitNavigation,
 } from '../src/starter-kit'
+import DirectionDialogHarness from './DirectionDialogHarness.svelte'
 import { panel, setPageProps } from './mocks'
 import StarterKitHarness from './StarterKitHarness.svelte'
 import StarterKitHostLayout from './StarterKitHostLayout.svelte'
@@ -33,6 +34,10 @@ describe('starter kit mode', () => {
     })
     expect(layouts[1]![0]).toBe(AlfakitStarterKitRoot)
     expect(createStarterKitLayout({ layout: null })({ page })).toHaveLength(1)
+    // Sign-in and the other `auth` pages stand on their own, like the host's auth pages.
+    const auth = layout({ page: { ...page, layout: 'auth' } }) as [unknown, unknown][]
+    expect(auth).toHaveLength(1)
+    expect(auth[0]![0]).toBe(AlfakitStarterKitRoot)
   })
 
   it('renders the page content without Alfakit chrome', () => {
@@ -49,6 +54,38 @@ describe('starter kit mode', () => {
     expect(document.querySelector('[data-alfakit-embedded][data-slot="content"]')).not.toBeNull()
     expect(document.querySelector('[data-slot="topbar"]')).toBeNull()
     expect(document.querySelector('[data-sidebar="sidebar"]')).toBeNull()
+  })
+
+  it('mirrors only its own content in a right-to-left language, never the host document', () => {
+    document.documentElement.dir = 'ltr'
+    document.documentElement.lang = 'en'
+    const alfakit = {
+      ...panel,
+      starterKit: true,
+      localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+    }
+    setPageProps({ alfakit, page } as unknown as Partial<AlfakitPageProps>)
+
+    render(StarterKitHarness, { props: { breadcrumbs: [] } })
+
+    // The host's sidebar and its own pages are not right to left: <html> stays the host's.
+    expect(document.documentElement).toHaveAttribute('dir', 'ltr')
+    expect(document.documentElement).toHaveAttribute('lang', 'en')
+    const root = document.querySelector('[data-slot="starter-kit-root"]')
+    expect(root).toHaveAttribute('dir', 'rtl')
+    expect(root).toHaveAttribute('lang', 'ar')
+    expect(root?.querySelector('[data-slot="content"]')).not.toBeNull()
+  })
+
+  it('gives portaled modals and slide-overs the reading direction (they render outside its root)', () => {
+    setPageProps({
+      alfakit: { ...panel, localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] } },
+    } as unknown as Partial<AlfakitPageProps>)
+
+    render(DirectionDialogHarness)
+
+    expect(document.querySelector('[data-slot="dialog-content"]')).toHaveAttribute('dir', 'rtl')
+    expect(document.querySelector('[data-slot="sheet-content"]')).toHaveAttribute('dir', 'rtl')
   })
 
   it('reads the shared navigation for the host sidebar', () => {

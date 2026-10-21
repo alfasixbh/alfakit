@@ -1,5 +1,6 @@
 import { FormStore, type SchemaComponent } from '@alfakit/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
+import FileUploadHarness from './FileUploadHarness.svelte'
 import FormHarness from './FormHarness.svelte'
 import Wrapper from './Wrapper.svelte'
 
@@ -70,6 +71,31 @@ const field = (label: string) => screen.getByLabelText(label) as HTMLInputElemen
 const cropBox = () => document.querySelector<HTMLElement>('[data-slot="image-editor-crop"]')!
 
 describe('image editor', () => {
+  it('keeps loading the image when the field re-renders with an equal schema (a new builder block)', async () => {
+    const component = upload()
+    const store = new FormStore(
+      { components: [component], state: { files: null } },
+      { token: 't', component: 'form' },
+    )
+    const view = render(Wrapper, {
+      props: { component: FileUploadHarness, props: { store, component } },
+    })
+
+    fireEvent.change(view.container.querySelector<HTMLInputElement>('input[type="file"]')!, {
+      target: { files: [new File(['x'], 'a.png', { type: 'image/png' })] },
+    })
+    await waitFor(() => expect(createImageBitmap).toHaveBeenCalledTimes(1))
+
+    // A template item's schema is a new object on every render.
+    const imageEditor = (component as { imageEditor: object }).imageEditor
+    await view.rerender({
+      props: { props: { store, component: { ...component, imageEditor: { ...imageEditor } } } },
+    })
+
+    expect(await screen.findByLabelText('Width')).toBeInTheDocument()
+    expect(createImageBitmap).toHaveBeenCalledTimes(1)
+  })
+
   it('zooms the image under the crop box with the buttons and keys', async () => {
     const { container } = renderUpload(upload())
     await openPicked(container)

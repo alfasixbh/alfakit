@@ -3,7 +3,7 @@ import type { KanbanColumnSchema } from '@alfakit/core'
 import { kanbanWipState } from '@alfakit/core'
 import { ChevronsLeftRightIcon, ChevronsRightLeftIcon, PlusIcon } from '@lucide/vue'
 import { computed } from 'vue'
-import { useT } from '../../context'
+import { useChoice, useT } from '../../context'
 import { cssColor } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -19,6 +19,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ toggle: []; create: [] }>()
 const t = useT()
+const choice = useChoice()
 
 const wip = computed(() => kanbanWipState(props.column))
 const shown = computed(() =>
@@ -41,7 +42,7 @@ const countLabel = computed(() => {
         { shown: column.total, count: column.count },
         ':shown of :count cards',
       )
-    : t('kanban.count', { count: column.count }, ':count cards')
+    : choice('kanban.count', column.count, {}, '{1} :count card|[0,*] :count cards')
 })
 const style = computed(() =>
   props.column.color ? { borderTopColor: cssColor(props.column.color) } : undefined,
@@ -147,10 +148,11 @@ const addLabel = computed(() =>
     </p>
     <p v-if="wip === 'over'" class="text-destructive text-xs">
       {{
-        t(
+        choice(
           'kanban.wip_over',
+          props.column.wipLimit ?? 0,
           { limit: props.column.wipLimit ?? 0 },
-          'Over the limit of :limit cards',
+          '{1} Over the limit of :limit card|[0,*] Over the limit of :limit cards',
         )
       }}
     </p>

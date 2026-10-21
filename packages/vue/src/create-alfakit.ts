@@ -6,6 +6,7 @@ import {
   configureCharts,
   configureRealtime,
   debugRecorder,
+  documentNonce,
   effectiveErrorNotifications,
   initializeAppearance,
   installErrorNotifications,
@@ -27,6 +28,7 @@ import type { App, DefineComponent } from 'vue'
 import AlfakitRoot from './AlfakitRoot.vue'
 import { showToast } from './components/notifications/flash-toasts'
 import { ALFAKIT_KEY, type AlfakitContextValue, type AnyComponent } from './context'
+import { panelLayouts } from './layouts/panel-layouts'
 import { discoverComponents } from './lib/discovery'
 import { preloadIcons } from './lib/icons'
 import AlfakitPage from './pages/AlfakitPage.vue'
@@ -54,6 +56,7 @@ export function bootAlfakit(
   // Auto-registered files sit between the built-ins and the explicit `components` / `pages`.
   const discovered = discoverComponents(options.discover)
   const registry = createDefaultRegistry()
+    .registerMany(panelLayouts)
     .registerMany(discovered.components)
     .registerMany(options.components ?? {})
   const pages: Record<string, AnyComponent> = {
@@ -158,6 +161,8 @@ export function bootAlfakit(
   return createInertiaApp<AlfakitPageProps>({
     title: (title) => title,
     progress: options.progress === undefined ? { color: 'var(--primary)' } : options.progress,
+    // The page's CSP nonce, so the progress bar's injected <style> passes a nonce-based policy.
+    nonce: documentNonce(),
     resolve: (name, page) => {
       const component = pages[name]
 

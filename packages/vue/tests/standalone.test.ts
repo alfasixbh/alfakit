@@ -1,9 +1,10 @@
 import type { StandaloneComponentSchema } from '@alfakit/core'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, nextTick } from 'vue'
 import { Toaster as AppToaster } from 'vue-sonner'
 import contactForm from '../../core/tests/fixtures/standalone/contact-form.json'
 import postsTable from '../../core/tests/fixtures/standalone/posts-table.json'
+import dashboard from '../../core/tests/fixtures/standalone/starter-kit-dashboard.json'
 import { showToast } from '../src/components/notifications/flash-toasts'
 import { AlfakitComponent, AlfakitToaster, configureAlfakit } from '../src/standalone'
 import { flush } from './mocks'
@@ -114,6 +115,30 @@ describe('AlfakitComponent (outside panels)', () => {
     wrapper.unmount()
   })
 
+  it('routes notifications through the layout\'s toaster with :toaster="false"', async () => {
+    const Page = defineComponent({
+      setup: () => () => [h(AppToaster), h(AlfakitToaster, { toaster: false })],
+    })
+    const wrapper = mount(Page, { attachTo: document.body })
+    await flush()
+
+    showToast({ id: 'n2', title: 'Through yours', status: 'success' } as never)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flush()
+
+    const toasts = Array.from(document.querySelectorAll('[data-sonner-toast]')).filter((toast) =>
+      toast.textContent?.includes('Through yours'),
+    )
+
+    expect(toasts).toHaveLength(1)
+    // The app's id-less toaster (sonner's default position, bottom).
+    expect(toasts[0]?.closest('[data-sonner-toaster]')?.getAttribute('data-y-position')).toBe(
+      'bottom',
+    )
+
+    wrapper.unmount()
+  })
+
   it("shows a toast once although the app's layout mounts its own toaster", async () => {
     const Page = defineComponent({ setup: () => () => [h(AppToaster), h(AlfakitToaster)] })
     const wrapper = mount(Page, { attachTo: document.body })
@@ -131,6 +156,124 @@ describe('AlfakitComponent (outside panels)', () => {
     // In Alfakit's own toaster (top), not the app's id-less one (bottom).
     expect(toasts[0]?.closest('[data-sonner-toaster]')?.getAttribute('data-y-position')).toBe('top')
 
+    wrapper.unmount()
+  })
+})
+
+describe('live() outside panels', () => {
+  afterEach(() => {
+    delete (window as unknown as { Echo?: unknown }).Echo
+    vi.unstubAllGlobals()
+  })
+
+  it('shows the fresh lazy widget after a reload (an action on the starter kit dashboard)', async () => {
+    const stats = (value: number) => ({
+      'widget:blog-stats': {
+        type: 'StatsOverviewWidget',
+        key: 'blog-stats',
+        id: 'blog-stats',
+        columnSpan: { default: 'full' },
+        stats: [{ label: 'Posts', value }],
+      },
+    })
+    let value = 1
+    const fetchMock = vi.fn().mockImplementation(
+      async () =>
+        new Response(JSON.stringify(stats(value)), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const base = dashboard as unknown as StandaloneComponentSchema
+    const payload = (token: string) =>
+      ({
+        ...base,
+        token,
+        lazy: ['widget:blog-stats'],
+        content: [
+          {
+            ...(base.content[0] as object),
+            widgets: [
+              {
+                type: 'StatsOverviewWidget',
+                key: 'blog-stats',
+                id: 'blog-stats',
+                columnSpan: {},
+                lazy: true,
+              },
+            ],
+          },
+        ],
+      }) as unknown as StandaloneComponentSchema
+
+    const wrapper = mount(AlfakitComponent, {
+      props: { component: payload('first') },
+      attachTo: document.body,
+    })
+    await flush()
+    await new Promise((resolve) => setTimeout(resolve, 20))
+
+    expect(wrapper.text()).toContain('1')
+
+    // The action changed the data; Inertia reloads the page with a new payload (token).
+    value = 42
+    await wrapper.setProps({ component: payload('second') })
+    await new Promise((resolve) => setTimeout(resolve, 20))
+    await nextTick()
+
+    expect(fetchMock.mock.calls.map((call) => String(call[0])).at(-1)).toContain('token=second')
+    expect(wrapper.text()).toContain('42')
+    wrapper.unmount()
+    vi.unstubAllGlobals()
+  })
+
+  it('refreshes a live table through its own components endpoint when a record changes', async () => {
+    const listeners = new Map<string, (payload: unknown) => void>()
+    ;(window as unknown as { Echo: unknown }).Echo = {
+      private: (name: string) => ({
+        listen: (event: string, callback: (payload: unknown) => void) =>
+          listeners.set(`private-${name}|${event}`, callback),
+        stopListening: () => {},
+        notification: () => {},
+      }),
+      leave: () => {},
+      socketId: () => '1.2',
+    }
+    const fetchMock = vi.fn().mockImplementation(
+      async () =>
+        new Response(JSON.stringify({}), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const live = {
+      ...table,
+      content: [
+        {
+          ...(table.content[0] as object),
+          live: { channels: ['alfakit.admin._.App-Models-Post'], debounce: 10 },
+        },
+      ],
+    } as unknown as StandaloneComponentSchema
+
+    const wrapper = mount(AlfakitComponent, { props: { component: live }, attachTo: document.body })
+    await flush()
+
+    listeners.get('private-alfakit.admin._.App-Models-Post|.alfakit.record')?.({
+      event: 'updated',
+      key: 1,
+      model: 'App-Models-Post',
+    })
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const urls = fetchMock.mock.calls.map((call) => String(call[0]))
+    expect(
+      urls.some(
+        (url) => url.startsWith(table.endpoints.components) && url.includes('targets=table'),
+      ),
+    ).toBe(true)
     wrapper.unmount()
   })
 })

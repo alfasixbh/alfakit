@@ -29,6 +29,11 @@ export interface AlfakitContextValue {
    * their own schemas by token.
    */
   poll?: (target: string, interval: string | number | null | undefined) => () => void
+  /**
+   * Fetches fresh schemas of components now (`live()` tables and widgets after a record
+   * change). Panels leave it out (a partial reload); components outside panels fetch theirs.
+   */
+  refresh?: (targets: string[]) => Promise<void>
 }
 
 export const ALFAKIT_CONTEXT = Symbol.for('alfakit.context')
@@ -82,6 +87,11 @@ export function usePollComponent(): NonNullable<AlfakitContextValue['poll']> {
   return useOptionalAlfakit()?.poll ?? pollComponent
 }
 
+/** How `live()` components refresh: their own fetch outside panels, else a partial reload. */
+export function useRefreshComponents(): AlfakitContextValue['refresh'] {
+  return useOptionalAlfakit()?.refresh
+}
+
 let globalContext: AlfakitContextValue | null = null
 
 /** Register the app-wide context (used by `createAlfakit()` as a fallback outside the component tree). */
@@ -124,6 +134,30 @@ export function usePanel(): PanelSchema {
 
 export function usePageSchema(): PageSchema | undefined {
   return useStandalone()?.page ?? (page.props as unknown as AlfakitPageProps).page
+}
+
+/**
+ * Read the page schema and the panel later, in callbacks that run outside component
+ * initialisation (timers, awaited requests). Call it while the component initialises: it
+ * remembers the standalone root the component sits in (or none). Calling `usePageSchema()`
+ * from such a callback can't see the component's context and falls back to the last
+ * standalone component mounted, which in a starter kit is a header widget with another
+ * page's token.
+ */
+export function usePageReader(): { page: () => PageSchema | undefined; panel: () => PanelSchema } {
+  const standalone = useStandalone()
+
+  return {
+    page: () => standalone?.page ?? (page.props as unknown as AlfakitPageProps).page,
+    panel: () => {
+      const props = page.props as unknown as AlfakitPageProps
+
+      return resolvePanelNavigation(
+        standalone?.panel ?? props.alfakit,
+        props.alfakitNavigationBadges,
+      )
+    },
+  }
 }
 
 export function useAlfakitProps(): AlfakitPageProps {

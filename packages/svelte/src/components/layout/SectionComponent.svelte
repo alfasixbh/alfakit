@@ -84,11 +84,11 @@
       <div class="min-w-0 flex-1 basis-48">
         {#if component.heading}<svelte:element
             this={heading}
-            class="text-base leading-6 font-semibold"
+            class="text-base leading-6 font-semibold break-words"
           >
             {component.heading}
           </svelte:element>{/if}
-        {#if component.description}<p class="text-muted-foreground mt-1 text-sm">
+        {#if component.description}<p class="text-muted-foreground mt-1 text-sm break-words">
             {component.description}
           </p>{/if}
       </div>

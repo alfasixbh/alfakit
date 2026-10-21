@@ -29,8 +29,18 @@ export function lazyComponent(
     inheritAttrs: false,
     setup(_, { attrs }) {
       const mounted = useAppMounted()
+      // Picked once per instance: switching from the async wrapper to the loaded component
+      // on a later render would be a new component type, so Vue would remount it and its
+      // state (a spreadsheet's undo history, an editor's selection) would be lost.
+      let component: Component | null = null
 
-      return () => h(mounted.value ? (loaded ?? Async) : fallback, attrs)
+      return () => {
+        if (!mounted.value) return h(fallback, attrs)
+
+        component ??= loaded ?? Async
+
+        return h(component, attrs)
+      }
     },
   })
 }

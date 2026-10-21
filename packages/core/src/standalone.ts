@@ -152,9 +152,21 @@ export class StandaloneComponentState {
     return mergePolledComponents(resolved, this.fresh)
   }
 
-  /** Load the lazy components named by the payload. */
-  loadLazy(): Promise<void> {
+  /**
+   * Load the lazy components named by the payload. Pass the new payload when it arrived
+   * (a reload after an action): the load then belongs to it, while one started for the
+   * previous payload would be dropped as stale once the page renders the new one (the
+   * starter kit dashboard's calendar kept its old events after creating one).
+   */
+  loadLazy(component?: StandaloneComponentSchema): Promise<void> {
+    if (component) this.setComponent(component)
+
     return this.load(this.component.lazy ?? [])
+  }
+
+  /** Fetch fresh schemas of these components now (`live()` refreshes on record changes). */
+  refresh(targets: string[]): Promise<void> {
+    return this.load(targets)
   }
 
   /** Poll a component (`table`, `widget:<id>`); returns an unsubscribe. */

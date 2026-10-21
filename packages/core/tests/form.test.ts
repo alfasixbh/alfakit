@@ -4,6 +4,7 @@ import {
   cloneRepeaterItem,
   collectFields,
   componentHasErrors,
+  fieldError,
   findFieldByPath,
   formIdentity,
   FormStore,
@@ -144,6 +145,68 @@ describe('FormStore', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2)
 
     vi.useRealTimers()
+  })
+
+  it('settles pending live refreshes before a submit reads the state', async () => {
+    let answer: (() => void) | undefined
+    const fetchMock = vi.fn(
+      (_url: string, init?: RequestInit) =>
+        new Promise<Response>((resolve) => {
+          const body = JSON.parse(String(init?.body)) as { state: Record<string, unknown> }
+
+          answer = () =>
+            resolve(
+              new Response(
+                JSON.stringify({
+                  components,
+                  state: { ...body.state, slug: String(body.state.email).split('@')[0] },
+                }),
+                { status: 200 },
+              ),
+            )
+        }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    const form = new FormStore(
+      { components, state: { title: '', slug: null, email: null } },
+      { token: 't', component: 'form', refreshUrl: '/refresh' },
+    )
+
+    // Nothing pending: resolves at once.
+    await form.settle()
+
+    // The submit button's click blurs the onBlur field: its refresh starts, then the submit.
+    form.setValue('email', 'acme@example.com')
+    form.blur('email')
+
+    let settled = false
+    const settling = form.settle().then(() => (settled = true))
+    await Promise.resolve()
+
+    expect(settled).toBe(false)
+    expect(form.getValue('slug')).toBeNull()
+
+    answer?.()
+    await settling
+
+    expect(form.getValue('slug')).toBe('acme')
+
+    // whenSettled(): synchronous while nothing is pending.
+    let ran = false
+    form.whenSettled(() => (ran = true))
+    expect(ran).toBe(true)
+
+    // A debounced (not yet sent) refresh is sent now and awaited too.
+    form.setValue('title', 'Hello')
+    let afterRefresh = false
+    form.whenSettled(() => (afterRefresh = true))
+    expect(afterRefresh).toBe(false)
+    const flushing = form.settle()
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
+    answer?.()
+    await flushing
+    await vi.waitFor(() => expect(afterRefresh).toBe(true))
   })
 
   it('debounces live fields by 150 ms without a server debounce and coalesces rapid typing', async () => {
@@ -549,5 +612,20 @@ describe('tab error navigation', () => {
     // Errors only went away: stay where the user is.
     expect(tabToReveal(tabs, 'items', { email: ['x'] }, { email: ['x'] })).toBeNull()
     expect(tabToReveal(tabs, 'inputs', {}, { other: ['x'] })).toBeNull()
+  })
+})
+
+describe('item errors of list fields', () => {
+  it("shows a list field's item error (labels.1) on the field, not item fields' deeper ones", () => {
+    const errors = {
+      'labels.1': ['The Labels field must be at least 5 characters.'],
+      'items.0.name': ['The name field is required.'],
+    }
+
+    expect(fieldError(errors, 'labels')).toBe('The Labels field must be at least 5 characters.')
+    expect(fieldError(errors, 'items')).toBeUndefined()
+    expect(fieldError(errors, 'items.0.name')).toBe('The name field is required.')
+    expect(fieldError(errors, 'label')).toBeUndefined()
+    expect(fieldError({ labels: ['Own'], 'labels.0': ['Item'] }, 'labels')).toBe('Own')
   })
 })

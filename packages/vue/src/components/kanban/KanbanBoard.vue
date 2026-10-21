@@ -122,9 +122,21 @@ const template = computed(() =>
     .join(' '),
 )
 
-const setCard = (key: string) => (element: unknown) => {
-  if (element instanceof HTMLElement) cards.set(key, element)
-  else cards.delete(key)
+// A card moved to another column is mounted there before its old element is unmounted, so
+// an unmount only forgets the element it registered itself (else the moved card would lose
+// its entry and the keyboard focus).
+const setCard = (key: string) => {
+  let own: HTMLElement | null = null
+
+  return (element: unknown) => {
+    if (element instanceof HTMLElement) {
+      own = element
+      cards.set(key, element)
+    } else if (own !== null) {
+      if (cards.get(key) === own) cards.delete(key)
+      own = null
+    }
+  }
 }
 
 const focus = (key: string | undefined) => {

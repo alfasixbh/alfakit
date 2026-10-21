@@ -28,7 +28,14 @@ import {
   SearchIcon,
 } from 'lucide-react'
 import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
-import { useActionRunner, useDirection, useFormatter, usePanel, useT } from '../../context'
+import {
+  useActionRunner,
+  useChoice,
+  useDirection,
+  useFormatter,
+  usePanel,
+  useT,
+} from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { badgeColorClasses, colorClass, cssColor } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
@@ -424,6 +431,7 @@ function ColumnHeader({
   onCreate: () => void
   t: Translate
 }) {
+  const choice = useChoice()
   const wip = kanbanWipState(column)
   const shown =
     column.wipLimit !== undefined ? column.count : filtered ? column.total : column.count
@@ -436,7 +444,7 @@ function ColumnHeader({
             { shown: column.total, count: column.count },
             ':shown of :count cards',
           )
-        : t('kanban.count', { count: column.count }, ':count cards')
+        : choice('kanban.count', column.count, {}, '{1} :count card|[0,*] :count cards')
   const style = column.color ? { borderTopColor: cssColor(column.color) } : undefined
   const toggleLabel = collapsed
     ? t('kanban.expand', { column: column.label }, 'Expand :column')
@@ -532,7 +540,12 @@ function ColumnHeader({
       )}
       {wip === 'over' && (
         <p className="text-destructive text-xs">
-          {t('kanban.wip_over', { limit: column.wipLimit ?? 0 }, 'Over the limit of :limit cards')}
+          {choice(
+            'kanban.wip_over',
+            column.wipLimit ?? 0,
+            { limit: column.wipLimit ?? 0 },
+            '{1} Over the limit of :limit card|[0,*] Over the limit of :limit cards',
+          )}
         </p>
       )}
       {wip === 'full' && column.wipStrict && (

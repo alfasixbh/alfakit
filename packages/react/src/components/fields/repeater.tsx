@@ -13,7 +13,7 @@ import {
   removeIndexedState,
   removeRepeaterItem,
   reorderedItemKeys,
-  replacePlaceholder,
+  templateForIndex,
   virtualizeOptions,
 } from '@alfakit/core'
 import { useState } from 'react'
@@ -125,8 +125,7 @@ function RepeaterFieldContent({ component }: { component: RepeaterSchema }) {
     )
 
   const schemaFor = (index: number): SchemaComponent[] =>
-    component.items[index]?.schema ??
-    replacePlaceholder(component.template, '__INDEX__', String(index))
+    component.items[index]?.schema ?? templateForIndex(component.template, index)
 
   const canAdd =
     component.addable &&

@@ -287,7 +287,7 @@
   --secondary: oklch(0.967 0.003 264.542);
   --secondary-foreground: oklch(0.21 0.034 264.665);
   --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
+  --muted-foreground: oklch(0.535 0.027 264.364);
   --accent: oklch(0.967 0.003 264.542);
   --accent-foreground: oklch(0.21 0.034 264.665);
   --border: oklch(0.928 0.006 264.531);
@@ -676,6 +676,11 @@
 
   :root[data-mobile='bottom'] [data-slot='bottom-nav-item'][data-active='true'] {
     color: var(--primary);
+  }
+
+  /* The schema inspector's round button (dev tools) sits above the bar, not on its last item. */
+  :root[data-mobile='bottom'] [data-slot='dev-tools-toggle'] {
+    bottom: calc(var(--alfakit-bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 1rem);
   }
 
   /* Room for the bar, sticky actions sit right above it. */

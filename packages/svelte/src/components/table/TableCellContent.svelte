@@ -17,7 +17,9 @@
 
   const registry = useRegistry()
   // A component registered as `column:<type>` replaces the built-in cell renderer.
-  const Custom = $derived(registry.resolve(columnRegistryKey(props.column)))
+  const Custom = $derived(
+    props.fromRegistry ? undefined : registry.resolve(columnRegistryKey(props.column)),
+  )
   const t = useT()
   // `ViewColumn`: the application component registered under the column's `view()` name.
   const viewName = $derived((props.column as { component?: string }).component ?? '')
@@ -27,7 +29,7 @@
 </script>
 
 {#if Custom}
-  <Custom {...props} />
+  <Custom {...props} fromRegistry />
 {:else if View}
   <View {...props.cell.props ?? {}} state={props.cell.state} {...props} />
 {:else if props.column.type === 'ViewColumn'}

@@ -6,7 +6,12 @@ import {
 } from '@alfakit/core'
 import { router } from '@inertiajs/svelte'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/svelte'
-import { AlfakitNotifications, AlfakitSearch, AlfakitTenantSwitcher } from '../src/starter-kit'
+import {
+  AlfakitCopilot,
+  AlfakitNotifications,
+  AlfakitSearch,
+  AlfakitTenantSwitcher,
+} from '../src/starter-kit'
 import { panel, setPageProps } from './mocks'
 
 const navigation: StarterKitNavigationSchema = {
@@ -72,6 +77,31 @@ afterEach(() => {
 })
 
 describe('starter kit header components', () => {
+  it('shows the impersonation banner once on host pages, with Leave', async () => {
+    const post = vi.spyOn(router, 'post').mockImplementation(() => {})
+    const impersonation = {
+      label: 'Signed in as Dana',
+      leaveLabel: 'Leave',
+      leaveUrl: '/admin/impersonation/leave',
+    }
+    setPageProps({
+      alfakit: undefined,
+      page: undefined,
+      alfakitNavigation: [{ ...navigation, widgets: { ...navigation.widgets!, impersonation } }],
+    })
+
+    render(AlfakitSearch)
+    render(AlfakitNotifications)
+
+    await waitFor(() =>
+      expect(document.querySelectorAll('[data-slot="impersonation-banner"]')).toHaveLength(1),
+    )
+    const banner = document.querySelector<HTMLElement>('[data-slot="impersonation-banner"]')!
+    expect(banner).toHaveTextContent('Signed in as Dana')
+    await fireEvent.click(within(banner).getByRole('button', { name: 'Leave' }))
+    expect(post).toHaveBeenCalledWith('/admin/impersonation/leave', {}, expect.anything())
+  })
+
   it('render nothing for guests', () => {
     setPageProps({ alfakitNavigation: undefined })
 
@@ -150,5 +180,85 @@ describe('starter kit header components', () => {
     render(AlfakitTenantSwitcher)
 
     expect(await screen.findByRole('button', { name: 'Choose a tenant' })).toBeInTheDocument()
+  })
+
+  it('shows the team menu of a second starterKit() panel without a panel prop', async () => {
+    setPageProps({
+      alfakitNavigation: [
+        navigation,
+        {
+          ...navigation,
+          id: 'app',
+          url: '/app',
+          widgets: {
+            endpoint: '/app/_alfakit/starter-kit',
+            tenancy: { current: null, tenants: [{ id: 1, name: 'Acme', url: '/app/1' }] },
+          },
+        },
+      ],
+    })
+    fetchMock.mockImplementation(async () =>
+      respond({ ...loaded, tenancy: { current: null, tenants: [] } }),
+    )
+
+    render(AlfakitTenantSwitcher)
+
+    expect(await screen.findByRole('button', { name: 'Choose a tenant' })).toBeInTheDocument()
+  })
+
+  it('opens the AI copilot with mod+j pressed before its code loaded', async () => {
+    const copilot = {
+      type: 'ai:copilot',
+      key: 'ai-copilot',
+      endpoints: {
+        conversations: '/admin/_ai/copilot/conversations',
+        conversation: '/admin/_ai/copilot/conversations/__ID__',
+        send: '/admin/_ai/copilot/messages',
+        confirm: '/admin/_ai/copilot/actions/__ID__/confirm',
+        reject: '/admin/_ai/copilot/actions/__ID__/reject',
+        delete: '/admin/_ai/copilot/conversations/__ID__',
+      },
+      placeholder: '__ID__',
+      keyBindings: ['mod+j'],
+      canUse: true,
+      notice: { status: 'warning', heading: "AI isn't set up yet" },
+    }
+    setPageProps({
+      alfakitNavigation: [
+        {
+          ...navigation,
+          widgets: {
+            ...navigation.widgets!,
+            copilot: { label: 'Open AI copilot', keyBindings: ['mod+j'] },
+          },
+        },
+      ],
+    })
+    fetchMock.mockImplementation(async (url: string) =>
+      url.startsWith('/admin/_alfakit/starter-kit')
+        ? respond({
+            ...loaded,
+            slots: { 'topbar.end': [{ type: 'component', component: copilot }] },
+          })
+        : respond({ conversations: [] }),
+    )
+
+    render(AlfakitCopilot)
+
+    expect(document.querySelector('[data-slot="starter-kit-copilot"]')).not.toBeNull()
+    expect(screen.getByRole('button', { name: 'Open AI copilot' })).toBeInTheDocument()
+    await waitFor(() => expect(shortcuts.has('ai.copilot')).toBe(true))
+
+    await fireEvent.keyDown(document.body, { key: 'j', code: 'KeyJ', ctrlKey: true })
+
+    const dialog = await screen.findByRole('dialog')
+    expect(fetchMock).toHaveBeenCalledWith('/admin/_alfakit/starter-kit', expect.anything())
+    expect(await within(dialog).findByText("AI isn't set up yet")).toBeInTheDocument()
+  })
+
+  it('renders no copilot without the AI plugin', () => {
+    const { container } = render(AlfakitCopilot)
+
+    expect(container.querySelector('[data-slot^="starter-kit"]')).toBeNull()
   })
 })

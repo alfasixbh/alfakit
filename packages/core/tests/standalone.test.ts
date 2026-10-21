@@ -134,4 +134,44 @@ describe('StandaloneComponentState', () => {
 
     vi.unstubAllGlobals()
   })
+
+  it('loads the lazy schemas of a new payload passed before the page rendered it', async () => {
+    const fresh = {
+      'widget:stats': {
+        type: 'StatsOverviewWidget',
+        key: 'stats',
+        id: 'stats',
+        columnSpan: {},
+        stats: [1],
+      },
+    }
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(async () => ({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => fresh,
+        text: async () => JSON.stringify(fresh),
+      })),
+    )
+
+    const state = new StandaloneComponentState(lazyWidget, () => {})
+    await state.loadLazy()
+    const before = (state.page.content[0] as { widgets: unknown[] }).widgets[0]
+
+    // An action reloaded the page: the renderer asks for the new payload's lazy schemas
+    // before it renders (and so before `setComponent()`).
+    const next = { ...lazyWidget, token: 'after-action' }
+    await state.loadLazy(next)
+    state.setComponent(next)
+
+    const after = (state.page.content[0] as { widgets: unknown[] }).widgets[0]
+
+    expect(vi.mocked(fetch).mock.calls[1]![0]).toContain('token=after-action')
+    expect(after).not.toBe(before)
+    expect(after).toEqual(fresh['widget:stats'])
+
+    vi.unstubAllGlobals()
+  })
 })

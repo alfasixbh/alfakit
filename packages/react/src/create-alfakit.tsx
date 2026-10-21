@@ -7,6 +7,7 @@ import {
   configureCharts,
   configureRealtime,
   debugRecorder,
+  documentNonce,
   effectiveErrorNotifications,
   initializeAppearance,
   installErrorNotifications,
@@ -43,6 +44,7 @@ import { SchemaContractGuard } from './components/panel/schema-contract-guard'
 import { Toaster } from './components/ui/sonner'
 import { TooltipProvider } from './components/ui/tooltip'
 import { AlfakitProvider, useAlfakit, type AlfakitContextValue, type AnyComponent } from './context'
+import { panelLayouts } from './layouts/panel-layouts'
 import { discoverComponents } from './lib/discovery'
 import { preloadIcons } from './lib/icons'
 import { AlfakitPage } from './pages/page'
@@ -72,9 +74,13 @@ export function AlfakitRoot({
     translator.setLocale(localization?.tag ?? 'en')
   }
 
+  // Starter kit mode: the host app owns `<html lang dir>` (its own pages and layout are not
+  // mirrored); `AlfakitStarterKitRoot` puts the direction on Alfakit's own root element.
+  const ownsDocument = panel?.starterKit !== true
+
   useLayoutEffect(() => {
-    applyDocumentLocale(localization)
-  }, [localization])
+    if (ownsDocument) applyDocumentLocale(localization)
+  }, [localization, ownsDocument])
 
   useLayoutEffect(() => {
     applyPanelTheme(panel)
@@ -133,6 +139,7 @@ export function bootAlfakit(
   // Auto-registered files sit between the built-ins and the explicit `components` / `pages`.
   const discovered = discoverComponents(options.discover)
   const registry = createDefaultRegistry()
+    .registerMany(panelLayouts)
     .registerMany(discovered.components)
     .registerMany(options.components ?? {})
   const pages: Record<string, AnyComponent> = {
@@ -237,6 +244,8 @@ export function bootAlfakit(
   return createInertiaApp<AlfakitPageProps>({
     title: (title) => title,
     progress: options.progress === undefined ? { color: 'var(--primary)' } : options.progress,
+    // The page's CSP nonce, so the progress bar's injected <style> passes a nonce-based policy.
+    nonce: documentNonce(),
     resolve: (name, page) => {
       const component = pages[name]
 

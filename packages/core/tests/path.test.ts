@@ -6,6 +6,7 @@ import {
   parentPath,
   replacePlaceholder,
   setPath,
+  templateForIndex,
 } from '../src/utils/path'
 
 describe('path utils', () => {
@@ -47,5 +48,33 @@ describe('path utils', () => {
         '3',
       ),
     ).toEqual({ statePath: 'items.3.name', nested: ['3'] })
+  })
+
+  it('fills in only the outer placeholder of a nested template (a repeater in a builder block)', () => {
+    const block = replacePlaceholder(
+      {
+        statePath: 'content.__INDEX__.data.items',
+        template: [{ statePath: 'content.__INDEX__.data.items.__INDEX__.question' }],
+      },
+      '__INDEX__',
+      '2',
+    )
+
+    expect(block).toEqual({
+      statePath: 'content.2.data.items',
+      template: [{ statePath: 'content.2.data.items.__INDEX__.question' }],
+    })
+    expect(replacePlaceholder(block.template, '__INDEX__', '0')).toEqual([
+      { statePath: 'content.2.data.items.0.question' },
+    ])
+  })
+
+  it('gives the same template instance for the same index, so new items do not re-render on every render', () => {
+    const template = [{ statePath: 'items.__INDEX__.name' }]
+
+    expect(templateForIndex(template, 1)).toBe(templateForIndex(template, 1))
+    expect(templateForIndex(template, 1)).toEqual([{ statePath: 'items.1.name' }])
+    expect(templateForIndex(template, 2)).not.toBe(templateForIndex(template, 1))
+    expect(templateForIndex([...template], 1)).not.toBe(templateForIndex(template, 1))
   })
 })

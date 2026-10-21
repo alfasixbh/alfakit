@@ -6,17 +6,26 @@
  *   pnpm bundle:budget --build        build the playgrounds first (the panel entries need them)
  *   pnpm bundle:budget --update       re-baseline: store the measured sizes and new limits
  *   pnpm bundle:budget --only=host    measure only the host entries (no playground needed)
+ *   pnpm bundle:budget --only=starter-kit   only the starter kit page entries (no playground)
  *
  * Two kinds of entries, per renderer (react, vue, svelte):
  *
  * - `host:<renderer>`: a starter kit host's AlfaKit share. A throwaway Vite build of an entry
  *   that imports what a host's sidebar and header import from the package root
  *   (`useAlfakitNavigation`, `Icon`, `AlfakitSearch`, `AlfakitNotifications`,
- *   `AlfakitTenantSwitcher`), with the framework and Inertia external: everything left is
- *   AlfaKit's (and its dependencies'). Needs the packages built (`pnpm build`), nothing else.
+ *   `AlfakitTenantSwitcher`, `AlfakitCopilot`), with the framework and Inertia external:
+ *   everything left is AlfaKit's (and its dependencies'). Needs the packages built (`pnpm build`), nothing else.
+ * - `starter-kit:<renderer>`: the AlfaKit share of a starter kit's `Alfakit/Page` page (what
+ *   `resources/js/pages/Alfakit/Page.*` imports: `createStarterKitPage`, or Svelte's
+ *   `createStarterKitLayout` + `AlfakitPage`), built the same way. Besides its size it may not
+ *   contain the panel's own chrome (sidebar, top bar, panel layouts): starter kit pages render
+ *   in the host's layout, and every chunk of the page is a `Link: rel=modulepreload` entry of
+ *   the response (Laravel's `AddLinkHeadersForPreloadedAssets`).
  * - `panel:<renderer>`: the playground's panel entry (`resources/js/alfakit/app.*`) from its
  *   Vite manifest, framework included, as in `perf-budget.mjs`.
  *
+ * Entries may also have a `limitChunks` (the number of initial chunks, i.e. requests and
+ * preload entries): `--update` sets it from the measured count plus the headroom.
  * "Initial" is the entry chunk plus every chunk it imports statically; lazy `import()` chunks
  * load on demand and don't count. Budgets live in bundle-budget.json next to this script.
  */
@@ -46,7 +55,27 @@ export const HOST_IMPORTS = [
     'AlfakitSearch',
     'AlfakitNotifications',
     'AlfakitTenantSwitcher',
+    'AlfakitCopilot',
 ]
+
+/** What a starter kit's `resources/js/pages/Alfakit/Page.*` imports (the `alfakit:install` stubs). */
+export const STARTER_KIT_IMPORTS = {
+    react: ['createStarterKitPage'],
+    vue: ['createStarterKitPage'],
+    svelte: ['createStarterKitLayout', 'AlfakitPage'],
+}
+
+/**
+ * The panel's own chrome: a starter kit page renders in the host's layout, so none of these
+ * may be in its initial chunks (they load on demand if a page asks for a panel layout).
+ */
+export const PANEL_CHROME =
+    /[\\/](layouts[\\/](app-layout|top-nav-layout|AppLayout|TopNavLayout)|components[\\/]panel[\\/](app-sidebar|topbar|AppSidebar|Topbar))(\.vue_vue_type_[a-z_]+)?\.[a-z]+(\?.*)?$/
+
+/** The module ids of `modules` that are panel chrome. */
+export function chromeModules(modules) {
+    return modules.filter((id) => PANEL_CHROME.test(id))
+}
 
 /** The host's own dependencies, not AlfaKit's share. */
 const HOST_EXTERNAL = /^(react|react-dom|vue|svelte|@inertiajs\/[^/]+)(\/.*)?$/
@@ -83,12 +112,20 @@ export function measure(files) {
     )
 }
 
-/** `{ name, measured, limit, ok }` per entry; entries without a budget only report. */
+/**
+ * `{ name, measured, limit, limitChunks, ok }` per entry; entries without a budget only report.
+ * An entry fails over its gzip or chunk limit, or when it carries `forbidden` modules.
+ */
 export function compare(results, budget) {
     return Object.entries(results).map(([name, measured]) => {
         const limit = budget.entries?.[name]?.limitGzipBytes
+        const limitChunks = budget.entries?.[name]?.limitChunks
+        const ok =
+            (limit === undefined || measured.gzipBytes <= limit) &&
+            (limitChunks === undefined || measured.chunks <= limitChunks) &&
+            (measured.forbidden ?? []).length === 0
 
-        return { name, measured, limit, ok: limit === undefined || measured.gzipBytes <= limit }
+        return { name, measured, limit, limitChunks, ok }
     })
 }
 
@@ -98,16 +135,20 @@ export function rebaseline(results, budget, now = new Date()) {
     const entries = { ...budget.entries }
 
     for (const [name, measured] of Object.entries(results)) {
+        const { forbidden: _forbidden, ...sizes } = measured
+
         entries[name] = {
             limitGzipBytes: Math.ceil(measured.gzipBytes * (1 + headroom / 100)),
-            baseline: { ...measured, measuredAt: now.toISOString() },
+            limitChunks: Math.ceil((measured.chunks * (100 + headroom)) / 100),
+            baseline: { ...sizes, measuredAt: now.toISOString() },
         }
     }
 
     return { ...budget, headroomPercent: headroom, entries }
 }
 
-async function measureHost(renderer) {
+/** A throwaway Vite build of `exports` from the renderer's package root, framework external. */
+async function measureHost(renderer, exports = HOST_IMPORTS) {
     const playground = join(root, 'playground', renderer)
     const packageRequire = createRequire(join(root, 'packages', renderer, 'package.json'))
     const { build } = await import(pathToFileURL(packageRequire.resolve('vite')).href)
@@ -129,7 +170,7 @@ async function measureHost(renderer) {
         resolveId: (id) => (id === 'alfakit-host-entry' ? entryId : null),
         load: (id) =>
             id === entryId
-                ? `export { ${HOST_IMPORTS.join(', ')} } from '@alfakit/${renderer}'\n`
+                ? `export { ${exports.join(', ')} } from '@alfakit/${renderer}'\n`
                 : null,
     })
 
@@ -163,7 +204,10 @@ async function measureHost(renderer) {
         byName.get(name)?.imports.filter((imported) => byName.has(imported)),
     )
 
-    return measure([...initial].map((name) => ({ name, code: byName.get(name).code })))
+    return {
+        ...measure([...initial].map((name) => ({ name, code: byName.get(name).code }))),
+        modules: [...initial].flatMap((name) => byName.get(name).moduleIds),
+    }
 }
 
 function measurePanel(renderer, { build }) {
@@ -211,11 +255,23 @@ async function main(argv) {
     const results = {}
 
     for (const renderer of RENDERERS) {
-        if (only !== 'panel') results[`host:${renderer}`] = await measureHost(renderer)
+        if (only === undefined || only === 'host') {
+            const { modules: _modules, ...sizes } = await measureHost(renderer)
+
+            results[`host:${renderer}`] = sizes
+        }
     }
 
     for (const renderer of RENDERERS) {
-        if (only !== 'host') {
+        if (only === undefined || only === 'starter-kit') {
+            const { modules, ...sizes } = await measureHost(renderer, STARTER_KIT_IMPORTS[renderer])
+
+            results[`starter-kit:${renderer}`] = { ...sizes, forbidden: chromeModules(modules) }
+        }
+    }
+
+    for (const renderer of RENDERERS) {
+        if (only === undefined || only === 'panel') {
             results[`panel:${renderer}`] = measurePanel(renderer, { build: args.has('--build') })
         }
     }
@@ -231,12 +287,18 @@ async function main(argv) {
 
     console.log('bundle:budget: initial JavaScript (gzip / raw)')
 
-    for (const { name, measured, limit, ok } of compare(results, budget)) {
+    for (const { name, measured, limit, limitChunks, ok } of compare(results, budget)) {
         const sizes = `${kb(measured.gzipBytes).padStart(10)} / ${kb(measured.rawBytes).padStart(10)}`
+        const chunks = `${String(measured.chunks).padStart(3)} chunks${limitChunks === undefined ? '' : ` (max ${limitChunks})`}`
         const verdict =
             limit === undefined ? 'no budget' : `${ok ? 'OK  ' : 'FAIL'} limit ${kb(limit)}`
 
-        console.log(`  ${name.padEnd(14)} ${sizes}  ${measured.chunks} chunks  ${verdict}`)
+        console.log(`  ${name.padEnd(19)} ${sizes}  ${chunks}  ${verdict}`)
+
+        for (const id of measured.forbidden ?? []) {
+            console.log(`    panel chrome in a starter kit page: ${id}`)
+        }
+
         failed ||= !ok
     }
 

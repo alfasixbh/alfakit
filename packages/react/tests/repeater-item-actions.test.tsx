@@ -1,5 +1,5 @@
-import { FormStore, type SchemaComponent } from '@alfakit/core'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { FormStore, setIconAliases, type SchemaComponent } from '@alfakit/core'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { FormProvider } from '../src/components/form/form-context'
 import { SchemaRenderer } from '../src/components/schema/schema-renderer'
@@ -69,6 +69,29 @@ const repeater = (extra: Record<string, unknown> = {}) =>
 const members = { members: [{ name: 'Ann' }, { name: 'Bob' }] }
 
 describe('Repeater item actions', () => {
+  it('draws the default item buttons with the icons registered for their aliases', async () => {
+    setIconAliases({
+      'alfakit::forms.components.repeater.actions.delete': 'ghost',
+      'alfakit::forms.components.repeater.actions.move-down': 'skull',
+    })
+
+    try {
+      const { container } = renderForm([repeater()], members)
+      const first = container.querySelector('li[data-index="0"]') as HTMLElement
+
+      await waitFor(
+        () => {
+          expect(first.querySelector('.lucide-ghost')).not.toBeNull()
+          expect(first.querySelector('.lucide-skull')).not.toBeNull()
+        },
+        { timeout: 5000 },
+      )
+      expect(first.querySelector('.lucide-trash-2, .lucide-trash2')).toBeNull()
+    } finally {
+      setIconAliases(null)
+    }
+  })
+
   it('runs uncustomised actions in the browser with the server labels', () => {
     const { store, container } = renderForm(
       [

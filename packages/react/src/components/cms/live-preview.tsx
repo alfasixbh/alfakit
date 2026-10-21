@@ -78,6 +78,9 @@ export function CmsLivePreview({ component }: { component: CmsLivePreviewSchema 
   const autosaveRef = useRef<CmsAutosave | null>(null)
   const status =
     snapshot.hasChanges && component.changedStatus ? component.changedStatus : component.status
+  // "Publish changes" appears as soon as an autosave makes the draft differ.
+  const actions =
+    snapshot.hasChanges && component.changedActions ? component.changedActions : component.actions
 
   // Measured in the browser after mounting: stick right under the panel's topbar when it
   // sticks too, and open the pane beside the form on wide screens (the viewer's last
@@ -220,9 +223,9 @@ export function CmsLivePreview({ component }: { component: CmsLivePreviewSchema 
               : t('cms.live_preview', {}, 'Live preview')}
           </Button>
         )}
-        {component.actions && component.actions.length > 0 && (
+        {actions && actions.length > 0 && (
           <div onPointerDownCapture={() => void autosaveRef.current?.flush()}>
-            <ActionList actions={component.actions} context={actionContext} size="sm" />
+            <ActionList actions={actions} context={actionContext} size="sm" />
           </div>
         )}
       </div>

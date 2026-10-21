@@ -21,7 +21,14 @@
    * a chat slide-over. Questions, tools and actions run on the server; proposed actions
    * run only when the user confirms them in the chat.
    */
-  let { component }: { component: AiCopilotSchema } = $props()
+  let {
+    component,
+    autoOpen = false,
+  }: {
+    component: AiCopilotSchema
+    /** Open once mounted (starter kit header: clicked or `mod+j` before its code loaded). */
+    autoOpen?: boolean
+  } = $props()
   const t = useT()
   // One controller per panel: Inertia visits pass new props objects.
   const controller = new Controller(untrack(() => component))
@@ -37,6 +44,8 @@
   })
 
   onDestroy(unsubscribe)
+
+  if (untrack(() => autoOpen && component.canUse !== false)) controller.open()
 
   $effect(() => {
     const bindings = JSON.parse(keys) as string[]

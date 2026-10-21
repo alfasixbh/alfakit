@@ -214,6 +214,18 @@
     untrack(() => table.searchDebounce),
   )
 
+  // Column searches (`searchable(isIndividual: true)`) apply after the same pause as the table
+  // search; Enter applies at once. `table` is read when the search runs, for the other columns.
+  const pushColumnSearch = debounce(
+    (name: string, value: string) =>
+      visitTable(
+        table.identifier,
+        { columnSearch: { ...(table.columnSearches ?? {}), [name]: value } },
+        ['page'],
+      ),
+    untrack(() => table.searchDebounce),
+  )
+
   // Polls refresh only this table (a partial reload of its own schema), share one request
   // with other components on the same interval and pause while the tab is hidden. Derived
   // primitives keep the subscription across reloads that bring a new `table` object.
@@ -260,6 +272,7 @@
   onDestroy(() => {
     offSuccess()
     pushSearch.cancel()
+    pushColumnSearch.cancel()
   })
 
   // The column whose sort was just clicked shows a spinner until its records arrive.
@@ -536,18 +549,19 @@
           placeholder={t('search', {}, 'Search')}
           aria-label={`${t('search', {}, 'Search')} ${column.label}`}
           class="h-7 text-xs font-normal"
-          onkeydown={(event) =>
-            event.key === 'Enter' &&
-            visitTable(
-              table.identifier,
-              {
-                columnSearch: {
-                  ...(table.columnSearches ?? {}),
-                  [column.name]: (event.currentTarget as HTMLInputElement).value,
-                },
-              },
-              ['page'],
-            )}
+          oninput={(event) => {
+            if (!table.searchOnBlur)
+              pushColumnSearch(column.name, (event.currentTarget as HTMLInputElement).value)
+          }}
+          onblur={(event) =>
+            table.searchOnBlur &&
+            pushColumnSearch(column.name, (event.currentTarget as HTMLInputElement).value)}
+          onkeydown={(event) => {
+            if (event.key !== 'Enter') return
+
+            pushColumnSearch(column.name, (event.currentTarget as HTMLInputElement).value)
+            pushColumnSearch.flush()
+          }}
         />
       {/if}
     </div>

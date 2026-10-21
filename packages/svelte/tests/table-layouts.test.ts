@@ -269,6 +269,39 @@ describe('column manager', () => {
   })
 })
 
+describe('column manager reset', () => {
+  it('resets the order before it restores the default visibility', async () => {
+    let respond: (value: Response) => void = () => {}
+    const fetch = vi.fn(() => new Promise<Response>((resolve) => (respond = resolve)))
+    vi.stubGlobal('fetch', fetch)
+    panel.endpoints.tableColumns = '/columns'
+    vi.mocked(router.visit).mockClear()
+
+    mount(DataTable, { table: { ...base, reorderableColumns: true, toggleableColumns: true } })
+
+    await fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
+    await fireEvent.click(await screen.findByRole('button', { name: 'Reset' }))
+
+    await waitFor(() => expect(fetch).toHaveBeenCalled())
+    // The visibility visit waits for the order reset: running alongside it, its session
+    // write would bring the old order back.
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(
+      JSON.parse(String((fetch.mock.calls[0] as unknown as [string, RequestInit])[1].body)),
+    ).toMatchObject({ columns: [] })
+    expect(router.visit).not.toHaveBeenCalled()
+
+    respond(new Response(JSON.stringify({ columns: [] }), { status: 200 }))
+    await waitFor(() => expect(router.visit).toHaveBeenCalled())
+    expect(decodeURIComponent(String(vi.mocked(router.visit).mock.calls.at(-1)![0]))).toContain(
+      'columns[0]=name',
+    )
+
+    delete panel.endpoints.tableColumns
+    vi.unstubAllGlobals()
+  })
+})
+
 describe('pagination modes', () => {
   it('shows previous / next without a total for cursor pagination', async () => {
     mount(TablePagination, {
@@ -390,5 +423,24 @@ describe('pagination modes', () => {
     callback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
     expect(router.visit).toHaveBeenCalledWith(expect.stringContaining('page=2'), expect.anything())
     vi.unstubAllGlobals()
+  })
+})
+
+describe('content layout sort select', () => {
+  it('shows the placeholder while the table is sorted by a column it does not list', async () => {
+    mount(DataTable, {
+      table: {
+        ...base,
+        contentLayout: [{ type: 'Column', name: 'name' }],
+        sort: { column: 'created_at', direction: 'desc' },
+      },
+    })
+    await tick()
+
+    const select = screen.getByRole('combobox', { name: 'Sort by' }) as HTMLSelectElement
+
+    expect(select.value).toBe('')
+    expect(select.selectedIndex).toBe(0)
+    expect(select.selectedOptions[0]?.textContent?.trim()).toBe('Sort by')
   })
 })

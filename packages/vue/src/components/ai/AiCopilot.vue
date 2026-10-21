@@ -11,7 +11,11 @@ import { CopilotPanel, preloadCopilotPanel } from './copilot-lazy'
  * a chat slide-over. Questions, tools and actions run on the server; proposed actions
  * run only when the user confirms them in the chat.
  */
-const props = defineProps<{ component: AiCopilotSchema }>()
+const props = defineProps<{
+  component: AiCopilotSchema
+  /** Open once mounted (starter kit header: clicked or `mod+j` before its code loaded). */
+  autoOpen?: boolean
+}>()
 const t = useT()
 // One controller per panel: Inertia visits pass new props objects.
 const controller = new CopilotController(props.component)
@@ -24,6 +28,8 @@ const unsubscribe = controller.subscribe((next) => {
 
   if (next.open) mounted.value = true
 })
+
+if (props.autoOpen && props.component.canUse !== false) controller.open()
 
 let unregister: (() => void) | undefined
 

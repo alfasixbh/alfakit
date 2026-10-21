@@ -4,6 +4,7 @@ import { mount, type ComponentMountingOptions } from '@vue/test-utils'
 import { defineComponent, h, type Component } from 'vue'
 import TooltipProvider from '../src/components/ui/TooltipProvider.vue'
 import { ALFAKIT_KEY, type AnyComponent } from '../src/context'
+import { panelLayouts } from '../src/layouts/panel-layouts'
 import { createDefaultRegistry } from '../src/registry'
 
 export const panel: PanelSchema = {
@@ -70,7 +71,9 @@ export function setPageProps(props: Partial<AlfakitPageProps>): void {
   globalThis.__alfakitPageProps = { ...globalThis.__alfakitPageProps, ...props }
 }
 
-export const registry: ComponentRegistry<AnyComponent> = createDefaultRegistry()
+// The panel's layouts up front, as `createAlfakit()` registers them.
+export const registry: ComponentRegistry<AnyComponent> =
+  createDefaultRegistry().registerMany(panelLayouts)
 export const actions = new ActionRunner({ endpoints: { action: '/a', modal: '/m' } })
 
 /** Mount a render function inside the Alfakit providers (context + tooltips), attached to the document. */

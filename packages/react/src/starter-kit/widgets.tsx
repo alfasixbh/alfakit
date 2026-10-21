@@ -1,7 +1,14 @@
-import { starterKitWidgets, type StarterKitWidgets } from '@alfakit/core'
+import {
+  isAlfakitPage,
+  starterKitWidgets,
+  type StarterKitWidgets,
+  type StarterKitWidgetsSchema,
+} from '@alfakit/core'
 import { usePage } from '@inertiajs/react'
+import { lazy, Suspense } from 'react'
 import { lazyComponent } from '../lib/lazy'
 import {
+  CopilotTrigger,
   NotificationsTrigger,
   SearchTrigger,
   TenantSwitcherTrigger,
@@ -16,14 +23,15 @@ import {
  * (in the browser, never during SSR).
  *
  * ```tsx
- * import { AlfakitNotifications, AlfakitSearch } from '@alfakit/react'
+ * import { AlfakitCopilot, AlfakitNotifications, AlfakitSearch } from '@alfakit/react'
  *
  * <AlfakitSearch />
  * <AlfakitNotifications />
+ * <AlfakitCopilot />
  * ```
  */
 export interface AlfakitHeaderWidgetProps {
-  /** The `starterKit()` panel to use (the first one by default). */
+  /** The `starterKit()` panel to use (by default the open AlfaKit page's panel, else the first one that has this component). */
   panel?: string
 }
 
@@ -48,8 +56,37 @@ const LoadedTenantSwitcher = lazyComponent<WidgetProps>(
   (props) => <TenantSwitcherTrigger {...props} />,
 )
 
-function useWidgets(panelId: string | undefined): StarterKitWidgets | null {
-  return starterKitWidgets(usePage().props, panelId)
+const LoadedCopilot = lazyComponent<WidgetProps>(
+  () => load().then((module) => module.LoadedCopilot),
+  (props) => <CopilotTrigger {...props} onLoad={preloadCopilot} />,
+)
+
+function preloadCopilot() {
+  void LoadedCopilot.preload()
+}
+
+// Only needed while impersonating: its code loads then (and never on AlfaKit pages).
+const LazyImpersonationBanner = lazy(() => import('./impersonation-banner'))
+
+/** While impersonating, the first header component shows the banner on host pages. */
+function StarterKitImpersonationBanner({ source }: { source: StarterKitWidgets | null }) {
+  const props = usePage().props
+  const impersonation = source?.widgets.impersonation
+
+  if (!impersonation || isAlfakitPage(props)) return null
+
+  return (
+    <Suspense fallback={null}>
+      <LazyImpersonationBanner impersonation={impersonation} />
+    </Suspense>
+  )
+}
+
+function useWidgets(
+  panelId: string | undefined,
+  part: keyof StarterKitWidgetsSchema,
+): StarterKitWidgets | null {
+  return starterKitWidgets(usePage().props, panelId, part)
 }
 
 /**
@@ -58,14 +95,19 @@ function useWidgets(panelId: string | undefined): StarterKitWidgets | null {
  * nothing for guests or without global search and a command palette.
  */
 export function AlfakitSearch({ panel }: AlfakitHeaderWidgetProps = {}) {
-  const source = useWidgets(panel)
+  const source = useWidgets(panel, 'search')
 
-  if (!source?.widgets.search) return null
+  const banner = <StarterKitImpersonationBanner source={source} />
+
+  if (!source?.widgets.search) return banner
 
   return (
-    <span data-slot="starter-kit-search" className="inline-flex">
-      <LoadedSearch source={source} />
-    </span>
+    <>
+      {banner}
+      <span data-slot="starter-kit-search" className="inline-flex">
+        <LoadedSearch source={source} />
+      </span>
+    </>
   )
 }
 
@@ -75,14 +117,19 @@ export function AlfakitSearch({ panel }: AlfakitHeaderWidgetProps = {}) {
  * notifications.
  */
 export function AlfakitNotifications({ panel }: AlfakitHeaderWidgetProps = {}) {
-  const source = useWidgets(panel)
+  const source = useWidgets(panel, 'notifications')
 
-  if (!source?.widgets.notifications) return null
+  const banner = <StarterKitImpersonationBanner source={source} />
+
+  if (!source?.widgets.notifications) return banner
 
   return (
-    <span data-slot="starter-kit-notifications" className="inline-flex">
-      <LoadedNotifications source={source} />
-    </span>
+    <>
+      {banner}
+      <span data-slot="starter-kit-notifications" className="inline-flex">
+        <LoadedNotifications source={source} />
+      </span>
+    </>
   )
 }
 
@@ -91,13 +138,41 @@ export function AlfakitNotifications({ panel }: AlfakitHeaderWidgetProps = {}) {
  * to choose one on the host's own pages. Renders nothing for guests or other panels.
  */
 export function AlfakitTenantSwitcher({ panel }: AlfakitHeaderWidgetProps = {}) {
-  const source = useWidgets(panel)
+  const source = useWidgets(panel, 'tenancy')
 
-  if (!source?.widgets.tenancy) return null
+  const banner = <StarterKitImpersonationBanner source={source} />
+
+  if (!source?.widgets.tenancy) return banner
 
   return (
-    <span data-slot="starter-kit-tenant-switcher" className="inline-flex">
-      <LoadedTenantSwitcher source={source} />
-    </span>
+    <>
+      {banner}
+      <span data-slot="starter-kit-tenant-switcher" className="inline-flex">
+        <LoadedTenantSwitcher source={source} />
+      </span>
+    </>
+  )
+}
+
+/**
+ * The AI copilot of alfasix/alfakit-ai (`AiPlugin::copilot()`): its button and chat
+ * slide-over, opened with its key bindings (`mod+j`) from any page. Renders nothing for
+ * guests, without the plugin's copilot, for users who may not use it and (tenancy panels)
+ * outside a tenant.
+ */
+export function AlfakitCopilot({ panel }: AlfakitHeaderWidgetProps = {}) {
+  const source = useWidgets(panel, 'copilot')
+
+  const banner = <StarterKitImpersonationBanner source={source} />
+
+  if (!source?.widgets.copilot) return banner
+
+  return (
+    <>
+      {banner}
+      <span data-slot="starter-kit-copilot" className="inline-flex">
+        <LoadedCopilot source={source} />
+      </span>
+    </>
   )
 }

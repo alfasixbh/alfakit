@@ -18,6 +18,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
+ * Class lists that live in @alfakit/core (stacked-on-mobile tables, filter and column manager
+ * widths in `table.ts`, …): scan core's build too. Relative to this file in
+ * node_modules/@alfakit/<renderer>/dist, next to node_modules/@alfakit/core.
+ */
+@source '../../core/dist';
+
+/*
  * Grid classes are composed at runtime from schema breakpoints (`columns`, `columnSpan`),
  * so force Tailwind to generate every variant the renderers can produce.
  */

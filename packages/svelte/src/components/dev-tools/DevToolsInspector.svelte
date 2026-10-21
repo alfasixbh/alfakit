@@ -99,9 +99,9 @@
           variant="outline"
           size="icon"
           aria-label={t('dev_tools.open', {}, 'Open schema inspector')}
-          data-slot="dev-tools-toggle"
           class="fixed end-4 bottom-4 z-40 rounded-full shadow-md"
           {...triggerProps}
+          data-slot="dev-tools-toggle"
         >
           <BracesIcon />
         </Button>

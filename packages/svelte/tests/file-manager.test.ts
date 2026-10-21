@@ -102,6 +102,13 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
+// Evaluate the lazily loaded file manager once up front so its module cost is not counted
+// against the first test's `findBy*` timeout (under a full run it took longer than that).
+beforeAll(async () => {
+  await import('../src/components/file-manager/FileManager.svelte')
+  await import('../src/components/file-manager/FileManagerView.svelte')
+}, 60_000)
+
 describe('file manager', () => {
   it('is registered as file-manager with its picker field', () => {
     expect(registry.has('file-manager')).toBe(true)

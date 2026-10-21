@@ -15,7 +15,7 @@ import {
   SearchIcon,
 } from '@lucide/vue'
 import { computed, onScopeDispose, ref, watch } from 'vue'
-import { useChoice, useT } from '../../context'
+import { useChoice, useFormatter, useT } from '../../context'
 import { cn } from '../../lib/utils'
 import { useFormStore } from '../form/form-context'
 import TableCellContent from '../table/TableCellContent.vue'
@@ -43,6 +43,7 @@ const emit = defineEmits<{
   confirm: [keys: string[], labels: Record<string, string>]
 }>()
 const t = useT()
+const format = useFormatter()
 const choice = useChoice()
 const form = useFormStore()
 const multiple = computed(() => Boolean(props.component.multiple))
@@ -314,7 +315,11 @@ const confirm = () =>
             paging.total !== undefined
               ? t(
                   'table.showing',
-                  { first: paging.from, last: paging.to, total: paging.total },
+                  {
+                    first: format.number(paging.from),
+                    last: format.number(paging.to),
+                    total: format.number(paging.total),
+                  },
                   'Showing :first–:last of :total',
                 )
               : `${paging.from}–${paging.to}`

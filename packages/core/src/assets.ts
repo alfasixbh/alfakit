@@ -1,3 +1,4 @@
+import { documentNonce } from './csp'
 /**
  * Plugin assets on the client: stylesheets and scripts registered with
  * `->loadedOnRequest()` (loaded by the component that needs them) and the data registered
@@ -66,7 +67,7 @@ function load(url: string | null | undefined, kind: 'style' | 'script' | 'module
 
     element.setAttribute('data-alfakit-asset', 'on-request')
 
-    const nonce = document.querySelector<HTMLElement>('script[nonce], style[nonce]')?.nonce
+    const nonce = documentNonce()
     if (nonce) element.nonce = nonce
 
     element.addEventListener('load', () => resolve(), { once: true })

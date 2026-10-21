@@ -159,9 +159,15 @@ function luminance(colour: Rgba): number {
  * WCAG 2.1 contrast ratio of two token colours. A translucent background is first composited
  * over the page background, a translucent foreground over the result.
  */
-export function contrast(tokens: Tokens, foreground: string, background: string): number {
+export function contrast(
+  tokens: Tokens,
+  foreground: string,
+  background: string,
+  backgroundAlpha = 1,
+): number {
   const page = parseOklch(tokenValue(tokens, '--background'))
-  const bottom = over(parseOklch(tokenValue(tokens, background)), page)
+  const tinted = parseOklch(tokenValue(tokens, background))
+  const bottom = over({ ...tinted, a: tinted.a * backgroundAlpha }, page)
   const top = over(parseOklch(tokenValue(tokens, foreground)), bottom)
   const [light, dark] = [luminance(top), luminance(bottom)].sort((x, y) => y - x) as [
     number,
@@ -176,6 +182,8 @@ export interface ContrastPair {
   background: string
   /** 4.5 for text, 3 for component boundaries (WCAG 1.4.3 / 1.4.11). */
   minimum: number
+  /** The background is a tint of the token (`bg-success/10`, `dark:bg-success/20`). */
+  tint?: { light: number; dark: number }
 }
 
 /** The token pairs every theme must pass in light and dark mode. */
@@ -185,6 +193,8 @@ export const CONTRAST_PAIRS: ContrastPair[] = [
   { foreground: '--popover-foreground', background: '--popover', minimum: 4.5 },
   { foreground: '--muted-foreground', background: '--background', minimum: 4.5 },
   { foreground: '--muted-foreground', background: '--card', minimum: 4.5 },
+  // Gray badges and keyboard hints (`bg-muted text-muted-foreground`).
+  { foreground: '--muted-foreground', background: '--muted', minimum: 4.5 },
   { foreground: '--primary-foreground', background: '--primary', minimum: 4.5 },
   // `text-primary` links and active states.
   { foreground: '--primary', background: '--background', minimum: 4.5 },
@@ -202,6 +212,26 @@ export const CONTRAST_PAIRS: ContrastPair[] = [
   { foreground: '--success-foreground', background: '--success', minimum: 4.5 },
   { foreground: '--warning-foreground', background: '--warning', minimum: 4.5 },
   { foreground: '--info-foreground', background: '--info', minimum: 4.5 },
+  // Status badges: the colour on its own tint (packages/*/src/lib/colors badge classes).
+  {
+    foreground: '--success',
+    background: '--success',
+    minimum: 4.5,
+    tint: { light: 0.1, dark: 0.2 },
+  },
+  {
+    foreground: '--warning',
+    background: '--warning',
+    minimum: 4.5,
+    tint: { light: 0.1, dark: 0.2 },
+  },
+  {
+    foreground: '--destructive',
+    background: '--destructive',
+    minimum: 4.5,
+    tint: { light: 0.1, dark: 0.2 },
+  },
+  { foreground: '--info', background: '--info', minimum: 4.5, tint: { light: 0.1, dark: 0.2 } },
   { foreground: '--input', background: '--background', minimum: 3 },
   { foreground: '--input', background: '--card', minimum: 3 },
 ]

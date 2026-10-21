@@ -23,7 +23,7 @@
   import TabletIcon from '@lucide/svelte/icons/tablet'
   import XIcon from '@lucide/svelte/icons/x'
   import { onDestroy, onMount, untrack } from 'svelte'
-  import { usePageSchema, usePanel, useT } from '../../context.svelte'
+  import { usePageReader, useT } from '../../context.svelte'
   import { cn } from '../../lib/utils'
   import { useOptionalFormStore } from '../form/form-context.svelte'
   import ActionList from '../actions/ActionList.svelte'
@@ -62,9 +62,14 @@
     })),
   )
   const pageAction = usePageActionContext()
+  const reader = usePageReader()
   const actionContext = $derived({ token: pageAction.token, component: 'page' })
   const status = $derived(
     snapshot.hasChanges && component.changedStatus ? component.changedStatus : component.status,
+  )
+  // "Publish changes" appears as soon as an autosave makes the draft differ.
+  const actions = $derived(
+    snapshot.hasChanges && component.changedActions ? component.changedActions : component.actions,
   )
   let top = $state('0px')
   /** Badge colours of the status (the server's `PageState` colours). */
@@ -116,10 +121,12 @@
           previewUrl: component.previewUrl,
           savedAt: component.savedAt,
           hasChanges: component.hasChanges,
+          // Read when the save runs (the token is re-issued with every response), through
+          // the reader made during initialisation.
           save: (state) =>
             callCmsAutosave(component.autosaveMethod, state, {
-              token: usePageSchema()?.token ?? '',
-              endpoint: usePanel()?.endpoints?.pageCall ?? '',
+              token: reader.page()?.token ?? '',
+              endpoint: reader.panel()?.endpoints?.pageCall ?? '',
             }),
           onChange: (next) => (snapshot = next),
         })
@@ -223,10 +230,10 @@
           : t('cms.live_preview', {}, 'Live preview')}
       </Button>
     {/if}
-    {#if component.actions?.length}
+    {#if actions?.length}
       <!-- Pressing a main action saves the latest typing first. -->
       <div onpointerdowncapture={() => void autosave?.flush()} role="presentation">
-        <ActionList actions={component.actions} context={actionContext} size="sm" />
+        <ActionList {actions} context={actionContext} size="sm" />
       </div>
     {/if}
   </div>

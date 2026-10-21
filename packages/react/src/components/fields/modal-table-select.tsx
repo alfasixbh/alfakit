@@ -20,7 +20,7 @@ import {
   XIcon,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useChoice, useT } from '../../context'
+import { useChoice, useFormatter, useT } from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -135,6 +135,7 @@ interface PickerProps {
 
 function ModalTablePicker({ component, initial, onClose, onConfirm }: PickerProps) {
   const t = useT()
+  const format = useFormatter()
   const choice = useChoice()
   const form = useFormStore()
   const multiple = Boolean(component.multiple)
@@ -399,8 +400,12 @@ function ModalTablePicker({ component, initial, onClose, onConfirm }: PickerProp
                 {paging.total !== undefined
                   ? t(
                       'table.showing',
-                      { first: paging.from, last: paging.to, total: paging.total },
-                      `Showing ${paging.from}–${paging.to} of ${paging.total}`,
+                      {
+                        first: format.number(paging.from),
+                        last: format.number(paging.to),
+                        total: format.number(paging.total),
+                      },
+                      'Showing :first–:last of :total',
                     )
                   : `${paging.from}–${paging.to}`}
               </span>

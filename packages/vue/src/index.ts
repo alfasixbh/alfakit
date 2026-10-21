@@ -102,6 +102,8 @@ export { discoverComponents, discoveredComponent, type DiscoveredComponents } fr
 export { Icon, hasIcon, resolveIcon } from './lib/icons'
 export { cn } from './lib/utils'
 export * from './pages'
+// `createAlfakit()` registers these; a registry built by hand for `AlfakitPage` needs them too.
+export { panelLayouts } from './layouts/panel-layouts'
 export { createDefaultRegistry } from './registry'
 export * from './standalone'
 export * from './starter-kit'

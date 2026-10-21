@@ -1,12 +1,13 @@
 /* eslint-disable vue/one-component-per-file -- small test renderers */
 import { FormStore } from '@alfakit/core'
 import { flushPromises, mount } from '@vue/test-utils'
-import { createSSRApp, defineComponent, h, nextTick, type PropType } from 'vue'
+import { createSSRApp, defineComponent, h, nextTick, provide, type PropType } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { cmsPayloadFixture } from '../../core/tests/fixtures/cms-payload'
 import { CmsBlocks, CmsPage } from '../src/components/cms'
 import LivePreview from '../src/components/cms/LivePreview.vue'
 import { FORM_STORE_KEY } from '../src/components/form/form-context'
+import { mountWithAlfakit } from './mocks'
 
 const PricingBlock = defineComponent({
   props: { data: { type: Object as PropType<{ plan: string }>, required: true } },
@@ -158,6 +159,60 @@ describe('CMS live preview and admin bar', () => {
     })
     expect(wrapper.find('a[href="/admin/pages/1/edit"]').text()).toContain('Edit this page')
     expect(wrapper.find('a[href="/preview/1"]').text()).toContain('View draft')
+  })
+
+  it('switches to "Publish changes" once an autosave makes the draft differ', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          result: { savedAt: '2026-10-14T10:00:00+00:00', hasChanges: true, previewUrl: null },
+          notifications: [],
+          errors: null,
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    )
+    globalThis.__alfakitPageProps = {
+      page: { token: 'tok' },
+      alfakit: { endpoints: { pageCall: '/admin/_alfakit/pages/call' } },
+    }
+    const store = new FormStore(
+      { components: [], state: { title: 'Hi' } },
+      { token: 'tok', component: 'form' },
+    )
+    const save = { type: 'Action', name: 'save', label: 'Save draft' } as const
+    const ProvideForm = defineComponent({
+      setup(_, { slots }) {
+        provide(FORM_STORE_KEY, store)
+
+        return () => slots.default?.()
+      },
+    })
+    const buttons = () => [...document.querySelectorAll('button')].map((b) => b.textContent?.trim())
+
+    const wrapper = mountWithAlfakit(() =>
+      h(ProvideForm, null, () =>
+        h(LivePreview, {
+          component: {
+            type: 'CmsLivePreview',
+            key: 'p',
+            previewUrl: null,
+            autosaveMethod: 'cmsAutosave',
+            debounce: 10,
+            hasChanges: false,
+            actions: [save],
+            changedActions: [save, { type: 'Action', name: 'publish', label: 'Publish changes' }],
+          },
+        }),
+      ),
+    )
+
+    expect(buttons()).not.toContain('Publish changes')
+
+    store.setValue('title', 'Hello')
+    await vi.waitFor(() => expect(buttons()).toContain('Publish changes'))
+    expect(buttons()).toContain('Save draft')
+    wrapper.unmount()
   })
 
   it('autosaves form changes and opens a resizable preview pane', async () => {

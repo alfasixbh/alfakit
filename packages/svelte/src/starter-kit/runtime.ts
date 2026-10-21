@@ -6,6 +6,9 @@ import {
 } from '@alfakit/core'
 import { showToast } from '../components/notifications/toast'
 import type { AlfakitContextValue, AnyComponent } from '../context.svelte'
+import AuthLayout from '../layouts/AuthLayout.svelte'
+import { lazyPanelLayouts } from '../layouts/lazy-layouts'
+import { discoverComponents } from '../lib/discovery'
 import { preloadIcons } from '../lib/icons'
 import AlfakitPage from '../pages/AlfakitPage.svelte'
 import { createDefaultRegistry } from '../registry'
@@ -21,6 +24,12 @@ export interface StarterKitPageOptions extends Pick<
    * `null` renders the pages without a host layout.
    */
   layout?: AnyComponent | null
+  /**
+   * Auto-registered custom components, as for `createAlfakit({ discover })`: pass
+   * `import.meta.glob('../../alfakit/{fields,columns,entries,widgets,pages,components,blocks}/**\/*.svelte')`
+   * from `resources/js/pages/Alfakit/Page.svelte` and every file there registers under its name.
+   */
+  discover?: AlfakitOptions<AnyComponent>['discover']
 }
 
 // One context for the browser session (it survives navigations between host and Alfakit
@@ -28,14 +37,21 @@ export interface StarterKitPageOptions extends Pick<
 let browserContext: AlfakitContextValue | null = null
 
 function createStarterKitContext(options: StarterKitPageOptions): AlfakitContextValue {
+  // The host's layout replaces the panel's. Auth pages (invitations, tenant registration)
+  // keep the panel's card; the fullscreen layout loads on demand.
+  // Auto-registered files sit between the built-ins and the explicit `components` / `pages`.
+  const discovered = discoverComponents(options.discover)
   const registry = createDefaultRegistry()
+    .registerMany(lazyPanelLayouts)
+    .register('layout:auth', AuthLayout as AnyComponent)
     .register('layout:app', StarterKitContentLayout as AnyComponent)
+    .registerMany(discovered.components)
     .registerMany(options.components ?? {})
   const translator = new Translator()
 
   return {
     registry,
-    pages: { 'Alfakit/Page': AlfakitPage as AnyComponent, ...options.pages },
+    pages: { 'Alfakit/Page': AlfakitPage as AnyComponent, ...discovered.pages, ...options.pages },
     translator,
     actions: new ActionRunner({
       endpoints: { action: '', modal: '' },

@@ -2,6 +2,7 @@ import {
   configureCharts,
   registerRichEditorExtensions,
   starterKitBreadcrumbsFromProps,
+  usesStarterKitHostLayout,
 } from '@alfakit/core'
 import AlfakitStarterKitRoot from './AlfakitStarterKitRoot.svelte'
 import type { StarterKitPageOptions } from './runtime'
@@ -36,7 +37,7 @@ export function createStarterKitLayout(options: StarterKitPageOptions = {}) {
   registerRichEditorExtensions(options.richEditorExtensions ?? {})
 
   return (props: Record<string, unknown>) => [
-    ...(options.layout
+    ...(options.layout && usesStarterKitHostLayout(props)
       ? [[options.layout, { breadcrumbs: starterKitBreadcrumbsFromProps(props) }]]
       : []),
     [AlfakitStarterKitRoot, { options }],

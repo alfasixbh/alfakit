@@ -5,6 +5,7 @@ import { cmsPayloadFixture } from '../../core/tests/fixtures/cms-payload'
 import { CmsBlocks, CmsPage, CmsProvider } from '../src/components/cms'
 import { CmsLivePreview } from '../src/components/cms/live-preview'
 import { FormProvider } from '../src/components/form/form-context'
+import { Wrapper } from './mocks'
 
 function PricingBlock({ data }: { data: { plan: string } }) {
   return <p data-testid="pricing">Plan: {data.plan}</p>
@@ -187,6 +188,54 @@ describe('CMS page', () => {
 
 describe('CMS live preview', () => {
   afterEach(() => vi.restoreAllMocks())
+
+  it('switches to "Publish changes" once an autosave makes the draft differ', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          result: { savedAt: '2026-10-14T10:00:00+00:00', hasChanges: true, previewUrl: null },
+          notifications: [],
+          errors: null,
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
+    )
+    globalThis.__alfakitPageProps = {
+      page: { token: 'tok' },
+      alfakit: { endpoints: { pageCall: '/admin/_alfakit/pages/call' } },
+    }
+    const store = new FormStore(
+      { components: [], state: { title: 'Hi' } },
+      { token: 'tok', component: 'form' },
+    )
+    const save = { type: 'Action', name: 'save', label: 'Save draft' } as const
+
+    render(
+      <Wrapper>
+        <FormProvider store={store}>
+          <CmsLivePreview
+            component={{
+              type: 'CmsLivePreview',
+              key: 'p',
+              previewUrl: null,
+              autosaveMethod: 'cmsAutosave',
+              debounce: 10,
+              hasChanges: false,
+              actions: [save],
+              changedActions: [save, { type: 'Action', name: 'publish', label: 'Publish changes' }],
+            }}
+          />
+        </FormProvider>
+      </Wrapper>,
+    )
+
+    expect(screen.queryByRole('button', { name: 'Publish changes' })).toBeNull()
+
+    act(() => store.setValue('title', 'Hello'))
+
+    expect(await screen.findByRole('button', { name: 'Publish changes' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Save draft' })).toBeInTheDocument()
+  })
 
   it('autosaves form changes and opens a resizable preview pane', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })

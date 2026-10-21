@@ -30,6 +30,7 @@ import CommandEmpty from '../ui/CommandEmpty.vue'
 import CommandGroup from '../ui/CommandGroup.vue'
 import CommandInput from '../ui/CommandInput.vue'
 import CommandItem from '../ui/CommandItem.vue'
+import CommandAutoHighlight from '../ui/CommandAutoHighlight.vue'
 import CommandList from '../ui/CommandList.vue'
 import Spinner from '../ui/Spinner.vue'
 import ShortcutKeys from './ShortcutKeys.vue'
@@ -276,6 +277,7 @@ const hasResults = computed(() => groups.value.length > 0 || local.value.length 
       @update:model-value="query = $event"
     />
     <CommandList>
+      <CommandAutoHighlight :items="[groups, local, leading]" />
       <CommandEmpty v-if="!loading && !hasResults">{{
         query ? t('no_results', {}, 'No results.') : placeholder
       }}</CommandEmpty>

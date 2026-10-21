@@ -14,6 +14,22 @@ function section(overrides: Partial<SectionSchema> = {}): SectionSchema {
 }
 
 describe('Section', () => {
+  it('wraps long unbroken headings and descriptions (model class names) inside the card', () => {
+    render(Wrapper, {
+      props: {
+        component: SectionComponent,
+        props: {
+          component: section({
+            description: 'App\\Models\\AVeryLongModelClassNameThatHasNoSpacesAtAll',
+          }),
+        },
+      },
+    })
+
+    expect(screen.getByText(/AVeryLongModelClassName/)).toHaveClass('break-words')
+    expect(screen.getByText('Details')).toHaveClass('break-words')
+  })
+
   it.each([false, true])('toggles a collapsible section (aside: %s)', async (aside) => {
     render(Wrapper, {
       props: {

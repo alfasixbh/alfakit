@@ -50,6 +50,11 @@ describe('schema inspector', () => {
 
     const { container } = render(Wrapper, { props: { component: DevToolsInspector } })
 
+    // The theme CSS (mobile bottom bar) targets this hook, like in React and Vue.
+    expect(
+      container.querySelector('[aria-label="Open schema inspector"]')?.getAttribute('data-slot'),
+    ).toBe('dev-tools-toggle')
+
     await fireEvent.click(container.querySelector('[aria-label="Open schema inspector"]')!)
     await tick()
 

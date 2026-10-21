@@ -110,4 +110,23 @@ describe('widgets', () => {
 
     expect(screen.getByText('progress 40')).toBeTruthy()
   })
+
+  it('renders an ejected TableCellContent registered for a column type without calling itself again', () => {
+    // `alfakit:eject column:TextColumn` registers the copied dispatcher under its type.
+    registry.register('column:TextColumn', TableCellContent)
+
+    render(
+      <Wrapper>
+        <TableCellContent
+          column={{ type: 'TextColumn', name: 'title', label: 'Title' } as never}
+          cell={{ state: 'Hello' } as never}
+          recordKey={1}
+          token="t"
+          component="table"
+        />
+      </Wrapper>,
+    )
+
+    expect(screen.getByText('Hello')).toBeTruthy()
+  })
 })

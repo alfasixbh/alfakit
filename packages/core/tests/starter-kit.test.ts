@@ -1,11 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   applyPanelTheme,
   isStarterKitPanel,
+  loadStarterKitPanel,
+  loadedStarterKitPanel,
+  resetStarterKitPanels,
   standaloneWidgetCount,
   starterKitBreadcrumbsFromProps,
   starterKitDashboardWidgets,
   starterKitNavigation,
+  starterKitWidgets,
   toStarterKitBreadcrumbs,
   toStarterKitNavGroups,
   type PanelSchema,
@@ -77,6 +81,33 @@ describe('starter kit mode', () => {
     expect(starterKitNavigation({ alfakitNavigation: null })).toBeNull()
   })
 
+  it("follows the open AlfaKit page's panel when no id is given", () => {
+    const app = { ...navigation, id: 'app' }
+    const props = { alfakitNavigation: [navigation, app], alfakit: { id: 'app' } }
+
+    expect(starterKitNavigation(props)?.id).toBe('app')
+    expect(starterKitNavigation(props, 'admin')?.id).toBe('admin')
+    expect(starterKitNavigation({ ...props, alfakit: { id: 'other' } })?.id).toBe('admin')
+  })
+
+  it('picks the panel that has a header component part', () => {
+    const widgets = {
+      endpoint: '/admin/_alfakit/starter-kit',
+      search: { keyBindings: [], placeholder: 'S' },
+    }
+    const app = {
+      ...navigation,
+      id: 'app',
+      widgets: { endpoint: '/app/_alfakit/starter-kit', tenancy: { current: null, tenants: [] } },
+    }
+    const props = { alfakitNavigation: [{ ...navigation, widgets }, app] }
+
+    expect(starterKitWidgets(props)?.navigation.id).toBe('admin')
+    expect(starterKitWidgets(props, undefined, 'tenancy')?.navigation.id).toBe('app')
+    expect(starterKitWidgets(props, 'admin', 'tenancy')?.navigation.id).toBe('admin')
+    expect(starterKitWidgets({ ...props, alfakit: { id: 'app' } })?.navigation.id).toBe('app')
+  })
+
   it('flattens groups into host sidebar items', () => {
     const groups = toStarterKitNavGroups(navigation.groups)
 
@@ -135,5 +166,34 @@ describe('starter kit dashboard widgets', () => {
   it('counts the widgets of a payload', () => {
     expect(standaloneWidgetCount(component)).toBe(1)
     expect(standaloneWidgetCount({ ...component, content: [] })).toBe(0)
+  })
+})
+
+describe('starter kit header components panel data', () => {
+  it('refuses an answer that is not the panel data (a redirect to the sign-in page)', async () => {
+    resetStarterKitPanels()
+    const fetchMock = vi.fn(
+      async () => new Response('<!DOCTYPE html><html></html>', { status: 200 }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(loadStarterKitPanel('/admin/_alfakit/starter-kit')).rejects.toThrow()
+    expect(loadedStarterKitPanel('/admin/_alfakit/starter-kit')).toBeNull()
+
+    // The next render asks again and keeps real panel data.
+    fetchMock.mockImplementation(
+      async () =>
+        new Response(JSON.stringify({ id: 'admin', endpoints: { action: '/a' } }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    )
+    await expect(loadStarterKitPanel('/admin/_alfakit/starter-kit')).resolves.toMatchObject({
+      id: 'admin',
+    })
+    expect(loadedStarterKitPanel('/admin/_alfakit/starter-kit')).not.toBeNull()
+
+    vi.unstubAllGlobals()
+    resetStarterKitPanels()
   })
 })

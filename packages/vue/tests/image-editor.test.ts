@@ -2,7 +2,7 @@ import type { FileUploadSchema } from '@alfakit/core'
 import { FormStore, type SchemaComponent } from '@alfakit/core'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, shallowRef } from 'vue'
 import FileUploadField from '../src/components/fields/FileUploadField.vue'
 import { provideForm } from '../src/components/form/form-context'
 import { mountWithAlfakit } from './mocks'
@@ -100,6 +100,36 @@ const openPicked = async () => {
 }
 
 describe('image editor', () => {
+  it('keeps loading the image when the field re-renders with an equal schema (a new builder block)', async () => {
+    const component = shallowRef(upload())
+    const store = new FormStore(
+      { components: [component.value as SchemaComponent], state: { files: null } },
+      { token: 't', component: 'form' },
+    )
+    const Form = defineComponent({
+      setup() {
+        provideForm(store)
+
+        return () => h(FileUploadField, { component: component.value })
+      },
+    })
+    mountWithAlfakit(() => h(Form), { attachTo: document.body })
+
+    const input = document.querySelector<HTMLInputElement>('input[type="file"]')!
+    Object.defineProperty(input, 'files', {
+      configurable: true,
+      value: [new File(['x'], 'a.png', { type: 'image/png' })],
+    })
+    input.dispatchEvent(new Event('change'))
+    await vi.waitFor(() => expect(createImageBitmap).toHaveBeenCalledTimes(1))
+
+    // A template item's schema is a new object on every render.
+    component.value = { ...component.value, imageEditor: { ...component.value.imageEditor! } }
+
+    await vi.waitFor(() => expect(field('Width')).not.toBeNull())
+    expect(createImageBitmap).toHaveBeenCalledTimes(1)
+  })
+
   it('zooms the image under the crop box with the buttons and keys', async () => {
     renderUpload(upload())
     await openPicked()

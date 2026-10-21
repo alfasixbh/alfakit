@@ -3,6 +3,7 @@ import { ActionRunner, Translator, type AlfakitPageProps, type PanelSchema } fro
 import type { ReactNode } from 'react'
 import { TooltipProvider } from '../src/components/ui/tooltip'
 import { AlfakitProvider, type AnyComponent } from '../src/context'
+import { panelLayouts } from '../src/layouts/panel-layouts'
 import { createDefaultRegistry } from '../src/registry'
 
 export const panel: PanelSchema = {
@@ -43,7 +44,9 @@ export function setPageProps(props: Partial<AlfakitPageProps>): void {
   globalThis.__alfakitPageProps = { ...globalThis.__alfakitPageProps, ...props }
 }
 
-export const registry: ComponentRegistry<AnyComponent> = createDefaultRegistry()
+// The panel's layouts up front, as `createAlfakit()` registers them.
+export const registry: ComponentRegistry<AnyComponent> =
+  createDefaultRegistry().registerMany(panelLayouts)
 export const actions = new ActionRunner({ endpoints: { action: '/a', modal: '/m' } })
 
 export function Wrapper({ children }: { children: ReactNode }) {

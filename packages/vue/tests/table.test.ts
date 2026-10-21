@@ -2,7 +2,7 @@ import type { TableSchema } from '@alfakit/core'
 import { router } from '@inertiajs/vue3'
 import { h, nextTick, shallowRef } from 'vue'
 import DataTable from '../src/components/table/DataTable.vue'
-import { mountWithAlfakit, setPageProps } from './mocks'
+import { mountWithAlfakit, panel, setPageProps } from './mocks'
 
 const table: TableSchema = {
   type: 'Table',
@@ -54,6 +54,19 @@ const table: TableSchema = {
 }
 
 describe('data table', () => {
+  it('formats pagination numbers in the panel language (Persian digits)', () => {
+    setPageProps({
+      alfakit: { ...panel, localization: { code: 'fa', tag: 'fa', direction: 'rtl', locales: [] } },
+      page: { class: 'X', layout: 'app', title: 'Posts', content: [], token: 't' },
+    } as unknown as Parameters<typeof setPageProps>[0])
+
+    const wrapper = mountWithAlfakit(() => h(DataTable, { table }))
+
+    expect(wrapper.text()).toMatch(/۱–۱۰ of ۲۵/)
+    expect(wrapper.text()).toContain('۳')
+    setPageProps({ alfakit: panel })
+  })
+
   it('renders headers, cells, pagination and selection', () => {
     setPageProps({ page: { class: 'X', layout: 'app', title: 'Posts', content: [], token: 't' } })
 

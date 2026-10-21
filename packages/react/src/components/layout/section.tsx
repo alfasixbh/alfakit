@@ -76,11 +76,11 @@ export function SectionComponent({ component }: { component: SectionSchema }) {
         {component.heading &&
           createElement(
             headingTag(component.headingLevel),
-            { className: 'text-base leading-6 font-semibold' },
+            { className: 'text-base leading-6 font-semibold break-words' },
             component.heading,
           )}
         {component.description && (
-          <p className="text-muted-foreground mt-1 text-sm">{component.description}</p>
+          <p className="text-muted-foreground mt-1 text-sm break-words">{component.description}</p>
         )}
       </div>
       {component.headerActions && component.headerActions.length > 0 && (

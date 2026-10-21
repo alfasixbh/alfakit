@@ -278,6 +278,20 @@ describe('KanbanController', () => {
     expect(env.error).toHaveBeenCalledWith('DONE is full.')
   })
 
+  it('shows the message of a refusal keyed by another name (beforeCardMoved())', async () => {
+    const env = environment(
+      vi
+        .fn()
+        .mockRejectedValue(
+          new HttpError(422, { errors: { move: ['QA refuses to move this card.'] } }),
+        ),
+    )
+    const controller = new KanbanController(board(), env)
+
+    expect(await controller.moveTo('1', { column: 'done', lane: null, index: 0 })).toBe(false)
+    expect(env.error).toHaveBeenCalledWith('QA refuses to move this card.')
+  })
+
   it('rolls back on a forbidden move and a refused answer', async () => {
     const env = environment(vi.fn().mockRejectedValue(new HttpError(403, {})))
     const controller = new KanbanController(board(), env)

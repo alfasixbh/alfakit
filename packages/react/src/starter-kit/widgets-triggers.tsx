@@ -1,12 +1,14 @@
 import {
   formatKeyBinding,
   initials,
+  registerStarterKitCopilotShortcut,
   registerStarterKitSearchShortcut,
+  requestStarterKitCopilot,
   requestStarterKitSearch,
   tenantNameText,
   type StarterKitWidgets,
 } from '@alfakit/core'
-import { BellIcon, ChevronsUpDownIcon, SearchIcon } from 'lucide-react'
+import { BellIcon, ChevronsUpDownIcon, SearchIcon, SparklesIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { useHydrated } from '../hooks/use-hydrated'
 
@@ -98,6 +100,39 @@ export function TenantSwitcherTrigger({ source }: WidgetProps) {
         <span className="sr-only min-w-0 truncate lg:not-sr-only">{tenantNameText(current)}</span>
       )}
       <ChevronsUpDownIcon className="text-muted-foreground size-4 shrink-0" aria-hidden="true" />
+    </button>
+  )
+}
+
+/**
+ * The AI copilot's button until its code has loaded: the same look, and it remembers a
+ * click or its key bindings (`mod+j`), so the copilot opens once loaded.
+ */
+export function CopilotTrigger({ source, onLoad }: WidgetProps & { onLoad?: () => void }) {
+  const copilot = source.widgets.copilot
+  const keys = JSON.stringify(copilot?.keyBindings ?? [])
+  const label = copilot?.label ?? ''
+  // `onLoad` is a stable function (it starts loading the copilot's code).
+  useEffect(
+    () => registerStarterKitCopilotShortcut(JSON.parse(keys) as string[], label, () => onLoad?.()),
+    [keys, label, onLoad],
+  )
+
+  return (
+    <button
+      type="button"
+      data-slot="ai-copilot-trigger"
+      aria-label={label}
+      aria-haspopup="dialog"
+      title={label}
+      className="hover:bg-accent hover:text-accent-foreground inline-flex size-9 items-center justify-center rounded-md"
+      onPointerEnter={() => onLoad?.()}
+      onClick={() => {
+        requestStarterKitCopilot()
+        onLoad?.()
+      }}
+    >
+      <SparklesIcon className="size-4" aria-hidden="true" />
     </button>
   )
 }

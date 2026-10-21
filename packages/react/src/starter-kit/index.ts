@@ -8,6 +8,7 @@ export {
   type StarterKitPageOptions,
 } from './starter-kit'
 export {
+  AlfakitCopilot,
   AlfakitNotifications,
   AlfakitSearch,
   AlfakitTenantSwitcher,

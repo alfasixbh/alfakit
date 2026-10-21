@@ -56,7 +56,16 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <AlfakitRoot :toaster-id="STARTER_KIT_TOASTER_ID">
-    <slot />
-  </AlfakitRoot>
+  <!-- The reading direction and language of Alfakit's content only: the host layout around it
+       (sidebar, header) and the app's own pages keep the document's. -->
+  <div
+    data-slot="starter-kit-root"
+    :dir="page.props.alfakit?.localization?.direction ?? 'ltr'"
+    :lang="page.props.alfakit?.localization?.tag"
+    class="contents"
+  >
+    <AlfakitRoot :toaster-id="STARTER_KIT_TOASTER_ID">
+      <slot />
+    </AlfakitRoot>
+  </div>
 </template>

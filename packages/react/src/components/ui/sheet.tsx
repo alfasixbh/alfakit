@@ -1,5 +1,5 @@
 import { XIcon } from 'lucide-react'
-import { Dialog as SheetPrimitive } from 'radix-ui'
+import { Direction, Dialog as SheetPrimitive } from 'radix-ui'
 import type { ComponentProps } from 'react'
 import { useT } from '../../context'
 import { Icon } from '../../lib/icons'
@@ -44,11 +44,15 @@ function SheetContent({
   side?: 'top' | 'right' | 'bottom' | 'left'
   showCloseButton?: boolean
 }) {
+  // Portaled outside Alfakit's root: carry the reading direction (starter kit pages and
+  // standalone components leave <html dir> to the host).
+  const dir = Direction.useDirection()
   const t = useT()
   return (
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content
+        dir={dir}
         data-slot="sheet-content"
         className={cn(
           'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500',

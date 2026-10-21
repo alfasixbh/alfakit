@@ -1,5 +1,5 @@
 import type { BaseField, FieldAriaAttributes, FormState, FormStore } from '@alfakit/core'
-import { fieldAria, fieldDomId } from '@alfakit/core'
+import { fieldAria, fieldDomId, fieldError } from '@alfakit/core'
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
 import { useStore, useStoreSelector } from '../../hooks/use-store'
 
@@ -60,7 +60,7 @@ export function useField<T = unknown>(field: BaseField): FieldBinding<T> {
     return current as T
   })
 
-  const error = useStoreSelector(store.store, (state) => state.errors[path]?.[0])
+  const error = useStoreSelector(store.store, (state) => fieldError(state.errors, path))
 
   const setValue = useCallback((next: T) => store.setValue(path, next), [store, path])
   const blur = useCallback(() => store.blur(path), [store, path])

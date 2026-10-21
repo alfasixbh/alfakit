@@ -10,6 +10,12 @@ export interface CellProps {
   recordKey: RecordKey
   token: string
   component: string
+  /**
+   * Set when this renderer was picked from the registry (`column:<type>`): it then renders
+   * the built-in cell instead of looking itself up again, so an ejected `TableCellContent`
+   * registered for a column type doesn't render itself forever.
+   */
+  fromRegistry?: boolean
 }
 
 export function useCellUpdate(props: CellProps) {

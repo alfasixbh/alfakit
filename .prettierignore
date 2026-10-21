@@ -40,3 +40,7 @@ demo/database/database.sqlite
 # Copies of the Laravel starter kits' files that alfakit:install --starter-kit patches.
 packages/alfakit/tests/Fixtures/StarterKits/
 packages/plugins/analytics/resources/js/script.js
+
+# Internal QA evidence and agent scratch files (git-ignored).
+qa-evidence/
+scripts/acceptance/reports/

@@ -222,6 +222,16 @@ function ActionModal({ modal, hidden = false }: { modal: OpenModal; hidden?: boo
 
   const submit = (createAnother = false) => {
     submittedRef.current = true
+
+    // A click that blurred a live field started a refresh: send the state it returns.
+    if (form) {
+      form.whenSettled(() => run(createAnother))
+    } else {
+      run(createAnother)
+    }
+  }
+
+  const run = (createAnother: boolean) => {
     const values = form?.state.values ?? {}
     const options = {
       ...(schema.passwordConfirmation ? { password } : {}),

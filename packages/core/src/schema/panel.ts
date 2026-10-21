@@ -111,6 +111,14 @@ export interface StarterKitWidgetsSchema {
     registrationLabel?: string
     searchable?: true
   }
+  /** While impersonating: the banner the header components show on the host's own pages. */
+  impersonation?: ImpersonationSchema
+  /**
+   * `AiPlugin::copilot()` (alfasix/alfakit-ai, `$panel->starterKitWidget('copilot')`): the
+   * label and shortcuts of `<AlfakitCopilot />` before its code loads. Tenancy panels: only
+   * inside a tenant.
+   */
+  copilot?: { label: string; keyBindings: string[] }
 }
 
 /** A page's secondary navigation: cluster pages or a record's pages. */

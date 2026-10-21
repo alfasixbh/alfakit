@@ -4,8 +4,17 @@ import {
   type StarterKitWidgetsSchema,
 } from '@alfakit/core'
 import { usePage } from '@inertiajs/vue3'
-import { computed, defineComponent, h, type Component, type ComputedRef, type PropType } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  defineComponent,
+  h,
+  type Component,
+  type ComputedRef,
+  type PropType,
+} from 'vue'
 import { lazyComponent } from '../../lib/lazy'
+import CopilotTrigger from './CopilotTrigger.vue'
 import NotificationsTrigger from './NotificationsTrigger.vue'
 import SearchTrigger from './SearchTrigger.vue'
 import TenantSwitcherTrigger from './TenantSwitcherTrigger.vue'
@@ -18,12 +27,13 @@ import TenantSwitcherTrigger from './TenantSwitcherTrigger.vue'
  *
  * ```vue
  * <script setup lang="ts">
- * import { AlfakitNotifications, AlfakitSearch } from '@alfakit/vue'
+ * import { AlfakitCopilot, AlfakitNotifications, AlfakitSearch } from '@alfakit/vue'
  * </script>
  *
  * <template>
  *   <AlfakitSearch />
  *   <AlfakitNotifications />
+ *   <AlfakitCopilot />
  * </template>
  * ```
  */
@@ -31,51 +41,73 @@ import TenantSwitcherTrigger from './TenantSwitcherTrigger.vue'
 /** The header components' data of a `starterKit()` panel from the shared prop, or null. */
 function useStarterKitWidgets(
   panelId: () => string | undefined,
+  part: keyof StarterKitWidgetsSchema,
 ): ComputedRef<StarterKitWidgets | null> {
   const page = usePage()
 
-  return computed(() => starterKitWidgets(page.props, panelId()))
+  return computed(() => starterKitWidgets(page.props, panelId(), part))
 }
 
 const LoadedSearch = lazyComponent(
   'AlfakitLoadedSearch',
-  () => import('./LoadedSearch.vue').then((module) => module.default),
+  () => import('./loaded').then((module) => module.LoadedSearch),
   SearchTrigger,
 )
 
 const LoadedNotifications = lazyComponent(
   'AlfakitLoadedNotifications',
-  () => import('./LoadedNotifications.vue').then((module) => module.default),
+  () => import('./loaded').then((module) => module.LoadedNotifications),
   NotificationsTrigger,
 )
 
 const LoadedTenantSwitcher = lazyComponent(
   'AlfakitLoadedTenantSwitcher',
-  () => import('./LoadedTenantSwitcher.vue').then((module) => module.default),
+  () => import('./loaded').then((module) => module.LoadedTenantSwitcher),
   TenantSwitcherTrigger,
+)
+
+const LoadedCopilot = lazyComponent(
+  'AlfakitLoadedCopilot',
+  () => import('./loaded').then((module) => module.LoadedCopilot),
+  CopilotTrigger,
+)
+
+// Only needed while impersonating: its code loads then.
+const StarterKitImpersonationBanner = defineAsyncComponent(
+  () => import('./StarterKitImpersonationBanner.vue'),
 )
 
 function headerWidget(
   name: string,
   slot: string,
-  part: keyof Omit<StarterKitWidgetsSchema, 'endpoint'>,
+  part: keyof Omit<StarterKitWidgetsSchema, 'endpoint' | 'impersonation'>,
   loaded: Component,
 ) {
   return defineComponent({
     name,
     props: {
-      /** The `starterKit()` panel to use (the first one by default). */
+      /** The `starterKit()` panel to use (by default the open AlfaKit page's panel, else the first one that has this component). */
       panel: { type: String as PropType<string | undefined>, default: undefined },
     },
     setup(props) {
-      const source = useStarterKitWidgets(() => props.panel)
+      const source = useStarterKitWidgets(() => props.panel, part)
 
       return () => {
         const value: StarterKitWidgets | null = source.value
 
-        return value?.widgets[part]
-          ? h('span', { 'data-slot': slot, class: 'inline-flex' }, [h(loaded, { source: value })])
+        // While impersonating, the first header component shows the banner on host pages.
+        const banner = value?.widgets.impersonation
+          ? h(StarterKitImpersonationBanner, { source: value })
           : null
+
+        if (!value?.widgets[part]) return banner
+
+        const widget = h('span', { 'data-slot': slot, class: 'inline-flex' }, [
+          h(loaded, { source: value }),
+        ])
+
+        // A single root unless the banner shows, so attributes from the app still fall through.
+        return banner ? [banner, widget] : widget
       }
     },
   })
@@ -113,4 +145,17 @@ export const AlfakitTenantSwitcher = headerWidget(
   'starter-kit-tenant-switcher',
   'tenancy',
   LoadedTenantSwitcher,
+)
+
+/**
+ * The AI copilot of alfasix/alfakit-ai (`AiPlugin::copilot()`): its button and chat
+ * slide-over, opened with its key bindings (`mod+j`) from any page. Renders nothing for
+ * guests, without the plugin's copilot, for users who may not use it and (tenancy panels)
+ * outside a tenant.
+ */
+export const AlfakitCopilot = headerWidget(
+  'AlfakitCopilot',
+  'starter-kit-copilot',
+  'copilot',
+  LoadedCopilot,
 )

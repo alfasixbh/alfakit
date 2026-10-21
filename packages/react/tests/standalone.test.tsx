@@ -87,6 +87,29 @@ describe('AlfakitComponent (outside panels)', () => {
     expect(document.querySelectorAll('[data-sonner-toaster]').length).toBeLessThanOrEqual(1)
   })
 
+  it("routes notifications through the layout's toaster with toaster={false}", async () => {
+    render(
+      <>
+        <AppToaster />
+        <AlfakitToaster toaster={false} />
+      </>,
+    )
+
+    await act(async () => {
+      showToast({ id: 'n2', title: 'Through yours', status: 'success' } as never)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    })
+
+    expect(screen.getAllByText('Through yours')).toHaveLength(1)
+    // The app's id-less toaster (sonner's default position, bottom).
+    expect(
+      screen
+        .getByText('Through yours')
+        .closest('[data-sonner-toaster]')
+        ?.getAttribute('data-y-position'),
+    ).toBe('bottom')
+  })
+
   it("shows a toast once although the app's layout mounts its own toaster", async () => {
     render(
       <>
@@ -108,5 +131,64 @@ describe('AlfakitComponent (outside panels)', () => {
         .closest('[data-sonner-toaster]')
         ?.getAttribute('data-y-position'),
     ).toBe('top')
+  })
+})
+
+describe('live() outside panels', () => {
+  afterEach(() => {
+    delete (window as unknown as { Echo?: unknown }).Echo
+    vi.unstubAllGlobals()
+  })
+
+  it('refreshes a live table through its own components endpoint when a record changes', async () => {
+    vi.useFakeTimers()
+    const listeners = new Map<string, (payload: unknown) => void>()
+    ;(window as unknown as { Echo: unknown }).Echo = {
+      private: (name: string) => ({
+        listen: (event: string, callback: (payload: unknown) => void) =>
+          listeners.set(`private-${name}|${event}`, callback),
+        stopListening: () => {},
+        notification: () => {},
+      }),
+      leave: () => {},
+      socketId: () => '1.2',
+    }
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({}), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const live = {
+      ...table,
+      content: [
+        {
+          ...(table.content[0] as object),
+          live: { channels: ['alfakit.admin._.App-Models-Post'], debounce: 10 },
+        },
+      ],
+    } as unknown as StandaloneComponentSchema
+
+    render(<AlfakitComponent component={live} />)
+
+    act(() => {
+      listeners.get('private-alfakit.admin._.App-Models-Post|.alfakit.record')?.({
+        event: 'updated',
+        key: 1,
+        model: 'App-Models-Post',
+      })
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(50)
+    })
+    vi.useRealTimers()
+
+    const urls = fetchMock.mock.calls.map((call) => String(call[0]))
+    expect(
+      urls.some(
+        (url) => url.startsWith(table.endpoints.components) && url.includes('targets=table'),
+      ),
+    ).toBe(true)
   })
 })

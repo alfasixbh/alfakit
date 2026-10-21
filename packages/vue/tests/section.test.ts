@@ -14,6 +14,22 @@ function section(overrides: Partial<SectionSchema> = {}): SectionSchema {
 }
 
 describe('Section', () => {
+  it('wraps long unbroken headings and descriptions (model class names) inside the card', () => {
+    const wrapper = mountWithAlfakit(() =>
+      h(SectionComponent, {
+        component: section({
+          description: 'App\\Models\\AVeryLongModelClassNameThatHasNoSpacesAtAll',
+        }),
+      }),
+    )
+
+    const description = wrapper
+      .findAll('p')
+      .find((p) => p.text().includes('AVeryLongModelClassName'))
+    expect(description?.classes()).toContain('break-words')
+    expect(wrapper.find('h3, h2, h4').classes()).toContain('break-words')
+  })
+
   it.each([false, true])('toggles a collapsible section (aside: %s)', async (aside) => {
     const wrapper = mountWithAlfakit(() =>
       h(SectionComponent, { component: section({ aside, collapsible: true, collapsed: true }) }),

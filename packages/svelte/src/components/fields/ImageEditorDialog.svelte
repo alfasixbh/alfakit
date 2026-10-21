@@ -13,7 +13,7 @@
     ImageEditorDragMode,
     ImageEditorState,
   } from '@alfakit/core'
-  import { ImageEditor, loadEditorImage } from '@alfakit/core'
+  import { ImageEditor, imageEditorOptionsKey, loadEditorImage } from '@alfakit/core'
   import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw'
   import RotateCwIcon from '@lucide/svelte/icons/rotate-cw'
   // Lucide renamed flip-horizontal-2 / flip-vertical-2 (the icons React uses) to these.
@@ -74,9 +74,17 @@
   let canvas = $state<HTMLCanvasElement | null>(null)
   let frame = $state<HTMLDivElement | null>(null)
 
+  // Restart only for another image or other settings: the schema object itself is new on
+  // every render of a template item (a new builder block), which kept restarting the load.
+  // (Read through deriveds: they only notify when the value changes, while props spread
+  // from a new object notify on every render.)
+  const optionsKey = $derived(imageEditorOptionsKey(options))
+  const currentRequest = $derived(request)
+
   $effect(() => {
-    const current = request
-    const settings = options
+    const current = currentRequest
+    void optionsKey
+    const settings = untrack(() => options)
 
     if (!current) return
 

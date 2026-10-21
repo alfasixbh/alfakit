@@ -13,7 +13,7 @@
   import ChevronRightIcon from '@lucide/svelte/icons/chevron-right'
   import SearchIcon from '@lucide/svelte/icons/search'
   import { onDestroy, untrack } from 'svelte'
-  import { useChoice, useT } from '../../context.svelte'
+  import { useChoice, useFormatter, useT } from '../../context.svelte'
   import { cn } from '../../lib/utils'
   import { useFormStore } from '../form/form-context.svelte'
   import TableCellContent from '../table/TableCellContent.svelte'
@@ -45,6 +45,7 @@
   } = $props()
 
   const t = useT()
+  const format = useFormatter()
   const choice = useChoice()
   const form = useFormStore()
   const multiple = $derived(Boolean(component.multiple))
@@ -288,7 +289,11 @@
             >{paging.total !== undefined
               ? t(
                   'table.showing',
-                  { first: paging.from, last: paging.to, total: paging.total },
+                  {
+                    first: format.current.number(paging.from),
+                    last: format.current.number(paging.to),
+                    total: format.current.number(paging.total),
+                  },
                   'Showing :first–:last of :total',
                 )
               : `${paging.from}–${paging.to}`}</span

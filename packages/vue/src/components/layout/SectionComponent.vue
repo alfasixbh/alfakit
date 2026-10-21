@@ -87,11 +87,14 @@ const t = useT()
           <component
             :is="heading"
             v-if="props.component.heading"
-            class="text-base leading-6 font-semibold"
+            class="text-base leading-6 font-semibold break-words"
           >
             {{ props.component.heading }}
           </component>
-          <p v-if="props.component.description" class="text-muted-foreground mt-1 text-sm">
+          <p
+            v-if="props.component.description"
+            class="text-muted-foreground mt-1 text-sm break-words"
+          >
             {{ props.component.description }}
           </p>
         </div>
@@ -188,11 +191,14 @@ const t = useT()
           <component
             :is="heading"
             v-if="props.component.heading"
-            class="text-base leading-6 font-semibold"
+            class="text-base leading-6 font-semibold break-words"
           >
             {{ props.component.heading }}
           </component>
-          <p v-if="props.component.description" class="text-muted-foreground mt-1 text-sm">
+          <p
+            v-if="props.component.description"
+            class="text-muted-foreground mt-1 text-sm break-words"
+          >
             {{ props.component.description }}
           </p>
         </div>

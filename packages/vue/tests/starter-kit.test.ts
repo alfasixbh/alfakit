@@ -1,7 +1,9 @@
 import type { AlfakitPageProps, PageSchema } from '@alfakit/core'
 import { mount } from '@vue/test-utils'
+import { ConfigProvider } from 'reka-ui'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { defineComponent, h, type PropType } from 'vue'
+import { Dialog, DialogContent, DialogTitle } from '../src/components/ui'
 import {
   AlfakitStarterKitRoot,
   createStarterKitPage,
@@ -61,6 +63,10 @@ describe('starter kit mode', () => {
     })
     expect(layouts[1]![0]).toBe(AlfakitStarterKitRoot)
     expect(createStarterKitPage({ layout: null }).layout({ page })).toHaveLength(1)
+    // Sign-in and the other `auth` pages stand on their own, like the host's auth pages.
+    const auth = Page.layout({ page: { ...page, layout: 'auth' } }) as [unknown, unknown][]
+    expect(auth).toHaveLength(1)
+    expect(auth[0]![0]).toBe(AlfakitStarterKitRoot)
   })
 
   it('renders the page content without Alfakit chrome', async () => {
@@ -83,6 +89,59 @@ describe('starter kit mode', () => {
     expect(wrapper.find('[data-alfakit-embedded][data-slot="content"]').exists()).toBe(true)
     expect(wrapper.find('[data-slot="topbar"]').exists()).toBe(false)
     expect(wrapper.find('[data-sidebar="sidebar"]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('mirrors only its own content in a right-to-left language, never the host document', async () => {
+    document.documentElement.dir = 'ltr'
+    document.documentElement.lang = 'en'
+    setPageProps({
+      alfakit: {
+        ...panel,
+        starterKit: true,
+        localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+      },
+      page,
+    } as unknown as Partial<AlfakitPageProps>)
+    const Page = createStarterKitPage({ layout: HostLayout })
+
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () => h(HostLayout, null, () => h(AlfakitStarterKitRoot, null, () => h(Page))),
+      }),
+      { attachTo: document.body },
+    )
+    await flush()
+
+    // The host's sidebar and its own pages are not right to left: <html> stays the host's.
+    expect(document.documentElement.getAttribute('dir')).toBe('ltr')
+    expect(document.documentElement.getAttribute('lang')).toBe('en')
+    const root = wrapper.find('[data-slot="starter-kit-root"]')
+    expect(root.attributes('dir')).toBe('rtl')
+    expect(root.attributes('lang')).toBe('ar')
+    expect(root.find('[data-slot="content"]').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('gives portaled modals the reading direction (they render outside its root)', async () => {
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(ConfigProvider, { dir: 'rtl' }, () =>
+            h(Dialog, { open: true }, () =>
+              h(DialogContent, { 'aria-describedby': undefined }, () =>
+                h(DialogTitle, null, () => 'Edit'),
+              ),
+            ),
+          ),
+      }),
+      { attachTo: document.body },
+    )
+    await flush()
+
+    expect(document.querySelector('[data-slot="dialog-content"]')?.getAttribute('dir')).toBe('rtl')
 
     wrapper.unmount()
   })

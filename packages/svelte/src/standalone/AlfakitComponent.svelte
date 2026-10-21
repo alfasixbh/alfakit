@@ -72,16 +72,25 @@
   const live = untrack(() => new StandaloneComponentState(component, () => version++))
   const poll = (target: string, interval: string | number | null | undefined) =>
     live.poll(target, interval)
+  const refresh = (targets: string[]) => live.refresh(targets)
 
   const context: AlfakitContextValue = provideAlfakit(
     untrack(() =>
       parent
-        ? { ...parent, registry: createStandaloneRegistry(components, parent.registry), poll }
-        : createStandaloneContext(
-            { action: component.endpoints.action, modal: component.endpoints.modal },
-            components,
+        ? {
+            ...parent,
+            registry: createStandaloneRegistry(components, parent.registry),
             poll,
-          ),
+            refresh,
+          }
+        : {
+            ...createStandaloneContext(
+              { action: component.endpoints.action, modal: component.endpoints.modal },
+              components,
+              poll,
+            ),
+            refresh,
+          },
     ),
   )
 
@@ -157,7 +166,7 @@
 
   $effect(() => {
     void component.token
-    void live.loadLazy()
+    void live.loadLazy(untrack(() => component))
   })
 </script>
 

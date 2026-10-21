@@ -31,6 +31,11 @@ export interface BuilderBlockSchema {
   state: BuilderItemState
   /** `Block::previewComponent()`: registry key `builder-preview:{name}`. */
   previewComponent?: string
+  /**
+   * `Block::summary()`: items show a summary made on the server, so collapsing one
+   * refreshes the field (its summary follows the edits).
+   */
+  summary?: boolean
 }
 
 export interface BuilderItemSchema extends ItemActionsItemProps {

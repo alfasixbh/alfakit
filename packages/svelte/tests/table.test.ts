@@ -2,7 +2,7 @@ import type { TableSchema } from '@alfakit/core'
 import { router } from '@inertiajs/svelte'
 import { fireEvent, render, screen } from '@testing-library/svelte'
 import DataTable from '../src/components/table/DataTable.svelte'
-import { setPageProps } from './mocks'
+import { panel, setPageProps } from './mocks'
 import Wrapper from './Wrapper.svelte'
 
 const table: TableSchema = {
@@ -55,6 +55,19 @@ const table: TableSchema = {
 }
 
 describe('data table', () => {
+  it('formats pagination numbers in the panel language (Persian digits)', () => {
+    setPageProps({
+      alfakit: { ...panel, localization: { code: 'fa', tag: 'fa', direction: 'rtl', locales: [] } },
+      page: { class: 'X', layout: 'app', title: 'Posts', content: [], token: 't' },
+    } as unknown as Parameters<typeof setPageProps>[0])
+
+    render(Wrapper, { props: { component: DataTable, props: { table } } })
+
+    expect(screen.getByText(/۱–۱۰ of ۲۵/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '۳' })).toBeInTheDocument()
+    setPageProps({ alfakit: panel })
+  })
+
   it('renders headers, cells, pagination and selection', () => {
     setPageProps({ page: { class: 'X', layout: 'app', title: 'Posts', content: [], token: 't' } })
 

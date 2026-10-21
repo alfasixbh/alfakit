@@ -3,7 +3,7 @@ import { router } from '@inertiajs/react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { TableFilters } from '../src/components/table/filters'
 import { DataTable } from '../src/components/table/table-block'
-import { Wrapper, setPageProps } from './mocks'
+import { Wrapper, panel, setPageProps } from './mocks'
 
 const table: TableSchema = {
   type: 'Table',
@@ -55,6 +55,23 @@ const table: TableSchema = {
 }
 
 describe('data table', () => {
+  it('formats pagination numbers in the panel language (Persian digits)', () => {
+    setPageProps({
+      alfakit: { ...panel, localization: { code: 'fa', tag: 'fa', direction: 'rtl', locales: [] } },
+      page: { class: 'X', layout: 'app', title: 'Posts', content: [], token: 't' },
+    } as unknown as Parameters<typeof setPageProps>[0])
+
+    render(
+      <Wrapper>
+        <DataTable table={table} />
+      </Wrapper>,
+    )
+
+    expect(screen.getByText(/۱–۱۰ of ۲۵/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '۳' })).toBeInTheDocument()
+    setPageProps({ alfakit: panel })
+  })
+
   it('renders headers, cells, pagination and selection', () => {
     setPageProps({ page: { class: 'X', layout: 'app', title: 'Posts', content: [], token: 't' } })
 

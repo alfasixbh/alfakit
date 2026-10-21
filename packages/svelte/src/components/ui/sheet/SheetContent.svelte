@@ -4,7 +4,7 @@
   import { cn } from '../../../lib/utils'
   import Icon from '../../../lib/Icon.svelte'
   import DialogOverlay from '../dialog/DialogOverlay.svelte'
-  import { useT } from '../../../context.svelte'
+  import { useDirection, useT } from '../../../context.svelte'
 
   const SIDES: Record<'top' | 'right' | 'bottom' | 'left', string> = {
     right:
@@ -18,6 +18,7 @@
   let {
     ref = $bindable(null),
     class: className,
+    dir,
     side = 'right',
     portalProps,
     showCloseButton = true,
@@ -30,11 +31,15 @@
   } = $props()
 
   const t = useT()
+  // Portaled outside Alfakit's root: carry the reading direction (starter kit pages and
+  // standalone components leave <html dir> to the host).
+  const direction = $derived(dir ?? useDirection())
 </script>
 
 <SheetPrimitive.Portal {...portalProps}>
   <DialogOverlay />
   <SheetPrimitive.Content
+    dir={direction}
     bind:ref
     data-slot="sheet-content"
     class={cn(

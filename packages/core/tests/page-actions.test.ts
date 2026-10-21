@@ -156,6 +156,23 @@ describe('form refresh', () => {
     expect([...store.state.dirty]).toEqual(['title'])
     expect(store.state.errors.status).toBeUndefined()
   })
+
+  it('stops counting the fields below a refreshed path as edited (CMS "Discard changes")', () => {
+    const store = new FormStore(
+      { components: [], state: { title: 'Live', content: [{ data: { heading: 'Live' } }] } },
+      { token: 't', component: 'form' },
+    )
+
+    store.setValue('title', 'Draft')
+    store.setValue('content.0.data.heading', 'Draft')
+    store.setErrors({ 'content.0.data.heading': 'Too long' })
+
+    applyFormRefresh(store, { title: 'Live', content: [{ data: { heading: 'Live' } }] })
+
+    expect(store.isDirty).toBe(false)
+    expect(store.getValue('content.0.data.heading')).toBe('Live')
+    expect(store.state.errors).toEqual({})
+  })
 })
 
 describe('wizard form actions', () => {

@@ -32,6 +32,7 @@ import {
   toolbarCommands,
   panelUploadOptions,
   uploadTemporaryFile,
+  documentNonce,
 } from '@alfakit/core'
 import { EraserIcon } from '@lucide/vue'
 import Image from '@tiptap/extension-image'
@@ -230,6 +231,8 @@ onBeforeUnmount(() => {
 })
 
 const editor = useEditor({
+  // TipTap injects its base CSS; with the page's CSP nonce a nonce-based policy allows it.
+  injectNonce: documentNonce(),
   extensions: [
     StarterKit.configure({ link: false }),
     Link.configure(linkExtensionOptions(props.component.linkProtocols)),

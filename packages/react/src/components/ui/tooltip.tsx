@@ -1,4 +1,4 @@
-import { Tooltip as TooltipPrimitive } from 'radix-ui'
+import { Direction, Tooltip as TooltipPrimitive } from 'radix-ui'
 import type { ComponentProps } from 'react'
 import { cn } from '../../lib/utils'
 
@@ -29,9 +29,13 @@ function TooltipContent({
   children,
   ...props
 }: ComponentProps<typeof TooltipPrimitive.Content>) {
+  // Portaled outside Alfakit's root: carry the reading direction (starter kit pages and
+  // standalone components leave <html dir> to the host).
+  const dir = Direction.useDirection()
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
+        dir={dir}
         data-slot="tooltip-content"
         sideOffset={sideOffset}
         className={cn(

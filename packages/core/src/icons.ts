@@ -52,6 +52,19 @@ export function iconAliasOverride(name: string): string | undefined {
   return name.startsWith('alfakit::') ? aliases[name] : undefined
 }
 
+/**
+ * The icon of a built-in repeater, builder or key-value item button: the app's replacement
+ * for `alfakit::forms.components.{kind}.actions.{action}`, or the renderer's default.
+ * Customised item actions arrive resolved from the server; the defaults use this.
+ */
+export function itemActionIcon(
+  kind: 'repeater' | 'builder' | 'key-value',
+  action: string,
+  fallback: string,
+): string {
+  return iconAlias(`alfakit::forms.components.${kind}.actions.${action}`, fallback)
+}
+
 /** Whether an icon name is an unresolved `alfakit::` alias. */
 export function isIconAlias(name: string): boolean {
   return name.startsWith('alfakit::')

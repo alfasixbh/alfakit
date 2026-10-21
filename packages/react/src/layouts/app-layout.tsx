@@ -15,36 +15,12 @@ import { Topbar } from '../components/panel/topbar'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '../components/ui/sidebar'
 import { useAlfakitProps, useRegistry } from '../context'
 import { cn } from '../lib/utils'
+import { MAX_WIDTHS } from './max-widths'
 import { TopNavLayout } from './top-nav-layout'
 
-export const MAX_WIDTHS: Record<string, string> = {
-  '3xs': 'max-w-3xs',
-  '2xs': 'max-w-2xs',
-  xs: 'max-w-xs',
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-  '2xl': 'max-w-2xl',
-  '3xl': 'max-w-3xl',
-  '4xl': 'max-w-4xl',
-  '5xl': 'max-w-5xl',
-  '6xl': 'max-w-6xl',
-  '7xl': 'max-w-7xl',
-  none: 'max-w-none',
-  min: 'max-w-min',
-  max: 'max-w-max',
-  fit: 'max-w-fit',
-  prose: 'max-w-prose',
-  container: 'container',
-  'screen-sm': 'max-w-(--breakpoint-sm)',
-  'screen-md': 'max-w-(--breakpoint-md)',
-  'screen-lg': 'max-w-(--breakpoint-lg)',
-  'screen-xl': 'max-w-(--breakpoint-xl)',
-  'screen-2xl': 'max-w-(--breakpoint-2xl)',
-  full: 'max-w-full',
-  screen: 'max-w-screen',
-}
+// Re-exported for code that imported it from here; the map lives in `./max-widths` so the
+// starter kit's content layout doesn't pull the panel chrome in.
+export { MAX_WIDTHS } from './max-widths'
 
 export interface AppLayoutProps {
   children: ReactNode

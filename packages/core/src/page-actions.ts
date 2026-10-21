@@ -178,8 +178,8 @@ export function formRefreshFor(
 }
 
 /**
- * Copy refreshed values into a form store. The paths stop counting as edited (and lose
- * their errors); every other field keeps what the user typed.
+ * Copy refreshed values into a form store. The paths, and the fields below them, stop
+ * counting as edited (and lose their errors); every other field keeps what the user typed.
  */
 export function applyFormRefresh(store: FormStore, state: Record<string, unknown>): void {
   const paths = Object.keys(state)
@@ -193,8 +193,15 @@ export function applyFormRefresh(store: FormStore, state: Record<string, unknown
 
     for (const path of paths) {
       values = setPath(values, path, state[path])
-      dirty.delete(path)
-      delete errors[path]
+
+      // A refreshed path replaces everything below it (`content` with its blocks' fields).
+      for (const key of [...dirty]) {
+        if (key === path || key.startsWith(`${path}.`)) dirty.delete(key)
+      }
+
+      for (const key of Object.keys(errors)) {
+        if (key === path || key.startsWith(`${path}.`)) delete errors[key]
+      }
     }
 
     return { ...current, values, dirty, errors }

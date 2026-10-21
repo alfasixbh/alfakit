@@ -72,7 +72,7 @@
   const page = usePageActionContext()
   const context = $derived(fieldActionContext({ token: page.token, form, key: component.key }))
   const runItemAction = useRunItemAction(() => context)
-  const fallbacks = useItemActionFallbacks()
+  const fallbacks = useItemActionFallbacks('builder')
   const serverItemOf = (index: number) => {
     const server = component.items[index]
 
@@ -118,6 +118,14 @@
     )
   const setAllCollapsed = (value: boolean) => {
     collapsed = Object.fromEntries(items.map((_, index) => [index, value]))
+    if (value) refreshSummaries(items.map((_, index) => index))
+  }
+  // Summaries are made on the server: collapsing items whose block has one brings them up
+  // to date with the edits.
+  const refreshSummaries = (indexes: number[]) => {
+    if (indexes.some((index) => blockOf(items[index]?.type ?? '')?.summary)) {
+      void form?.refresh(component.statePath)
+    }
   }
   // Previews (`blockPreviews()`): server HTML or a registered `builder-preview:{name}`.
   const previewComponentOf = (index: number) => {
@@ -317,7 +325,12 @@
                   onMove={moves.moveWithButton}
                   onClone={() => cloneItem(index)}
                   onDelete={() => removeItem(index)}
-                  onToggle={() => (collapsed = { ...collapsed, [index]: !isCollapsed })}
+                  onToggle={() => {
+                    const collapse = !isCollapsed
+
+                    collapsed = { ...collapsed, [index]: collapse }
+                    if (collapse) refreshSummaries([index])
+                  }}
                 >
                   {#if hasPreview(index) && !locked}
                     <Button

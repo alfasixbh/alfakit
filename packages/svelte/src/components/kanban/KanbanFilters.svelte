@@ -37,7 +37,7 @@
 <Popover>
   <PopoverTrigger>
     {#snippet child({ props })}
-      <Button type="button" variant="outline" size="sm" data-slot="kanban-filters" {...props}>
+      <Button type="button" variant="outline" size="sm" {...props} data-slot="kanban-filters">
         <FunnelIcon aria-hidden="true" />
         {t('kanban.filters', {}, 'Filters')}
         {#if active > 0}<Badge class="h-5 min-w-5 px-1">{active}</Badge>{/if}

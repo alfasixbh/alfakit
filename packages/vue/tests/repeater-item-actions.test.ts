@@ -1,4 +1,4 @@
-import { FormStore, type SchemaComponent } from '@alfakit/core'
+import { FormStore, setIconAliases, type SchemaComponent } from '@alfakit/core'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
@@ -70,6 +70,35 @@ const repeater = (extra: Record<string, unknown> = {}) =>
 const members = { members: [{ name: 'Ann' }, { name: 'Bob' }] }
 
 describe('Repeater item actions', () => {
+  it('draws the default item buttons with the icons registered for their aliases', async () => {
+    setIconAliases({
+      'alfakit::forms.components.repeater.actions.delete': 'ghost',
+      'alfakit::forms.components.repeater.actions.move-down': 'skull',
+    })
+
+    try {
+      const { wrapper } = renderForm([repeater()], members)
+
+      for (
+        let i = 0;
+        i < 100 &&
+        !(
+          wrapper.find('li[data-index="0"] .lucide-ghost').exists() &&
+          wrapper.find('li[data-index="0"] .lucide-skull').exists()
+        );
+        i++
+      ) {
+        await flushPromises()
+        await new Promise((resolve) => setTimeout(resolve, 10))
+      }
+
+      expect(wrapper.find('li[data-index="0"] .lucide-ghost').exists()).toBe(true)
+      expect(wrapper.find('li[data-index="0"] .lucide-skull').exists()).toBe(true)
+    } finally {
+      setIconAliases(null)
+    }
+  })
+
   it('runs uncustomised actions in the browser with the server labels', async () => {
     const { store, wrapper } = renderForm(
       [

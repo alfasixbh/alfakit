@@ -5,10 +5,7 @@ import { computed, onBeforeUnmount, watch } from 'vue'
 import KeyboardShortcuts from '../components/panel/KeyboardShortcuts.vue'
 import Slot from '../components/panel/Slot.vue'
 import { useRegistry } from '../context'
-import AppLayout from '../layouts/AppLayout.vue'
-import AuthLayout from '../layouts/AuthLayout.vue'
 import BlankLayout from '../layouts/BlankLayout.vue'
-import FullscreenLayout from '../layouts/FullscreenLayout.vue'
 import SubNavigationLayout from '../components/panel/SubNavigationLayout.vue'
 import ConflictBanner from '../components/realtime/ConflictBanner.vue'
 import PageHeader from './PageHeader.vue'
@@ -17,10 +14,12 @@ const props = defineProps<{ page: PageSchema }>()
 const registry = useRegistry()
 
 // Each layout can be replaced: createAlfakit({ components: { 'layout:app': MyLayout } }).
-const Auth = computed(() => registry.resolve('layout:auth') ?? AuthLayout)
+// `createAlfakit()` registers the panel's layouts (`panelLayouts`), the starter kit its content
+// layout; importing the panel layouts here would put the sidebar in every starter kit page.
+const Auth = computed(() => registry.resolve('layout:auth') ?? BlankLayout)
 const Blank = computed(() => registry.resolve('layout:blank') ?? BlankLayout)
-const Fullscreen = computed(() => registry.resolve('layout:fullscreen') ?? FullscreenLayout)
-const App = computed(() => registry.resolve('layout:app') ?? AppLayout)
+const Fullscreen = computed(() => registry.resolve('layout:fullscreen') ?? BlankLayout)
+const App = computed(() => registry.resolve('layout:app') ?? BlankLayout)
 // Edit pages: somebody else saved the record (`detectConflicts()`, `Panel::realtime()`).
 const Conflicts = computed(() => registry.resolve('page:conflict-banner') ?? ConflictBanner)
 

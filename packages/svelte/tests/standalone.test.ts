@@ -6,6 +6,7 @@ import { showToast } from '../src/components/notifications/toast'
 import { configureAlfakit } from '../src/standalone'
 import CustomIcon from './CustomIcon.svelte'
 import DualToasterHarness from './DualToasterHarness.svelte'
+import LayoutToasterHarness from './LayoutToasterHarness.svelte'
 import StandaloneHarness from './StandaloneHarness.svelte'
 import StatusBadge from './StatusBadge.svelte'
 
@@ -66,6 +67,23 @@ describe('AlfakitComponent (outside panels)', () => {
     expect(screen.queryByLabelText(/Email/)).not.toBeInTheDocument()
   })
 
+  it("routes notifications through the layout's toaster with toaster={false}", async () => {
+    render(LayoutToasterHarness)
+
+    showToast({ id: 'n2', title: 'Through yours', status: 'success' } as never)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    const toasts = Array.from(document.querySelectorAll('[data-sonner-toast]')).filter((toast) =>
+      toast.textContent?.includes('Through yours'),
+    )
+
+    expect(toasts).toHaveLength(1)
+    // The app's id-less toaster (sonner's default position, bottom).
+    expect(toasts[0]?.closest('[data-sonner-toaster]')?.getAttribute('data-y-position')).toBe(
+      'bottom',
+    )
+  })
+
   it("shows a toast once although the app's layout mounts its own toaster", async () => {
     render(DualToasterHarness)
 
@@ -79,5 +97,60 @@ describe('AlfakitComponent (outside panels)', () => {
     expect(toasts).toHaveLength(1)
     // In Alfakit's own toaster (top), not the app's id-less one (bottom).
     expect(toasts[0]?.closest('[data-sonner-toaster]')?.getAttribute('data-y-position')).toBe('top')
+  })
+})
+
+describe('live() outside panels', () => {
+  afterEach(() => {
+    delete (window as unknown as { Echo?: unknown }).Echo
+    vi.unstubAllGlobals()
+  })
+
+  it('refreshes a live table through its own components endpoint when a record changes', async () => {
+    const listeners = new Map<string, (payload: unknown) => void>()
+    ;(window as unknown as { Echo: unknown }).Echo = {
+      private: (name: string) => ({
+        listen: (event: string, callback: (payload: unknown) => void) =>
+          listeners.set(`private-${name}|${event}`, callback),
+        stopListening: () => {},
+        notification: () => {},
+      }),
+      leave: () => {},
+      socketId: () => '1.2',
+    }
+    const fetchMock = vi.fn().mockImplementation(
+      async () =>
+        new Response(JSON.stringify({}), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const live = {
+      ...table,
+      content: [
+        {
+          ...(table.content[0] as object),
+          live: { channels: ['alfakit.admin._.App-Models-Post'], debounce: 10 },
+        },
+      ],
+    } as unknown as StandaloneComponentSchema
+
+    render(StandaloneHarness, { props: { component: live } })
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    listeners.get('private-alfakit.admin._.App-Models-Post|.alfakit.record')?.({
+      event: 'updated',
+      key: 1,
+      model: 'App-Models-Post',
+    })
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const urls = fetchMock.mock.calls.map((call) => String(call[0]))
+    expect(
+      urls.some(
+        (url) => url.startsWith(table.endpoints.components) && url.includes('targets=table'),
+      ),
+    ).toBe(true)
   })
 })
