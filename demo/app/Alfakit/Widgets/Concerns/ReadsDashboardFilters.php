@@ -11,6 +11,7 @@ use App\Models\Store;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Throwable;
 
 /**
  * Turns the overview's filters (`startDate`, `endDate`, `scope`, `live`) into the queries
@@ -112,7 +113,7 @@ trait ReadsDashboardFilters
 
         try {
             return Carbon::parse($value);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return null;
         }
     }

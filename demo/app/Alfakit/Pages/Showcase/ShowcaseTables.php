@@ -46,13 +46,13 @@ use Illuminate\Support\Collection;
  */
 class ShowcaseTables extends ShowcasePage
 {
+    public const MODES = ['grid', 'infinite', 'cards', 'records'];
+
     protected static string $key = 'tables';
 
     protected static ?string $navigationIcon = 'table';
 
     protected static ?int $navigationSort = 4;
-
-    public const MODES = ['grid', 'infinite', 'cards', 'records'];
 
     public static function mode(): string
     {

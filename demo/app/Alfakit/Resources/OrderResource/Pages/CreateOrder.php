@@ -42,15 +42,15 @@ use App\Models\Store;
  */
 class CreateOrder extends CreateRecord
 {
-    protected static string $resource = OrderResource::class;
-
-    protected static bool $canCreateAnother = false;
-
     public const FREE_SHIPPING_FROM = 120.0;
 
     public const SHIPPING_FEE = 9.5;
 
     public const TAX_RATE = 0.1;
+
+    protected static string $resource = OrderResource::class;
+
+    protected static bool $canCreateAnother = false;
 
     public function form(Schema $schema): Schema
     {

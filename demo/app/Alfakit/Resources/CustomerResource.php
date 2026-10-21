@@ -57,6 +57,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Locale;
 
 /**
  * Customers of the current store: a list with generated-initials avatars and order
@@ -174,7 +175,7 @@ class CustomerResource extends Resource
                         TextEntry::make('phone')->hiddenLabel()->icon('phone')->color('gray')->placeholder('—'),
                     ])->columnSpan(['default' => 1, 'md' => 3]),
                     TextEntry::make('country')->label(__('sales.fields.country'))
-                        ->formatStateUsing(fn (?string $state): ?string => $state === null ? null : (\Locale::getDisplayRegion('-'.$state, app()->getLocale()) ?: $state)),
+                        ->formatStateUsing(fn (?string $state): ?string => $state === null ? null : (Locale::getDisplayRegion('-'.$state, app()->getLocale()) ?: $state)),
                     TextEntry::make('locale')->label(__('sales.fields.locale'))
                         ->formatStateUsing(fn (?string $state): ?string => $state === null ? null : (static::localeOptions()[$state] ?? $state)),
                     TextEntry::make('birthday')->label(__('sales.fields.birthday'))->date()->placeholder('—')
@@ -273,7 +274,7 @@ class CustomerResource extends Resource
                     ->summarize(Count::make()->label(__('sales.customers.models'))),
                 TextColumn::make('country')
                     ->label(__('sales.fields.country'))
-                    ->formatStateUsing(fn (?string $state): ?string => $state === null ? null : (\Locale::getDisplayRegion('-'.$state, app()->getLocale()) ?: $state))
+                    ->formatStateUsing(fn (?string $state): ?string => $state === null ? null : (Locale::getDisplayRegion('-'.$state, app()->getLocale()) ?: $state))
                     ->sortable()
                     ->toggleable()
                     ->visibleFrom('md'),
@@ -386,7 +387,7 @@ class CustomerResource extends Resource
         /** @var Customer $record */
         return array_filter([
             __('sales.fields.email') => $record->email,
-            __('sales.fields.country') => \Locale::getDisplayRegion('-'.$record->country, app()->getLocale()) ?: $record->country,
+            __('sales.fields.country') => Locale::getDisplayRegion('-'.$record->country, app()->getLocale()) ?: $record->country,
         ]);
     }
 
@@ -399,7 +400,7 @@ class CustomerResource extends Resource
 
         foreach (alfakit()->getCurrentOrDefaultPanel()->getLocales() ?: ['en', 'ar'] as $locale) {
             $code = $locale instanceof PanelLocale ? $locale->getCode() : (string) $locale;
-            $options[$code] = \Locale::getDisplayLanguage($code, $code) ?: $code;
+            $options[$code] = Locale::getDisplayLanguage($code, $code) ?: $code;
         }
 
         return $options;

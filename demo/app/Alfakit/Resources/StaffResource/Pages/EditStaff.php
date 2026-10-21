@@ -12,7 +12,7 @@ use App\Models\User;
 
 /**
  * Edits the account and, through the pivot, the person's role in the current store. The
- * role is lifted out of the form data before saving and written to `store_user` afterwards.
+ * role is lifted out of the form data before saving and written to `team_user` afterwards.
  */
 class EditStaff extends EditRecord
 {

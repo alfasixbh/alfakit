@@ -34,7 +34,7 @@ use Illuminate\Support\Str;
 
 /**
  * The team of the current store. Users have no `store_id` (they belong to several stores
- * through `store_user`), so the resource opts out of automatic tenant scoping and narrows
+ * through `team_user`), so the resource opts out of automatic tenant scoping and narrows
  * the query itself. The role lives on the pivot: the form edits it with toggle buttons and
  * the pages sync it after saving. `UserPolicy` decides who may edit, remove or impersonate.
  */
@@ -203,7 +203,7 @@ class StaffResource extends Resource
                     ->label(__('platform.staff.fields.role'))
                     ->options(StaffRole::options())
                     ->query(fn (Builder $query, array $data) => filled($data['value'] ?? null)
-                        ? $query->whereHas('stores', fn (Builder $stores) => $stores->whereKey($store?->getKey())->where('store_user.role', $data['value']))
+                        ? $query->whereHas('stores', fn (Builder $stores) => $stores->whereKey($store?->getKey())->where('team_user.role', $data['value']))
                         : $query),
                 TernaryFilter::make('two_factor')
                     ->label(__('platform.staff.fields.two_factor'))

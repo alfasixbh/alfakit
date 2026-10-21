@@ -22,6 +22,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use NumberFormatter;
 
 /**
  * Database notifications so the bell has something to show on first sign-in. Each staff
@@ -218,7 +219,7 @@ class NotificationSeeder extends Seeder
 
     private function money(float $amount, string $currency): string
     {
-        $formatter = new \NumberFormatter(app()->getLocale(), \NumberFormatter::CURRENCY);
+        $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
 
         return $formatter->formatCurrency($amount, $currency) ?: number_format($amount, 2).' '.$currency;
     }

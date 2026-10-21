@@ -34,6 +34,9 @@ use AlfaSix\AlfakitOps\OpsPlugin;
 use AlfaSix\AlfakitSettings\SettingsPlugin;
 use AlfaSix\AlfakitShield\ShieldPlugin;
 use AlfaSix\AlfakitTags\TagsPlugin;
+use AlfaSix\AlfakitTeams\Permission;
+use AlfaSix\AlfakitTeams\Role;
+use AlfaSix\AlfakitTeams\TeamsPlugin;
 use AlfaSix\AlfakitTranslationManager\TranslationManagerPlugin;
 use AlfaSix\AlfakitTree\TreePlugin;
 use AlfaSix\AlfakitWebhooks\WebhooksPlugin;
@@ -46,6 +49,9 @@ use App\Alfakit\Resources\CategoryResource;
 use App\Alfakit\Resources\OrderResource;
 use App\Alfakit\Resources\ProductResource;
 use App\Alfakit\Resources\ReturnRequestResource;
+use App\Alfakit\Tenancy\EditStore;
+use App\Alfakit\Tenancy\RegisterStore;
+use App\Enums\StaffRole;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Store;
@@ -74,7 +80,11 @@ final class DemoPlugins
             ->languageSwitcher('both')
             ->customizableDashboards()
             ->commands(self::commands())
-            ->plugins(self::plugins($renderer));
+            ->plugins(self::plugins($renderer))
+            // The Teams plugin brings "Create team" and "Team settings"; the demo keeps its own
+            // store sign-up and store profile pages (set after the plugin registered its pages).
+            ->tenantRegistration(RegisterStore::class)
+            ->tenantProfile(EditStore::class);
     }
 
     /** @return array<int, Command> */
@@ -121,6 +131,21 @@ final class DemoPlugins
                 ->scopeToTenant()
                 ->navigationGroup($settings)
                 ->navigationSort(20),
+
+            // Teams on the store tenancy: each store is a team (members, invitations, roles from
+            // the store ladder). The panel keeps its own tenant(), store sign-up and profile pages.
+            TeamsPlugin::make()
+                ->teamModel(Store::class)
+                ->configureTenancy(false)
+                ->roles([
+                    Role::make(StaffRole::Owner->value)->label(fn (): string => StaffRole::Owner->getLabel()),
+                    Role::make(StaffRole::Manager->value)->label(fn (): string => StaffRole::Manager->getLabel())->color('success')
+                        ->permissions([Permission::INVITE_MEMBERS, Permission::UPDATE_MEMBERS, Permission::REMOVE_MEMBERS, 'read', 'create', 'update', 'delete']),
+                    Role::make(StaffRole::Staff->value)->label(fn (): string => StaffRole::Staff->getLabel())->color('info')
+                        ->permissions(['read', 'create', 'update']),
+                ])
+                ->defaultRole(StaffRole::Staff->value)
+                ->membersNavigation(group: $settings),
 
             ActivityLogPlugin::make()
                 ->authorize(fn (?User $user): bool => Access::managers($user))

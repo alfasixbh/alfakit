@@ -26,14 +26,6 @@ use Illuminate\Validation\ValidationException;
  */
 class FulfilmentBoard extends Page
 {
-    protected static ?string $slug = 'fulfilment';
-
-    protected static ?string $component = 'Pages/FulfilmentBoard';
-
-    protected static ?string $navigationIcon = 'square-kanban';
-
-    protected static ?int $navigationSort = -9;
-
     /** The fulfilment flow, in column order. */
     public const STATUSES = [OrderStatus::Paid, OrderStatus::Processing, OrderStatus::Shipped, OrderStatus::Delivered];
 
@@ -46,6 +38,14 @@ class FulfilmentBoard extends Page
     ];
 
     public const CARDS_PER_COLUMN = 20;
+
+    protected static ?string $slug = 'fulfilment';
+
+    protected static ?string $component = 'Pages/FulfilmentBoard';
+
+    protected static ?string $navigationIcon = 'square-kanban';
+
+    protected static ?int $navigationSort = -9;
 
     public static function getNavigationGroup(): ?string
     {

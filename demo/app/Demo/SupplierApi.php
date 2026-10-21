@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Demo;
 
+use Closure;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
@@ -172,7 +173,7 @@ final class SupplierApi
         $required = $id === null ? 'required' : 'sometimes';
 
         $validator = Validator::make($body, [
-            'name' => [$required, 'string', 'max:80', static function (string $attribute, mixed $value, \Closure $fail) use ($names): void {
+            'name' => [$required, 'string', 'max:80', static function (string $attribute, mixed $value, Closure $fail) use ($names): void {
                 if (in_array(Str::lower((string) $value), $names, true)) {
                     $fail('A supplier with this name already exists in this store.');
                 }

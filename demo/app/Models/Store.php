@@ -6,6 +6,7 @@ namespace App\Models;
 
 use AlfaSix\Alfakit\Contracts\HasAvatar;
 use AlfaSix\Alfakit\Contracts\HasName;
+use AlfaSix\AlfakitTeams\Concerns\IsTeam;
 use App\Alfakit\Support\InitialsAvatar;
 use App\Enums\StaffRole;
 use Database\Factories\StoreFactory;
@@ -40,6 +41,9 @@ class Store extends Model implements HasAvatar, HasName
     /** @use HasFactory<StoreFactory> */
     use HasFactory;
 
+    // The stores are the teams of alfasix/alfakit-teams: members, invitations and roles.
+    use IsTeam;
+
     public function getAlfakitName(): string
     {
         return $this->name;
@@ -57,7 +61,7 @@ class Store extends Model implements HasAvatar, HasName
     /** @return BelongsToMany<User, $this> */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('role')->withTimestamps();
+        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id')->withPivot('role')->withTimestamps();
     }
 
     /** @return BelongsToMany<User, $this> */

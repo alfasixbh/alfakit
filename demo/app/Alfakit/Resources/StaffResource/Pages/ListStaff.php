@@ -41,7 +41,7 @@ class ListStaff extends ListRecords
                 ->icon($role->getIcon())
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereHas(
                     'stores',
-                    fn (Builder $stores) => $stores->whereKey($tenant?->getKey())->where('store_user.role', $role->value),
+                    fn (Builder $stores) => $stores->whereKey($tenant?->getKey())->where('team_user.role', $role->value),
                 ));
         }
 

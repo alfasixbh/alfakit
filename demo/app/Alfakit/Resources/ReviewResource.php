@@ -38,6 +38,9 @@ use Illuminate\Support\Enumerable;
  */
 class ReviewResource extends Resource
 {
+    /** Approvals a moderator may run per minute before the limiter steps in. */
+    public const APPROVALS_PER_MINUTE = 20;
+
     protected static ?string $model = Review::class;
 
     protected static ?string $navigationIcon = 'message-square-text';
@@ -45,9 +48,6 @@ class ReviewResource extends Resource
     protected static ?int $navigationSort = 50;
 
     protected static ?string $recordTitleAttribute = 'title';
-
-    /** Approvals a moderator may run per minute before the limiter steps in. */
-    public const APPROVALS_PER_MINUTE = 20;
 
     public static function getModelLabel(): string
     {

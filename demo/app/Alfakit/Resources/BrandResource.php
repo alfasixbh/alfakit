@@ -43,6 +43,9 @@ use Illuminate\Support\Str;
  */
 class BrandResource extends Resource
 {
+    /** ISO country codes the seeded houses come from, plus a few common origins. */
+    private const COUNTRIES = ['AE', 'BH', 'DE', 'ES', 'FR', 'GB', 'IT', 'JP', 'MA', 'OM', 'SA', 'SE', 'US'];
+
     protected static ?string $model = Brand::class;
 
     protected static bool $isScopedToTenant = false;
@@ -52,9 +55,6 @@ class BrandResource extends Resource
     protected static ?int $navigationSort = 30;
 
     protected static ?string $recordTitleAttribute = 'name';
-
-    /** ISO country codes the seeded houses come from, plus a few common origins. */
-    private const COUNTRIES = ['AE', 'BH', 'DE', 'ES', 'FR', 'GB', 'IT', 'JP', 'MA', 'OM', 'SA', 'SE', 'US'];
 
     public static function getModelLabel(): string
     {

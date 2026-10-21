@@ -133,6 +133,34 @@ final class Catalog
     /** @var array<int, string> */
     public const OFFICES = ['Level 3, Reception', 'Suite 410', 'Floor 21, North Tower', 'Studio 6', 'Unit 12, Courtyard', 'Office 207'];
 
+    /** @var array<int, string> */
+    public const REVIEW_TITLES = [
+        'Exactly as described', 'My new signature', 'Beautiful, but fleeting', 'Compliments all day', 'Great for the office',
+        'A little too sweet for me', 'Perfect gift', 'The bottle alone is worth it', 'Warm and cosy', 'Fresh without being sharp',
+    ];
+
+    /** @var array<int, string> */
+    public const REVIEW_BODIES = [
+        'Opens bright and settles into something soft and warm on skin. Lasts well past dinner.',
+        'I bought the 50 ml after trying the discovery set. It is quieter than I expected, which I like.',
+        'Projection is moderate; two sprays are plenty. Beautiful dry-down of woods and musk.',
+        'Shipping was quick and the packaging is lovely. The scent leans sweeter than the notes suggest.',
+        'Reminds me of a rainy garden in spring. I keep reaching for it on weekday mornings.',
+        'Good value for an extrait. Very long lasting, maybe too heavy for a hot afternoon.',
+        'Not what I expected from the description but it grew on me after a week of wearing it.',
+        'Burns evenly and fills the living room without being overpowering. Will repurchase.',
+    ];
+
+    /** @var array<int, string> */
+    public const DISCOUNTS = ['WELCOME10', 'SPRING15', 'FREESHIP', 'VIP20', 'GIFT25'];
+
+    /** @var array<int, array{title: string, excerpt: string}> */
+    public const PAGES = [
+        ['title' => 'Our story', 'excerpt' => 'How a small atelier in Manama grew into three boutiques.'],
+        ['title' => 'Shipping & returns', 'excerpt' => 'Delivery times, duties and our 30-day return promise.'],
+        ['title' => 'Care guide', 'excerpt' => 'Keep your fragrance at its best: light, heat and storage.'],
+    ];
+
     public static function postcode(string $country): string
     {
         return match ($country) {
@@ -172,32 +200,4 @@ final class Catalog
     {
         return self::PEOPLE[$country] ?? self::PEOPLE['gulf'];
     }
-
-    /** @var array<int, string> */
-    public const REVIEW_TITLES = [
-        'Exactly as described', 'My new signature', 'Beautiful, but fleeting', 'Compliments all day', 'Great for the office',
-        'A little too sweet for me', 'Perfect gift', 'The bottle alone is worth it', 'Warm and cosy', 'Fresh without being sharp',
-    ];
-
-    /** @var array<int, string> */
-    public const REVIEW_BODIES = [
-        'Opens bright and settles into something soft and warm on skin. Lasts well past dinner.',
-        'I bought the 50 ml after trying the discovery set. It is quieter than I expected, which I like.',
-        'Projection is moderate; two sprays are plenty. Beautiful dry-down of woods and musk.',
-        'Shipping was quick and the packaging is lovely. The scent leans sweeter than the notes suggest.',
-        'Reminds me of a rainy garden in spring. I keep reaching for it on weekday mornings.',
-        'Good value for an extrait. Very long lasting, maybe too heavy for a hot afternoon.',
-        'Not what I expected from the description but it grew on me after a week of wearing it.',
-        'Burns evenly and fills the living room without being overpowering. Will repurchase.',
-    ];
-
-    /** @var array<int, string> */
-    public const DISCOUNTS = ['WELCOME10', 'SPRING15', 'FREESHIP', 'VIP20', 'GIFT25'];
-
-    /** @var array<int, array{title: string, excerpt: string}> */
-    public const PAGES = [
-        ['title' => 'Our story', 'excerpt' => 'How a small atelier in Manama grew into three boutiques.'],
-        ['title' => 'Shipping & returns', 'excerpt' => 'Delivery times, duties and our 30-day return promise.'],
-        ['title' => 'Care guide', 'excerpt' => 'Keep your fragrance at its best: light, heat and storage.'],
-    ];
 }

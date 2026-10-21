@@ -22,6 +22,7 @@ use AlfaSix\AlfakitInvoices\Models\Tax;
 use AlfaSix\AlfakitMailTemplates\Models\MailTemplate;
 use AlfaSix\AlfakitShield\ShieldPlugin;
 use AlfaSix\AlfakitShield\Support\PermissionModels;
+use AlfaSix\AlfakitTeams\Models\TeamInvitation;
 use AlfaSix\AlfakitWebhooks\Models\WebhookEndpoint;
 use AlfaSix\AlfakitWorkflows\Support\Approvals;
 use App\Alfakit\Resources\OrderResource\PluginActions;
@@ -30,6 +31,7 @@ use App\Demo\ProductArtwork;
 use App\Demo\Shop;
 use App\Enums\DiscountType;
 use App\Enums\OrderStatus;
+use App\Enums\StaffRole;
 use App\Models\Customer;
 use App\Models\Discount;
 use App\Models\Order;
@@ -62,7 +64,7 @@ use Throwable;
  */
 class DemoPluginsSeeder extends Seeder
 {
-    /** Shield roles per store, mapped from the store ladder (`store_user.role`). */
+    /** Shield roles per store, mapped from the store ladder (`team_user.role`). */
     private const STAFF_ROLE_MAP = [
         'owner' => Access::OWNER,
         'manager' => Access::MANAGER,
@@ -102,6 +104,7 @@ class DemoPluginsSeeder extends Seeder
             $this->forms($store, max(3, (int) round(10 * $scale)));
             $this->webhooks($store);
             $this->apiToken($store, $staff);
+            $this->teamInvitations($store, $staff);
         }
 
         $this->mailTemplates();
@@ -138,7 +141,7 @@ class DemoPluginsSeeder extends Seeder
             'alfakit_api_tokens', 'activity_log', 'taggables', 'spatie_tags', 'helpdesk_ticket_tag',
             'alfakit_analytics_event_properties', 'alfakit_analytics_events', 'alfakit_analytics_visits',
             'alfakit_analytics_daily', 'alfakit_analytics_report_rows', 'alfakit_analytics_sites',
-            'alfakit_mail_templates',
+            'alfakit_mail_templates', 'team_invitations',
         ] as $table) {
             if (DB::getSchemaBuilder()->hasTable($table)) {
                 DB::table($table)->delete();
@@ -149,6 +152,27 @@ class DemoPluginsSeeder extends Seeder
 
         // The lifestyle galleries (Spatie media; the files live on the demo disk).
         Product::query()->whereHas('media')->get()->each(fn (Product $product) => $product->clearMediaCollection('gallery'));
+    }
+
+    // ---------------------------------------------------------------- Teams
+
+    /**
+     * Two pending invitations per store, so the Teams plugin's Invitations page (store menu →
+     * Members → Invitations) has something to resend or revoke. Nothing is mailed.
+     *
+     * @param  array{owner: User, managers: Collection<int, User>, agents: Collection<int, User>, viewers: Collection<int, User>, all: Collection<int, User>}  $staff
+     */
+    private function teamInvitations(Store $store, array $staff): void
+    {
+        foreach ([['jordan', StaffRole::Staff], ['riley', StaffRole::Manager]] as [$name, $role]) {
+            TeamInvitation::query()->create([
+                'team_id' => $store->getKey(),
+                'email' => "{$name}.{$store->slug}@example.com",
+                'role' => $role->value,
+                'invited_by' => $staff['owner']->getKey(),
+                'expires_at' => now()->addDays(7),
+            ]);
+        }
     }
 
     // ---------------------------------------------------------------- Mail templates

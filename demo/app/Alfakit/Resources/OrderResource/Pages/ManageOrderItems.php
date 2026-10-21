@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class ManageOrderItems extends ManageRelatedRecords
 {
+    public const OPEN = [OrderStatus::Pending, OrderStatus::Paid, OrderStatus::Processing];
+
     protected static string $resource = OrderResource::class;
 
     protected static string $relationship = 'items';
@@ -40,8 +42,6 @@ class ManageOrderItems extends ManageRelatedRecords
     protected static ?string $relatedRecordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'package';
-
-    public const OPEN = [OrderStatus::Pending, OrderStatus::Paid, OrderStatus::Processing];
 
     public static function getNavigationLabel(): string
     {

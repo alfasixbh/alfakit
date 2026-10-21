@@ -10,7 +10,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Tenants. Every user belongs to several stores through store_user with a role.
+        // Tenants. Every user belongs to several stores through team_user with a role: the
+        // stores are the teams of the Teams plugin (members, invitations, roles).
         Schema::create('stores', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
@@ -24,17 +25,36 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('brand_color', 7)->default('#073B78');
             $table->string('logo_path')->nullable();
+            // Columns the Teams plugin reads on its team model (IsTeam).
+            $table->boolean('personal_team')->default(false);
+            $table->string('auto_join_domain')->nullable()->index();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
 
-        Schema::create('store_user', function (Blueprint $table): void {
+        // The Teams plugin's membership table, keyed by store (`team_id`).
+        Schema::create('team_user', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('store_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('team_id')->constrained('stores')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('role', 20)->default('staff');
+            $table->string('role', 64)->default('staff');
             $table->timestamps();
-            $table->unique(['store_id', 'user_id']);
+            $table->unique(['team_id', 'user_id']);
+        });
+
+        Schema::create('team_invitations', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('team_id')->constrained('stores')->cascadeOnDelete();
+            $table->string('email');
+            $table->string('role', 64);
+            $table->foreignId('invited_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamps();
+            $table->unique(['team_id', 'email']);
+        });
+
+        Schema::table('users', function (Blueprint $table): void {
+            $table->foreignId('current_team_id')->nullable()->constrained('stores')->nullOnDelete();
         });
 
         // One settings row per store, edited through a singular resource.
@@ -60,7 +80,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('settings');
-        Schema::dropIfExists('store_user');
+        Schema::table('users', function (Blueprint $table): void {
+            $table->dropConstrainedForeignId('current_team_id');
+        });
+        Schema::dropIfExists('team_invitations');
+        Schema::dropIfExists('team_user');
         Schema::dropIfExists('stores');
     }
 };

@@ -67,6 +67,8 @@ class Product extends Model implements HasMedia
     // (alfakit-media-library over spatie/laravel-medialibrary, on the `demo` disk).
     use HasRecordVersions, InteractsWithMedia;
 
+    public const DEFAULT_LOCALE = 'en';
+
     /** @var array<int, string> */
     protected array $versionInclude = ['name', 'sku', 'description', 'price', 'compare_at_price', 'cost', 'stock', 'status', 'featured', 'category_id', 'brand_id'];
 
@@ -78,8 +80,6 @@ class Product extends Model implements HasMedia
             ->useDisk('demo')
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']);
     }
-
-    public const DEFAULT_LOCALE = 'en';
 
     /**
      * `name` and `description` stay the canonical (English) copy that orders, the storefront

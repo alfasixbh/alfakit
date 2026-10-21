@@ -58,7 +58,7 @@ class PromotionsCalendar extends Page
             Html::make(new HtmlString(
                 '<div data-slot="calendar-legend" class="text-muted-foreground flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">'
                 .'<ul aria-label="'.e(__('plugins.calendar.legend.label')).'" class="flex flex-wrap items-center gap-x-4 gap-y-1.5">'.$items.'</ul>'
-                .'<p class="text-xs">'.e(__('plugins.calendar.hint')).'</p></div>'
+                .'<p class="text-xs">'.e(__('plugins.calendar.hint')).'</p></div>',
             )),
         ]);
     }

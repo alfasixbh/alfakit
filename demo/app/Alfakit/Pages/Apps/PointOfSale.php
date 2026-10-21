@@ -48,6 +48,15 @@ use Illuminate\Validation\ValidationException;
  */
 class PointOfSale extends Page
 {
+    public const PAGE_SIZE = 24;
+
+    public const TAX_RATE = 0.1;
+
+    public const MAX_QUANTITY = 99;
+
+    /** Payment methods offered at the counter. */
+    public const PAYMENT_METHODS = [PaymentMethod::Card, PaymentMethod::ApplePay, PaymentMethod::CashOnDelivery];
+
     protected static ?string $slug = 'pos';
 
     protected static ?string $component = 'Pages/Pos';
@@ -57,15 +66,6 @@ class PointOfSale extends Page
     protected static ?string $navigationIcon = 'scan-barcode';
 
     protected static ?int $navigationSort = -10;
-
-    public const PAGE_SIZE = 24;
-
-    public const TAX_RATE = 0.1;
-
-    public const MAX_QUANTITY = 99;
-
-    /** Payment methods offered at the counter. */
-    public const PAYMENT_METHODS = [PaymentMethod::Card, PaymentMethod::ApplePay, PaymentMethod::CashOnDelivery];
 
     public static function getNavigationGroup(): ?string
     {
@@ -390,9 +390,10 @@ class PointOfSale extends Page
      * checked against the stock.
      *
      * @param  array<int, array{product_id: int, quantity: int}>  $items
-     * @return array<int, array{product: Product, quantity: int, total: float}>
      *
      * @throws ValidationException
+     *
+     * @return array<int, array{product: Product, quantity: int, total: float}>
      */
     protected function resolveLines(array $items, bool $lock = false): array
     {

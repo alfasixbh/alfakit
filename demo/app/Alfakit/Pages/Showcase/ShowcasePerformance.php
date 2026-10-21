@@ -28,15 +28,15 @@ use App\Demo\DemoPanel;
  */
 class ShowcasePerformance extends ShowcasePage
 {
+    public const ROWS = 10_000;
+
+    public const ITEMS = 500;
+
     protected static string $key = 'performance';
 
     protected static ?string $navigationIcon = 'gauge';
 
     protected static ?int $navigationSort = 6;
-
-    public const ROWS = 10_000;
-
-    public const ITEMS = 500;
 
     public function mount(mixed ...$parameters): void
     {

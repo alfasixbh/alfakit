@@ -37,6 +37,7 @@
         "alfasix/alfakit-settings": "@dev",
         "alfasix/alfakit-shield": "@dev",
         "alfasix/alfakit-tags": "@dev",
+        "alfasix/alfakit-teams": "@dev",
         "alfasix/alfakit-translation-manager": "@dev",
         "alfasix/alfakit-translations": "@dev",
         "alfasix/alfakit-tree": "@dev",

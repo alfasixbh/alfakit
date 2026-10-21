@@ -55,10 +55,6 @@ use Spatie\Permission\Traits\HasRoles;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements CanBeImpersonated, CanImpersonate, Commenter, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasDefaultTenant, HasEmailAuthentication, HasLocalePreference, HasTenants
 {
-    public const DEMO_EMAIL = 'demo@alfakit.dev';
-
-    public const DEMO_PASSWORD = 'password';
-
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
@@ -68,6 +64,10 @@ class User extends Authenticatable implements CanBeImpersonated, CanImpersonate,
 
     // Second factors (TOTP app with recovery codes, emailed codes) set up on the profile page.
     use InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, InteractsWithEmailAuthentication;
+
+    public const DEMO_EMAIL = 'demo@alfakit.dev';
+
+    public const DEMO_PASSWORD = 'password';
 
     /** Whether a second factor is active: shown as the "Two-factor" column of the staff table. */
     public function hasMultiFactorAuthentication(): bool
@@ -99,7 +99,7 @@ class User extends Authenticatable implements CanBeImpersonated, CanImpersonate,
     /** @return BelongsToMany<Store, $this> */
     public function stores(): BelongsToMany
     {
-        return $this->belongsToMany(Store::class)->withPivot('role')->withTimestamps();
+        return $this->belongsToMany(Store::class, 'team_user', 'user_id', 'team_id')->withPivot('role')->withTimestamps();
     }
 
     /** @return array<int, Store> */

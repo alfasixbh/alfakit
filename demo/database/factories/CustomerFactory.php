@@ -15,6 +15,9 @@ use Illuminate\Support\Str;
  */
 class CustomerFactory extends Factory
 {
+    /** @var array<string, true> */
+    private static array $emails = [];
+
     public function definition(): array
     {
         $country = fake()->randomElement(Catalog::CUSTOMER_COUNTRIES);
@@ -36,9 +39,6 @@ class CustomerFactory extends Factory
             'notes' => fake()->boolean(15) ? fake()->randomElement(['Prefers unscented packaging.', 'Collects discovery sets.', 'Allergic to tuberose; suggest alternatives.', 'Corporate gifting contact.']) : null,
         ];
     }
-
-    /** @var array<string, true> */
-    private static array $emails = [];
 
     /** An address that reads like the customer's name; a short number keeps duplicates apart. */
     public static function email(string $first, string $last): string

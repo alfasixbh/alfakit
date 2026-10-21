@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "171e74663ef05e98602e297f7cb95355",
+    "content-hash": "6fded2903e6914842835f7babee90eb4",
     "packages": [
         {
             "name": "alfasix/alfakit",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/alfakit",
-                "reference": "ea1ecb03cbc1268673c4eaa8064d2235474fe30f"
+                "reference": "88b90ccda57821c81af581d5e5e10431a9a7e4c5"
             },
             "require": {
                 "bacon/bacon-qr-code": "^3.1",
@@ -89,7 +89,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/activity-log",
-                "reference": "e1a3def2612de9daae21627172232463b176580b"
+                "reference": "27842efb064f37711543e6e01f873470f7fd888c"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -181,7 +181,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/ai",
-                "reference": "98fce372fafe0464820fa843a8d4139c1b0da2a2"
+                "reference": "c71c117c9796aef84941073798197e30dc1d5e17"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -281,7 +281,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/analytics",
-                "reference": "95dded4edcf2aedee634ccf2531f85dd97df6358"
+                "reference": "f6a0ead192024ef4e9158cdf12fe0d09d91ea711"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -379,7 +379,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/api",
-                "reference": "e1c7bf0d591f01de3951ab67a2832e2b106c02d3"
+                "reference": "0ab637d7ad12f359b30066c92fb2009f478665f4"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -475,7 +475,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/backup",
-                "reference": "c1d401514cbd802bc01d8713a049bb86402c17f4"
+                "reference": "52d1847dadb9bfb2d9ae526aa3bbd8107f9a3ec9"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -566,7 +566,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/billing",
-                "reference": "13d6f3c5bbc2d7ee1cb652a4f90c3be6a4a1637a"
+                "reference": "8e3041036a59e7c0d37017e52416d5598c3932e1"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -665,7 +665,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/calendar",
-                "reference": "1af3ecb5d1a9692b84653b1487495a0d4be94594"
+                "reference": "217b0cc9a78fcc49a1dcc950e8cc660d27ffc76a"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -758,7 +758,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/cms",
-                "reference": "8a268efdad39df2b46491cab6b4c42dbec56569d"
+                "reference": "ad319ea041de1d4c47d7d1f7a295f6e1f71d8617"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -855,7 +855,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/comments",
-                "reference": "d7a2a745b2562c7e7d3ff2cdb08dae882a8f9bed"
+                "reference": "b582a60a4db30557744597f93c41c5fef56927ec"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -948,7 +948,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/feature-flags",
-                "reference": "6ab473b9218007172bf87213e5b73d5a383fbac0"
+                "reference": "e1c1849c62dca2c2223d315c1716e43a9802eb43"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1046,7 +1046,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/file-manager",
-                "reference": "3c7dfd8d73520ac08b8eb5ec2bc961e3e1dfdd5a"
+                "reference": "e603e85e5d757215c5c0f8519b47f36af7a6d7c6"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1147,7 +1147,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/forms",
-                "reference": "5d89567c014226e6b4bf215e83638d9d49f120a8"
+                "reference": "f30d04c83157807108b2693066144926df80606d"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1241,7 +1241,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/health",
-                "reference": "86721d2cf332eba521dd48f88cfd0526563623ae"
+                "reference": "0bc12fa0bfbfd55e32f56be6ae31ada86f76e2fc"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1331,7 +1331,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/helpdesk",
-                "reference": "95a4366c523cbc29acbe0ea6fb97634976b601f1"
+                "reference": "40263760b74286f5b3cddeba082abc76bec57641"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1431,7 +1431,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/invoices",
-                "reference": "a55b8bbad0dd1deaafd9eb6e99c961b868e81d29"
+                "reference": "047fb7f41af947005f8f810e62694c9c46746245"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1535,7 +1535,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/kanban",
-                "reference": "0105058d288277d3dffdf13aa19d512a303ab4c2"
+                "reference": "3075df7256e9c04ac38d3385acd4b8128b00caf2"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1628,7 +1628,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/mail-templates",
-                "reference": "32bfa49d007e36a1a2cbe9f5a5bf849dd61c44a0"
+                "reference": "6bb5a3841c83e854239da8f5971896fcd7b87795"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1721,7 +1721,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/media-library",
-                "reference": "7b1a4767257a5e0f5c5bc2c8c69506d8954f5b21"
+                "reference": "5f53e9629be5667342ab420526915c343610afdb"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1813,7 +1813,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/ops",
-                "reference": "abe82cd39ff556a07863e8f44252612e88720b17"
+                "reference": "72fead1d20e1980a4a2f71b2bc2ae5871ed5d0c8"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1908,7 +1908,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/settings",
-                "reference": "068104494708dc38b1b3ec622fa16cc92ee77bc0"
+                "reference": "702224bae4a11d5cc4ecc8a499eda4d25ad97321"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -1998,7 +1998,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/shield",
-                "reference": "86c1b6014613468a6d103ceff721eba87c4af105"
+                "reference": "f56859f889fdec48bd7d385dc5ec6f6167b62335"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -2091,7 +2091,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/tags",
-                "reference": "ba73a14558f36772b17da0372720c243843d5bad"
+                "reference": "f354223cf1e4ce2bceae09ac60191f750cfb56bf"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -2172,12 +2172,110 @@
             }
         },
         {
+            "name": "alfasix/alfakit-teams",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../packages/plugins/teams",
+                "reference": "6fbcc0f56baf8bbe8df2a4d770fb0e8c663edd1e"
+            },
+            "require": {
+                "alfasix/alfakit": "^0.1|@dev",
+                "php": "^8.3"
+            },
+            "suggest": {
+                "alfasix/alfakit-billing": "Per-team subscriptions: derive seats from the plan and sync the subscription quantity.",
+                "alfasix/alfakit-shield": "Mirror team roles to spatie/laravel-permission roles scoped to the team."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "AlfaSix\\AlfakitTeams\\AlfakitTeamsServiceProvider"
+                    ]
+                },
+                "alfakit": {
+                    "version": "^0.1",
+                    "frontend": null,
+                    "showcase": {
+                        "demoPath": "staff",
+                        "tour": [
+                            "Open Settings > Staff",
+                            "Invite a member with a role",
+                            "Switch to another team"
+                        ],
+                        "clips": [
+                            "react-light",
+                            "react-dark",
+                            "vue-light",
+                            "vue-dark",
+                            "svelte-light",
+                            "svelte-dark"
+                        ],
+                        "worksWith": [
+                            "billing",
+                            "shield",
+                            "feature-flags"
+                        ],
+                        "highlights": [
+                            "Team creation and settings",
+                            "Personal teams",
+                            "Members with configurable roles and permissions",
+                            "Email invitations",
+                            "Domain auto-join",
+                            "Seat limits",
+                            "Optional billing seat hook"
+                        ]
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AlfaSix\\AlfakitTeams\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "AlfaSix\\AlfakitTeams\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alfa Six",
+                    "homepage": "https://alfasixbh.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Jetstream-style teams for AlfaKit panels on top of multi-tenancy: team creation and settings, personal teams, members with configurable roles and permissions, email invitations, domain auto-join, seat limits and an optional billing seat hook.",
+            "homepage": "https://alfakit.dev/docs/plugins/teams",
+            "keywords": [
+                "alfakit",
+                "invitations",
+                "laravel",
+                "multi-tenancy",
+                "roles",
+                "saas",
+                "teams"
+            ],
+            "support": {
+                "issues": "https://github.com/alfasixbh/alfakit/issues",
+                "source": "https://github.com/alfasixbh/alfakit"
+            },
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "alfasix/alfakit-translation-manager",
             "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/translation-manager",
-                "reference": "da44bbb8ce6ea602a23044fb714e0055255d17f2"
+                "reference": "8dfad208182aca5d5c0609469c0c85747be42339"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -2273,7 +2371,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/translations",
-                "reference": "c484d8224aaff55bc471f9047421dbb9f76cbbe3"
+                "reference": "d5faa5ca03da093fbae3d1284fe8988357141ba7"
             },
             "require": {
                 "alfasix/alfakit": "*",
@@ -2327,7 +2425,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/tree",
-                "reference": "2edb182b2355415a8a6912928848a58b29171cb2"
+                "reference": "529f1d92f36197f43bb86ed7ecd9bab857843a26"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -2417,7 +2515,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/webhooks",
-                "reference": "03107579ff3477d2a5fca9ad25f692ef9392572a"
+                "reference": "16a0b9862054c584bd595e981688cdb2923f8022"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -2510,7 +2608,7 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/workflows",
-                "reference": "cdc9a89db1cc8d4e7ec2fd1da9dbf5c118060745"
+                "reference": "f53ba7c65b68881ffd2bdc5e41af8a4c7761c311"
             },
             "require": {
                 "alfasix/alfakit": "^0.1|@dev",
@@ -14216,6 +14314,7 @@
         "alfasix/alfakit-settings": 20,
         "alfasix/alfakit-shield": 20,
         "alfasix/alfakit-tags": 20,
+        "alfasix/alfakit-teams": 20,
         "alfasix/alfakit-translation-manager": 20,
         "alfasix/alfakit-translations": 20,
         "alfasix/alfakit-tree": 20,

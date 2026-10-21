@@ -8,6 +8,7 @@ use AlfaSix\Alfakit\Forms\Components\Select;
 use AlfaSix\Alfakit\Forms\Components\TextInput;
 use AlfaSix\Alfakit\Schemas\Fragment;
 use App\Demo\Catalog;
+use Locale;
 
 /**
  * Postal address fields shared by the order wizard (JSON snapshots), the customer form
@@ -43,7 +44,7 @@ class AddressFields extends Fragment
         $codes = array_keys(Catalog::CITIES);
         $locale = app()->getLocale();
 
-        $names = array_map(fn (string $code): string => \Locale::getDisplayRegion('-'.$code, $locale) ?: $code, $codes);
+        $names = array_map(fn (string $code): string => Locale::getDisplayRegion('-'.$code, $locale) ?: $code, $codes);
 
         $options = array_combine($codes, $names);
         asort($options);
@@ -64,7 +65,7 @@ class AddressFields extends Fragment
             $address['line2'] ?? null,
             trim(($address['postal_code'] ?? '').' '.($address['city'] ?? '')),
             $address['state'] ?? null,
-            isset($address['country']) ? (\Locale::getDisplayRegion('-'.$address['country'], app()->getLocale()) ?: $address['country']) : null,
+            isset($address['country']) ? (Locale::getDisplayRegion('-'.$address['country'], app()->getLocale()) ?: $address['country']) : null,
         ]));
     }
 }
