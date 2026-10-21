@@ -56,7 +56,7 @@ jobs:
           - { directory: packages/plugins/webhooks, repository: alfakit-webhooks }
           - { directory: packages/plugins/workflows, repository: alfakit-workflows }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           # Otherwise the saved GITHUB_TOKEN header overrides SPLIT_TOKEN on push.
