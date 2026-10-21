@@ -88,6 +88,18 @@ it('orders new records after their siblings and exposes the tree relations', fun
         ->and($categories['android']->isRoot())->toBeFalse();
 });
 
+// docs/content/plugins/tree.md: the isRoot scope is reached through a query, because
+// isRoot() is also the record's own check (a static call is PHP's "non-static method" error).
+it('uses the isRoot scope through query() as the docs show', function (): void {
+    treeCategories();
+
+    expect(Category::query()->isRoot()->pluck('title')->sort()->values()->all())->toBe(['Books', 'Electronics'])
+        ->and(fn () => Category::isRoot())->toThrow(Error::class, 'Non-static method')
+        ->and(file_get_contents(dirname(__DIR__, 4).'/docs/content/plugins/tree.md'))
+        ->toContain('`Category::query()->isRoot()`')
+        ->not->toContain('`Category::isRoot()`');
+});
+
 it('renders the tree page with nested nodes, node actions and a create action', function (): void {
     treePanel();
     treeTest()->actingAs(treeUser());
@@ -104,6 +116,16 @@ it('renders the tree page with nested nodes, node actions and a create action', 
         ->and($tree['nodes'][0]['children'][0]['children'][0]['key'])->toBe((string) $categories['android']->id)
         ->and(collect($tree['nodes'][1]['actions'])->pluck('name')->all())->toBe(['edit', 'delete'])
         ->and($page['headerActions'][0]['name'])->toBe('create');
+});
+
+it('labels the tree page "List" in the breadcrumbs when it is the resource index', function (): void {
+    treePanel();
+    treeTest()->actingAs(treeUser());
+
+    [, , $page] = treePage();
+
+    expect(array_column($page['breadcrumbs'], 'label'))->toBe(['Categories', __('alfakit::panel.resources.list')])
+        ->and((new AlfaSix\AlfakitTree\Tests\Fixtures\CategoryTree)->getTitle())->toBe('Categories');
 });
 
 it('saves a new structure in one request', function (): void {

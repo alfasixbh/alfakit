@@ -7,6 +7,7 @@ namespace AlfaSix\AlfakitTree\Pages;
 use AlfaSix\Alfakit\Actions\Action;
 use AlfaSix\Alfakit\Actions\CreateAction;
 use AlfaSix\Alfakit\Actions\Exceptions\ActionNotResolvableException;
+use AlfaSix\Alfakit\Pages\PageRegistration;
 use AlfaSix\Alfakit\Resources\Pages\Page;
 use AlfaSix\AlfakitTree\Concerns\InteractsWithTree;
 use Illuminate\Database\Eloquent\Builder;
@@ -50,6 +51,21 @@ abstract class TreePage extends Page
     public function getTitle(): string
     {
         return static::$title ?? static::getResource()::getTitleCasePluralModelLabel();
+    }
+
+    /**
+     * As the resource's index page the tree is its list: "Categories › List", like
+     * `ListRecords` (its title is the resource's, so it would repeat). Elsewhere its title.
+     */
+    public function getBreadcrumb(): string
+    {
+        if (static::$breadcrumb !== null) {
+            return static::$breadcrumb;
+        }
+
+        $index = static::getResource()::getPages()['index'] ?? null;
+
+        return $index instanceof PageRegistration && $index->page === static::class ? __('alfakit::panel.resources.list') : $this->getTitle();
     }
 
     public function getBreadcrumbs(): array

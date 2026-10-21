@@ -158,7 +158,14 @@ class MailTemplateResource extends Resource
                 ->schema([
                     TextInput::make('subject')
                         ->label(static::trans('fields.subject'))
-                        ->helperText(static::trans('fields.subject_help'))
+                        // The example is one of the chosen email's own tags.
+                        ->helperText(static function (Get $get): string {
+                            $tag = array_key_first(static::definitionFor($get('key'))?->getMergeTags() ?? []);
+
+                            return $tag === null
+                                ? static::trans('fields.subject_help_without_example')
+                                : static::trans('fields.subject_help', ['example' => '{{ '.$tag.' }}']);
+                        })
                         ->maxLength(255)
                         ->rules(static fn (Get $get): array => [new KnownMergeTags(is_string($key = $get('key')) ? $key : null)]),
                     RichEditor::make('body')

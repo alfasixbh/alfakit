@@ -162,6 +162,27 @@ it('offers the merge tags of the chosen email in the editor', function (): void 
         });
 });
 
+it("gives the subject an example merge tag of the chosen email's own", function (): void {
+    $this->actingAs(admin());
+    $helper = static function (MailTemplate $template): string {
+        $text = '';
+        page(EditMailTemplate::class, ['record' => $template->getKey()])
+            ->assertFormFieldExists('subject', function (array $field) use (&$text): bool {
+                $text = (string) ($field['helperText'] ?? '');
+
+                return true;
+            });
+
+        return $text;
+    };
+
+    // The password reset email has no {{ name }}: its first tag is the example.
+    expect($helper(template(['key' => AlfaSix\Alfakit\Auth\Notifications\ResetPassword::TEMPLATE, 'subject' => 'Reset'])))
+        ->toBe('Merge tags work here too, for example {{ button }}.')
+        // The multi-factor code email has a {{ name }}.
+        ->and($helper(template()))->toBe('Merge tags work here too, for example {{ name }}.');
+});
+
 it('previews the saved template with sample data in light and dark', function (): void {
     $this->actingAs(admin());
     $template = template(['locale' => 'ar']);

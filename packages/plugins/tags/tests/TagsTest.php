@@ -91,6 +91,22 @@ it('syncs only the tags of its type when the record is saved', function (): void
         ->and(Tag::query()->where('type', 'categories')->count())->toBe(3);
 });
 
+// `separator()` makes the dehydrated state one string: it used to be dropped, which
+// detached every tag of the type on save.
+it('saves the tags of an input with a separator', function (): void {
+    $article = tgArticle(['keywords' => ['alpha', 'beta']]);
+    tgTest()->actingAs(tgTest()->admin());
+    $props = tgTest()->pageProps("/tags/articles/{$article->id}/edit");
+
+    expect($props['content'][0]['state']['keywords'])->toBe(['alpha', 'beta']);
+
+    tgTest()->runAction($props['token'], 'save', ['title' => 'Hello', 'keywords' => ['alpha', 'beta', 'gamma']])
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
+
+    expect($article->refresh()->tagsWithType('keywords')->pluck('name')->all())->toBe(['alpha', 'beta', 'gamma']);
+});
+
 it('syncs tags of any type without a type', function (): void {
     $article = tgArticle(['categories' => ['Laravel'], '' => ['untyped']]);
 

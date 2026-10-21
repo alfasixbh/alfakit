@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "13fddc9a121629b5f7fa5dbefded69e6",
+    "content-hash": "c83f3cc9a664f0c7f7dbd592967b2d47",
     "packages": [
         {
             "name": "alfasix/alfakit",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/alfakit",
-                "reference": "ea1ecb03cbc1268673c4eaa8064d2235474fe30f"
+                "reference": "88b90ccda57821c81af581d5e5e10431a9a7e4c5"
             },
             "require": {
                 "bacon/bacon-qr-code": "^3.1",
@@ -89,7 +89,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/translations",
-                "reference": "c484d8224aaff55bc471f9047421dbb9f76cbbe3"
+                "reference": "d5faa5ca03da093fbae3d1284fe8988357141ba7"
             },
             "require": {
                 "alfasix/alfakit": "*",

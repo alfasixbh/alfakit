@@ -109,6 +109,13 @@ class SpatieTagsInput extends TagsInput
         }
 
         $tags = $this->mutateDehydratedState($this->getState());
+
+        // With `separator()` the dehydrated state is one delimited string, not a list.
+        if (is_string($tags)) {
+            $separator = $this->evaluate($this->separator);
+            $tags = $tags === '' ? [] : ($separator !== null && $separator !== '' ? explode($separator, $tags) : [$tags]);
+        }
+
         $tags = is_array($tags) ? array_values(array_unique(array_map('strval', $tags))) : [];
 
         if ($this->isAnyTagTypeAllowed()) {

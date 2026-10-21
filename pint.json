@@ -34,6 +34,9 @@
     "node_modules",
     "packages/alfakit/tests/Fixtures/FilamentApp",
     "packages/alfakit/tests/Fixtures/Filament5App",
-    "packages/alfakit/tests/Fixtures/StarterKits"
+    "packages/alfakit/tests/Fixtures/StarterKits",
+    "scripts/acceptance/fixtures",
+    "qa-evidence",
+    "scripts/acceptance/reports"
   ]
 }

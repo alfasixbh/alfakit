@@ -25,6 +25,7 @@ class ArticleResource extends Resource
             TextInput::make('title')->required(),
             SpatieTagsInput::make('categories')->type('categories'),
             SpatieTagsInput::make('labels')->type('labels'),
+            SpatieTagsInput::make('keywords')->type('keywords')->separator(','),
         ]);
     }
 
