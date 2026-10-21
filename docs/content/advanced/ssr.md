@@ -44,7 +44,7 @@ Pass the same `discover` glob ([auto-registered components](./custom-components)
 
 ### 2. Vite
 
-Point laravel-vite-plugin and `@inertiajs/vite` at the entry:
+Point laravel-vite-plugin and `@inertiajs/vite` at the entry (`alfakit:install --ssr` does this, and installs `@inertiajs/vite` when the app doesn't have it):
 
 ```ts
 // vite.config.ts
@@ -73,7 +73,7 @@ During development (`npm run dev`), `@inertiajs/vite` renders through the Vite d
 php artisan inertia:start-ssr
 ```
 
-Keep this process running in production, for example with Supervisor, next to your queue workers. `config/inertia.php` controls the rest: `ssr.enabled` (`INERTIA_SSR_ENABLED`) and `ssr.url` (`INERTIA_SSR_URL`, `http://127.0.0.1:13714` by default). When the SSR server is down or a render fails, Inertia falls back to rendering in the browser, so a page never breaks because of SSR.
+Keep this process running in production, for example with Supervisor, next to your queue workers. `config/inertia.php` controls the rest: `ssr.enabled` (`INERTIA_SSR_ENABLED` in Inertia's own config) and `ssr.url` (`INERTIA_SSR_URL`, `http://127.0.0.1:13714` by default). Apps made from a Laravel starter kit may ship a `config/inertia.php` with `'enabled' => true` and no environment lookup, so `INERTIA_SSR_ENABLED=false` changes nothing and, while `npm run dev` runs, every page is rendered on the server through the Vite dev server. To switch SSR with the environment, make it `'enabled' => (bool) env('INERTIA_SSR_ENABLED', true)`. AlfaKit leaves the file alone: it is your app's configuration. When the SSR server is down or a render fails, Inertia falls back to rendering in the browser, so a page never breaks because of SSR.
 
 ## Pages outside the panel
 

@@ -5,7 +5,7 @@ description: Sign in as another user to see the panel as they do, and leave agai
 
 # Impersonation
 
-`ImpersonateAction` signs you in as the user of a table row. While you impersonate, a banner at the bottom of every page says who you are signed in as and has a **Leave** button that returns to your own account.
+`ImpersonateAction` signs you in as the user of a table row. While you impersonate, a banner at the bottom of every page says who you are signed in as and has a **Leave** button that returns to your own account. In [starter kit mode](../getting-started/starter-kits) the banner also shows on your app's own pages (the dashboard, settings), rendered by AlfaKit's header components.
 
 ```php
 use AlfaSix\Alfakit\Actions\ImpersonateAction;
@@ -23,6 +23,8 @@ ImpersonateAction::make()
     ->redirectTo(fn (User $record): string => route('alfakit.admin.pages.dashboard'))  // after switching (default: panel home)
     ->backTo(UserResource::getUrl('index'));                                             // after leaving (default: the page you came from)
 ```
+
+The panel home is the first page in the navigation that the impersonated user may open. On a starter kit panel where they may open none, it is your app's `dashboard` route.
 
 ## Who can impersonate whom
 

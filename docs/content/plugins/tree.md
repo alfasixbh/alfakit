@@ -48,15 +48,15 @@ class Category extends Model
 }
 ```
 
-| Member                             | Does                                           |
-| ---------------------------------- | ---------------------------------------------- |
-| `parent()`                         | `BelongsTo` the parent record                  |
-| `children()`                       | `HasMany` children, by order                   |
-| `childrenRecursive()`              | Children with all their descendants loaded     |
-| `ancestors()`                      | The parents of the record, nearest first       |
-| `isRoot()`                         | Whether the record has no parent               |
-| `scopeIsRoot()`                    | `Category::isRoot()`: records without a parent |
-| `scopeOrdered($direction = 'asc')` | `Category::ordered()`: by the order column     |
+| Member                             | Does                                                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `parent()`                         | `BelongsTo` the parent record                                                                     |
+| `children()`                       | `HasMany` children, by order                                                                      |
+| `childrenRecursive()`              | Children with all their descendants loaded                                                        |
+| `ancestors()`                      | The parents of the record, nearest first                                                          |
+| `isRoot()`                         | Whether the record has no parent                                                                  |
+| `scopeIsRoot()`                    | `Category::query()->isRoot()`: records without a parent (`isRoot()` alone is the record's check)  |
+| `scopeOrdered($direction = 'asc')` | `Category::ordered()`: by the order column (`Category::query()->isRoot()->ordered()` chains both) |
 
 New records are appended after their siblings (the order column is filled when it is empty). Roots have a null parent. Change the columns with properties or by overriding the methods:
 
@@ -80,6 +80,9 @@ class CategoryTree extends TreePage
     protected static ?int $maxDepth = 3;
 }
 
+```
+
+```php
 // CategoryResource
 public static function getPages(): array
 {
@@ -97,7 +100,9 @@ The tree shows the resource's records from its query (so tenancy and nested reso
 `TreeWidget` shows the same tree on a dashboard or any page with widgets:
 
 ```php
+use AlfaSix\Alfakit\Forms\Components\TextInput;
 use AlfaSix\AlfakitTree\Widgets\TreeWidget;
+use App\Models\MenuItem;
 
 class MenuTree extends TreeWidget
 {
@@ -199,9 +204,10 @@ PHP strings live in the `alfakit-tree::tree` group. The frontend strings are und
 Saving is an action of the tree (`tree` on a page, `widget:<id>` on a widget):
 
 ```php
+use AlfaSix\Alfakit\Testing\PageTester;
 use AlfaSix\AlfakitTree\Support\TreeStructure;
 
-$token = $this->get('/admin/categories', ['X-Inertia' => 'true'])->json('props.page.token');
+$token = $this->get('/admin/categories', PageTester::inertiaHeaders())->json('props.page.token');
 
 $this->postJson('/admin/_alfakit/actions', [
     'token' => $token,

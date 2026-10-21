@@ -174,7 +174,7 @@ Icons::register([
 ]);
 ```
 
-Repeater, builder and key-value item buttons are actions, so their aliases are resolved on the server like any action icon. The other chrome icons are resolved in the browser: until an alias is replaced the renderer draws its bundled Lucide glyph directly (nothing is loaded lazily, so there is no flash), and once it is replaced it draws the replacement through `<Icon>`. A `panel:icon` component only sees replaced chrome aliases, not the built-in glyphs.
+Repeater, builder and key-value item buttons follow their aliases too: customised item actions (`deleteAction(fn (Action $action) => …)`) are resolved on the server like any action icon, and the default buttons draw the replacement sent with the panel. The other chrome icons are resolved in the browser: until an alias is replaced the renderer draws its bundled Lucide glyph directly (nothing is loaded lazily, so there is no flash), and once it is replaced it draws the replacement through `<Icon>`. A `panel:icon` component only sees replaced chrome aliases, not the built-in glyphs.
 
 Custom renderer components can do the same. Pass the alias as `name` and the bundled glyph (or a Lucide name) as `fallback`:
 

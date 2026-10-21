@@ -21,7 +21,7 @@ Real-time features are **off by default**. While they are off, AlfaKit registers
 php artisan alfakit:realtime
 ```
 
-The [setup command](../getting-started/setup-wizard#realtime) installs Laravel Reverb, runs Laravel's `install:broadcasting`, writes the `REVERB_*` keys, creates `resources/js/alfakit/echo.ts` (Laravel Echo as `window.Echo`, browser only) and turns on `->realtime()`. Then run the WebSocket server and a queue worker (broadcasts are queued):
+The [setup command](../getting-started/setup-wizard#realtime) installs Laravel Reverb, runs Laravel's `install:broadcasting`, writes the `REVERB_*` keys, creates `resources/js/alfakit/echo.ts` (Laravel Echo as `window.Echo`, browser only, which the panel entry loads when AlfaKit first needs Echo: `createAlfakit({ echo: () => import('./echo').then((module) => module.default()) })`) and turns on `->realtime()`. Then run the WebSocket server and a queue worker (broadcasts are queued):
 
 ```bash
 php artisan reverb:start
@@ -89,6 +89,8 @@ Edit pages detect conflicts in two ways:
 - **Server side, always (`detectConflicts()`, on by default).** The page sends the version of the record its form was loaded from with the save; when somebody else saved the record meanwhile, saving is refused with an error notification and the conflict banner. The version is a keyed hash of the stored row, so changes within the same second count too, and it reveals nothing about the values. Turn it off per panel with `->detectConflicts(false)` or per page:
 
     ```php
+    use AlfaSix\Alfakit\Resources\Pages\EditRecord;
+
     class EditPost extends EditRecord
     {
         protected static ?bool $detectsConflicts = false;

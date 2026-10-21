@@ -30,7 +30,7 @@ This post summarises the [Coming from Filament](/docs/getting-started/filament-c
 - **Render hooks** become [slots](/docs/design/slots), which take HTML, Blade views or schema components.
 - **Built in** where Filament relies on plugins: impersonation, translatable fields and a Filament-style theme among six themes.
 
-Not available in the first release: global search in custom pages and the Spatie plugin ecosystem. The [plugin API](/docs/panels/plugins) lets you build what you need.
+Not available in the first release: global search in custom pages, and Filament's own Spatie plugins don't install in AlfaKit. First-party plugins cover the common ones instead (media library, tags, settings, activity log, backup, roles and permissions with Shield), and the [plugin API](/docs/panels/plugins) lets you build the rest.
 
 ## Migrating an existing app
 

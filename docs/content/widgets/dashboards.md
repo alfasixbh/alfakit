@@ -41,6 +41,8 @@ Widgets read them as `$this->pageFilters` with the `InteractsWithPageFilters` tr
 
 ```php
 use AlfaSix\Alfakit\Widgets\Concerns\InteractsWithPageFilters;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget\Stat;
 
 class OrdersStats extends StatsOverviewWidget
 {
@@ -87,6 +89,7 @@ Applying and resetting redirect to the dashboard with the new query string (`get
 With `HasFiltersAction` the filters live in a `FilterAction` slide-over in the header instead of a form above the widgets. Its badge counts the filters in use, its form starts from the applied values, and **Reset** clears them:
 
 ```php
+use AlfaSix\Alfakit\Forms\Components\DatePicker;
 use AlfaSix\Alfakit\Pages\Dashboard\Actions\FilterAction;
 use AlfaSix\Alfakit\Pages\Dashboard\Concerns\HasFiltersAction;
 

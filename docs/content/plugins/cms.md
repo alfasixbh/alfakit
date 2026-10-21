@@ -19,7 +19,7 @@ This part is for the people who write the website. You don't need to know anythi
 2. Pick a **template** if you like: it fills the page with ready-made blocks you can change. Or start with a blank page.
 3. Type a **title**. The address of the page is filled in for you; you can change it.
 4. Under **Content**, click **Add block** and pick what you want: a big heading (**Hero**), text, a picture, a gallery, questions and answers, a video… Each block says in one line what it is for.
-5. Drag blocks by their handle to change the order. Use the copy button to duplicate a block, and **Hide this block** to keep it without showing it to visitors.
+5. Drag blocks by their handle to change the order. Use the copy button to duplicate a block, and **Hide from visitors** in the block's menu to keep it without showing it to visitors (**Show to visitors** brings it back).
 
 Your work is **saved automatically as a draft** while you type ("All changes saved" appears next to **Live preview**). Nothing is visible to visitors until you publish.
 
@@ -34,7 +34,7 @@ Click **Live preview** to open the page next to the form. It updates by itself a
 ### Publishing
 
 - **Publish** makes the page visible now. Pick a date and time instead to **schedule** it: it goes live by itself.
-- After a page is published, your next changes are kept as a draft. The page shows **Changes not published yet** until you click **Publish changes**. Visitors keep seeing the old version in the meantime. **Discard changes** throws your draft away.
+- After a page is published, your next changes are kept as a draft. The page shows **Changes not published yet** until you click **Publish changes**. Visitors keep seeing the old version in the meantime. **Discard changes** (in the **⋮** menu of every published page) throws your draft away, or says there is nothing to discard.
 - **Unpublish** takes a page offline again.
 
 If you can write pages but not publish them, you'll see **Submit for review** instead. Add a note if you like; an editor gets a notification, checks the page, and either clicks **Approve and publish** or **Request changes** with a note for you (you get a notification too). Pages waiting for an editor are in the **In review** tab.
@@ -118,7 +118,7 @@ The **Content** section is a [Builder](../forms/builder) with these blocks (grou
 | Form             | `form`           | A form your application provides (see [Forms](#form-embeds))                                                                                                 |
 | Reusable section | `section`        | One of the panel's **Reusable sections** (`->sections(false)` removes both)                                                                                  |
 
-Every block gets a **Hide this block** toggle (`cms_hidden`; hidden blocks are never rendered), a plain-language description in the block picker (`CmsBlock::getDescription()`, from `alfakit-cms::cms.blocks.{name}.description`), and an item label with its heading so collapsed blocks are easy to tell apart (`getSummary()`). Blocks can be dragged, moved with the keyboard and duplicated. `->blockPreviews()` shows a compact preview of each block instead of its fields until it is opened. Image fields have the image editor and, with alfasix/alfakit-media-library on the panel, a **choose from the media library** picker (not on tenancy panels, whose media isn't tenant-scoped; `->mediaLibrary(false)` turns it off).
+Every block gets **Hide from visitors** / **Show to visitors** in its menu (stored as `cms_hidden`; hidden blocks are never rendered), a plain-language description in the block picker (`CmsBlock::getDescription()`, from `alfakit-cms::cms.blocks.{name}.description`), and an item label with its heading so collapsed blocks are easy to tell apart (`getSummary()`). Blocks can be dragged, moved with the keyboard and duplicated. `->blockPreviews()` shows a compact preview of each block instead of its fields until it is opened. Image fields have the image editor and, with alfasix/alfakit-media-library on the panel, a **choose from the media library** picker (not on tenancy panels, whose media isn't tenant-scoped; `->mediaLibrary(false)` turns it off).
 
 `Block::description()` is a core Builder feature, so your own Builder blocks can use it too.
 
@@ -333,7 +333,7 @@ CmsPlugin::make()->livePreview(false);             // no autosave or live previe
 - the page's status, a badge and a sentence from `PageResource::describeEditorStatus()` (it switches to **Changes not published yet** as soon as an autosave makes the draft differ from the live page);
 - the autosave indicator;
 - the **Live preview** toggle;
-- the editor's main actions, from `EditPage::getEditorActions()`: **Approve and publish** / **Request changes** / **Submit for review** when they apply, **Save draft** and **Publish** (or **Publish changes**). They run as ordinary page actions, after the latest typing is autosaved. The other actions are grouped in the header's menu (`getHeaderActions()`), and there are no buttons below the form.
+- the editor's main actions, from `EditPage::getEditorActions()`: **Approve and publish** / **Request changes** / **Submit for review** when they apply, **Save draft** and **Publish** (or **Publish changes**, which appears as soon as an autosave makes a published page's draft differ: the bar is sent `changedActions` next to `actions`, as it is sent `changedStatus`). They run as ordinary page actions, after the latest typing is autosaved. The other actions are grouped in the header's menu (`getHeaderActions()`), and there are no buttons below the form.
 
 Change the bar's buttons in your own edit page:
 
@@ -406,7 +406,7 @@ CmsPlugin::make()
 
 In the editor, **Search and sharing** shows a search-result preview, character counters for the meta title and description, and plain-language tips (missing or long description, long title, images without alternative text, hidden page) computed from the form as it changes (`SeoAdvisor`). The section is part of **Show advanced settings**, which also holds the page order, layout and translation fields, so the default view stays simple.
 
-The renderers print these through Inertia's `<Head>` (server-rendered with [SSR](../frontend/ssr)). Without SSR, print the same tags in your Blade root view so crawlers that don't run JavaScript still see them:
+The renderers print these through Inertia's `<Head>` (server-rendered with [SSR](../advanced/ssr)). Without SSR, print the same tags in your Blade root view so crawlers that don't run JavaScript still see them:
 
 ```blade
 <head>
@@ -472,7 +472,7 @@ Pages render the `Alfakit/CmsPage` Inertia component with a `cms` prop: the page
 ```tsx
 // resources/js/site.tsx (React; site.ts with @alfakit/vue or @alfakit/svelte is the same)
 import { CmsPage, createAlfakit } from '@alfakit/react'
-import '../css/alfakit.css' // the panel stylesheet alfakit:install created (Tailwind + AlfaKit's styles)
+import '../css/alfakit.css' // panel mode: the stylesheet alfakit:install created; starter-kit mode: '../css/app.css'
 
 createAlfakit({
     pages: { 'Alfakit/CmsPage': CmsPage },
@@ -480,7 +480,7 @@ createAlfakit({
 })
 ```
 
-Import a stylesheet that loads Tailwind first, like `resources/css/alfakit.css`: `@alfakit/*/styles.css` uses Tailwind utilities and can't be imported from JavaScript on its own. Load the entry from a Blade view of its own and add it to `laravel-vite-plugin`'s `input`:
+Import a stylesheet that loads Tailwind first: `resources/css/alfakit.css` in panel mode, or `resources/css/app.css` in starter-kit mode (only panel-mode installs create `alfakit.css`; the starter kit's `app.css` already imports AlfaKit's standalone styles): `@alfakit/*/styles.css` uses Tailwind utilities and can't be imported from JavaScript on its own. Load the entry from a Blade view of its own and add it to `laravel-vite-plugin`'s `input`:
 
 ```blade
 {{-- resources/views/site.blade.php --}}
@@ -585,50 +585,53 @@ A typical setup: **editors** may `publish`; **authors** may `create` and `update
 
 With alfasix/alfakit-shield, subclass the page resource to give Shield the CMS permissions (`publish_page`, `submit_for_review_page`, `restore_revision_page`, mapped to the policy methods above):
 
-````php
+```php
+use AlfaSix\AlfakitCms\CmsPlugin;
 use AlfaSix\AlfakitCms\Resources\PageResource as BasePageResource;
 use AlfaSix\AlfakitShield\Contracts\HasShieldPermissions;
 
 class PageResource extends BasePageResource implements HasShieldPermissions {}
 
 CmsPlugin::make()->pageResource(PageResource::class);
-``` Without a policy everything is allowed unless the panel uses `strictAuthorization()`. Guests are never allowed. Revisions are shown to users who may update the page.
+```
+
+Without a policy everything is allowed unless the panel uses `strictAuthorization()`. Guests are never allowed. Revisions are shown to users who may update the page.
 
 ## Options
 
-| Method | Default | Description |
-| --- | --- | --- |
-| `siteName()` | `config('app.name')` | Site name in titles, Open Graph and the default header |
-| `titleTemplate()` | `':title \| :site'` | Title of pages without a meta title |
-| `defaultOgImage()` | none | Sharing image of pages without one |
-| `modifySeoUsing()` | none | Change a page's SEO payload |
-| `blocks()` / `withoutBlocks()` / `onlyBlocks()` | default blocks | The page builder's blocks |
-| `embedHosts()` | none | Extra `https` hosts for the embed block |
-| `formOptions()` / `formUsing()` | none | The form block hook |
-| `disk()` / `directory()` | `public` / `cms` | Where block and sharing images are stored |
-| `layouts()` | none | Page layouts editors can pick |
-| `publicRoutes()` | off | Public pages, sitemap and robots (prefix, middleware, domain) |
-| `inertiaComponent()` / `rootView()` | `Alfakit/CmsPage` / your middleware's | How public pages render |
-| `sharedMenus()` | `['main', 'footer']` | Menus sent with public pages |
-| `resolveTenantUsing()` | none | Tenant of a public request |
-| `locales()` | single language | Content languages and URL prefixes |
-| `sitemap()` / `robots()` | on | `sitemap.xml` and `robots.txt` |
-| `api()` | off | The JSON API (prefix, middleware) |
-| `previewLinkLifetime()` | 1440 minutes | How long preview links work |
-| `revisionsLimit()` | 50 | Revisions kept per page |
-| `draftChanges()` | on | Keep changes of published pages as a draft until published |
-| `livePreview()` | on, 1500 ms | Autosave and the live preview pane |
-| `review()` | on | The review workflow and who is notified |
-| `adminBar()` | off | The editing bar on public pages |
-| `templates()` / `templateLibrary()` | none / on | Page templates in code and in the panel |
-| `sections()` | on | Reusable sections |
-| `blockPreviews()` | off | Compact block previews in the editor |
-| `mediaLibrary()` | on when installed | Media library picker in image fields |
-| `redirects()` / `redirectOnPathChange()` / `redirectMiddleware()` | on | Redirect manager and behaviour |
-| `menus()` | on | Menu builder |
-| `authorize()` | policies | Decide every ability |
-| `pageResource()` / `menuResource()` / `redirectResource()` | built-in | Your own subclasses of the resources |
-| `navigationGroup()` / `navigationSort()` | Content | Navigation of the resources |
+| Method                                                            | Default                               | Description                                                   |
+| ----------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------- |
+| `siteName()`                                                      | `config('app.name')`                  | Site name in titles, Open Graph and the default header        |
+| `titleTemplate()`                                                 | `':title \| :site'`                   | Title of pages without a meta title                           |
+| `defaultOgImage()`                                                | none                                  | Sharing image of pages without one                            |
+| `modifySeoUsing()`                                                | none                                  | Change a page's SEO payload                                   |
+| `blocks()` / `withoutBlocks()` / `onlyBlocks()`                   | default blocks                        | The page builder's blocks                                     |
+| `embedHosts()`                                                    | none                                  | Extra `https` hosts for the embed block                       |
+| `formOptions()` / `formUsing()`                                   | none                                  | The form block hook                                           |
+| `disk()` / `directory()`                                          | `public` / `cms`                      | Where block and sharing images are stored                     |
+| `layouts()`                                                       | none                                  | Page layouts editors can pick                                 |
+| `publicRoutes()`                                                  | off                                   | Public pages, sitemap and robots (prefix, middleware, domain) |
+| `inertiaComponent()` / `rootView()`                               | `Alfakit/CmsPage` / your middleware's | How public pages render                                       |
+| `sharedMenus()`                                                   | `['main', 'footer']`                  | Menus sent with public pages                                  |
+| `resolveTenantUsing()`                                            | none                                  | Tenant of a public request                                    |
+| `locales()`                                                       | single language                       | Content languages and URL prefixes                            |
+| `sitemap()` / `robots()`                                          | on                                    | `sitemap.xml` and `robots.txt`                                |
+| `api()`                                                           | off                                   | The JSON API (prefix, middleware)                             |
+| `previewLinkLifetime()`                                           | 1440 minutes                          | How long preview links work                                   |
+| `revisionsLimit()`                                                | 50                                    | Revisions kept per page                                       |
+| `draftChanges()`                                                  | on                                    | Keep changes of published pages as a draft until published    |
+| `livePreview()`                                                   | on, 1500 ms                           | Autosave and the live preview pane                            |
+| `review()`                                                        | on                                    | The review workflow and who is notified                       |
+| `adminBar()`                                                      | off                                   | The editing bar on public pages                               |
+| `templates()` / `templateLibrary()`                               | none / on                             | Page templates in code and in the panel                       |
+| `sections()`                                                      | on                                    | Reusable sections                                             |
+| `blockPreviews()`                                                 | off                                   | Compact block previews in the editor                          |
+| `mediaLibrary()`                                                  | on when installed                     | Media library picker in image fields                          |
+| `redirects()` / `redirectOnPathChange()` / `redirectMiddleware()` | on                                    | Redirect manager and behaviour                                |
+| `menus()`                                                         | on                                    | Menu builder                                                  |
+| `authorize()`                                                     | policies                              | Decide every ability                                          |
+| `pageResource()` / `menuResource()` / `redirectResource()`        | built-in                              | Your own subclasses of the resources                          |
+| `navigationGroup()` / `navigationSort()`                          | Content                               | Navigation of the resources                                   |
 
 ## Security
 
@@ -645,7 +648,7 @@ The plugin ships its strings in every AlfaKit language under `alfakit-cms::cms`;
 
 ```bash
 php artisan vendor:publish --tag=alfakit-cms-translations
-````
+```
 
 ## "Powered by" credit
 

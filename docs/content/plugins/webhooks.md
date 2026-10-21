@@ -176,8 +176,10 @@ Route::post('/webhooks/alfakit', function (Request $request) {
     }
 
     return response()->noContent();
-})->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
+})->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class); // ValidateCsrfToken::class on Laravel 11 and 12
 ```
+
+The receiver is a `POST` from another server, so it must skip CSRF protection. Laravel 13's `web` group protects with `PreventRequestForgery`: excluding the older `VerifyCsrfToken` class there leaves the check on and every delivery gets a `419`. Alternatively list the path in `bootstrap/app.php`: `$middleware->preventRequestForgery(except: ['webhooks/alfakit'])` (Laravel 13) or `$middleware->validateCsrfTokens(except: ['webhooks/alfakit'])` (Laravel 11 and 12).
 
 When the receiver also has this package installed, `AlfaSix\AlfakitWebhooks\Support\Signature::verify($header, $body, $secret, tolerance: 300)` does the same check.
 
@@ -353,6 +355,7 @@ Extend the resource and register your class to change the form, the table or the
 
 ```php
 use AlfaSix\AlfakitWebhooks\Resources\WebhookEndpointResource;
+use AlfaSix\AlfakitWebhooks\WebhooksPlugin;
 
 class WebhookEndpoints extends WebhookEndpointResource
 {

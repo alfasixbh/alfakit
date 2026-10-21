@@ -32,6 +32,8 @@ composer require alfasix/alfakit-translations
 
 The package ships translations for Arabic, Chinese (Simplified), Dutch, French, German, Italian, Japanese, Persian, Portuguese (Brazil), Russian, Spanish and Turkish, and registers itself automatically. For any other language, see [Adding a language](adding-a-language).
 
+Form validation messages ("The slug field is required.") are Laravel's own and come from your app's `lang/{locale}/validation.php`. A fresh Laravel app only has English ones, so add the other languages' files, for example with [Laravel Lang](https://laravel-lang.com) (`composer require laravel-lang/common --dev` and `php artisan lang:add ar`). Field names in the messages use the fields' labels, so they follow the panel language once the labels are translated.
+
 ## Customise a locale
 
 Pass `Locale` objects when you need to change what is derived automatically:

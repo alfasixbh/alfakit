@@ -135,6 +135,16 @@ Select::make('city')
 
 Submitted values are validated on the server: a static list with `in`, a relationship against its query, and options from an API through the label lookup (a value it can't resolve is refused). With only `getSearchResultsUsing()` and no label lookup there is nothing to check against, so add a `rule()` yourself. Select also offers `optionsLimit()`, `preload()`, `loadingMessage()`, `noSearchResultsMessage()`, `searchPrompt()`, `disableOptionWhen()`, `descriptions()`, `icons()`, `colors()` and [create or edit option forms](field-actions).
 
+`disableOptionWhen()` takes a list of values, a closure returning one, or a closure asked for each option with `$value` and `$label`, as in Filament:
+
+```php
+Select::make('status')
+    ->options(['draft' => 'Draft', 'published' => 'Published', 'archived' => 'Archived'])
+    ->disableOptionWhen(fn (string $value): bool => $value === 'archived');
+```
+
+Disabled options are shown disabled and refused on submit, like unknown values, in `Select`, `Radio`, `CheckboxList` and `ToggleButtons`. A value the edited record already holds stays valid, so the record can still be saved after its option was disabled.
+
 More Select options:
 
 ```php
@@ -267,6 +277,13 @@ FileUpload::make('avatar')->avatar();
 ```
 
 Files are uploaded immediately to a temporary disk (`config('alfakit.uploads')`) and moved to the final disk when the form is submitted. `acceptedFileTypes()`, `preserveFilenames()`, `getUploadedFileNameForStorageUsing()`, `deleteRemovedFiles()`.
+
+`getUploadedFileNameForStorageUsing()` names the stored file (inside `directory()`). Its closure receives `$file` (the upload: `getClientOriginalName()`, `getClientOriginalExtension()`, `mimeType()`, `size()`, as in Filament), `$originalName` and `$extension` (the extension of the detected file type):
+
+```php
+FileUpload::make('attachment')
+    ->getUploadedFileNameForStorageUsing(fn ($file): string => now()->format('Ymd').'-'.$file->getClientOriginalName())
+```
 
 ```php
 FileUpload::make('attachments')->multiple()->minFiles(2)->maxFiles(5);

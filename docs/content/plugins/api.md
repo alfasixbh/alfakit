@@ -77,6 +77,7 @@ ApiPlugin::make()->resources([
 Or let the resource configure itself by implementing `ExposesApi`. Such resources are exposed on every panel that has the plugin, without being listed:
 
 ```php
+use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\AlfakitApi\Contracts\ExposesApi;
 use AlfaSix\AlfakitApi\ResourceApi;
 

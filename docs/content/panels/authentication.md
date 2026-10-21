@@ -44,7 +44,7 @@ Login attempts are rate limited (5 per minute per email + IP). Registration and 
 
 ## Invitation-only registration
 
-`->invitationOnlyRegistration(expiresAfterDays: 7)` turns registration on, but the page only opens from a signed invitation link for one email address (`$panel->inviteToRegister($email)` emails it, `$panel->getRegistrationInvitationUrl($email)` returns it). The address is read-only and checked again on submit; the sign-in page no longer links to registration. See [Build a customer portal](customer-portal#3-invitation-only-registration).
+`->invitationOnlyRegistration(expiresAfterDays: 7)` turns registration on, but the page only opens from a signed invitation link for one email address (`$panel->inviteToRegister($email)` emails it, `$panel->getRegistrationInvitationUrl($email)` returns it). The address is read-only and checked again on submit; the sign-in page no longer links to registration. See [Build a customer portal](customer-portal#3-invitation-only-registration-2-minutes).
 
 For your app's own users outside any panel, the [app auth kit](../standalone/auth-kit) offers the same pages (and an account page) in your app's layouts.
 
@@ -54,6 +54,7 @@ Implement `CanAccessPanel` on your user model. **Outside the `local` environment
 
 ```php
 use AlfaSix\Alfakit\Contracts\CanAccessPanel;
+use AlfaSix\Alfakit\Panel;
 
 class User extends Authenticatable implements CanAccessPanel
 {
@@ -188,6 +189,9 @@ Build your own form from the default fields, or change one of them:
 
 ```php
 use AlfaSix\Alfakit\Auth\Pages\EditProfile as BaseEditProfile;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
+use AlfaSix\Alfakit\Schemas\Components\Component;
+use AlfaSix\Alfakit\Schemas\Schema;
 
 class EditProfile extends BaseEditProfile
 {

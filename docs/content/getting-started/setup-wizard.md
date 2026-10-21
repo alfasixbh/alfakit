@@ -24,7 +24,7 @@ The default is a **minimal install**: every optional step defaults to _no_, no p
 4. **Users resource**: runs [`alfakit:users`](../resources/users), with a roles field when you chose roles.
 5. **AI providers** (optional): runs [`alfakit:ai-setup`](#ai-providers).
 6. **Realtime** (optional): runs [`alfakit:realtime`](#realtime).
-7. **First-party plugins**: installs the ones you pick with Composer, registers them on the panel provider and publishes their migrations.
+7. **First-party plugins** (optional): asks "Add first-party plugins now?" (default no; AlfaKit works without any). Answer yes to pick from the list (Space to tick, Enter to confirm); it installs them with Composer, registers them on the panel provider and publishes their migrations. Add more later with `php artisan alfakit:add`.
 8. **Branding**: writes the primary colour, logo and font to the panel provider (`->colors()`, `->brandLogo()`, `->font()`).
 9. **Demo data** (optional): writes `database/seeders/AlfakitDemoSeeder.php` (an admin and a dozen users) and seeds it. It never seeds in production.
 10. **Migrations**: asks once at the end when a step added migrations.
@@ -133,7 +133,7 @@ Live notifications over [Laravel Reverb](https://reverb.laravel.com):
 - installs `laravel/reverb` with Composer (asks first);
 - runs Laravel's `install:broadcasting --reverb` (the `routes/channels.php` file, `config/broadcasting.php`, the channels route in `bootstrap/app.php`) and `reverb:install` (`config/reverb.php`);
 - writes `BROADCAST_CONNECTION=reverb`, the `REVERB_*` keys and the `VITE_REVERB_*` keys Echo reads to `.env`, and empty ones to `.env.example`;
-- creates `resources/js/alfakit/echo.ts`, which sets up Laravel Echo as `window.Echo` in the browser only, and imports it first in the panel entry (`resources/js/alfakit/app.tsx` or `app.ts`; `resources/js/app.*` in starter-kit mode);
+- creates `resources/js/alfakit/echo.ts`, which sets up Laravel Echo as `window.Echo` in the browser only. The panel entry (`resources/js/alfakit/app.tsx` or `app.ts`) loads it when AlfaKit first needs Echo, with `createAlfakit({ echo: () => import('./echo').then((module) => module.default()) })`, so `laravel-echo` and `pusher-js` stay out of the entry's chunk (a static import there, with a second entry such as the CMS public site's `site.ts`, could leave every page blank). In starter-kit mode `resources/js/app.*` imports it. Running the command again (with `--force` for an `echo.ts` written by an earlier version) moves an existing `import './echo'` in the panel entry to that factory;
 - installs `laravel-echo` and `pusher-js` from npm (asks first), plus `@laravel/echo-react` or `@laravel/echo-vue` when `install:broadcasting` configured Echo in your app's own entry;
 - turns on `->realtimeNotifications()` on the panel (see [Realtime notifications](../notifications/overview#realtime-notifications)), and `->realtime()` when your AlfaKit version has it.
 

@@ -54,7 +54,7 @@ AddressFields::make()->hidden(fn (Get $get) => ! $get('ships_physically'));
 AddressFields::make()->columns(2)->columnSpanFull();
 ```
 
-`statePath()` nests the fields' state under a key, so two copies of the same fragment never collide; `relationship()` loads, validates and saves a related record exactly like [`Section::relationship()`](layout#relationships). Pass `--model=Post` to start from the fields inferred for a model.
+`statePath()` nests the fields' state under a key, so two copies of the same fragment never collide; `relationship()` loads, validates and saves a related record exactly like [`Section::relationship()`](layout#relationships). Pass `--model=Post` to start from the fields inferred for a model: the generator writes the same code as the resource generator's form (relationship selects, enum options, input types, imports), ready to edit.
 
 Fragments take constructor arguments through `make()`, so one class can serve variations:
 

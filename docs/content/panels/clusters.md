@@ -82,6 +82,7 @@ Return the record's pages from `getRecordSubNavigation()` on the resource:
 
 ```php
 use AlfaSix\Alfakit\Resources\Pages\Page;
+use AlfaSix\Alfakit\Resources\Resource;
 
 class CustomerResource extends Resource
 {

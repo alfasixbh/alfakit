@@ -87,6 +87,9 @@ class PurchaseButton
 The `#[Values]` attribute can't call `__()`, so translate value labels with a public `valueLabels()` method (static or not) that returns `value => label`; its labels win over the attribute's, and on its own it lists the values too. `values()` on the plugin also takes a closure per feature:
 
 ```php
+use AlfaSix\AlfakitFeatureFlags\Attributes\Values;
+use AlfaSix\AlfakitFeatureFlags\FeatureFlagsPlugin;
+
 #[Values(['blue', 'green'])]
 class PurchaseButton
 {
@@ -214,6 +217,9 @@ Only users the plugin authorises see it; the buttons need the `target` ability.
 ## Hiding pages, resources and actions
 
 ```php
+use AlfaSix\Alfakit\Actions\Action;
+use AlfaSix\Alfakit\Pages\Page;
+use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\AlfakitFeatureFlags\Concerns\FeatureFlagged;
 
 class Billing extends Page

@@ -118,6 +118,7 @@ The [Kanban](../plugins/kanban) and [calendar](../plugins/calendar) plugins ship
 or configured, in a service provider: `Alfakit::getStandalonePanel()->plugin(CalendarPlugin::make()->firstDay(1))`.
 
 ```php
+use AlfaSix\Alfakit\Facades\Alfakit;
 use AlfaSix\Alfakit\Standalone\Widgets;
 
 class TeamBoard extends Widgets

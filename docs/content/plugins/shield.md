@@ -111,6 +111,7 @@ The default resource prefixes are `view_any`, `view`, `create`, `update`, `delet
 A resource chooses its own prefixes by implementing `HasShieldPermissions`. Its list replaces the plugin's, so spread the defaults to add to them:
 
 ```php
+use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\AlfakitShield\Contracts\HasShieldPermissions;
 use AlfaSix\AlfakitShield\ShieldPlugin;
 
@@ -155,6 +156,8 @@ class User extends Authenticatable implements CanAccessPanel
 ## Pages and widgets
 
 ```php
+use AlfaSix\Alfakit\Pages\Page;
+use AlfaSix\Alfakit\Widgets\ChartWidget;
 use AlfaSix\AlfakitShield\Traits\HasPageShield;
 use AlfaSix\AlfakitShield\Traits\HasWidgetShield;
 

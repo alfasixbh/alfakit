@@ -142,6 +142,7 @@ With spatie/laravel-medialibrary (`alfasix/alfakit-media-library`), `toMediaColl
 ## Customising the page
 
 ```php
+use AlfaSix\AlfakitFileManager\FileManagerPlugin;
 use AlfaSix\AlfakitFileManager\Pages\FileManager;
 
 class Files extends FileManager

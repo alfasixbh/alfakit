@@ -206,6 +206,14 @@ import { HelpdeskChat } from '@alfakit/react' // or '@alfakit/vue', '@alfakit/sv
 | `label`          | `Open chat`     | The launcher's name before the server's texts arrive     |
 | `pollWhenClosed` | `true`          | Keep polling (slowly) while closed, for the unread badge |
 
+The widget's styles come with AlfaKit's standalone stylesheet. Starter-kit and standalone installs add it to `resources/css/app.css`; in a panel-mode app, whose own pages use that file, add it yourself, or the launcher renders unstyled in the page flow (see [Standalone components](../standalone/overview#five-minute-example)):
+
+```css
+/* resources/css/app.css */
+@import '@alfakit/react/standalone.css'; /* or @alfakit/vue, @alfakit/svelte */
+@source '../../node_modules/@alfakit/react/dist';
+```
+
 The widget works on any page (no `AlfakitRoot`), renders nothing on the server and loads the chat's code when it is first opened. It is a labelled dialog with a polite live log, closes with Escape (focus returns to the launcher), follows the page's direction (RTL) and uses texts translated on the server (`alfakit-helpdesk::helpdesk.chat`).
 
 A visitor's first message opens a ticket on the `chat` channel. Guests are recognised by an HTTP-only, SameSite=Lax cookie holding a signed token (`AccessToken`: ticket, random secret, HMAC; only a hash of the secret is stored); signed-in customers by their account. Starting chats and sending messages are rate limited (`rate_limits.chat_start`, `chat_message`), and the start request has a honeypot.

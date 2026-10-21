@@ -15,7 +15,7 @@ description: Registry overrides, classes, headings, custom layouts of the blocks
 @source '../../node_modules/@alfakit/react/dist';
 ```
 
-Override the status colours in your own `:root` / `.dark` (`--success`, `--warning`, `--info` and their `-foreground` variants). Text on solid danger buttons is white inside AlfaKit's components and the dialogs they open, because the Laravel starter kits set `--destructive-foreground` to the same red as `--destructive`; set `--alfakit-danger-foreground` to change it. Panel [themes and design options](../design/theming) do not apply outside panels, which is the point: the component looks like the page it sits in.
+Override the status colours in your own `:root` / `.dark` (`--success`, `--warning`, `--info` and their `-foreground` variants). Text on solid danger buttons is white inside AlfaKit's components and the dialogs they open, because the Laravel starter kits set `--destructive-foreground` to the same red as `--destructive`; set `--alfakit-danger-foreground` to change it. Panel [themes and design options](../design/themes) do not apply outside panels, which is the point: the component looks like the page it sits in.
 
 Every renderer emits the same hooks (`data-slot="standalone"`, `data-alfakit-component="App\…"`, `data-slot="page-header"`, `data-slot="form-block"`, `data-slot="table"`, …) and the `dir` attribute of the component's language, so you can target them from your CSS.
 

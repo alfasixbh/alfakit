@@ -15,7 +15,7 @@ What you get:
 | Prebuilt actions     | `SummarizeAction`, `TranslateAction`, `ExtractIntoFieldsAction`, `ClassifyAction` | Summaries, translations, "fill this form from an email or PDF", picking one value from a list                                                                        |
 | `->aiAssist()`       | `TextInput`, `Textarea`, `RichEditor`, `MarkdownEditor`                           | A writing assistant: generate, shorter, longer, friendlier, more formal, fix grammar, translate, continue. Suggestions only; the field changes when the user accepts |
 | `Table::aiFilters()` | Table header                                                                      | "Ask AI": a sentence becomes the table's own filters, search and sort, which stay visible and editable                                                               |
-| Copilot              | Topbar (`mod+j`)                                                                  | A chat that searches, reads, opens pages and proposes actions the user confirms                                                                                      |
+| Copilot              | Topbar (`mod+j`); starter kits: `<AlfakitCopilot />` in the app header            | A chat that searches, reads, opens pages and proposes actions the user confirms                                                                                      |
 | MCP server           | `/{panel}/mcp`                                                                    | Your resources as MCP tools for Claude Desktop, Cursor and other agents, behind a token                                                                              |
 | Usage                | `AI usage` resource                                                               | Every AI call with tokens, estimated cost, duration and status, with filters and totals                                                                              |
 
@@ -246,7 +246,7 @@ public static function table(Table $table): Table
 
 ## Copilot
 
-`->copilot()` adds a sparkle button to the topbar (and `mod+j`). The chat slide-over's code loads the first time it opens. The model has four tools, all running as the signed-in user:
+`->copilot()` adds a sparkle button to the topbar (and `mod+j`). The chat slide-over's code loads the first time it opens. A [starter kit](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header) panel has no AlfaKit top bar: `<AlfakitCopilot />` in the app header shows the same button and chat on every page of the app (the installer adds it; `php artisan alfakit:add ai` adds it to headers set up earlier). The model has four tools, all running as the signed-in user:
 
 - `search_records`: searches the resources' globally searchable attributes (or lists the latest records), keeping only records the user may view.
 - `read_record`: the fields the resource shows, redacted, and the record actions the user may run with the inputs they take.
@@ -254,6 +254,8 @@ public static function table(Table $table): Table
 - `propose_action`: shows a confirmation card. The action has **not** run: it runs when the user clicks "Confirm", after visibility, authorisation and the action's form validation are checked again. Actions that need password confirmation, links and bulk actions are never offered. `copilotActions()` narrows the list.
 
 Conversations are stored per user, panel and tenant; the history list, "new conversation" and delete are in the header. Each answer shows its token use (and the estimated cost with `pricing()`), and the panel shows "AI can make mistakes". Questions are rate limited per user (10 per minute by default). Every tool call, decision and result is written to `alfakit_ai_tool_calls`.
+
+Resources built on an API (`ApiResource`, records from a data source rather than an Eloquent query) are left out of the copilot's and the MCP server's tools.
 
 The copilot's endpoints are panel routes (`/{panel}/_ai/copilot/…`, under the tenant on tenancy panels) behind the panel's authentication and CSRF protection; they return 404 when the copilot is off and 403 when `authorize()` refuses.
 

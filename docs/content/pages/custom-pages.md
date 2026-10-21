@@ -121,7 +121,7 @@ To build an interactive screen (a point of sale, a board, a calendar) that calls
 
 ## Route parameters
 
-`mount(mixed ...$parameters)` receives route parameters (`static::$routePath = '/reports/{period}'`). Internal endpoints rebuild the page with the same parameters through the context token.
+`mount(mixed ...$parameters)` receives the route parameters in order (`static::$routePath = '/reports/{period}'` gives `$parameters[0]`). Internal endpoints rebuild the page with the same parameters through the context token. A page whose route needs parameters gets no navigation item (its URL can't be built without them); link to it with `Reports::getUrl(['period' => 'month'])`.
 
 ## Layout
 

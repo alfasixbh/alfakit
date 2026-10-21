@@ -148,9 +148,11 @@ RichEditor::make('content')->preventFileAttachmentTampering(false); // keep ever
 By default images are stored on `fileAttachmentsDisk()`. A `FileAttachmentProvider` stores them somewhere else (a media library, for example):
 
 ```php
+use AlfaSix\Alfakit\Forms\Components\RichEditor;
 use AlfaSix\Alfakit\Forms\Components\RichEditor\FileAttachmentProviders\Contracts\FileAttachmentProvider;
 use AlfaSix\Alfakit\Forms\Components\RichEditor\RichContentAttribute;
 use AlfaSix\Alfakit\Support\TemporaryUpload;
+use App\Models\Media; // your media library model
 
 class MediaAttachments implements FileAttachmentProvider
 {
@@ -185,7 +187,7 @@ AlfaKit content references an attachment by its URL, so the provider returns the
 RichEditor::make('content')->fileAttachmentsDisk('s3')->fileAttachmentsVisibility('private');
 ```
 
-A private file has no URL that works forever, so the saved content keeps the disk's plain `url()` and the editor swaps it for a `temporaryUrl()` when the form is filled, and back when it's saved. Temporary URLs are never stored. Temporary URLs live `config('alfakit.temporary_file_url_expiry_minutes')` (30) minutes, rounded up to the end of the hour so browsers can cache the images; `temporaryUrlExpiry(60)` changes it for one editor (`RichContentRenderer::fileAttachments(..., temporaryUrlExpiry: 60)` for rendering). Visibility defaults to `private` on a disk configured with `'visibility' => 'private'`. Only images the editor stored itself (in the attachments directory, on that disk) are swapped. The disk must support temporary URLs (S3, or a `local` disk with `'serve' => true`); otherwise the plain URL is kept.
+A private file has no URL that works forever, so the saved content keeps the disk's plain `url()` and the editor swaps it for a `temporaryUrl()` when the form is filled, and back when it's saved. Temporary URLs are never stored. Temporary URLs live `config('alfakit.temporary_file_url_expiry_minutes')` (30) minutes, rounded up to the end of the hour so browsers can cache the images; `temporaryUrlExpiry(60)` changes it for one editor (`RichContentRenderer::fileAttachments(..., temporaryUrlExpiry: 60)` for rendering). Visibility defaults to `private` on a disk configured with `'visibility' => 'private'`, and on a local disk without a public `url` (Laravel's default `local` disk), in the editor and in `RichContentRenderer` alike. Only images the editor stored itself (in the attachments directory, on that disk) are swapped. The disk must support temporary URLs (S3, or a `local` disk with `'serve' => true`); otherwise the plain URL is kept.
 
 To show the content elsewhere, give the renderer the same disk, directory and visibility (or configure them on the model, see [Rich content models](#rich-content-models)):
 
@@ -211,6 +213,7 @@ A custom block is a class extending `RichContentCustomBlock`. The editor stores 
 
 ```php
 use AlfaSix\Alfakit\Actions\Action;
+use AlfaSix\Alfakit\Forms\Components\RichEditor;
 use AlfaSix\Alfakit\Forms\Components\RichEditor\RichContentCustomBlock;
 use AlfaSix\Alfakit\Forms\Components\TextInput;
 
@@ -360,8 +363,11 @@ HTML stored by a RichEditor is never trusted: anyone who can submit the form can
 Configure an attribute's rich content once on the model. Every `RichEditor::make('content')` on a form for that model uses it for the settings it doesn't set itself, and the model renders it:
 
 ```php
+use AlfaSix\Alfakit\Forms\Components\RichEditor\MentionProvider;
 use AlfaSix\Alfakit\Forms\Components\RichEditor\Models\Concerns\InteractsWithRichContent;
 use AlfaSix\Alfakit\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
+use App\Alfakit\Forms\Components\RichEditor\RichContentCustomBlocks\HeroBlock;
+use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model implements HasRichContent
 {

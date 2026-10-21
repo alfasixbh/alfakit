@@ -68,7 +68,7 @@ The field's state is the list of the record's media UUIDs in the collection, in 
 
 All of this runs inside the page's database transaction, so a failing upload (for example a file the collection doesn't accept) rolls back the record and shows a validation error on the field. Only media of the record's own collection can be submitted back: a UUID of someone else's media is rejected like any tampered file path.
 
-Every `FileUpload` option works: `multiple()`, `reorderable()`, `image()`, `acceptedFileTypes()`, `maxSize()`, `maxFiles()`, `imageEditor()`, `downloadable()`, `openable()`, `preserveFilenames()`, `getUploadedFileNameForStorageUsing()` and so on. These options are added:
+Every `FileUpload` option works: `multiple()`, `reorderable()`, `image()`, `acceptedFileTypes()`, `maxSize()`, `maxFiles()`, `imageEditor()`, `downloadable()`, `openable()`, `preserveFilenames()`, `getUploadedFileNameForStorageUsing()` (its closure receives `$file`, `$originalName` and `$extension`, see [File upload](../forms/fields#fileupload)) and so on. These options are added:
 
 | Method                                   | Description                                                                                                              |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -76,7 +76,7 @@ Every `FileUpload` option works: `multiple()`, `reorderable()`, `image()`, `acce
 | `conversion(string\|Closure\|null)`      | The conversion shown in the preview, once generated (the original is shown until then).                                  |
 | `conversionsDisk(string\|Closure\|null)` | Store conversions on this disk (`storingConversionsOnDisk()`).                                                           |
 | `customProperties(array\|Closure\|null)` | Custom properties of new media. A closure receives the upload as `$file`.                                                |
-| `manipulations(array\|Closure\|null)`    | Manipulations per conversion, `['thumb' => ['orientation' => '90']]`.                                                    |
+| `manipulations(array\|Closure\|null)`    | Manipulations per conversion: spatie/image method => its arguments as a list, `['thumb' => ['blur' => [10]]]`.           |
 | `properties(array\|Closure\|null)`       | Attributes set on new media models (`withProperties()`).                                                                 |
 | `customHeaders(array\|Closure\|null)`    | Headers for remote disks, `['CacheControl' => 'max-age=86400']`.                                                         |
 | `mediaName(string\|Closure\|null)`       | The media `name`. Default: the original file name without its extension. A closure receives `$file` and `$originalName`. |

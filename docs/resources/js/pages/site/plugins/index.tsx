@@ -250,7 +250,7 @@ function RunLocally() {
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                     <Button asChild variant="outline">
-                        <Link href="/docs/getting-started/bundles#content-a-local-playground">
+                        <Link href="/docs/getting-started/bundles#a-local-playground">
                             <Play aria-hidden="true" /> Playground guide
                         </Link>
                     </Button>

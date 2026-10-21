@@ -8,6 +8,7 @@ description: How AlfaKit renders Arabic, Hebrew, Persian, Urdu and other right-t
 When the current language is written right to left, the whole panel mirrors. You don't configure anything for this:
 
 - `<html dir="rtl" lang="…">` is set on the first load and updated after every navigation, including a language switch.
+- Inside a [starter kit](../getting-started/starter-kits) the document belongs to your app: AlfaKit never sets `<html dir>` there. Its content area (`data-slot="starter-kit-root"`), its modals, slide-overs, menus and toasts, the header components and the widgets on your `/dashboard` mirror; the kit's own sidebar, header and pages keep their direction.
 - The sidebar docks on the right, menus open towards the reading start, and arrows such as pagination, breadcrumbs and submenus point the right way.
 - Radix (React) and Reka UI (Vue) primitives receive the direction, so keyboard navigation in menus, selects and tabs follows it. Bits UI (Svelte) supports this for menus and scroll areas. Its selects, tabs and calendar mirror visually, but their left and right arrow keys are not flipped yet.
 - Tables, forms, the date picker, charts (reversed x axis, legends and tooltips) and toasts mirror as well.

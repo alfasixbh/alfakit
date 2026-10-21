@@ -88,12 +88,26 @@ class Project extends Model
 
 That's it: register, and you land in your personal team. Open the tenant menu for **Members**, **Team settings** and **Create team**.
 
+### In a starter kit app
+
+In an app made from a Laravel starter kit (`alfakit:setup --mode=starter-kit`), keep `/admin` for staff and put the team workspace on a second `starterKit()` panel:
+
+```bash
+php artisan make:alfakit-panel app
+php artisan alfakit:add teams --panel=app
+```
+
+Then add `->starterKit()` (and `->databaseNotifications()`) to `AppPanelProvider`, without `->login()` or `->registration()`: the app's own sign-in is used. `alfakit:add teams` adds `<AlfakitTenantSwitcher />` to the app header block the installer wrote (`alfakit:header`; add it yourself next to `<AlfakitSearch />` if you removed the block). It is the way to **Members**, **Team settings** and **Create team**:
+
+- on the team panel's pages (`/app/{team}/…`) the header components and `useAlfakitNavigation()` (the `AlfakitNav` sidebar) follow that panel, so the sidebar lists the team's navigation (and **Members** with `membersNavigation()`);
+- on the app's own pages and the admin panel's, `<AlfakitTenantSwitcher />` lists the user's teams from the first panel with tenancy, while the sidebar keeps the first panel's navigation. Pass `panel="app"` (or `useAlfakitNavigation('app')`) to pin a component to one panel.
+
 ## What the plugin configures
 
 `TeamsPlugin::make()` calls, on the panel:
 
 - `tenant(Team::class, slugAttribute: 'slug', ownershipRelationship: 'team')`. Use `->configureTenancy(false)` to keep your own `tenant()` call (it must use the team model) and `->ownershipRelationship('organisation')` to rename the relationship.
-- `tenantRegistration(CreateTeam::class)` and `tenantProfile(TeamSettings::class)`.
+- `tenantRegistration(CreateTeam::class)` and `tenantProfile(TeamSettings::class)`. Subclasses of those pages go in `createTeamPage()` / `settingsPage()`; to keep pages of your own (a panel that had tenancy before the plugin), call `->tenantRegistration(...)` / `->tenantProfile(...)` after `->plugin(TeamsPlugin::make())`, because the plugin sets them when it is registered.
 - `pages([TeamMembers::class, TeamInvitations::class])` at `/{team}/team/members` and `/{team}/team/invitations`.
 - A guest-reachable, signed route `/team-invitations/{invitation}` for the accept page.
 - "Members" at the top of the tenant menu; "Create team" and "Team settings" labels. Your own `tenantMenuItems()` are kept (the plugin only fills the `register` and `profile` keys you didn't set).
@@ -298,7 +312,9 @@ All live in `AlfaSix\AlfakitTeams\Events`.
 Extend a page and register your class:
 
 ```php
+use AlfaSix\Alfakit\Tables\Table;
 use AlfaSix\AlfakitTeams\Pages\TeamMembers;
+use AlfaSix\AlfakitTeams\TeamsPlugin;
 
 class Members extends TeamMembers
 {

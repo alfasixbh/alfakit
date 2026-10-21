@@ -61,7 +61,7 @@ Store it in a JSON column with an `array` cast. When the form is filled, items w
     Block::make('heading')->label(fn (?array $state): string => $state === null ? 'Heading' : ($state['content'] ?? 'Untitled heading'))
     ```
 
-- `summary()` — a one-line, plain-text summary shown after the label in the item header, most useful when items are collapsed. A string, or a closure receiving the item's `$state` (also as `$data`) and `$index`; HTML is stripped, whitespace collapsed and the text cut at 160 characters. It is computed on the server when the form is sent, and shown in its own text direction, so an English heading reads correctly in an Arabic panel:
+- `summary()` — a one-line, plain-text summary shown after the label in the item header, most useful when items are collapsed. A string, or a closure receiving the item's `$state` (also as `$data`) and `$index`; HTML is stripped, whitespace collapsed and the text cut at 160 characters. It is computed on the server when the form is sent (and again when an item is collapsed, so it follows the edits), and shown in its own text direction, so an English heading reads correctly in an Arabic panel:
 
     ```php
     Block::make('faq')

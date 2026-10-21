@@ -48,7 +48,7 @@ class Documentation
 
         $path = $this->path($slug);
 
-        return Cache::remember('docs.v2.'.$slug.'.'.filemtime($path).'.'.md5(self::demoUrl()), now()->addDay(), function () use ($slug, $path): array {
+        return Cache::remember('docs.v3.'.$slug.'.'.filemtime($path).'.'.md5(self::demoUrl()), now()->addDay(), function () use ($slug, $path): array {
             $markdown = self::withDemoUrl(File::get($path));
             $examples = app(Examples::class);
             $result = $this->converter()->convert($examples->toPlaceholders($markdown));
@@ -126,28 +126,40 @@ class Documentation
         }
 
         $results = [];
+        $order = 0;
 
         foreach ($this->sidebar() as $section) {
             foreach ($section['items'] as $item) {
-                $content = Str::lower(strip_tags(File::get($this->path($item['slug']))));
+                $markdown = (string) preg_replace('/\A---\R.*?\R---\R/s', '', File::get($this->path($item['slug'])));
+                $content = Str::lower(strip_tags($markdown));
                 $position = strpos($content, $query);
+                $inTitle = str_contains(Str::lower($item['title']), $query);
 
-                if ($position === false && ! str_contains(Str::lower($item['title']), $query)) {
+                if ($position === false && ! $inTitle) {
                     continue;
                 }
 
-                $start = max(0, ($position ?: 0) - 60);
+                // Pages named after the term first, then pages with a heading for it, then
+                // the pages that mention it most; ties keep the sidebar order.
+                $inHeading = preg_match('/^#{1,6} [^\n]*'.preg_quote($query, '/').'/mi', $markdown) === 1;
+                $score = ($inTitle ? 1000 : 0) + ($inHeading ? 100 : 0) + min(99, substr_count($content, $query));
+                $headingPosition = $inHeading && preg_match('/^#{1,6} [^\n]*'.preg_quote($query, '/').'/mi', $content, $match, PREG_OFFSET_CAPTURE) === 1 ? $match[0][1] : null;
+                $start = max(0, ($headingPosition ?? $position ?: 0) - 60);
 
                 $results[] = [
                     'slug' => $item['slug'],
                     'title' => $item['title'],
                     'section' => $section['label'],
                     'excerpt' => trim(Str::substr($content, $start, 160)),
+                    'score' => $score,
+                    'order' => $order++,
                 ];
             }
         }
 
-        return array_slice($results, 0, 12);
+        usort($results, static fn (array $a, array $b): int => [$b['score'], $a['order']] <=> [$a['score'], $b['order']]);
+
+        return array_map(static fn (array $result): array => array_diff_key($result, ['score' => true, 'order' => true]), array_slice($results, 0, 12));
     }
 
     protected function path(string $slug): string
@@ -163,7 +175,8 @@ class Documentation
     protected function converter(): MarkdownConverter
     {
         $environment = new Environment([
-            'heading_permalink' => ['symbol' => '#', 'insert' => 'after', 'html_class' => 'heading-anchor', 'aria_hidden' => true],
+            // No id prefix: links in the docs (`setup-wizard#ai-providers`) point at the plain heading slug.
+            'heading_permalink' => ['symbol' => '#', 'insert' => 'after', 'html_class' => 'heading-anchor', 'aria_hidden' => true, 'id_prefix' => '', 'fragment_prefix' => ''],
         ]);
 
         $environment->addExtension(new CommonMarkCoreExtension);

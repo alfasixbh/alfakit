@@ -32,7 +32,7 @@ The command:
 | `resources/js/pages/auth/alfakit.tsx` (`auth/Alfakit.vue`, `.svelte`)         | The guest pages: sign-in, registration, password reset, verification, two-step verification |
 | `resources/js/pages/settings/alfakit.tsx` (`settings/Alfakit.vue`, `.svelte`) | The account page                                                                            |
 
-In a Laravel starter kit app, `auth/*` pages are laid out in the kit's `AuthLayout` and `settings/*` pages in its settings layout, so the generated pages contain nothing but `<AlfakitComponent>`. Without a starter kit they bring a simple centred layout of their own; edit them freely.
+In a Laravel starter kit app, `auth/*` pages are laid out in the kit's `AuthLayout` and `settings/*` pages in its settings layout, so the generated pages contain nothing but `<AlfakitComponent>`. Without a starter kit they bring a simple centred layout of their own; edit them freely. The app needs an Inertia frontend of its own either way (`@inertiajs/react`, `@inertiajs/vue3` or `@inertiajs/svelte` in `package.json`, its Inertia middleware and root view, `createInertiaApp()` resolving `resources/js/pages`): in an app without one the command stops and says so. A panel installed with `alfakit:install --scaffold` brings its own frontend, not the app's.
 
 Options: `--adapter=react|vue|svelte` (detected from `package.json`), `--prefix=account` (every route under `/account`), `--home=/dashboard` (where users go after signing in), `--mfa` (turn on two-step verification and write the migration for its columns), `--fortify` / `--no-fortify` (see [Laravel Fortify](#laravel-fortify)), `--force`. Running it again only adds what is missing.
 
@@ -78,21 +78,21 @@ public function boot(): void
 
 The auth kit is a hidden panel (`AuthKitPanel`, id `auth-kit`): every panel option that is about authentication works the same way here.
 
-| Option                                                                                                      | Default                            | What it does                                                                                                |
-| ----------------------------------------------------------------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `inertiaPages(guest:, account:)`                                                                            | `auth/alfakit`, `settings/alfakit` | The app's two Inertia pages                                                                                 |
-| `homeUrl()`                                                                                                 | `dashboard` route, or `/`          | Where users go after signing in, registering or verifying                                                   |
-| `login(false)`, `registration(false)`, `passwordReset(false)`, `emailVerification(false)`, `profile(false)` | on                                 | Turn a page (and its routes) off; `profile(false)` removes the account page                                 |
-| `invitationOnlyRegistration(expiresAfterDays: 7)`                                                           | off                                | Only invited addresses can register ([invitations](../panels/customer-portal#invitation-only-registration)) |
-| `multiFactorAuthentication([...], isRequired: false)`                                                       | off                                | Two-step verification ([providers](../panels/multi-factor-authentication))                                  |
-| `multiFactorAuthenticationRememberDevice(30)`                                                               | off                                | "Trust this device" on the challenge page                                                                   |
-| `emailChangeVerification()`                                                                                 | off                                | A new email address only replaces the old one once confirmed                                                |
-| `sessions(false)`                                                                                           | on                                 | The browser sessions section (listing needs the `database` session driver)                                  |
-| `accountDeletion(false)` / `accountDeletion(using: fn (User $user) => ...)`                                 | on                                 | The "Delete account" section, and how the user is deleted                                                   |
-| `authGuard()`, `authPasswordBroker()`, `revealablePasswords(false)`                                         | `web`, default broker, revealable  | As for panels                                                                                               |
-| `locales([...])`, `detectBrowserLocale()`                                                                   | the app's locale                   | Let the auth kit pick the user's language itself                                                            |
-| `fortify()`                                                                                                 | off                                | Use Laravel Fortify's backend ([below](#laravel-fortify))                                                   |
-| `components(['login' => MyLogin::class])`                                                                   |                                    | Replace a page or account section ([customizing](#customizing))                                             |
+| Option                                                                                                      | Default                            | What it does                                                                                                            |
+| ----------------------------------------------------------------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `inertiaPages(guest:, account:)`                                                                            | `auth/alfakit`, `settings/alfakit` | The app's two Inertia pages                                                                                             |
+| `homeUrl()`                                                                                                 | `dashboard` route, or `/`          | Where users go after signing in, registering or verifying                                                               |
+| `login(false)`, `registration(false)`, `passwordReset(false)`, `emailVerification(false)`, `profile(false)` | on                                 | Turn a page (and its routes) off; `profile(false)` removes the account page                                             |
+| `invitationOnlyRegistration(expiresAfterDays: 7)`                                                           | off                                | Only invited addresses can register ([invitations](../panels/customer-portal#3-invitation-only-registration-2-minutes)) |
+| `multiFactorAuthentication([...], isRequired: false)`                                                       | off                                | Two-step verification ([providers](../panels/multi-factor-authentication))                                              |
+| `multiFactorAuthenticationRememberDevice(30)`                                                               | off                                | "Trust this device" on the challenge page                                                                               |
+| `emailChangeVerification()`                                                                                 | off                                | A new email address only replaces the old one once confirmed                                                            |
+| `sessions(false)`                                                                                           | on                                 | The browser sessions section (listing needs the `database` session driver)                                              |
+| `accountDeletion(false)` / `accountDeletion(using: fn (User $user) => ...)`                                 | on                                 | The "Delete account" section, and how the user is deleted                                                               |
+| `authGuard()`, `authPasswordBroker()`, `revealablePasswords(false)`                                         | `web`, default broker, revealable  | As for panels                                                                                                           |
+| `locales([...])`, `detectBrowserLocale()`                                                                   | the app's locale                   | Let the auth kit pick the user's language itself                                                                        |
+| `fortify()`                                                                                                 | off                                | Use Laravel Fortify's backend ([below](#laravel-fortify))                                                               |
+| `components(['login' => MyLogin::class])`                                                                   |                                    | Replace a page or account section ([customizing](#customizing))                                                         |
 
 Users need the usual columns and contracts: `MustVerifyEmail` for email verification, and for two-step verification `HasAppAuthentication`, `HasAppAuthenticationRecovery` and `HasEmailAuthentication` with their `InteractsWith…` traits and columns (`alfakit:auth --mfa` writes the migration). To force every user to set up a second factor, pass `isRequired: true` and add `EnsureMultiFactorAuthenticationIsSetUp::class.':auth-kit'` to the routes that need it: users without one are sent to the account page.
 
@@ -206,7 +206,7 @@ In an app that uses [Laravel Fortify](https://laravel.com/docs/fortify) (every L
 
 Whenever Fortify is installed (with or without its backend), the command sets `'views' => false` in `config/fortify.php`: Fortify keeps its POST routes and actions, the pages (and the `login`, `register`, `password.request`… route names) become AlfaKit's, so no route name is registered twice (Wayfinder's generated route files would not build). Fortify registers its email verification link (`/email/verify/{id}/{hash}`) even with its views off; the auth kit takes over that URI for `verification.verify` instead of `/verify-email/{id}/{hash}`. Remove the starter kit's own auth pages and `Fortify::loginView()` callbacks you no longer use. Fortify's passkeys and two-factor settings page stay as they are.
 
-To keep the starter kit's sign-in and add only the account page, register the auth kit under a prefix and name prefix: `->routeOptions(prefix: 'account', as: 'account.')->login(false)->registration(false)->passwordReset(false)`.
+To keep the starter kit's sign-in and add only the account page, register the auth kit under a prefix and name prefix: `->routeOptions(prefix: 'account', as: 'account.')->login(false)->registration(false)->passwordReset(false)->emailVerification(false)`, and set `'views' => true` in `config/fortify.php` again (`alfakit:auth` turned it off): Fortify's views are the starter kit's sign-in, registration and password reset pages, and without them there is no `GET /login` and the kit's Wayfinder build fails (`"login" is not exported`). The account page is then `/account/account` (`route('account.account')`).
 
 ## Customizing
 
@@ -250,10 +250,11 @@ Keys: `login`, `register`, `forgot-password`, `reset-password`, `verify-email`, 
 
 ```php
 use AlfaSix\Alfakit\AuthKit\Pages\Login;
+use AlfaSix\Alfakit\Testing\PageTester;
 
 it('signs in', function () {
     $user = User::factory()->create();
-    $token = $this->get('/login', ['X-Inertia' => 'true'])->json('props.component.token');
+    $token = $this->get('/login', PageTester::inertiaHeaders())->json('props.component.token');
 
     $this->postJson('/_alfakit/auth/actions', [
         'token' => $token,

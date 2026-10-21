@@ -127,6 +127,7 @@ The slide-over contains a `CommentsEntry` for the action's record and updates in
 ## Polling widget
 
 ```php
+use AlfaSix\Alfakit\Resources\Pages\EditRecord;
 use AlfaSix\AlfakitComments\Widgets\CommentsWidget;
 
 class EditTicket extends EditRecord

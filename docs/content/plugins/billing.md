@@ -67,7 +67,7 @@ This:
 
 - sets the provider as the panel's `tenantBillingProvider()` (and `requiresSubscription()` as `requiresTenantSubscription()`) on tenancy panels, which adds the `/{tenant}/billing` route and a **Billing** entry to the tenant menu (customise it with the `billing` key of `tenantMenuItems()`);
 - registers the plans page at `/{tenant}/billing/plans` (`/billing/plans` without tenancy);
-- on panels without tenancy, registers `/billing` and adds a **Billing** entry to the user menu;
+- on panels without tenancy, registers `/billing` and adds a **Billing** entry to the user menu. In [starter-kit mode](../getting-started/starter-kits) your app owns the user menu, so the entry isn't shown: link to `route('alfakit.{panel}.billing')` (for example `route('alfakit.admin.billing')`) from your own menu;
 - with `requiresSubscription()`, sends customers without an active subscription to the plans page.
 
 ### The billing route

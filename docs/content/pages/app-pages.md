@@ -22,8 +22,12 @@ The rule from the rest of AlfaKit still holds: business logic, validation, price
 ## The toolkit at a glance
 
 ```php
+use AlfaSix\Alfakit\Forms\Components\Textarea;
+use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Pages\Attributes\Expose;
 use AlfaSix\Alfakit\Pages\Page;
+use AlfaSix\Alfakit\Schemas\Schema;
+use App\Models\Order;
 
 class Board extends Page
 {
@@ -33,6 +37,11 @@ class Board extends Page
     protected function getViewData(): array                // the component's props
     {
         return ['columns' => $this->columns()];
+    }
+
+    protected function columns(): array                    // your own query
+    {
+        return Order::query()->get()->groupBy('status')->all();
     }
 
     #[Expose(rules: ['order' => 'required|integer', 'status' => 'required|string'])]
@@ -293,7 +302,9 @@ useShortcut('f2', () => void charge(), { allowInInputs: true })
 Call exposed methods like the browser does: get the page's token, then post to the endpoint.
 
 ```php
-$token = $this->get('/admin/pos', ['X-Inertia' => 'true', 'X-Inertia-Version' => $version])->json('props.page.token');
+use AlfaSix\Alfakit\Testing\PageTester;
+
+$token = $this->get('/admin/pos', PageTester::inertiaHeaders())->json('props.page.token');
 
 $this->postJson('/admin/_alfakit/pages/call', [
     'token' => $token,

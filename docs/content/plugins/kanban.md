@@ -37,6 +37,9 @@ Schema::table('tasks', function (Blueprint $table): void {
 `KanbanPage` is a resource page. Register it in the resource's pages, as the index or next to the table:
 
 ```php
+use AlfaSix\Alfakit\Forms\Components\DatePicker;
+use AlfaSix\Alfakit\Forms\Components\Select;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
 use AlfaSix\AlfakitKanban\Pages\KanbanPage;
 
 class TaskBoard extends KanbanPage
@@ -61,6 +64,9 @@ class TaskBoard extends KanbanPage
     }
 }
 
+```
+
+```php
 // TaskResource
 public static function getPages(): array
 {
@@ -81,6 +87,9 @@ The page is titled after the board, "Tasks board" (the resource's plural model l
 
 ```php
 use AlfaSix\AlfakitKanban\Widgets\KanbanWidget;
+use App\Enums\TicketStatus;
+use App\Models\Ticket;
+use Illuminate\Database\Eloquent\Builder;
 
 class SupportBoard extends KanbanWidget
 {
@@ -106,6 +115,10 @@ Columns come from one of three sources.
 **A backed enum.** Each case is a column, with the label, colour, icon and description of `HasLabel`, `HasColor`, `HasIcon` and `HasDescription`:
 
 ```php
+use AlfaSix\Alfakit\Support\Contracts\HasColor;
+use AlfaSix\Alfakit\Support\Contracts\HasIcon;
+use AlfaSix\Alfakit\Support\Contracts\HasLabel;
+
 enum TaskStatus: string implements HasColor, HasIcon, HasLabel
 {
     case Todo = 'todo';
@@ -117,6 +130,10 @@ enum TaskStatus: string implements HasColor, HasIcon, HasLabel
     public function getIcon(): string { return match ($this) { self::Done => 'circle-check', default => 'circle' }; }
 }
 
+```
+
+```php
+// TaskBoard
 protected static ?string $statusEnum = TaskStatus::class;
 protected static string $statusAttribute = 'status';
 ```
@@ -392,7 +409,9 @@ PHP strings live in the `alfakit-kanban::kanban` group (`validation.*`, `lanes.n
 Moves and fetches are actions of the board (`kanban` on a page, `widget:<id>` on a widget):
 
 ```php
-$token = $this->get('/admin/tasks/board', ['X-Inertia' => 'true'])->json('props.page.token');
+use AlfaSix\Alfakit\Testing\PageTester;
+
+$token = $this->get('/admin/tasks/board', PageTester::inertiaHeaders())->json('props.page.token');
 
 $this->postJson('/admin/_alfakit/actions', [
     'token' => $token,

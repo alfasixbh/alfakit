@@ -235,6 +235,7 @@ The translations, the navigation, the endpoints, the localization, the command p
 ## Custom page options
 
 ```php
+use AlfaSix\Alfakit\Pages\Page;
 use AlfaSix\Alfakit\Support\Enums\Alignment;
 
 class Settings extends Page

@@ -5,7 +5,7 @@ description: 'Install a curated set of first-party plugins with one command: Saa
 
 # Plugin bundles
 
-A bundle is a set of first-party plugins that belong together. `alfakit:setup --bundle=<name>` installs each of them exactly like [`alfakit:add`](setup-wizard#content-adding-and-removing-plugins) does (Composer after a confirmation, the registration on your panel provider, the plugin's migrations), and chains a sensible default onto each registration: a navigation group, so a bundle lands tidy in the sidebar.
+A bundle is a set of first-party plugins that belong together. `alfakit:setup --bundle=<name>` installs each of them exactly like [`alfakit:add`](setup-wizard#adding-and-removing-plugins) does (Composer after a confirmation, the registration on your panel provider, the plugin's migrations), and chains a sensible default onto each registration: a navigation group, so a bundle lands tidy in the sidebar.
 
 ```bash
 php artisan alfakit:setup --bundle=saas
@@ -34,6 +34,7 @@ php artisan alfakit:setup --bundle=saas
 ```
 
 - **Migrations**: each plugin's migrations are published (and the migrations of the spatie package it builds on); `--migrate` runs them without asking.
+- **Teams**: the `saas` bundle (and `all`) registers Teams on the panel you install into, which turns that panel into a team workspace: its pages move under a team URL (`/admin/{team}/…`) and its resources are scoped to the current team. The summary says so. The [Teams](../plugins/teams) docs put it on a panel of its own (`app`); to keep `/admin` without teams, run `php artisan make:alfakit-panel app`, `php artisan alfakit:add teams --panel=app`, then `php artisan alfakit:remove teams --panel=admin` (the package stays while the `app` panel uses it).
 - **Roles**: the `saas` bundle includes Shield, so the wizard also runs `alfakit-shield:install` and adds `HasRoles` to your user model, as `--roles` does.
 - **Notes**: what is left to do (keys for Cashier, a scheduler entry, a page to publish) is listed in the summary.
 

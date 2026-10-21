@@ -87,7 +87,7 @@ const NUMBERS = [
     { value: '9', label: 'Column types', detail: 'Text, image, toggle, select…' },
     { value: '6', label: 'Themes', detail: 'Structure, not only colour' },
     { value: '13', label: 'Languages', detail: 'Right to left included' },
-    { value: '21', label: 'Generators', detail: 'make:alfakit-* commands' },
+    { value: '24', label: 'Generators', detail: 'make:alfakit-* commands' },
 ]
 
 // Medians of 20 runs on one machine against Filament v5.10 with the same 10,000-row data set,

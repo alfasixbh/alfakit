@@ -30,6 +30,10 @@ ModalTableSelect::make('category_id')
 ```
 
 ```php
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Filters\TernaryFilter;
+use AlfaSix\Alfakit\Tables\Table;
+
 class CategoriesTable
 {
     public static function configure(Table $table): Table

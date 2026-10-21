@@ -48,7 +48,7 @@ it('lists, searches and deletes', function () {
         ->assertCanNotSeeTableRecords($posts->skip(1))
         ->searchTable()
         ->sortTable('title', 'desc')
-        ->filterTable('is_published', true)
+        ->filterTable('status', 'published')
         ->resetTableFilters()
         ->callTableAction(DeleteAction::class, $posts->first())
         ->assertCanNotSeeTableRecords([$posts->first()])
@@ -117,27 +117,29 @@ it('stars a post from the form', function (): void {
 ## Raw requests
 
 ```php
+use AlfaSix\Alfakit\Testing\PageTester;
+
 use function Pest\Laravel\{actingAs, get, post};
 
 it('creates a post', function () {
     $user = User::factory()->create();
 
-    $page = actingAs($user)->get('/admin/posts/create', ['X-Inertia' => 'true', 'X-Inertia-Version' => ''])->json('props.page');
+    $page = actingAs($user)->get('/admin/posts/create', PageTester::inertiaHeaders())->json('props.page');
 
     expect($page['content'][0]['type'])->toBe('Form');
 
     post('/admin/_alfakit/actions', [
         'token' => $page['token'],
         'action' => 'create',
-        'data' => ['title' => 'Hello', 'slug' => 'hello'],
-    ], ['X-Inertia' => 'true', 'X-Inertia-Version' => '', 'Accept' => 'application/json'])
+        'data' => ['title' => 'Hello', 'slug' => 'hello', 'status' => 'draft', 'author_id' => $user->id],
+    ], [...PageTester::inertiaHeaders(), 'Accept' => 'application/json'])
         ->assertRedirect();
 
     expect(Post::where('slug', 'hello')->exists())->toBeTrue();
 });
 ```
 
-Validation failures return `422` with `errors` keyed by state path. Table state is tested through query strings (`/admin/posts?search=hello&sort=title`). Use `withoutVite()` in tests that render the Blade root view.
+Validation failures return `422` with `errors` keyed by state path. Table state is tested through query strings (`/admin/posts?search=hello&sort=title`). Use `withoutVite()` in tests that render the Blade root view. `PageTester::inertiaHeaders()` gives the `X-Inertia` headers with the app's asset version: once the app has a Vite build, a request with another (or an empty) `X-Inertia-Version` answers `409`.
 
 ## Unit-testing schemas
 

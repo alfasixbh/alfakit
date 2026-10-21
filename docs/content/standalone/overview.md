@@ -21,7 +21,7 @@ Use a [panel](../panels/configuration) when you want navigation, resources with 
 
 ## Five-minute example
 
-Install the styles once (or run `php artisan alfakit:install --standalone` in an app without a panel, which does these steps and creates this example):
+Install the styles once (or run `php artisan alfakit:install --standalone` in an app without a panel, which does these steps and creates this example). Standalone components need an Inertia app with shadcn tokens, such as a Laravel starter kit; in an app without an Inertia frontend of its own (the adapter package, the Inertia middleware's root view) the command stops and points you to a starter kit or a panel (`alfakit:install --scaffold`):
 
 ```css
 /* resources/css/app.css */

@@ -23,6 +23,7 @@ The tenant menu takes the same entries as the [user menu](navigation#user-menu):
 
 ```php
 use AlfaSix\Alfakit\Contracts\HasTenants;
+use AlfaSix\Alfakit\Panel;
 
 class User extends Authenticatable implements HasTenants
 {
@@ -63,7 +64,7 @@ public function boot(): void
 }
 ```
 
-Relationship `Select`, `CheckboxList`, `SelectFilter`, `AttachAction` and `AssociateAction` options are limited to the current tenant for models that have the ownership relationship, and so are the values they accept. `unique()` and `exists()` rules on tenant-owned tables add the tenant column. Models without the relationship (countries, currencies…) are shared. Use `AlfaSix\Alfakit\Support\TenantScope::apply($query)` to scope your own queries the same way.
+Relationship `Select`, `CheckboxList`, `SelectFilter`, `AttachAction` and `AssociateAction` options are limited to the current tenant for models that have the ownership relationship, and so are the values they accept. `unique()` and `exists()` rules on tenant-owned tables add the tenant column. Relation managers list only the current tenant's records of a tenant-owned related model, also on a shared owner record (a global category with every store's products). Models without the relationship (countries, currencies…) are shared. Use `AlfaSix\Alfakit\Support\TenantScope::apply($query)` to scope your own queries the same way.
 
 ## Checking a panel
 

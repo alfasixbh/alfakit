@@ -230,7 +230,7 @@ The form's view page shows the stats and a **Submissions** table: the submission
 
 - **View**: every answer in form order, file answers as download links (signed, valid for 30 minutes, and only for files that belong to that answer), plus the IP address and browser.
 - **Mark as spam** / **Not spam** and **Delete** (also as bulk actions). Deleting a submission deletes its uploaded files; deleting a form deletes its submissions and files.
-- **Export** in the table header: CSV and XLSX through AlfaKit's [exporter](../actions/import-export), on the queue, with one column per field of the form plus ID, submission time and spam. The download link arrives as a database notification.
+- **Export** in the table header: CSV and XLSX through AlfaKit's [exporter](../actions/import-export), on the queue, with one column per field of the form plus ID, submission time and spam. The download link arrives as a database notification, so the panel needs `->databaseNotifications()` (the exporter's requirement, see [import and export](../actions/import-export)); without it the export still runs but nobody is shown the link.
 
 Submissions can be managed by whoever may edit the form; with a policy that denies `update`, the table is read only.
 
@@ -381,7 +381,7 @@ it('stores a submission', function () {
         ],
     ]);
 
-    $inertia = ['X-Inertia' => 'true', 'X-Inertia-Version' => ''];
+    $inertia = \AlfaSix\Alfakit\Testing\PageTester::inertiaHeaders();
     $token = get('/forms/contact', $inertia)->json('props.form.token');
 
     postJson('/_alfakit/actions', ['token' => $token, 'action' => 'submit', 'data' => ['email' => 'nope']])

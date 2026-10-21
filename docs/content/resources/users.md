@@ -99,6 +99,8 @@ php artisan migrate
 
 - **Invitations** are sent by e-mail: configure `MAIL_MAILER` (and a queue worker if you queue notifications).
 - **Sessions** need `SESSION_DRIVER=database`.
+- **Tenancy panels**: accounts aren't owned by a tenant, so the generated resource sets `protected static bool $isScopedToTenant = false;` and lists every user. To list only the current tenant's members, remove it and set `protected static ?string $tenantOwnershipRelationshipName = 'teams';` (the user's tenants relationship).
+- **Starter kits**: users sign in on your app's own login page, so in an app with a `->starterKit()` panel the command also appends `EnsureAccountIsActive::class` to `$middleware->web(append: [...])` in `bootstrap/app.php`. Suspended and banned users are then signed out of your own pages too, and the kit's login page shows why (the message is flashed as the session `status`). Background requests get a 401.
 - **Who manages users** follows your `UserPolicy`: the account actions check `update` on the user, the invite action `create` ([Authorization](authorization)). Without a policy every panel user may manage users, so add one:
 
     ```php

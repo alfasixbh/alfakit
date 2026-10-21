@@ -101,6 +101,7 @@ For more than one select, use a form of filters (Filament's `HasFiltersSchema`).
 ```php
 use AlfaSix\Alfakit\Forms\Components\DatePicker;
 use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Widgets\ChartWidget;
 use AlfaSix\Alfakit\Widgets\ChartWidget\Concerns\HasFiltersSchema;
 
 class OrdersChart extends ChartWidget
@@ -309,7 +310,10 @@ Unknown keys and protected, static or read-only properties throw an `InvalidArgu
 Header and footer widgets of a list page can read its table as the user sees it, with the active tab, filters and search applied, through `InteractsWithPageTable`:
 
 ```php
+use AlfaSix\Alfakit\Resources\Pages\ListRecords;
 use AlfaSix\Alfakit\Widgets\Concerns\InteractsWithPageTable;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget;
+use AlfaSix\Alfakit\Widgets\StatsOverviewWidget\Stat;
 
 class OrderStats extends StatsOverviewWidget
 {

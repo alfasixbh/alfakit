@@ -10,7 +10,7 @@ Laravel's [starter kits](https://laravel.com/docs/starter-kits) (`laravel new my
 - users sign in with the app's own login page (Fortify, the `web` guard); AlfaKit's login, registration, password reset and profile pages are off;
 - AlfaKit pages render inside the app's `AppLayout`, with its sidebar, header and breadcrumbs;
 - the panel's resources and pages (groups, icons, badges, active state) are listed in the app sidebar, on the app's own pages too;
-- AlfaKit's command palette and global search, its notifications bell and (for tenancy panels) its tenant switcher drop into the app header, on every page;
+- AlfaKit's command palette and global search, its notifications bell, (for tenancy panels) its tenant switcher and (with the AI plugin) the AI copilot drop into the app header, on every page;
 - the panel's widgets show on the app's own dashboard (`/dashboard`);
 - the app's shadcn theme tokens and its appearance setting (light, dark, system) apply to AlfaKit pages. AlfaKit sets no theme attributes, fonts, favicon or colour scheme on the document.
 
@@ -26,17 +26,17 @@ npm run build   # or npm run dev
 
 `alfakit:setup` picks this mode on its own when it finds a starter kit. The installer finds the kit from its files, prints what it changed, and does nothing on a second run:
 
-| File                                                                                                 | Change                                                                                                                   |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `resources/js/pages/Alfakit/Page.tsx` (`.vue`, `.svelte`)                                            | The `Alfakit/Page` Inertia page, rendered in your `AppLayout`                                                            |
-| `resources/js/components/alfakit-nav.tsx` (`AlfakitNav.vue`, `AlfakitNav.svelte`)                    | The panel navigation, built from your own `@/components/ui/sidebar` primitives                                           |
-| `resources/js/components/app-sidebar.tsx` (`AppSidebar.vue`, `.svelte`)                              | `<AlfakitNav />` after `<NavMain />`, in a block marked `alfakit:nav`                                                    |
-| `resources/js/components/app-sidebar-header.tsx`, `app-header.tsx` (`AppSidebarHeader`, `AppHeader`) | `<AlfakitSearch />` and `<AlfakitNotifications />` in the header of both app layouts, in a block marked `alfakit:header` |
-| `resources/js/pages/dashboard.tsx` (`Dashboard.vue`, `Dashboard.svelte`)                             | The row of placeholder boxes wrapped in `<AlfakitWidgets>`, in a block marked `alfakit:widgets`                          |
-| `resources/css/app.css`                                                                              | `@import '@alfakit/<kit>/standalone.css'` and the `@source` of the renderer's components                                 |
-| `app/Providers/Alfakit/AdminPanelProvider.php`                                                       | A panel with `->starterKit()` at `/admin` (`--panel=` and `--path=` change it), registered in `bootstrap/providers.php`  |
+| File                                                                                                 | Change                                                                                                                                         |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `resources/js/pages/Alfakit/Page.tsx` (`.vue`, `.svelte`)                                            | The `Alfakit/Page` Inertia page, rendered in your `AppLayout`                                                                                  |
+| `resources/js/components/alfakit-nav.tsx` (`AlfakitNav.vue`, `AlfakitNav.svelte`)                    | The panel navigation, built from your own `@/components/ui/sidebar` primitives                                                                 |
+| `resources/js/components/app-sidebar.tsx` (`AppSidebar.vue`, `.svelte`)                              | `<AlfakitNav />` after `<NavMain />`, in a block marked `alfakit:nav`                                                                          |
+| `resources/js/components/app-sidebar-header.tsx`, `app-header.tsx` (`AppSidebarHeader`, `AppHeader`) | `<AlfakitSearch />`, `<AlfakitNotifications />` and `<AlfakitCopilot />` in the header of both app layouts, in a block marked `alfakit:header` |
+| `resources/js/pages/dashboard.tsx` (`Dashboard.vue`, `Dashboard.svelte`)                             | The row of placeholder boxes wrapped in `<AlfakitWidgets>`, in a block marked `alfakit:widgets`                                                |
+| `resources/css/app.css`                                                                              | `@import '@alfakit/<kit>/standalone.css'` and the `@source` of the renderer's components                                                       |
+| `app/Providers/Alfakit/AdminPanelProvider.php`                                                       | A panel with `->starterKit()` at `/admin` (`--panel=` and `--path=` change it), registered in `bootstrap/providers.php`                        |
 
-Your entry file (`resources/js/app.tsx` or `app.ts`) needs no change. Inertia's Vite plugin resolves pages from `resources/js/pages`, and the root view preloads `resources/js/pages/{component}`, so AlfaKit's page is a page file like your own. Page resolution, code splitting and SSR work the same for both. Pass `--no-npm` to install `@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte` yourself, `--no-header-widgets` to leave your headers alone, `--no-dashboard-widgets` to leave your dashboard alone, and `--force` to rewrite the generated files.
+Your entry file (`resources/js/app.tsx` or `app.ts`) needs no change. Inertia's Vite plugin resolves pages from `resources/js/pages`, and the root view preloads `resources/js/pages/{component}`, so AlfaKit's page is a page file like your own. Page resolution, code splitting and SSR work the same for both. (SSR is on whenever `config/inertia.php` says so; some starter kits hard-code `'enabled' => true`, so `INERTIA_SSR_ENABLED` has no effect until you change it to `(bool) env('INERTIA_SSR_ENABLED', true)`, see [SSR](../advanced/ssr).) Pass `--no-npm` to install `@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte` yourself, `--no-header-widgets` to leave your headers alone, `--no-dashboard-widgets` to leave your dashboard alone, and `--force` to rewrite the generated files.
 
 Then create a resource and open it from the sidebar:
 
@@ -61,14 +61,16 @@ public function panel(Panel $panel): Panel
         ->discoverWidgets(in: app_path('Alfakit/Widgets'), for: 'App\\Alfakit\\Widgets')
         ->middleware(['web'])
         // Like the starter kit's dashboard: signed in with a verified email address.
-        ->authMiddleware(['verified']);
+        ->authMiddleware(['verified'])
+        // The bell of <AlfakitNotifications /> (export links, mentions, approvals).
+        ->databaseNotifications();
 }
 ```
 
 `starterKit(bool $condition = true, string $rootView = 'app', string $loginRoute = 'login')`:
 
 - renders through the app's Inertia root view (`resources/views/app.blade.php`) instead of `alfakit::app`, so its fonts, appearance script and Vite entry load;
-- sends guests to the `login` route (Fortify's) and turns AlfaKit's own auth pages off. Call `->login()` or `->profile()` after `starterKit()` to bring one back;
+- sends guests to the `login` route (Fortify's) and turns AlfaKit's own auth pages off. Call `->login()` or `->profile()` after `starterKit()` to bring one back; AlfaKit's sign-in and other `auth`-layout pages (multi-factor challenge, password reset) then render on their own, without your `AppLayout`;
 - shares the navigation with every Inertia page as the `alfakitNavigation` prop, with what the header components need before they load (`widgets`). It is null for guests and for users who may not open the panel. On tenancy panels the navigation groups are empty outside a tenant (their links point to tenant routes);
 - shares the panel's widgets with the app's dashboard as the `alfakitWidgets` prop (see [Widgets on your dashboard](#widgets-on-your-dashboard));
 - ignores `->multiFactorAuthentication()` while the app signs users in (see [Two-factor authentication](#two-factor-authentication)).
@@ -77,7 +79,7 @@ public function panel(Panel $panel): Panel
 
 ## The page file
 
-The generated page passes your layout to AlfaKit. Register custom field, column or page components here, as you would with `createAlfakit()`:
+The generated page passes your layout to AlfaKit. `discover` auto-registers the [custom components](../adapters/custom-components) in `resources/js/alfakit/{fields,columns,entries,widgets,pages,components,blocks}` (what `make:alfakit-field`, `make:alfakit-column` and the other generators write), as `createAlfakit({ discover })` does in panel mode; register anything else here, as you would with `createAlfakit()`:
 
 ```tsx
 // resources/js/pages/Alfakit/Page.tsx
@@ -87,6 +89,9 @@ import { MapPicker } from '@/components/map-picker'
 
 export default createStarterKitPage({
     layout: AppLayout,
+    discover: import.meta.glob(
+        '../../alfakit/{fields,columns,entries,widgets,pages,components,blocks}/**/*.tsx',
+    ),
     components: { 'map-picker': MapPicker },
 })
 ```
@@ -97,7 +102,12 @@ export default createStarterKitPage({
 import { createStarterKitPage } from '@alfakit/vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 
-export default createStarterKitPage({ layout: AppLayout })
+export default createStarterKitPage({
+    layout: AppLayout,
+    discover: import.meta.glob(
+        '../../alfakit/{fields,columns,entries,widgets,pages,components,blocks}/**/*.vue',
+    ),
+})
 </script>
 ```
 
@@ -107,7 +117,12 @@ export default createStarterKitPage({ layout: AppLayout })
     import { createStarterKitLayout } from '@alfakit/svelte'
     import AppLayout from '@/layouts/AppLayout.svelte'
 
-    export const layout = createStarterKitLayout({ layout: AppLayout })
+    export const layout = createStarterKitLayout({
+        layout: AppLayout,
+        discover: import.meta.glob(
+            '../../alfakit/{fields,columns,entries,widgets,pages,components,blocks}/**/*.svelte',
+        ),
+    })
 </script>
 
 <script lang="ts">
@@ -117,7 +132,7 @@ export default createStarterKitPage({ layout: AppLayout })
 <AlfakitPage />
 ```
 
-`layout` gets the page's breadcrumbs in the starter kit's shape (`{ title, href }[]`). It can be any component that takes `breadcrumbs` and children, for example `AppHeaderLayout` for the header variant, or `null` for no layout. Inside it, AlfaKit renders its content area (registry key `layout:app`, element `data-slot="content"` with `data-alfakit-embedded`) and its modals and toasts. Replace the content area with `components: { 'layout:app': MyContent }`. The options also take `pages`, `chartFormatters`, `chartPlugins` and `richEditorExtensions`.
+`layout` gets the page's breadcrumbs in the starter kit's shape (`{ title, href }[]`). It can be any component that takes `breadcrumbs` and children, for example `AppHeaderLayout` for the header variant, or `null` for no layout. Inside it, AlfaKit renders its content area (registry key `layout:app`, element `data-slot="content"` with `data-alfakit-embedded`) and its modals and toasts. Replace the content area with `components: { 'layout:app': MyContent }`. The options also take `pages`, `chartFormatters`, `chartPlugins` and `richEditorExtensions`. Pages written before `discover` was added: add the `discover` line yourself (the generators print it until you do).
 
 ## Customising the sidebar
 
@@ -135,30 +150,39 @@ In Vue, `useAlfakitNavigation()` returns a computed ref (`navigation.value.group
 
 ## Search, notifications and tenants in the header
 
-Three components put AlfaKit's own chrome in your header. Each one works on every page of the app (the dashboard and settings pages too), renders nothing for guests and for panels without the feature, and costs almost nothing until it is used: it renders a lightweight button from the shared prop at once (also during SSR), then loads its code and the panel data (translations, endpoints, the palette's options) once in the browser.
+Four components put AlfaKit's own chrome in your header. Each one works on every page of the app (the dashboard and settings pages too), renders nothing for guests and for panels without the feature, and costs almost nothing until it is used: it renders a lightweight button from the shared prop at once (also during SSR), then loads its code and the panel data (translations, endpoints, the palette's options) once in the browser.
 
 ```tsx
 // resources/js/components/app-sidebar-header.tsx
-import { AlfakitNotifications, AlfakitSearch, AlfakitTenantSwitcher } from '@alfakit/react'
+import {
+    AlfakitCopilot,
+    AlfakitNotifications,
+    AlfakitSearch,
+    AlfakitTenantSwitcher,
+} from '@alfakit/react'
 
 ;<div className="ms-auto flex items-center gap-2">
     <AlfakitTenantSwitcher />
     <AlfakitSearch />
     <AlfakitNotifications />
+    <AlfakitCopilot />
 </div>
 ```
 
-Vue and Svelte import the same names from `@alfakit/vue` and `@alfakit/svelte`. Each takes an optional `panel` prop (a panel id) when the app has more than one `starterKit()` panel.
+Vue and Svelte import the same names from `@alfakit/vue` and `@alfakit/svelte`. Each takes an optional `panel` prop (a panel id) when the app has more than one `starterKit()` panel; without it, a component follows the panel of the open AlfaKit page, else the first panel that has what it shows (search, notifications, tenancy, the copilot). The installer adds search, notifications and the copilot; `alfakit:add teams` adds `<AlfakitTenantSwitcher />`.
 
-| Component                   | Needs                                              | What it does                                                                                                                                                                                                                                                                  |
-| --------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<AlfakitSearch />`         | `->globalSearch()` or panel commands (the palette) | The search field and the command palette: global search results, the panel navigation, "create" links and recent records. `globalSearchKeyBindings()` (⌘K / Ctrl+K) open it from anywhere, also before its code loaded; they are bound once however many fields the page has. |
-| `<AlfakitNotifications />`  | `->databaseNotifications()`                        | The bell with the unread count, the notifications menu, polling and, on your own pages, realtime notifications (`->realtimeNotifications()`). Actions with `->openDatabaseNotifications()` open it.                                                                           |
-| `<AlfakitTenantSwitcher />` | `->tenant()`                                       | Inside a tenant, the panel's tenant menu. On your own pages, a menu of the user's tenants (and "New" with tenant registration).                                                                                                                                               |
+| Component                   | Needs                                                     | What it does                                                                                                                                                                                                                                                                                                |
+| --------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<AlfakitSearch />`         | `->globalSearch()` or panel commands (the palette)        | The search field and the command palette: global search results, the panel navigation, "create" links and recent records. `globalSearchKeyBindings()` (⌘K / Ctrl+K) open it from anywhere, also before its code loaded; they are bound once however many fields the page has.                               |
+| `<AlfakitNotifications />`  | `->databaseNotifications()`                               | The bell with the unread count, the notifications menu, polling and, on your own pages, realtime notifications (`->realtimeNotifications()`). Actions with `->openDatabaseNotifications()` open it.                                                                                                         |
+| `<AlfakitTenantSwitcher />` | `->tenant()`                                              | Inside a tenant, the panel's tenant menu. On your own pages, a menu of the user's tenants (and "New" with tenant registration).                                                                                                                                                                             |
+| `<AlfakitCopilot />`        | the [AI plugin](../plugins/ai#copilot) with `->copilot()` | The copilot's sparkle button and chat slide-over, as in the panel's top bar. `copilotKeyBindings()` (`mod+j`) open it from anywhere, also before its code loaded. Not shown to users `authorize()` refuses, nor (tenancy panels) outside a tenant. Without a provider key it answers "AI isn't set up yet". |
 
-The palette in the header leaves out what needs an AlfaKit page around it or AlfaKit's own chrome: panel commands and page header actions (run them from the page), theme switching (your appearance setting owns the colour scheme) and the keyboard shortcuts overlay. On tenancy panels search is tenant-scoped, so `<AlfakitSearch />` renders inside a tenant only. If your app binds ⌘K itself, an earlier listener that calls `event.preventDefault()` wins; otherwise remove one of the two bindings (`globalSearchKeyBindings()`). The components emit `data-slot="starter-kit-search"`, `starter-kit-notifications` and `starter-kit-tenant-switcher` wrappers for styling.
+While an admin impersonates a user, the first of these components on the page also shows the impersonation banner with **Leave** on your own pages (AlfaKit's pages show their own).
 
-The data comes from the panel's `/{path}/_alfakit/starter-kit` endpoint (signed-in users only, `Cache-Control: no-store`), requested once per full page load. The installer adds the search field and the bell to both header components of the kit (the sidebar layout's `app-sidebar-header` and the header layout's `app-header`, before the user menu). The header layout of the kits also has a placeholder search button you can remove.
+The palette in the header leaves out what needs an AlfaKit page around it or AlfaKit's own chrome: panel commands and page header actions (run them from the page), theme switching (your appearance setting owns the colour scheme) and the keyboard shortcuts overlay. On tenancy panels search is tenant-scoped, so `<AlfakitSearch />` renders inside a tenant only. If your app binds ⌘K itself, an earlier listener that calls `event.preventDefault()` wins; otherwise remove one of the two bindings (`globalSearchKeyBindings()`). The components emit `data-slot="starter-kit-search"`, `starter-kit-notifications`, `starter-kit-tenant-switcher` and `starter-kit-copilot` wrappers for styling.
+
+The data comes from the panel's `/{path}/_alfakit/starter-kit` endpoint (signed-in users only, `Cache-Control: no-store`), requested once per full page load. The installer adds the search field, the bell and the copilot (which renders nothing until the AI plugin's copilot is on) to both header components of the kit (the sidebar layout's `app-sidebar-header` and the header layout's `app-header`, before the user menu). Headers set up before `<AlfakitCopilot />` existed get it from `php artisan alfakit:add ai`; otherwise add the one line yourself next to `<AlfakitNotifications />`. The header layout of the kits also has a placeholder search button you can remove.
 
 ## Widgets on your dashboard
 
@@ -240,9 +264,11 @@ Sign-in, and so its second factor, is the app's: use the starter kit's two-facto
 
 ## Limitations
 
-- AlfaKit's own chrome is not rendered: no AlfaKit sidebar, top bar or user menu. Your app layout owns those, and takes AlfaKit's search, bell and tenant switcher as [header components](#search-notifications-and-tenants-in-the-header). Flashed and realtime notifications still show as toasts on AlfaKit pages.
+- AlfaKit's own chrome is not rendered: no AlfaKit sidebar, top bar or user menu. Your app layout owns those, and takes AlfaKit's search, bell, tenant switcher and AI copilot as [header components](#search-notifications-and-tenants-in-the-header). Other content you put in the panel's top bar slots (`Slot::TOPBAR_*`) is not shown. Flashed and realtime notifications still show as toasts on AlfaKit pages.
 - The appearance switcher is the app's (`settings/appearance`). `->darkMode()` and `->defaultThemeMode()` do not apply.
+- The [users resource](../resources/users) signs suspended and banned users out of your own pages too: `alfakit:users` adds its `EnsureAccountIsActive` middleware to the `web` group in `bootstrap/app.php`, and your login page shows the reason (session `status`).
+- Languages: the panel's `locales()` apply to AlfaKit's pages, the header components and what the panel shares with your pages (the sidebar navigation, the dashboard widgets); your own pages keep the app's language. In a right-to-left language AlfaKit mirrors its own content (`data-slot="starter-kit-root"` with `dir` and `lang`, its modals and menus) and leaves `<html dir>` to your app, whose sidebar is not built to mirror.
 - Pages with the `auth` layout (multi-factor challenge, email verification prompt) are not used: authentication and its settings are the app's (Fortify). Email change verification needs AlfaKit's profile page, so leave it off.
 - Tenancy panels work, but the shared navigation is empty outside a tenant, and their widgets (tenant-scoped) are not shown on the app's dashboard. `<AlfakitTenantSwitcher />` links to the user's tenants from any page.
-- One `alfakitNavigation` entry is shared per `starterKit()` panel. `useAlfakitNavigation()` returns the first one unless you pass a panel id.
+- One `alfakitNavigation` entry is shared per `starterKit()` panel. Without a panel id, `useAlfakitNavigation()` and the header components follow the panel of the open AlfaKit page and use the first panel on your own pages (`<AlfakitTenantSwitcher />`: the first panel with tenancy). Pass a panel id to pin them. For a team workspace next to `/admin`, see [Teams in a starter kit app](../plugins/teams#in-a-starter-kit-app): `alfakit:add teams` adds `<AlfakitTenantSwitcher />` to the header block.
 - `alfakit:install --starter-kit` recognises the files of the official kits. If your sidebar no longer has a `<NavMain … />` element, the step is skipped and reported: add `<AlfakitNav />` yourself. The same goes for a dashboard page without the kit's row of placeholder boxes: add `<AlfakitWidgets />` where the widgets should go.

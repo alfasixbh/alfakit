@@ -45,7 +45,7 @@ TextColumn::make('phone')->hiddenFrom('xl');
 
 ### Searching
 
-`searchable()` joins the global search box; `searchable(isIndividual: true)` adds a per-column input; `searchable(['title', 'excerpt'])` searches several columns; `searchable(query: fn (Builder $query, string $search) => …)` is fully custom. `forceSearchCaseInsensitive()` on MySQL/SQLite.
+`searchable()` joins the global search box; `searchable(isIndividual: true)` adds a per-column input under the header (applied after the same pause as the table search, or at once on Enter); `searchable(['title', 'excerpt'])` searches several columns; `searchable(query: fn (Builder $query, string $search) => …)` is fully custom. `forceSearchCaseInsensitive()` on MySQL/SQLite.
 
 The table search splits the term into words and every word must match some column. Table-level options:
 

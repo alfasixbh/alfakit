@@ -274,6 +274,7 @@ The assets load on this panel's pages only (`Assets::register([...], panel: 'adm
 Register a page class several times, each with its own options, URL and navigation item. Give the page a configuration class extending `PageConfiguration` and read it with `static::getConfiguration()`:
 
 ```php
+use AlfaSix\Alfakit\Pages\Page;
 use AlfaSix\Alfakit\Pages\PageConfiguration;
 
 class SettingsPageConfiguration extends PageConfiguration

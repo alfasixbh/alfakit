@@ -25,7 +25,7 @@ AlfaKit keeps the definition of a panel in PHP and leaves the rendering to the f
 
 ## What the first release contains
 
-The [changelog](/changelog) lists everything; it is still under "Unreleased" until the first version is tagged. In short:
+The [changelog](/changelog) lists everything, release by release. In short:
 
 - **Panels and resources**: multiple panels, authentication with multi-factor authentication, navigation groups and clusters, global search, list, create, edit and view pages, relation managers, nested and singular resources, policies on every action, impersonation.
 - **Forms**: text, select, repeater, builder, rich and Markdown editors, file uploads, sliders, toggle buttons, a code editor, modal table selects and more; sections, tabs and wizards; `live()` fields that re-run your closures on the server and send back only the components that changed.
@@ -34,7 +34,7 @@ The [changelog](/changelog) lists everything; it is still under "Unreleased" unt
 - **Dashboards**: stats, Chart.js charts, table widgets, filters shared by widgets and lazy loading.
 - **Multi-tenancy**: tenant switching, subdomain and custom-domain tenancy, a billing hook and the `alfakit:tenancy:check` audit.
 - **Localization**: any number of languages with a language menu, full right-to-left layouts, every currency and per-user timezones, plus a translations package with twelve languages.
-- **Design**: six themes that change structure as well as colour (`neutral`, `alfakit`, `minimal`, `soft`, `corporate`, `filament`), a sidebar, top navigation or icon-rail layout, a mobile preset with bottom navigation, and slots in 22 places.
+- **Design**: six themes that change structure as well as colour (`neutral`, `alfakit`, `minimal`, `soft`, `corporate`, `filament`), a sidebar, top navigation or icon-rail layout, a mobile preset with bottom navigation, and more than 100 slots.
 - **Outside panels**: forms, tables, infolists and widgets in your own Inertia pages through standalone components.
 - **Tooling**: generators for every piece, server-side rendering, a debug panel, test helpers, a migration command for Filament apps, and guidelines and skills for AI coding agents.
 

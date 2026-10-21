@@ -155,6 +155,7 @@ protected function preserveFormDataWhenCreatingAnother(array $data): array
 The `HasWizard` trait turns the form into a wizard. Each "Next" validates its step on the server; the form buttons (create, create another, cancel) show on the last step only.
 
 ```php
+use AlfaSix\Alfakit\Resources\Pages\CreateRecord;
 use AlfaSix\Alfakit\Resources\Pages\CreateRecord\Concerns\HasWizard;
 use AlfaSix\Alfakit\Schemas\Components\Wizard\Step;
 
@@ -216,6 +217,8 @@ On create pages use `$this->getCreateFormAction()->formId('form')`.
 | `getRedirectUrl()`                                      | Defaults to the same page (or the panel's `resourceEditPageRedirect()`) |
 
 Header actions typically include `ViewAction`, `DeleteAction`, `RestoreAction` and `ForceDeleteAction`; they redirect to the index after deleting.
+
+Attributes in the model's `$hidden` (a password, an API token) never reach the browser, so their fields load blank. Saving with such a field left blank keeps the stored value; typing a value replaces it. Override `keepHiddenAttributesLeftBlank(array $data): array` to change this.
 
 ### Refreshing form data
 
@@ -303,7 +306,14 @@ Renders the resource `infolist()` when defined, otherwise the form in a disabled
 A full page for one relationship of a record, as an alternative to a relation manager under the form. It behaves like a relation manager: `CreateAction` creates through the relationship, `AttachAction` / `DetachAction` / `AssociateAction` / `DissociateAction` (and their bulk variants) work, every action that changes data is hidden when the user can't update the owner record, and the table only ever contains the owner's related records. Generate one with `php artisan make:alfakit-related-records-page PostResource comments body` (`--attach`, `--associate` add the pivot actions).
 
 ```php
+use AlfaSix\Alfakit\Actions\CreateAction;
+use AlfaSix\Alfakit\Actions\DeleteAction;
+use AlfaSix\Alfakit\Actions\EditAction;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
 use AlfaSix\Alfakit\Resources\Pages\ManageRelatedRecords;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Table;
 
 class ManagePostComments extends ManageRelatedRecords
 {
@@ -336,6 +346,8 @@ A resource that manages one record (site settings, the current team's profile) u
 
 ```php
 use AlfaSix\Alfakit\Resources\Pages\ManageSingularRecord;
+use AlfaSix\Alfakit\Resources\Resource;
+use AlfaSix\Alfakit\Schemas\Schema;
 
 class SettingsResource extends Resource
 {

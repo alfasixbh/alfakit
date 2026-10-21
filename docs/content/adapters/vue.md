@@ -34,7 +34,9 @@ Localization composables: `useChoice()` for plural lines, and `useLocalization()
 import { FieldWrapper, useField, type BaseField } from '@alfakit/vue'
 
 const props = defineProps<{ component: BaseField & { zoom?: number } }>()
-const { value, setValue, error, id, aria } = useField(() => props.component)
+const { value, setValue, error, id, aria } = useField<{ lat: number; lng: number } | null>(
+    () => props.component,
+)
 </script>
 
 <template>

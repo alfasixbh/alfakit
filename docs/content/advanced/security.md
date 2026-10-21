@@ -154,6 +154,7 @@ What carries the nonce:
 - The root view's inline theme `<script>` and `<style>` tags, the custom colour `<style>`, and the Vite tags.
 - Plugin assets from `Assets::register()`: `<link>` and `<script>` tags, the CSS variables `<style>`, the script data `<script>`, and inline scripts from `Js::make()->html()` (`<script>` tags without a nonce get it).
 - `Slot::HEAD_START` / `HEAD_END` content: `<script>` and `<style>` tags without a nonce get it, and closures receive it as `$nonce` (and `$data['nonce']`).
+- Styles added in the browser: Inertia's progress bar and the rich editor's base CSS take the page's nonce (read from the tags above). Toast styles ship in the renderer's stylesheet; in React, Sonner also injects a copy at load, which the policy blocks with a harmless console message.
 
 Allow for these as well:
 

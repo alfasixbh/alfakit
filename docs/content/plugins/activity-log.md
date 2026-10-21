@@ -87,6 +87,7 @@ Every option that takes a closure gets `$plugin`, `$panel`, `$user` and `$tenant
 Extend `ActivityResource` to change the table, the infolist or the pages, and pass it to `resourceClass()`:
 
 ```php
+use AlfaSix\Alfakit\Tables\Table;
 use AlfaSix\AlfakitActivityLog\Resources\ActivityResource;
 use AlfaSix\AlfakitActivityLog\Support\ActivitySchema;
 
@@ -167,6 +168,7 @@ ActivityLogPlugin::make()->logActions();
 Resource create and edit pages save without an action; add the trait to them:
 
 ```php
+use AlfaSix\Alfakit\Resources\Pages\EditRecord;
 use AlfaSix\AlfakitActivityLog\Concerns\LogsAlfakitActions;
 
 class EditInvoice extends EditRecord

@@ -223,14 +223,16 @@ The card around it has `data-slot="calendar-widget"`. To replace the renderer en
 
 ## Translations
 
-PHP strings live in the `alfakit-calendar::calendar` group (publish them with `php artisan vendor:publish` or override them in `lang/vendor/alfakit-calendar`). The frontend strings are under `alfakit-calendar::calendar.ui` and reach the renderers as `calendar.*` when the plugin is registered: `label`, `today`, `month`, `week`, `day`, `list`, `all_day`, `more_events`, `no_events`, `previous`, `next`, `loading`, `load_failed`, `move_failed`.
+PHP strings live in the `alfakit-calendar::calendar` group (publish them with `php artisan vendor:publish --tag=alfakit-calendar-translations` or override single keys in `lang/vendor/alfakit-calendar/{locale}/calendar.php`). The frontend strings are under `alfakit-calendar::calendar.ui` and reach the renderers as `calendar.*` when the plugin is registered: `label`, `today`, `month`, `week`, `day`, `list`, `all_day`, `more_events`, `no_events`, `previous`, `next`, `loading`, `load_failed`, `move_failed`.
 
 ## Testing
 
 The widget's endpoints are plain actions, so tests post to the panel's action endpoint with the page's token:
 
 ```php
-$token = $this->get('/admin', ['X-Inertia' => 'true'])->json('props.page.token');
+use AlfaSix\Alfakit\Testing\PageTester;
+
+$token = $this->get('/admin', PageTester::inertiaHeaders())->json('props.page.token');
 
 $this->postJson('/admin/_alfakit/actions', [
     'token' => $token,

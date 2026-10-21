@@ -283,7 +283,13 @@ export function SearchButton({ onNavy = false }: { onNavy?: boolean }) {
     const [open, setOpen] = useState(false)
     const [query, setQuery] = useState('')
     const [results, setResults] = useState<SearchResult[]>([])
+    const [active, setActive] = useState(0)
     const visibleResults = query.trim() ? results : []
+    const visit = (result: SearchResult | undefined) => {
+        if (!result) return
+        setOpen(false)
+        router.visit(`/docs/${result.slug}`)
+    }
 
     useEffect(() => {
         const handler = (event: KeyboardEvent) => {
@@ -305,7 +311,10 @@ export function SearchButton({ onNavy = false }: { onNavy?: boolean }) {
                 headers: { Accept: 'application/json' },
             })
                 .then((response) => response.json())
-                .then((data: { results?: SearchResult[] }) => setResults(data.results ?? []))
+                .then((data: { results?: SearchResult[] }) => {
+                    setResults(data.results ?? [])
+                    setActive(0)
+                })
         }, 200)
         return () => clearTimeout(timer)
     }, [query])
@@ -353,21 +362,51 @@ export function SearchButton({ onNavy = false }: { onNavy?: boolean }) {
                             autoFocus
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
+                            onKeyDown={(event) => {
+                                // Arrow keys move through the results, Enter opens the highlighted one.
+                                if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                                    event.preventDefault()
+                                    const step = event.key === 'ArrowDown' ? 1 : -1
+                                    const count = visibleResults.length
+                                    if (count > 0) setActive((active + step + count) % count)
+                                } else if (event.key === 'Enter') {
+                                    event.preventDefault()
+                                    visit(visibleResults[active])
+                                }
+                            }}
+                            role="combobox"
+                            aria-expanded={visibleResults.length > 0}
+                            aria-controls="docs-search-results"
+                            aria-activedescendant={
+                                visibleResults[active] ? `docs-search-result-${active}` : undefined
+                            }
                             placeholder="Search documentation…"
                             aria-label="Search documentation"
                             className="h-12 flex-1 bg-transparent text-sm outline-none"
                         />
                     </div>
-                    <ul className="max-h-80 overflow-y-auto p-2">
-                        {visibleResults.map((result) => (
-                            <li key={result.slug}>
+                    <ul
+                        id="docs-search-results"
+                        role="listbox"
+                        aria-label="Search results"
+                        className="max-h-80 overflow-y-auto p-2"
+                    >
+                        {visibleResults.map((result, index) => (
+                            <li
+                                key={result.slug}
+                                id={`docs-search-result-${index}`}
+                                role="option"
+                                aria-selected={index === active}
+                            >
                                 <button
                                     type="button"
-                                    className="hover:bg-accent focus-visible:bg-accent flex w-full flex-col items-start rounded-md px-3 py-2 text-start outline-none"
-                                    onClick={() => {
-                                        setOpen(false)
-                                        router.visit(`/docs/${result.slug}`)
-                                    }}
+                                    tabIndex={-1}
+                                    className={cn(
+                                        'hover:bg-accent focus-visible:bg-accent flex w-full flex-col items-start rounded-md px-3 py-2 text-start outline-none',
+                                        index === active && 'bg-accent',
+                                    )}
+                                    onMouseEnter={() => setActive(index)}
+                                    onClick={() => visit(result)}
                                 >
                                     <span className="text-sm font-medium">
                                         {result.title}{' '}

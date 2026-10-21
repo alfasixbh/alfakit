@@ -16,7 +16,16 @@ This writes `SupplierResource`, its four pages and `SupplierResource/SupplierDat
 ## The resource
 
 ```php
+use AlfaSix\Alfakit\Actions\DeleteAction;
+use AlfaSix\Alfakit\Actions\DeleteBulkAction;
+use AlfaSix\Alfakit\Actions\EditAction;
+use AlfaSix\Alfakit\Actions\ViewAction;
+use AlfaSix\Alfakit\Forms\Components\TextInput;
 use AlfaSix\Alfakit\Resources\ApiResource;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Filters\SelectFilter;
+use AlfaSix\Alfakit\Tables\Table;
 
 class SupplierResource extends ApiResource
 {
@@ -36,7 +45,7 @@ class SupplierResource extends ApiResource
     {
         return $table
             ->columns([TextColumn::make('name')->searchable()->sortable()])
-            ->filters([SelectFilter::make('status')->options([...])])
+            ->filters([SelectFilter::make('status')->options(['active' => 'Active', 'archived' => 'Archived'])])
             ->recordActions([ViewAction::make(), EditAction::make(), DeleteAction::make()])
             ->bulkActions([DeleteBulkAction::make()]);
     }
@@ -78,12 +87,12 @@ use AlfaSix\Alfakit\Resources\Api\RecordsQuery;
 
 class SupplierDataSource extends DataSource
 {
-    public function records(RecordsQuery $query): iterable { ... }      // list pages
-    public function find(string $key): ?array { ... }                  // record pages, actions
-    public function create(array $data): array { ... }                 // create page
-    public function update(string $key, array $data): array { ... }    // edit page, $record->save()
-    public function delete(string $key): void { ... }                  // delete actions
-    public function search(string $search, int $limit): iterable { ... } // optional: global search
+    public function records(RecordsQuery $query): iterable { /* … */ }      // list pages
+    public function find(string $key): ?array { /* … */ }                  // record pages, actions
+    public function create(array $data): array { /* … */ }                 // create page
+    public function update(string $key, array $data): array { /* … */ }    // edit page, $record->save()
+    public function delete(string $key): void { /* … */ }                  // delete actions
+    public function search(string $search, int $limit): iterable { /* … */ } // optional: global search
 }
 ```
 
@@ -209,7 +218,12 @@ Set `protected ?int $cacheSeconds = 60;` (or call `cacheFor(60)`) to cache `reco
 `ApiRelationManager` shows records from a data source on the edit and view pages of any resource (an `ApiResource` or an Eloquent one): a supplier's purchase orders from the ERP, a customer's tickets from the help desk. The data source receives the page's record as `getOwnerRecord()` (and `$query->owner`); scope to it, `find()` included.
 
 ```php
+use AlfaSix\Alfakit\Actions\CreateAction;
+use AlfaSix\Alfakit\Actions\DeleteAction;
+use AlfaSix\Alfakit\Actions\EditAction;
 use AlfaSix\Alfakit\Resources\RelationManagers\ApiRelationManager;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tables\Table;
 
 class PurchaseOrdersRelationManager extends ApiRelationManager
 {
@@ -217,12 +231,12 @@ class PurchaseOrdersRelationManager extends ApiRelationManager
 
     protected static ?string $recordTitleAttribute = 'number';
 
-    public function form(Schema $schema): Schema { ... }
+    public function form(Schema $schema): Schema { /* … */ }
 
     public function table(Table $table): Table
     {
         return $table
-            ->columns([...])
+            ->columns([/* … */])
             ->headerActions([CreateAction::make()])
             ->recordActions([EditAction::make(), DeleteAction::make()]);
     }

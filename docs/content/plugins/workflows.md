@@ -139,7 +139,12 @@ The `state` column is a plain string column (`$table->string('state')->nullable(
 
 ```php
 use AlfaSix\Alfakit\Infolists\Components\TextEntry;
+use AlfaSix\Alfakit\Resources\Pages\ViewRecord;
+use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\Alfakit\Schemas\Components\Section;
+use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Tables\Columns\TextColumn;
+use AlfaSix\Alfakit\Tables\Table;
 use AlfaSix\AlfakitWorkflows\Actions\WorkflowActions;
 use AlfaSix\AlfakitWorkflows\Infolists\Components\WorkflowStateEntry;
 use AlfaSix\AlfakitWorkflows\Infolists\Components\WorkflowTimeline;

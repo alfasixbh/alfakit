@@ -36,7 +36,7 @@ Localization helpers: `useChoice()` for plural lines, `useLocalization()` and `u
     import { FieldWrapper, useField, type BaseField } from '@alfakit/svelte'
 
     let { component }: { component: BaseField & { zoom?: number } } = $props()
-    const field = useField(() => component)
+    const field = useField<{ lat: number; lng: number } | null>(() => component)
 </script>
 
 <FieldWrapper field={component} htmlFor={field.id} error={field.error}>
