@@ -178,6 +178,16 @@ try {
                 // Inertia SSR renders the page body into the first response; client rendering doesn't.
                 const probe = await client.request('/admin/benchmark-records?perPage=10')
                 server.ssr = probe.text.includes('data-slot="content"')
+
+                // A Vite dev server (public/hot, e.g. one Herd's dev tools started) serves unbuilt
+                // modules: the numbers would not describe a production build.
+                if (probe.text.includes('/@vite/client'))
+                    throw Object.assign(
+                        new Error(
+                            `${target.label} serves its assets from a Vite dev server (public/hot). Stop it (and its composer dev) and delete public/hot, then run again.`,
+                        ),
+                        { fatal: true },
+                    )
             }
 
             meta.targets.push({
@@ -188,7 +198,8 @@ try {
                 server,
             })
         } catch (error) {
-            if (!target.optional && wantedTargets?.includes(target.name)) throw error
+            if (error.fatal || (!target.optional && wantedTargets?.includes(target.name)))
+                throw error
 
             console.log(`Skipping ${target.label} (${target.url}): ${error.message.split('\n')[0]}`)
             meta.targets.push({

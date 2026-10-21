@@ -1,9 +1,10 @@
 {
   "meta": {
-    "date": "2026-10-18T11:28:57.446Z",
-    "label": "local",
+    "date": "2026-10-21T13:30:59.269Z",
+    "label": "m5-0.1.6",
     "runs": 7,
     "warmup": 2,
+    "caches": "optimize",
     "hardware": {
       "cpu": "Apple M5",
       "cores": 10,
@@ -19,21 +20,21 @@
       "php": "8.4.23",
       "phpCliOpcache": false,
       "node": "v22.23.0",
-      "herd": "Herd 1.30.2"
+      "herd": "Herd 2.0.2"
     },
     "loadAverage": {
       "start": [
-        2.7,
-        6.76,
-        9.79
+        2.93,
+        3.14,
+        3.26
       ],
       "end": [
-        2.38,
-        4.27,
-        7.86
+        2.42,
+        3.11,
+        3.26
       ]
     },
-    "browser": "Chrome 155.0.8059.84 (headless, 1440×900, Playwright)",
+    "browser": "Chrome 155.0.8059.85 (headless, 1440×900, Playwright)",
     "searchTerm": "SKU-04242",
     "searchResult": "Juliet valve 578",
     "scenarios": [
@@ -86,8 +87,8 @@
           "jit": false,
           "debug": false,
           "environment": "local",
-          "configCached": false,
-          "routesCached": false,
+          "configCached": true,
+          "routesCached": true,
           "database": "sqlite",
           "packages": {
             "alfasix/alfakit": "dev-main",
@@ -109,8 +110,8 @@
           "jit": false,
           "debug": false,
           "environment": "local",
-          "configCached": false,
-          "routesCached": false,
+          "configCached": true,
+          "routesCached": true,
           "database": "sqlite",
           "packages": {
             "alfasix/alfakit": "dev-main",
@@ -132,8 +133,8 @@
           "jit": false,
           "debug": false,
           "environment": "local",
-          "configCached": false,
-          "routesCached": false,
+          "configCached": true,
+          "routesCached": true,
           "database": "sqlite",
           "packages": {
             "alfasix/alfakit": "dev-main",
@@ -155,8 +156,8 @@
           "jit": false,
           "debug": false,
           "environment": "local",
-          "configCached": false,
-          "routesCached": false,
+          "configCached": true,
+          "routesCached": true,
           "database": "sqlite",
           "packages": {
             "filament/filament": "v5.10.1",
@@ -171,8 +172,8 @@
       "Interaction latency is timed from the Playwright input until the change is painted and includes each stack’s default debounce: AlfaKit debounces typed `live()` fields by 150 ms (choices such as selects and toggles refresh at once) and global search by 250 ms; Filament’s global search field debounces by 500 ms and its `live()` fields use Livewire’s `wire:model.live` default.",
       "AlfaKit table rows and repeater items are virtualised, so the DOM holds the visible window of a 500-row table."
     ],
-    "durationSeconds": 257,
-    "file": "2026-10-18-local.json"
+    "durationSeconds": 287,
+    "file": "2026-10-21-m5-0.1.6.json"
   },
   "results": [
     {
@@ -182,47 +183,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 36,
-            "median": 37.2,
-            "p95": 40.9,
-            "max": 41.3
+            "min": 28.5,
+            "median": 29.1,
+            "p95": 29.8,
+            "max": 30
           },
           "total": {
             "n": 7,
-            "min": 42.3,
-            "median": 43,
-            "p95": 46.5,
-            "max": 47.3
+            "min": 32,
+            "median": 33.8,
+            "p95": 35.3,
+            "max": 35.7
           },
           "bytes": {
             "n": 7,
-            "min": 107648,
-            "median": 107648,
-            "p95": 107648,
-            "max": 107648
+            "min": 107976,
+            "median": 107976,
+            "p95": 107976,
+            "max": 107976
           },
           "gzipBytes": {
             "n": 7,
-            "min": 22433,
-            "median": 22437,
-            "p95": 22442.5,
-            "max": 22444
+            "min": 22477,
+            "median": 22483,
+            "p95": 22487.8,
+            "max": 22489
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 27.2,
-            "median": 27.7,
-            "p95": 28.8,
-            "max": 28.9
+            "min": 23,
+            "median": 23.2,
+            "p95": 24.4,
+            "max": 24.8
           },
           "total": {
             "n": 7,
-            "min": 27.8,
-            "median": 28.2,
-            "p95": 29.3,
-            "max": 29.4
+            "min": 23.3,
+            "median": 23.8,
+            "p95": 25,
+            "max": 25.4
           },
           "bytes": {
             "n": 7,
@@ -233,10 +234,10 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 5989,
-            "median": 5996,
-            "p95": 5997.4,
-            "max": 5998
+            "min": 5985,
+            "median": 5989,
+            "p95": 5996.1,
+            "max": 5997
           }
         },
         "deferred": null
@@ -245,52 +246,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 72.4,
-          "median": 75,
-          "p95": 77.8,
-          "max": 78.2
+          "min": 59.6,
+          "median": 61.6,
+          "p95": 64.4,
+          "max": 64.4
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 112.9,
-          "median": 114.1,
-          "p95": 119.9,
-          "max": 120.7
+          "min": 99.8,
+          "median": 102,
+          "p95": 105,
+          "max": 105.3
         },
         "load": {
           "n": 7,
-          "min": 113.2,
-          "median": 114.6,
-          "p95": 120.3,
-          "max": 121.1
+          "min": 100.1,
+          "median": 102.4,
+          "p95": 105.4,
+          "max": 105.7
         },
         "fcp": {
           "n": 7,
-          "min": 212,
-          "median": 212,
-          "p95": 224.4,
-          "max": 228
+          "min": 204,
+          "median": 208,
+          "p95": 214.8,
+          "max": 216
         },
         "lcp": {
           "n": 7,
-          "min": 212,
-          "median": 212,
-          "p95": 224.4,
-          "max": 228
+          "min": 204,
+          "median": 208,
+          "p95": 214.8,
+          "max": 216
         },
         "ready": {
           "n": 7,
-          "min": 187,
-          "median": 187.3,
-          "p95": 220.2,
-          "max": 225.9
+          "min": 179.6,
+          "median": 196.2,
+          "p95": 200.6,
+          "max": 201.3
         },
         "tti": {
           "n": 7,
-          "min": 187,
-          "median": 187.3,
-          "p95": 220.2,
-          "max": 225.9
+          "min": 179.6,
+          "median": 196.2,
+          "p95": 200.6,
+          "max": 201.3
         },
         "totalBlockingTime": {
           "n": 7,
@@ -308,38 +309,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 4718,
-          "median": 4718,
-          "p95": 4718,
-          "max": 4718
+          "min": 4719,
+          "median": 4719,
+          "p95": 4719,
+          "max": 4719
         },
         "jsHeap": {
           "n": 7,
-          "min": 22155766,
-          "median": 22226650,
-          "p95": 22281042,
-          "max": 22291158
+          "min": 22168810,
+          "median": 22204586,
+          "p95": 22243616.7,
+          "max": 22245663
         },
         "transferBytes": {
           "n": 7,
-          "min": 107948,
-          "median": 107948,
-          "p95": 107948,
-          "max": 107948
+          "min": 108276,
+          "median": 108276,
+          "p95": 108276,
+          "max": 108276
         },
         "requests": {
           "n": 7,
-          "min": 176,
-          "median": 176,
-          "p95": 176,
-          "max": 176
+          "min": 177,
+          "median": 177,
+          "p95": 177,
+          "max": 177
         },
         "interaction": {
           "n": 7,
-          "min": 128.5,
-          "median": 140.4,
-          "p95": 142.9,
-          "max": 143
+          "min": 114.8,
+          "median": 117.7,
+          "p95": 125.2,
+          "max": 127.2
         }
       }
     },
@@ -350,47 +351,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 31.9,
-            "median": 32.2,
-            "p95": 33.5,
-            "max": 33.7
+            "min": 27.3,
+            "median": 27.9,
+            "p95": 30.2,
+            "max": 31.1
           },
           "total": {
             "n": 7,
-            "min": 36.4,
-            "median": 38.1,
-            "p95": 39.4,
-            "max": 39.8
+            "min": 30.8,
+            "median": 33.1,
+            "p95": 36.1,
+            "max": 37.1
           },
           "bytes": {
             "n": 7,
-            "min": 103876,
-            "median": 103876,
-            "p95": 103876,
-            "max": 103876
+            "min": 104216,
+            "median": 104216,
+            "p95": 104216,
+            "max": 104216
           },
           "gzipBytes": {
             "n": 7,
-            "min": 22071,
-            "median": 22073,
-            "p95": 22077,
-            "max": 22077
+            "min": 22130,
+            "median": 22135,
+            "p95": 22139.4,
+            "max": 22140
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 25.2,
-            "median": 26.2,
-            "p95": 31.6,
-            "max": 33.8
+            "min": 21.9,
+            "median": 23.4,
+            "p95": 23.9,
+            "max": 24
           },
           "total": {
             "n": 7,
-            "min": 25.7,
-            "median": 26.5,
-            "p95": 32.5,
-            "max": 34.4
+            "min": 22.3,
+            "median": 23.8,
+            "p95": 24.6,
+            "max": 24.7
           },
           "bytes": {
             "n": 7,
@@ -403,8 +404,8 @@
             "n": 7,
             "min": 5989,
             "median": 5992,
-            "p95": 5994.4,
-            "max": 5995
+            "p95": 5994,
+            "max": 5994
           }
         },
         "deferred": null
@@ -413,52 +414,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 68.3,
-          "median": 72.6,
-          "p95": 74.8,
-          "max": 74.9
+          "min": 54.5,
+          "median": 57.5,
+          "p95": 61.8,
+          "max": 62.4
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 95.5,
-          "median": 99,
-          "p95": 101.5,
-          "max": 101.9
+          "min": 80.9,
+          "median": 84.1,
+          "p95": 87.5,
+          "max": 87.9
         },
         "load": {
           "n": 7,
-          "min": 95.6,
-          "median": 99.1,
-          "p95": 101.5,
-          "max": 102
+          "min": 80.9,
+          "median": 84.2,
+          "p95": 87.6,
+          "max": 88
         },
         "fcp": {
           "n": 7,
-          "min": 232,
-          "median": 236,
-          "p95": 238.8,
-          "max": 240
+          "min": 216,
+          "median": 220,
+          "p95": 228,
+          "max": 228
         },
         "lcp": {
           "n": 7,
-          "min": 232,
-          "median": 236,
-          "p95": 238.8,
-          "max": 240
+          "min": 216,
+          "median": 220,
+          "p95": 228,
+          "max": 228
         },
         "ready": {
           "n": 7,
-          "min": 235.3,
-          "median": 237.5,
-          "p95": 242,
-          "max": 243
+          "min": 224.9,
+          "median": 228.4,
+          "p95": 231.8,
+          "max": 233.1
         },
         "tti": {
           "n": 7,
-          "min": 235.3,
-          "median": 237.5,
-          "p95": 242,
-          "max": 243
+          "min": 224.9,
+          "median": 228.4,
+          "p95": 231.8,
+          "max": 233.1
         },
         "totalBlockingTime": {
           "n": 7,
@@ -476,38 +477,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 4710,
-          "median": 4710,
-          "p95": 4710,
-          "max": 4710
+          "min": 4711,
+          "median": 4711,
+          "p95": 4711,
+          "max": 4711
         },
         "jsHeap": {
           "n": 7,
-          "min": 56046115,
-          "median": 58848390,
-          "p95": 66667274.2,
-          "max": 68988127
+          "min": 58496174,
+          "median": 58962502,
+          "p95": 60755206.4,
+          "max": 61481378
         },
         "transferBytes": {
           "n": 7,
-          "min": 104176,
-          "median": 104176,
-          "p95": 104176,
-          "max": 104176
+          "min": 104516,
+          "median": 104516,
+          "p95": 104516,
+          "max": 104516
         },
         "requests": {
           "n": 7,
-          "min": 168,
-          "median": 168,
-          "p95": 168,
-          "max": 168
+          "min": 169,
+          "median": 169,
+          "p95": 169,
+          "max": 169
         },
         "interaction": {
           "n": 7,
-          "min": 134,
-          "median": 141.4,
-          "p95": 143.6,
-          "max": 143.7
+          "min": 118.4,
+          "median": 134,
+          "p95": 139.8,
+          "max": 141.5
         }
       }
     },
@@ -518,47 +519,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 34.6,
-            "median": 35.4,
-            "p95": 37.7,
-            "max": 38.5
+            "min": 29.1,
+            "median": 29.6,
+            "p95": 31.7,
+            "max": 32.6
           },
           "total": {
             "n": 7,
-            "min": 38,
-            "median": 40.7,
-            "p95": 44.9,
-            "max": 46.5
+            "min": 31.9,
+            "median": 35.4,
+            "p95": 37.5,
+            "max": 38.3
           },
           "bytes": {
             "n": 7,
-            "min": 107784,
-            "median": 107784,
-            "p95": 107784,
-            "max": 107784
+            "min": 108120,
+            "median": 108120,
+            "p95": 108120,
+            "max": 108120
           },
           "gzipBytes": {
             "n": 7,
-            "min": 22459,
-            "median": 22462,
-            "p95": 22464,
-            "max": 22464
+            "min": 22534,
+            "median": 22535,
+            "p95": 22539.9,
+            "max": 22542
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 25.9,
-            "median": 26.5,
-            "p95": 27.4,
-            "max": 27.6
+            "min": 21.9,
+            "median": 23,
+            "p95": 23.3,
+            "max": 23.5
           },
           "total": {
             "n": 7,
-            "min": 26.2,
-            "median": 27.1,
-            "p95": 28.1,
-            "max": 28.3
+            "min": 22.3,
+            "median": 23.7,
+            "p95": 24.2,
+            "max": 24.3
           },
           "bytes": {
             "n": 7,
@@ -569,8 +570,8 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 5991,
-            "median": 5996,
+            "min": 5996,
+            "median": 5999,
             "p95": 6000.4,
             "max": 6001
           }
@@ -581,52 +582,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 71.8,
-          "median": 75.1,
-          "p95": 76.6,
-          "max": 76.8
+          "min": 56.8,
+          "median": 60.5,
+          "p95": 63.2,
+          "max": 63.3
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 105.8,
-          "median": 110.5,
-          "p95": 113.7,
-          "max": 114.6
+          "min": 92,
+          "median": 95.9,
+          "p95": 98.5,
+          "max": 99
         },
         "load": {
           "n": 7,
-          "min": 105.8,
-          "median": 110.5,
-          "p95": 113.8,
-          "max": 114.7
+          "min": 92.1,
+          "median": 96,
+          "p95": 98.6,
+          "max": 99
         },
         "fcp": {
           "n": 7,
-          "min": 280,
-          "median": 284,
-          "p95": 290.8,
-          "max": 292
+          "min": 272,
+          "median": 276,
+          "p95": 280,
+          "max": 280
         },
         "lcp": {
           "n": 7,
-          "min": 280,
-          "median": 284,
-          "p95": 290.8,
-          "max": 292
+          "min": 272,
+          "median": 276,
+          "p95": 280,
+          "max": 280
         },
         "ready": {
           "n": 7,
-          "min": 278,
-          "median": 285.3,
-          "p95": 291.5,
-          "max": 291.9
+          "min": 273.2,
+          "median": 277.8,
+          "p95": 281.4,
+          "max": 281.5
         },
         "tti": {
           "n": 7,
-          "min": 278,
-          "median": 285.3,
-          "p95": 291.5,
-          "max": 291.9
+          "min": 273.2,
+          "median": 277.8,
+          "p95": 281.4,
+          "max": 281.5
         },
         "totalBlockingTime": {
           "n": 7,
@@ -644,38 +645,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 4838,
-          "median": 4838,
-          "p95": 4838,
-          "max": 4838
+          "min": 4839,
+          "median": 4839,
+          "p95": 4839,
+          "max": 4839
         },
         "jsHeap": {
           "n": 7,
-          "min": 39978880,
-          "median": 49400326,
-          "p95": 55871260.1,
-          "max": 56816882
+          "min": 40316269,
+          "median": 40321445,
+          "p95": 55845459.8,
+          "max": 56378609
         },
         "transferBytes": {
           "n": 7,
-          "min": 108084,
-          "median": 108084,
-          "p95": 108084,
-          "max": 108084
+          "min": 108420,
+          "median": 108420,
+          "p95": 108420,
+          "max": 108420
         },
         "requests": {
           "n": 7,
-          "min": 194,
-          "median": 194,
-          "p95": 194,
-          "max": 194
+          "min": 195,
+          "median": 195,
+          "p95": 195,
+          "max": 195
         },
         "interaction": {
           "n": 7,
-          "min": 146.1,
-          "median": 161.7,
-          "p95": 164.6,
-          "max": 165.2
+          "min": 141.1,
+          "median": 147.5,
+          "p95": 158.4,
+          "max": 159.8
         }
       }
     },
@@ -686,17 +687,17 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 62,
-            "median": 64.3,
-            "p95": 66.4,
-            "max": 66.5
+            "min": 66.9,
+            "median": 71.8,
+            "p95": 76.1,
+            "max": 76.4
           },
           "total": {
             "n": 7,
-            "min": 70.2,
-            "median": 74.4,
-            "p95": 75.7,
-            "max": 76.2
+            "min": 75.4,
+            "median": 81.7,
+            "p95": 85.3,
+            "max": 85.5
           },
           "bytes": {
             "n": 7,
@@ -707,26 +708,26 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 45740,
-            "median": 45743,
-            "p95": 45751,
-            "max": 45751
+            "min": 45744,
+            "median": 45753,
+            "p95": 45756.7,
+            "max": 45757
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 63.2,
-            "median": 63.9,
-            "p95": 64.8,
-            "max": 64.8
+            "min": 64,
+            "median": 64.8,
+            "p95": 69.7,
+            "max": 71
           },
           "total": {
             "n": 7,
-            "min": 71.9,
-            "median": 73,
-            "p95": 75.8,
-            "max": 76.4
+            "min": 72.8,
+            "median": 73.6,
+            "p95": 78.7,
+            "max": 80.2
           },
           "bytes": {
             "n": 7,
@@ -737,10 +738,10 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 39583,
-            "median": 39585,
-            "p95": 39586,
-            "max": 39586
+            "min": 39584,
+            "median": 39586,
+            "p95": 39587.7,
+            "max": 39588
           }
         },
         "deferred": null
@@ -749,59 +750,59 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 103.7,
-          "median": 106.4,
-          "p95": 112.4,
-          "max": 112.4
+          "min": 99.8,
+          "median": 105.4,
+          "p95": 107.2,
+          "max": 107.6
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 249,
-          "median": 251.1,
-          "p95": 257.6,
-          "max": 259.3
+          "min": 234.3,
+          "median": 251.5,
+          "p95": 252,
+          "max": 252.1
         },
         "load": {
           "n": 7,
-          "min": 249.9,
-          "median": 253.1,
-          "p95": 258.7,
-          "max": 260.2
+          "min": 240.1,
+          "median": 252.4,
+          "p95": 252.9,
+          "max": 253
         },
         "fcp": {
           "n": 7,
-          "min": 164,
+          "min": 160,
           "median": 164,
-          "p95": 234,
-          "max": 264
+          "p95": 256.4,
+          "max": 260
         },
         "lcp": {
           "n": 7,
-          "min": 264,
+          "min": 248,
           "median": 264,
-          "p95": 270.8,
-          "max": 272
+          "p95": 264,
+          "max": 264
         },
         "ready": {
           "n": 7,
-          "min": 275.8,
-          "median": 278.1,
-          "p95": 284.4,
-          "max": 286
+          "min": 262,
+          "median": 278.6,
+          "p95": 279,
+          "max": 279
         },
         "tti": {
           "n": 7,
-          "min": 275.8,
-          "median": 278.1,
-          "p95": 284.4,
-          "max": 286
+          "min": 262,
+          "median": 278.6,
+          "p95": 279,
+          "max": 279
         },
         "totalBlockingTime": {
           "n": 7,
           "min": 0,
           "median": 30,
-          "p95": 31,
-          "max": 31
+          "p95": 31.7,
+          "max": 32
         },
         "longTasks": {
           "n": 7,
@@ -819,17 +820,17 @@
         },
         "jsHeap": {
           "n": 7,
-          "min": 13003534,
-          "median": 13111238,
-          "p95": 13182764,
-          "max": 13198046
+          "min": 9899270,
+          "median": 13082262,
+          "p95": 13212242,
+          "max": 13237706
         },
         "transferBytes": {
           "n": 7,
-          "min": 54965,
-          "median": 54968,
-          "p95": 54971.8,
-          "max": 54973
+          "min": 54972,
+          "median": 54975,
+          "p95": 54978.8,
+          "max": 54980
         },
         "requests": {
           "n": 7,
@@ -840,10 +841,10 @@
         },
         "interaction": {
           "n": 7,
-          "min": 247.5,
-          "median": 255.5,
-          "p95": 262.1,
-          "max": 262.7
+          "min": 238,
+          "median": 253.4,
+          "p95": 258.2,
+          "max": 258.5
         }
       }
     },
@@ -854,47 +855,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 162.5,
-            "median": 166,
-            "p95": 167.6,
-            "max": 167.6
+            "min": 144.3,
+            "median": 145.4,
+            "p95": 176.4,
+            "max": 188.7
           },
           "total": {
             "n": 7,
-            "min": 178.2,
-            "median": 181.3,
-            "p95": 183.5,
-            "max": 183.7
+            "min": 153.9,
+            "median": 156.9,
+            "p95": 188.3,
+            "max": 200.2
           },
           "bytes": {
             "n": 7,
-            "min": 513355,
-            "median": 513355,
-            "p95": 513355,
-            "max": 513355
+            "min": 513683,
+            "median": 513683,
+            "p95": 513683,
+            "max": 513683
           },
           "gzipBytes": {
             "n": 7,
-            "min": 55461,
-            "median": 55464,
-            "p95": 55466.7,
-            "max": 55467
+            "min": 55508,
+            "median": 55509,
+            "p95": 55511.1,
+            "max": 55512
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 139.8,
-            "median": 140.4,
-            "p95": 142.3,
-            "max": 142.4
+            "min": 126.4,
+            "median": 129.6,
+            "p95": 131.6,
+            "max": 131.6
           },
           "total": {
             "n": 7,
-            "min": 141.8,
-            "median": 142.7,
-            "p95": 144.5,
-            "max": 144.7
+            "min": 127.6,
+            "median": 131.8,
+            "p95": 134.2,
+            "max": 134.3
           },
           "bytes": {
             "n": 7,
@@ -906,9 +907,9 @@
           "gzipBytes": {
             "n": 7,
             "min": 39596,
-            "median": 39604,
-            "p95": 39616.6,
-            "max": 39619
+            "median": 39601,
+            "p95": 39605,
+            "max": 39605
           }
         },
         "deferred": null
@@ -917,52 +918,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 188.6,
-          "median": 192.2,
-          "p95": 197.8,
-          "max": 199.1
+          "min": 164.7,
+          "median": 168.6,
+          "p95": 172,
+          "max": 172.2
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 237.8,
-          "median": 241.6,
-          "p95": 249.2,
-          "max": 250.7
+          "min": 213.1,
+          "median": 218.9,
+          "p95": 223.5,
+          "max": 223.7
         },
         "load": {
           "n": 7,
-          "min": 238.2,
-          "median": 242.1,
-          "p95": 249.7,
-          "max": 251.3
+          "min": 213.5,
+          "median": 219.2,
+          "p95": 224.4,
+          "max": 224.5
         },
         "fcp": {
           "n": 7,
-          "min": 320,
-          "median": 328,
-          "p95": 334.8,
-          "max": 336
+          "min": 304,
+          "median": 312,
+          "p95": 312,
+          "max": 312
         },
         "lcp": {
           "n": 7,
-          "min": 320,
-          "median": 328,
-          "p95": 334.8,
-          "max": 336
+          "min": 304,
+          "median": 312,
+          "p95": 312,
+          "max": 312
         },
         "ready": {
           "n": 7,
-          "min": 302.9,
-          "median": 310.6,
-          "p95": 317.2,
-          "max": 317.5
+          "min": 283.6,
+          "median": 289.8,
+          "p95": 300.4,
+          "max": 303.2
         },
         "tti": {
           "n": 7,
-          "min": 302.9,
-          "median": 310.6,
-          "p95": 317.2,
-          "max": 317.5
+          "min": 283.6,
+          "median": 289.8,
+          "p95": 300.4,
+          "max": 303.2
         },
         "totalBlockingTime": {
           "n": 7,
@@ -980,38 +981,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 1770,
-          "median": 1770,
-          "p95": 1770,
-          "max": 1770
+          "min": 1771,
+          "median": 1771,
+          "p95": 1771,
+          "max": 1771
         },
         "jsHeap": {
           "n": 7,
-          "min": 17892513,
-          "median": 18097635,
-          "p95": 18176515.9,
-          "max": 18195235
+          "min": 17728774,
+          "median": 17928095,
+          "p95": 18146159.3,
+          "max": 18162341
         },
         "transferBytes": {
           "n": 7,
-          "min": 513655,
-          "median": 513655,
-          "p95": 513655,
-          "max": 513655
+          "min": 513983,
+          "median": 513983,
+          "p95": 513983,
+          "max": 513983
         },
         "requests": {
           "n": 7,
-          "min": 176,
-          "median": 176,
-          "p95": 176,
-          "max": 176
+          "min": 177,
+          "median": 177,
+          "p95": 177,
+          "max": 177
         },
         "interaction": {
           "n": 7,
-          "min": 233.5,
-          "median": 241.8,
-          "p95": 250.9,
-          "max": 252
+          "min": 226.7,
+          "median": 238.8,
+          "p95": 244.1,
+          "max": 244.8
         }
       }
     },
@@ -1022,47 +1023,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 136.4,
-            "median": 139.1,
-            "p95": 139.7,
-            "max": 139.8
+            "min": 126.6,
+            "median": 127.9,
+            "p95": 130.1,
+            "max": 130.3
           },
           "total": {
             "n": 7,
-            "min": 151,
-            "median": 154,
-            "p95": 155.9,
-            "max": 156.1
+            "min": 141.6,
+            "median": 143.5,
+            "p95": 144.9,
+            "max": 145.1
           },
           "bytes": {
             "n": 7,
-            "min": 507783,
-            "median": 507783,
-            "p95": 507783,
-            "max": 507783
+            "min": 508123,
+            "median": 508123,
+            "p95": 508123,
+            "max": 508123
           },
           "gzipBytes": {
             "n": 7,
-            "min": 55052,
-            "median": 55053,
-            "p95": 55055.4,
-            "max": 55056
+            "min": 55101,
+            "median": 55104,
+            "p95": 55105.4,
+            "max": 55106
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 137.9,
-            "median": 139.4,
-            "p95": 141,
-            "max": 141.5
+            "min": 126.4,
+            "median": 130.4,
+            "p95": 131.8,
+            "max": 132.3
           },
           "total": {
             "n": 7,
-            "min": 140,
-            "median": 141.7,
-            "p95": 142.9,
-            "max": 143.2
+            "min": 127.3,
+            "median": 132.3,
+            "p95": 134,
+            "max": 134.2
           },
           "bytes": {
             "n": 7,
@@ -1073,10 +1074,10 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 39536,
-            "median": 39538,
-            "p95": 39543.1,
-            "max": 39544
+            "min": 39533,
+            "median": 39537,
+            "p95": 39548,
+            "max": 39548
           }
         },
         "deferred": null
@@ -1085,52 +1086,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 151.2,
-          "median": 153.8,
-          "p95": 169.5,
-          "max": 175.8
+          "min": 140,
+          "median": 140.9,
+          "p95": 141.7,
+          "max": 142
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 184.8,
-          "median": 189.6,
-          "p95": 207.1,
-          "max": 214.2
+          "min": 172.8,
+          "median": 175.6,
+          "p95": 176.2,
+          "max": 176.2
         },
         "load": {
           "n": 7,
-          "min": 184.9,
-          "median": 189.6,
-          "p95": 207.2,
-          "max": 214.3
+          "min": 172.9,
+          "median": 175.7,
+          "p95": 177,
+          "max": 177.4
         },
         "fcp": {
           "n": 7,
-          "min": 296,
-          "median": 304,
-          "p95": 323.6,
-          "max": 332
+          "min": 288,
+          "median": 292,
+          "p95": 294.8,
+          "max": 296
         },
         "lcp": {
           "n": 7,
-          "min": 296,
-          "median": 304,
-          "p95": 323.6,
-          "max": 332
+          "min": 288,
+          "median": 292,
+          "p95": 294.8,
+          "max": 296
         },
         "ready": {
           "n": 7,
-          "min": 291.1,
-          "median": 295.6,
-          "p95": 316.5,
-          "max": 324.2
+          "min": 277.1,
+          "median": 285.4,
+          "p95": 289.1,
+          "max": 290
         },
         "tti": {
           "n": 7,
-          "min": 291.1,
-          "median": 295.6,
-          "p95": 316.5,
-          "max": 324.2
+          "min": 277.1,
+          "median": 285.4,
+          "p95": 289.1,
+          "max": 290
         },
         "totalBlockingTime": {
           "n": 7,
@@ -1148,38 +1149,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 1762,
-          "median": 1762,
-          "p95": 1762,
-          "max": 1762
+          "min": 1763,
+          "median": 1763,
+          "p95": 1763,
+          "max": 1763
         },
         "jsHeap": {
           "n": 7,
-          "min": 29153553,
-          "median": 29881829,
-          "p95": 30261658.3,
-          "max": 30271111
+          "min": 31093361,
+          "median": 32098673,
+          "p95": 32156517,
+          "max": 32173929
         },
         "transferBytes": {
           "n": 7,
-          "min": 508083,
-          "median": 508083,
-          "p95": 508083,
-          "max": 508083
+          "min": 508423,
+          "median": 508423,
+          "p95": 508423,
+          "max": 508423
         },
         "requests": {
           "n": 7,
-          "min": 168,
-          "median": 168,
-          "p95": 168,
-          "max": 168
+          "min": 169,
+          "median": 169,
+          "p95": 169,
+          "max": 169
         },
         "interaction": {
           "n": 7,
-          "min": 237.1,
-          "median": 248.1,
-          "p95": 260,
-          "max": 263.5
+          "min": 216.4,
+          "median": 228.5,
+          "p95": 246.2,
+          "max": 251
         }
       }
     },
@@ -1190,47 +1191,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 139.2,
-            "median": 141.3,
-            "p95": 148.6,
-            "max": 149.8
+            "min": 128.7,
+            "median": 130.3,
+            "p95": 133.9,
+            "max": 134.6
           },
           "total": {
             "n": 7,
-            "min": 153.7,
-            "median": 156.2,
-            "p95": 163.9,
-            "max": 165.4
+            "min": 145.1,
+            "median": 146.4,
+            "p95": 149.6,
+            "max": 150.4
           },
           "bytes": {
             "n": 7,
-            "min": 514391,
-            "median": 514391,
-            "p95": 514391,
-            "max": 514391
+            "min": 514727,
+            "median": 514727,
+            "p95": 514727,
+            "max": 514727
           },
           "gzipBytes": {
             "n": 7,
-            "min": 55536,
-            "median": 55538,
-            "p95": 55539,
-            "max": 55539
+            "min": 55616,
+            "median": 55618,
+            "p95": 55622.5,
+            "max": 55624
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 138.4,
-            "median": 139.5,
-            "p95": 141.4,
-            "max": 141.7
+            "min": 129.9,
+            "median": 130.5,
+            "p95": 132,
+            "max": 132.2
           },
           "total": {
             "n": 7,
-            "min": 140.4,
-            "median": 141.9,
-            "p95": 143.8,
-            "max": 144.3
+            "min": 132.3,
+            "median": 132.8,
+            "p95": 134.1,
+            "max": 134.2
           },
           "bytes": {
             "n": 7,
@@ -1241,10 +1242,10 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 39628,
-            "median": 39634,
-            "p95": 39635.7,
-            "max": 39636
+            "min": 39635,
+            "median": 39637,
+            "p95": 39642,
+            "max": 39642
           }
         },
         "deferred": null
@@ -1253,52 +1254,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 153.7,
-          "median": 158.6,
-          "p95": 185.3,
-          "max": 185.4
+          "min": 140.6,
+          "median": 143.6,
+          "p95": 150,
+          "max": 152.7
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 196.9,
-          "median": 206.6,
-          "p95": 235.1,
-          "max": 236.4
+          "min": 183.6,
+          "median": 187.6,
+          "p95": 195.8,
+          "max": 198.8
         },
         "load": {
           "n": 7,
-          "min": 197,
-          "median": 207.8,
-          "p95": 235.2,
-          "max": 236.5
+          "min": 183.8,
+          "median": 187.7,
+          "p95": 195.9,
+          "max": 198.9
         },
         "fcp": {
           "n": 7,
-          "min": 332,
-          "median": 344,
-          "p95": 392.8,
-          "max": 400
+          "min": 324,
+          "median": 332,
+          "p95": 340.4,
+          "max": 344
         },
         "lcp": {
           "n": 7,
-          "min": 332,
-          "median": 344,
-          "p95": 392.8,
-          "max": 400
+          "min": 324,
+          "median": 332,
+          "p95": 340.4,
+          "max": 344
         },
         "ready": {
           "n": 7,
-          "min": 327.4,
-          "median": 338.8,
-          "p95": 386,
-          "max": 393.5
+          "min": 319.5,
+          "median": 324.1,
+          "p95": 334.3,
+          "max": 337.8
         },
         "tti": {
           "n": 7,
-          "min": 327.4,
-          "median": 338.8,
-          "p95": 386,
-          "max": 393.5
+          "min": 319.5,
+          "median": 324.1,
+          "p95": 334.3,
+          "max": 337.8
         },
         "totalBlockingTime": {
           "n": 7,
@@ -1316,38 +1317,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 1814,
-          "median": 1814,
-          "p95": 1814,
-          "max": 1814
+          "min": 1815,
+          "median": 1815,
+          "p95": 1815,
+          "max": 1815
         },
         "jsHeap": {
           "n": 7,
-          "min": 23379794,
-          "median": 23385918,
-          "p95": 39273305.7,
-          "max": 39360063
+          "min": 23463752,
+          "median": 23825683,
+          "p95": 23833311,
+          "max": 23834235
         },
         "transferBytes": {
           "n": 7,
-          "min": 514691,
-          "median": 514691,
-          "p95": 514691,
-          "max": 514691
+          "min": 515027,
+          "median": 515027,
+          "p95": 515027,
+          "max": 515027
         },
         "requests": {
           "n": 7,
-          "min": 194,
-          "median": 194,
-          "p95": 194,
-          "max": 194
+          "min": 195,
+          "median": 195,
+          "p95": 195,
+          "max": 195
         },
         "interaction": {
           "n": 7,
-          "min": 231,
-          "median": 246.8,
-          "p95": 264,
-          "max": 266.1
+          "min": 218.7,
+          "median": 233,
+          "p95": 244.1,
+          "max": 244.2
         }
       }
     },
@@ -1358,17 +1359,17 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 368.9,
-            "median": 369.5,
-            "p95": 373.3,
-            "max": 373.5
+            "min": 378.4,
+            "median": 382.4,
+            "p95": 384.2,
+            "max": 384.3
           },
           "total": {
             "n": 7,
-            "min": 448.9,
-            "median": 451.4,
-            "p95": 459.6,
-            "max": 459.9
+            "min": 457.7,
+            "median": 462.6,
+            "p95": 464.2,
+            "max": 464.7
           },
           "bytes": {
             "n": 7,
@@ -1379,26 +1380,26 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 287730,
-            "median": 287735,
-            "p95": 287743.5,
-            "max": 287745
+            "min": 287735,
+            "median": 287742,
+            "p95": 287745.7,
+            "max": 287746
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 371.4,
-            "median": 375.2,
-            "p95": 376.8,
-            "max": 377
+            "min": 372.7,
+            "median": 375.8,
+            "p95": 379.9,
+            "max": 380.7
           },
           "total": {
             "n": 7,
-            "min": 456.5,
-            "median": 458.5,
-            "p95": 464.5,
-            "max": 464.9
+            "min": 455.8,
+            "median": 458.7,
+            "p95": 462.5,
+            "max": 462.7
           },
           "bytes": {
             "n": 7,
@@ -1409,10 +1410,10 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 297700,
-            "median": 297701,
-            "p95": 297702,
-            "max": 297702
+            "min": 297702,
+            "median": 297702,
+            "p95": 297703,
+            "max": 297703
           }
         },
         "deferred": null
@@ -1421,59 +1422,59 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 388.3,
-          "median": 396.8,
-          "p95": 433.8,
-          "max": 439.5
+          "min": 391.4,
+          "median": 402.2,
+          "p95": 405.1,
+          "max": 406.2
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 2249.5,
-          "median": 2268,
-          "p95": 2343.4,
-          "max": 2345.5
+          "min": 2243.7,
+          "median": 2264.6,
+          "p95": 2271.5,
+          "max": 2273.4
         },
         "load": {
           "n": 7,
-          "min": 2253.6,
-          "median": 2272.5,
-          "p95": 2347.5,
-          "max": 2349.6
+          "min": 2247.9,
+          "median": 2268.7,
+          "p95": 2275.6,
+          "max": 2277.6
         },
         "fcp": {
           "n": 7,
-          "min": 448,
-          "median": 480,
-          "p95": 514,
-          "max": 520
+          "min": 460,
+          "median": 468,
+          "p95": 547.6,
+          "max": 556
         },
         "lcp": {
           "n": 7,
-          "min": 2304,
-          "median": 2320,
-          "p95": 2397.6,
-          "max": 2400
+          "min": 2296,
+          "median": 2316,
+          "p95": 2322.8,
+          "max": 2324
         },
         "ready": {
           "n": 7,
-          "min": 2627.4,
-          "median": 2647.6,
-          "p95": 2730.8,
-          "max": 2735.5
+          "min": 2618.8,
+          "median": 2644.6,
+          "p95": 2655.7,
+          "max": 2657.9
         },
         "tti": {
           "n": 7,
-          "min": 2627.4,
-          "median": 2647.6,
-          "p95": 2730.8,
-          "max": 2735.5
+          "min": 2618.8,
+          "median": 2644.6,
+          "p95": 2655.7,
+          "max": 2657.9
         },
         "totalBlockingTime": {
           "n": 7,
-          "min": 1293,
-          "median": 1310,
-          "p95": 1340.5,
-          "max": 1351
+          "min": 1291,
+          "median": 1304,
+          "p95": 1313.9,
+          "max": 1316
         },
         "longTasks": {
           "n": 7,
@@ -1491,17 +1492,17 @@
         },
         "jsHeap": {
           "n": 7,
-          "min": 45228439,
-          "median": 49859197,
-          "p95": 50276846.5,
-          "max": 50355481
+          "min": 45315203,
+          "median": 49782594,
+          "p95": 50405129.7,
+          "max": 50524263
         },
         "transferBytes": {
           "n": 7,
-          "min": 372923,
-          "median": 372931,
-          "p95": 372936.4,
-          "max": 372937
+          "min": 372934,
+          "median": 372941,
+          "p95": 372943.4,
+          "max": 372944
         },
         "requests": {
           "n": 7,
@@ -1512,10 +1513,10 @@
         },
         "interaction": {
           "n": 7,
-          "min": 2345.8,
+          "min": 2294.5,
           "median": 2380,
-          "p95": 2410.9,
-          "max": 2418
+          "p95": 2414.7,
+          "max": 2416.6
         }
       }
     },
@@ -1526,47 +1527,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 26.2,
-            "median": 26.6,
-            "p95": 26.9,
-            "max": 26.9
+            "min": 18.7,
+            "median": 19,
+            "p95": 19.3,
+            "max": 19.4
           },
           "total": {
             "n": 7,
-            "min": 32.2,
-            "median": 32.7,
-            "p95": 32.8,
-            "max": 32.8
+            "min": 24.4,
+            "median": 24.8,
+            "p95": 25.2,
+            "max": 25.2
           },
           "bytes": {
             "n": 7,
-            "min": 90867,
-            "median": 90867,
-            "p95": 90867,
-            "max": 90867
+            "min": 91195,
+            "median": 91195,
+            "p95": 91195,
+            "max": 91195
           },
           "gzipBytes": {
             "n": 7,
-            "min": 23016,
-            "median": 23018,
-            "p95": 23018,
-            "max": 23018
+            "min": 23065,
+            "median": 23067,
+            "p95": 23070,
+            "max": 23070
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 16.8,
-            "median": 17.7,
-            "p95": 18.1,
-            "max": 18.1
+            "min": 12.2,
+            "median": 13.2,
+            "p95": 13.4,
+            "max": 13.4
           },
           "total": {
             "n": 7,
-            "min": 17.3,
-            "median": 18.1,
-            "p95": 18.5,
-            "max": 18.6
+            "min": 12.5,
+            "median": 13.5,
+            "p95": 13.8,
+            "max": 13.8
           },
           "bytes": {
             "n": 7,
@@ -1590,52 +1591,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 57.8,
-          "median": 62,
-          "p95": 63.9,
-          "max": 64
+          "min": 42.4,
+          "median": 46.3,
+          "p95": 49.8,
+          "max": 50.9
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 97.2,
-          "median": 102.3,
-          "p95": 105.8,
-          "max": 107.1
+          "min": 83,
+          "median": 87.5,
+          "p95": 92.5,
+          "max": 92.8
         },
         "load": {
           "n": 7,
-          "min": 97.6,
-          "median": 102.8,
-          "p95": 106.3,
-          "max": 107.6
+          "min": 83.4,
+          "median": 87.9,
+          "p95": 92.8,
+          "max": 93.1
         },
         "fcp": {
           "n": 7,
-          "min": 196,
-          "median": 200,
-          "p95": 206.8,
-          "max": 208
+          "min": 184,
+          "median": 188,
+          "p95": 192,
+          "max": 192
         },
         "lcp": {
           "n": 7,
-          "min": 196,
-          "median": 200,
-          "p95": 206.8,
-          "max": 208
+          "min": 184,
+          "median": 188,
+          "p95": 192,
+          "max": 192
         },
         "ready": {
           "n": 7,
-          "min": 183.2,
-          "median": 187.8,
-          "p95": 196.5,
-          "max": 200
+          "min": 168.8,
+          "median": 173.5,
+          "p95": 186.4,
+          "max": 186.4
         },
         "tti": {
           "n": 7,
-          "min": 183.2,
-          "median": 187.8,
-          "p95": 196.5,
-          "max": 200
+          "min": 168.8,
+          "median": 173.5,
+          "p95": 186.4,
+          "max": 186.4
         },
         "totalBlockingTime": {
           "n": 7,
@@ -1653,38 +1654,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 2334,
-          "median": 2334,
-          "p95": 2334,
-          "max": 2334
+          "min": 2335,
+          "median": 2335,
+          "p95": 2335,
+          "max": 2335
         },
         "jsHeap": {
           "n": 7,
-          "min": 19924041,
-          "median": 19946433,
-          "p95": 19972297.4,
-          "max": 19975385
+          "min": 19976473,
+          "median": 19996269,
+          "p95": 20059057,
+          "max": 20065297
         },
         "transferBytes": {
           "n": 7,
-          "min": 91167,
-          "median": 91167,
-          "p95": 91167,
-          "max": 91167
+          "min": 91495,
+          "median": 91495,
+          "p95": 91495,
+          "max": 91495
         },
         "requests": {
           "n": 7,
-          "min": 176,
-          "median": 176,
-          "p95": 176,
-          "max": 176
+          "min": 177,
+          "median": 177,
+          "p95": 177,
+          "max": 177
         },
         "interaction": {
           "n": 7,
-          "min": 234.2,
-          "median": 242.9,
-          "p95": 246.5,
-          "max": 247.3
+          "min": 211.5,
+          "median": 227.4,
+          "p95": 235.6,
+          "max": 237.3
         }
       }
     },
@@ -1695,47 +1696,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 23.8,
-            "median": 24.2,
-            "p95": 26.1,
-            "max": 26.7
+            "min": 17.8,
+            "median": 18.1,
+            "p95": 18.6,
+            "max": 18.7
           },
           "total": {
             "n": 7,
-            "min": 29.2,
-            "median": 29.9,
-            "p95": 32.8,
-            "max": 34
+            "min": 21.5,
+            "median": 23.5,
+            "p95": 24.2,
+            "max": 24.3
           },
           "bytes": {
             "n": 7,
-            "min": 87299,
-            "median": 87299,
-            "p95": 87299,
-            "max": 87299
+            "min": 87639,
+            "median": 87639,
+            "p95": 87639,
+            "max": 87639
           },
           "gzipBytes": {
             "n": 7,
-            "min": 22663,
-            "median": 22665,
-            "p95": 22668.4,
-            "max": 22669
+            "min": 22724,
+            "median": 22724,
+            "p95": 22726.4,
+            "max": 22727
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 16.5,
-            "median": 17.1,
-            "p95": 17.4,
-            "max": 17.4
+            "min": 12.8,
+            "median": 13.2,
+            "p95": 14.1,
+            "max": 14.3
           },
           "total": {
             "n": 7,
-            "min": 16.8,
-            "median": 17.5,
-            "p95": 17.7,
-            "max": 17.8
+            "min": 13.1,
+            "median": 13.6,
+            "p95": 14.3,
+            "max": 14.5
           },
           "bytes": {
             "n": 7,
@@ -1759,52 +1760,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 51.6,
-          "median": 53.7,
-          "p95": 59.8,
-          "max": 61
+          "min": 42.3,
+          "median": 45.3,
+          "p95": 48.1,
+          "max": 48.5
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 77.3,
-          "median": 82,
-          "p95": 87.8,
-          "max": 89.6
+          "min": 69.1,
+          "median": 73.2,
+          "p95": 75.6,
+          "max": 76
         },
         "load": {
           "n": 7,
-          "min": 77.3,
-          "median": 82.1,
-          "p95": 87.9,
-          "max": 89.7
+          "min": 69.2,
+          "median": 73.3,
+          "p95": 75.7,
+          "max": 76
         },
         "fcp": {
           "n": 7,
-          "min": 212,
-          "median": 220,
-          "p95": 235.2,
-          "max": 240
+          "min": 204,
+          "median": 216,
+          "p95": 218.8,
+          "max": 220
         },
         "lcp": {
           "n": 7,
-          "min": 212,
-          "median": 220,
-          "p95": 235.2,
-          "max": 240
+          "min": 204,
+          "median": 216,
+          "p95": 218.8,
+          "max": 220
         },
         "ready": {
           "n": 7,
-          "min": 210.8,
-          "median": 217.5,
-          "p95": 229.7,
-          "max": 232.9
+          "min": 202.3,
+          "median": 207.8,
+          "p95": 213.9,
+          "max": 215.5
         },
         "tti": {
           "n": 7,
-          "min": 210.8,
-          "median": 217.5,
-          "p95": 229.7,
-          "max": 232.9
+          "min": 202.3,
+          "median": 207.8,
+          "p95": 213.9,
+          "max": 215.5
         },
         "totalBlockingTime": {
           "n": 7,
@@ -1822,38 +1823,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 2347,
-          "median": 2347,
-          "p95": 2347,
-          "max": 2347
+          "min": 2348,
+          "median": 2348,
+          "p95": 2348,
+          "max": 2348
         },
         "jsHeap": {
           "n": 7,
-          "min": 32915919,
-          "median": 35085932,
-          "p95": 35094433.2,
-          "max": 35095584
+          "min": 32966022,
+          "median": 33141190,
+          "p95": 33355975.6,
+          "max": 33389170
         },
         "transferBytes": {
           "n": 7,
-          "min": 87599,
-          "median": 87599,
-          "p95": 87599,
-          "max": 87599
+          "min": 87939,
+          "median": 87939,
+          "p95": 87939,
+          "max": 87939
         },
         "requests": {
           "n": 7,
-          "min": 168,
-          "median": 168,
-          "p95": 168,
-          "max": 168
+          "min": 169,
+          "median": 169,
+          "p95": 169,
+          "max": 169
         },
         "interaction": {
           "n": 7,
-          "min": 227.9,
-          "median": 242,
-          "p95": 244.6,
-          "max": 244.6
+          "min": 219.2,
+          "median": 224.6,
+          "p95": 230.6,
+          "max": 231.6
         }
       }
     },
@@ -1864,47 +1865,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 26.1,
-            "median": 27.1,
-            "p95": 28.5,
-            "max": 28.9
+            "min": 18.7,
+            "median": 19.9,
+            "p95": 21,
+            "max": 21.5
           },
           "total": {
             "n": 7,
-            "min": 31.7,
-            "median": 32.7,
-            "p95": 34.2,
-            "max": 34.7
+            "min": 24.5,
+            "median": 25.7,
+            "p95": 26.8,
+            "max": 27.2
           },
           "bytes": {
             "n": 7,
-            "min": 90901,
-            "median": 90901,
-            "p95": 90901,
-            "max": 90901
+            "min": 91237,
+            "median": 91237,
+            "p95": 91237,
+            "max": 91237
           },
           "gzipBytes": {
             "n": 7,
-            "min": 23038,
-            "median": 23041,
-            "p95": 23043.4,
-            "max": 23044
+            "min": 23107,
+            "median": 23108,
+            "p95": 23112.1,
+            "max": 23113
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 16.3,
-            "median": 17.3,
-            "p95": 17.4,
-            "max": 17.4
+            "min": 12.4,
+            "median": 13.1,
+            "p95": 13.3,
+            "max": 13.3
           },
           "total": {
             "n": 7,
-            "min": 16.6,
-            "median": 17.7,
-            "p95": 17.8,
-            "max": 17.8
+            "min": 12.7,
+            "median": 13.4,
+            "p95": 13.6,
+            "max": 13.7
           },
           "bytes": {
             "n": 7,
@@ -1928,52 +1929,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 58,
-          "median": 60.3,
-          "p95": 65,
-          "max": 65.4
+          "min": 43.2,
+          "median": 48,
+          "p95": 49.9,
+          "max": 50.3
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 93,
-          "median": 95.9,
-          "p95": 107.2,
-          "max": 109.7
+          "min": 78.8,
+          "median": 83.6,
+          "p95": 90.6,
+          "max": 92.8
         },
         "load": {
           "n": 7,
-          "min": 93,
-          "median": 96,
-          "p95": 107.3,
-          "max": 109.8
+          "min": 78.9,
+          "median": 83.7,
+          "p95": 90.8,
+          "max": 93
         },
         "fcp": {
           "n": 7,
-          "min": 228,
-          "median": 232,
-          "p95": 243.2,
-          "max": 248
+          "min": 212,
+          "median": 220,
+          "p95": 231.2,
+          "max": 236
         },
         "lcp": {
           "n": 7,
-          "min": 228,
-          "median": 232,
-          "p95": 243.2,
-          "max": 248
+          "min": 212,
+          "median": 220,
+          "p95": 231.2,
+          "max": 236
         },
         "ready": {
           "n": 7,
-          "min": 225.8,
-          "median": 228.6,
-          "p95": 241.8,
-          "max": 246.1
+          "min": 212.1,
+          "median": 215.1,
+          "p95": 230.8,
+          "max": 236
         },
         "tti": {
           "n": 7,
-          "min": 225.8,
-          "median": 228.6,
-          "p95": 241.8,
-          "max": 246.1
+          "min": 212.1,
+          "median": 215.1,
+          "p95": 230.8,
+          "max": 236
         },
         "totalBlockingTime": {
           "n": 7,
@@ -1991,38 +1992,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 2220,
-          "median": 2220,
-          "p95": 2220,
-          "max": 2220
+          "min": 2221,
+          "median": 2221,
+          "p95": 2221,
+          "max": 2221
         },
         "jsHeap": {
           "n": 7,
-          "min": 27999145,
-          "median": 28297708,
-          "p95": 28320090,
-          "max": 28328400
+          "min": 25122573,
+          "median": 25126629,
+          "p95": 27575262.5,
+          "max": 28425170
         },
         "transferBytes": {
           "n": 7,
-          "min": 91201,
-          "median": 91201,
-          "p95": 91201,
-          "max": 91201
+          "min": 91537,
+          "median": 91537,
+          "p95": 91537,
+          "max": 91537
         },
         "requests": {
           "n": 7,
-          "min": 193,
-          "median": 193,
-          "p95": 193,
-          "max": 193
+          "min": 194,
+          "median": 194,
+          "p95": 194,
+          "max": 194
         },
         "interaction": {
           "n": 7,
-          "min": 220.1,
-          "median": 240.7,
-          "p95": 247.1,
-          "max": 248.7
+          "min": 220.8,
+          "median": 225.8,
+          "p95": 237.2,
+          "max": 240
         }
       }
     },
@@ -2033,17 +2034,17 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 32.6,
-            "median": 34.5,
-            "p95": 35.6,
-            "max": 35.6
+            "min": 33.5,
+            "median": 35.2,
+            "p95": 35.8,
+            "max": 36
           },
           "total": {
             "n": 7,
-            "min": 34.8,
-            "median": 36.7,
-            "p95": 38.2,
-            "max": 38.4
+            "min": 35.8,
+            "median": 37.1,
+            "p95": 37.7,
+            "max": 37.8
           },
           "bytes": {
             "n": 7,
@@ -2054,26 +2055,26 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 23621,
-            "median": 23627,
-            "p95": 23629.7,
-            "max": 23630
+            "min": 23622,
+            "median": 23630,
+            "p95": 23632.7,
+            "max": 23633
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 28.5,
-            "median": 29.6,
-            "p95": 30.5,
-            "max": 30.6
+            "min": 27.8,
+            "median": 29.7,
+            "p95": 30.1,
+            "max": 30.1
           },
           "total": {
             "n": 7,
-            "min": 30.4,
-            "median": 31.6,
+            "min": 29.7,
+            "median": 32,
             "p95": 32.4,
-            "max": 32.4
+            "max": 32.5
           },
           "bytes": {
             "n": 7,
@@ -2084,10 +2085,10 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 15827,
-            "median": 15827,
-            "p95": 15827,
-            "max": 15827
+            "min": 15835,
+            "median": 15835,
+            "p95": 15835,
+            "max": 15835
           }
         },
         "deferred": null,
@@ -2097,52 +2098,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 58.2,
-          "median": 66,
-          "p95": 69.3,
-          "max": 69.6
+          "min": 56.9,
+          "median": 62.6,
+          "p95": 67,
+          "max": 67.3
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 147.6,
-          "median": 153.3,
-          "p95": 159.7,
-          "max": 161.1
+          "min": 145.9,
+          "median": 150.9,
+          "p95": 154.6,
+          "max": 154.9
         },
         "load": {
           "n": 7,
-          "min": 150.6,
-          "median": 156.2,
-          "p95": 162.8,
-          "max": 164.2
+          "min": 148.8,
+          "median": 153.7,
+          "p95": 157.5,
+          "max": 157.8
         },
         "fcp": {
           "n": 7,
-          "min": 164,
+          "min": 160,
           "median": 176,
           "p95": 178.8,
           "max": 180
         },
         "lcp": {
           "n": 7,
-          "min": 164,
+          "min": 160,
           "median": 176,
           "p95": 178.8,
           "max": 180
         },
         "ready": {
           "n": 7,
-          "min": 160.2,
-          "median": 165.8,
-          "p95": 172.9,
-          "max": 174.5
+          "min": 158.7,
+          "median": 163.5,
+          "p95": 167.1,
+          "max": 167.4
         },
         "tti": {
           "n": 7,
-          "min": 160.2,
-          "median": 165.8,
-          "p95": 172.9,
-          "max": 174.5
+          "min": 158.7,
+          "median": 163.5,
+          "p95": 167.1,
+          "max": 167.4
         },
         "totalBlockingTime": {
           "n": 7,
@@ -2167,17 +2168,17 @@
         },
         "jsHeap": {
           "n": 7,
-          "min": 9587190,
-          "median": 9602982,
-          "p95": 9643913.6,
-          "max": 9650282
+          "min": 9576062,
+          "median": 9634034,
+          "p95": 9661127.2,
+          "max": 9670210
         },
         "transferBytes": {
           "n": 7,
-          "min": 27028,
-          "median": 27032,
-          "p95": 27037.4,
-          "max": 27038
+          "min": 27035,
+          "median": 27039,
+          "p95": 27047.5,
+          "max": 27049
         },
         "requests": {
           "n": 7,
@@ -2188,10 +2189,10 @@
         },
         "interaction": {
           "n": 7,
-          "min": 290.9,
-          "median": 292.8,
-          "p95": 296.7,
-          "max": 297.1
+          "min": 255,
+          "median": 286.7,
+          "p95": 294.4,
+          "max": 295.4
         }
       }
     },
@@ -2202,48 +2203,48 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 22.1,
-            "median": 23,
-            "p95": 24.6,
-            "max": 25.2
+            "min": 15.1,
+            "median": 15.6,
+            "p95": 17.6,
+            "max": 17.7
           },
           "total": {
             "n": 7,
-            "min": 25.4,
-            "median": 26.9,
-            "p95": 29.2,
-            "max": 29.9
+            "min": 19.4,
+            "median": 20,
+            "p95": 22.1,
+            "max": 22.2
           },
           "bytes": {
             "n": 7,
-            "min": 61339,
-            "median": 61339,
-            "p95": 61339,
-            "max": 61339
+            "min": 61667,
+            "median": 61667,
+            "p95": 61667,
+            "max": 61667
           },
           "gzipBytes": {
             "n": 7,
-            "min": 17195,
-            "median": 17198,
-            "p95": 17200.4,
-            "max": 17201
+            "min": 17240,
+            "median": 17242,
+            "p95": 17249.1,
+            "max": 17250
           }
         },
         "interaction": null,
         "deferred": {
           "ttfb": {
             "n": 7,
-            "min": 24.1,
-            "median": 25,
-            "p95": 25.5,
-            "max": 25.6
+            "min": 19,
+            "median": 19.5,
+            "p95": 20.4,
+            "max": 20.5
           },
           "total": {
             "n": 7,
-            "min": 24.4,
-            "median": 25.4,
-            "p95": 26,
-            "max": 26.1
+            "min": 19.3,
+            "median": 20,
+            "p95": 21.2,
+            "max": 21.4
           },
           "bytes": {
             "n": 7,
@@ -2265,214 +2266,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 47.8,
-          "median": 51.6,
-          "p95": 52.4,
-          "max": 52.5
+          "min": 35.3,
+          "median": 37.8,
+          "p95": 42.8,
+          "max": 44.2
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 90.5,
-          "median": 91.3,
-          "p95": 93.5,
-          "max": 93.7
+          "min": 76.6,
+          "median": 78.8,
+          "p95": 93.1,
+          "max": 96.6
         },
         "load": {
           "n": 7,
-          "min": 90.9,
-          "median": 91.8,
-          "p95": 93.9,
-          "max": 94.2
+          "min": 77,
+          "median": 79.2,
+          "p95": 93.4,
+          "max": 96.9
         },
         "fcp": {
           "n": 7,
-          "min": 140,
-          "median": 140,
-          "p95": 144,
-          "max": 144
+          "min": 124,
+          "median": 128,
+          "p95": 182,
+          "max": 200
         },
         "lcp": {
           "n": 7,
-          "min": 140,
-          "median": 140,
-          "p95": 144,
-          "max": 144
+          "min": 124,
+          "median": 128,
+          "p95": 182,
+          "max": 200
         },
         "ready": {
           "n": 7,
-          "min": 206.7,
-          "median": 210.6,
-          "p95": 213.1,
-          "max": 213.1
+          "min": 188.1,
+          "median": 192.1,
+          "p95": 251.8,
+          "max": 269.1
         },
         "tti": {
           "n": 7,
-          "min": 206.7,
-          "median": 210.6,
-          "p95": 213.1,
-          "max": 213.1
-        },
-        "totalBlockingTime": {
-          "n": 7,
-          "min": 0,
-          "median": 0,
-          "p95": 0,
-          "max": 0
-        },
-        "longTasks": {
-          "n": 7,
-          "min": 0,
-          "median": 0,
-          "p95": 0,
-          "max": 0
-        },
-        "domNodes": {
-          "n": 7,
-          "min": 1075,
-          "median": 1075,
-          "p95": 1075,
-          "max": 1075
-        },
-        "jsHeap": {
-          "n": 7,
-          "min": 16076761,
-          "median": 18502897,
-          "p95": 18600018.6,
-          "max": 18603441
-        },
-        "transferBytes": {
-          "n": 7,
-          "min": 61639,
-          "median": 61639,
-          "p95": 61639,
-          "max": 61639
-        },
-        "requests": {
-          "n": 7,
-          "min": 179,
-          "median": 179,
-          "p95": 179,
-          "max": 179
-        },
-        "interaction": null
-      }
-    },
-    {
-      "target": "vue",
-      "scenario": "dashboard",
-      "server": {
-        "page": {
-          "ttfb": {
-            "n": 7,
-            "min": 20,
-            "median": 20.3,
-            "p95": 20.9,
-            "max": 20.9
-          },
-          "total": {
-            "n": 7,
-            "min": 23.2,
-            "median": 24,
-            "p95": 24.8,
-            "max": 24.8
-          },
-          "bytes": {
-            "n": 7,
-            "min": 57771,
-            "median": 57771,
-            "p95": 57771,
-            "max": 57771
-          },
-          "gzipBytes": {
-            "n": 7,
-            "min": 16840,
-            "median": 16845,
-            "p95": 16848.5,
-            "max": 16850
-          }
-        },
-        "interaction": null,
-        "deferred": {
-          "ttfb": {
-            "n": 7,
-            "min": 23.9,
-            "median": 24.2,
-            "p95": 24.9,
-            "max": 25
-          },
-          "total": {
-            "n": 7,
-            "min": 24.4,
-            "median": 24.7,
-            "p95": 25.3,
-            "max": 25.4
-          },
-          "bytes": {
-            "n": 7,
-            "min": 6528,
-            "median": 6528,
-            "p95": 6528,
-            "max": 6528
-          },
-          "gzipBytes": {
-            "n": 7,
-            "min": 1849,
-            "median": 1849,
-            "p95": 1849,
-            "max": 1849
-          }
-        }
-      },
-      "browserRetries": 0,
-      "browser": {
-        "ttfb": {
-          "n": 7,
-          "min": 46,
-          "median": 47.6,
-          "p95": 50.7,
-          "max": 51.2
-        },
-        "domContentLoaded": {
-          "n": 7,
-          "min": 71.4,
-          "median": 72.4,
-          "p95": 76.3,
-          "max": 76.7
-        },
-        "load": {
-          "n": 7,
-          "min": 71.4,
-          "median": 72.4,
-          "p95": 76.3,
-          "max": 76.7
-        },
-        "fcp": {
-          "n": 7,
-          "min": 132,
-          "median": 132,
-          "p95": 136,
-          "max": 136
-        },
-        "lcp": {
-          "n": 7,
-          "min": 132,
-          "median": 132,
-          "p95": 136,
-          "max": 136
-        },
-        "ready": {
-          "n": 7,
-          "min": 205.8,
-          "median": 211.8,
-          "p95": 214.9,
-          "max": 215.5
-        },
-        "tti": {
-          "n": 7,
-          "min": 205.8,
-          "median": 211.8,
-          "p95": 214.9,
-          "max": 215.5
+          "min": 188.1,
+          "median": 192.1,
+          "p95": 251.8,
+          "max": 269.1
         },
         "totalBlockingTime": {
           "n": 7,
@@ -2490,31 +2329,193 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 1072,
-          "median": 1072,
-          "p95": 1072,
-          "max": 1072
+          "min": 1076,
+          "median": 1076,
+          "p95": 1076,
+          "max": 1076
         },
         "jsHeap": {
           "n": 7,
-          "min": 23470241,
-          "median": 23696541,
-          "p95": 24749889.8,
-          "max": 25139021
+          "min": 16313930,
+          "median": 18501914,
+          "p95": 19082730,
+          "max": 19266930
         },
         "transferBytes": {
           "n": 7,
-          "min": 58071,
-          "median": 58071,
-          "p95": 58071,
-          "max": 58071
+          "min": 61967,
+          "median": 61967,
+          "p95": 61967,
+          "max": 61967
         },
         "requests": {
           "n": 7,
-          "min": 168,
-          "median": 168,
-          "p95": 168,
-          "max": 168
+          "min": 180,
+          "median": 180,
+          "p95": 180,
+          "max": 180
+        },
+        "interaction": null
+      }
+    },
+    {
+      "target": "vue",
+      "scenario": "dashboard",
+      "server": {
+        "page": {
+          "ttfb": {
+            "n": 7,
+            "min": 13.4,
+            "median": 15,
+            "p95": 16.4,
+            "max": 16.8
+          },
+          "total": {
+            "n": 7,
+            "min": 17.7,
+            "median": 19.4,
+            "p95": 20.6,
+            "max": 21
+          },
+          "bytes": {
+            "n": 7,
+            "min": 58111,
+            "median": 58111,
+            "p95": 58111,
+            "max": 58111
+          },
+          "gzipBytes": {
+            "n": 7,
+            "min": 16902,
+            "median": 16905,
+            "p95": 16908.4,
+            "max": 16909
+          }
+        },
+        "interaction": null,
+        "deferred": {
+          "ttfb": {
+            "n": 7,
+            "min": 19,
+            "median": 19.5,
+            "p95": 19.7,
+            "max": 19.7
+          },
+          "total": {
+            "n": 7,
+            "min": 19.3,
+            "median": 19.8,
+            "p95": 20.1,
+            "max": 20.1
+          },
+          "bytes": {
+            "n": 7,
+            "min": 6528,
+            "median": 6528,
+            "p95": 6528,
+            "max": 6528
+          },
+          "gzipBytes": {
+            "n": 7,
+            "min": 1848,
+            "median": 1848,
+            "p95": 1848,
+            "max": 1848
+          }
+        }
+      },
+      "browserRetries": 0,
+      "browser": {
+        "ttfb": {
+          "n": 7,
+          "min": 32.9,
+          "median": 36.1,
+          "p95": 38.4,
+          "max": 38.6
+        },
+        "domContentLoaded": {
+          "n": 7,
+          "min": 59.8,
+          "median": 62.5,
+          "p95": 65.2,
+          "max": 66
+        },
+        "load": {
+          "n": 7,
+          "min": 59.9,
+          "median": 62.7,
+          "p95": 65.2,
+          "max": 66
+        },
+        "fcp": {
+          "n": 7,
+          "min": 120,
+          "median": 124,
+          "p95": 126.8,
+          "max": 128
+        },
+        "lcp": {
+          "n": 7,
+          "min": 120,
+          "median": 124,
+          "p95": 126.8,
+          "max": 128
+        },
+        "ready": {
+          "n": 7,
+          "min": 195.8,
+          "median": 198,
+          "p95": 210.7,
+          "max": 213
+        },
+        "tti": {
+          "n": 7,
+          "min": 195.8,
+          "median": 198,
+          "p95": 210.7,
+          "max": 213
+        },
+        "totalBlockingTime": {
+          "n": 7,
+          "min": 0,
+          "median": 0,
+          "p95": 0,
+          "max": 0
+        },
+        "longTasks": {
+          "n": 7,
+          "min": 0,
+          "median": 0,
+          "p95": 0,
+          "max": 0
+        },
+        "domNodes": {
+          "n": 7,
+          "min": 1073,
+          "median": 1073,
+          "p95": 1073,
+          "max": 1073
+        },
+        "jsHeap": {
+          "n": 7,
+          "min": 23529000,
+          "median": 23533712,
+          "p95": 23854280,
+          "max": 23884352
+        },
+        "transferBytes": {
+          "n": 7,
+          "min": 58411,
+          "median": 58411,
+          "p95": 58411,
+          "max": 58411
+        },
+        "requests": {
+          "n": 7,
+          "min": 169,
+          "median": 169,
+          "p95": 169,
+          "max": 169
         },
         "interaction": null
       }
@@ -2526,48 +2527,48 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 22,
-            "median": 23.5,
-            "p95": 23.7,
-            "max": 23.8
+            "min": 16.5,
+            "median": 17.1,
+            "p95": 17.4,
+            "max": 17.5
           },
           "total": {
             "n": 7,
-            "min": 26.1,
-            "median": 27.5,
-            "p95": 27.8,
-            "max": 27.9
+            "min": 18.7,
+            "median": 21.1,
+            "p95": 21.9,
+            "max": 21.9
           },
           "bytes": {
             "n": 7,
-            "min": 61373,
-            "median": 61373,
-            "p95": 61373,
-            "max": 61373
+            "min": 61709,
+            "median": 61709,
+            "p95": 61709,
+            "max": 61709
           },
           "gzipBytes": {
             "n": 7,
-            "min": 17221,
-            "median": 17226,
-            "p95": 17228.4,
-            "max": 17229
+            "min": 17288,
+            "median": 17295,
+            "p95": 17297,
+            "max": 17297
           }
         },
         "interaction": null,
         "deferred": {
           "ttfb": {
             "n": 7,
-            "min": 24.1,
-            "median": 24.3,
-            "p95": 24.6,
-            "max": 24.6
+            "min": 18.2,
+            "median": 19.3,
+            "p95": 21.1,
+            "max": 21.5
           },
           "total": {
             "n": 7,
-            "min": 24.5,
-            "median": 24.7,
-            "p95": 25,
-            "max": 25.1
+            "min": 18.5,
+            "median": 19.6,
+            "p95": 21.5,
+            "max": 21.9
           },
           "bytes": {
             "n": 7,
@@ -2585,56 +2586,56 @@
           }
         }
       },
-      "browserRetries": 0,
+      "browserRetries": 1,
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 47.4,
-          "median": 52.6,
-          "p95": 57.6,
-          "max": 59.2
+          "min": 38.2,
+          "median": 43.6,
+          "p95": 44.8,
+          "max": 45
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 82.3,
-          "median": 86.5,
-          "p95": 92,
-          "max": 93.6
+          "min": 74,
+          "median": 77.8,
+          "p95": 81.2,
+          "max": 81.6
         },
         "load": {
           "n": 7,
-          "min": 82.4,
-          "median": 86.6,
-          "p95": 92.1,
-          "max": 93.7
+          "min": 74.2,
+          "median": 77.9,
+          "p95": 81.3,
+          "max": 81.7
         },
         "fcp": {
           "n": 7,
-          "min": 148,
-          "median": 152,
-          "p95": 158.8,
-          "max": 160
+          "min": 140,
+          "median": 144,
+          "p95": 152,
+          "max": 152
         },
         "lcp": {
           "n": 7,
-          "min": 148,
-          "median": 152,
-          "p95": 158.8,
-          "max": 160
+          "min": 140,
+          "median": 144,
+          "p95": 152,
+          "max": 152
         },
         "ready": {
           "n": 7,
-          "min": 229,
-          "median": 234.2,
-          "p95": 236.8,
-          "max": 237.6
+          "min": 214.2,
+          "median": 217.5,
+          "p95": 234.8,
+          "max": 236.3
         },
         "tti": {
           "n": 7,
-          "min": 229,
-          "median": 234.2,
-          "p95": 236.8,
-          "max": 237.6
+          "min": 214.2,
+          "median": 217.5,
+          "p95": 234.8,
+          "max": 236.3
         },
         "totalBlockingTime": {
           "n": 7,
@@ -2652,31 +2653,31 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 1093,
-          "median": 1093,
-          "p95": 1093,
-          "max": 1093
+          "min": 1094,
+          "median": 1094,
+          "p95": 1094,
+          "max": 1094
         },
         "jsHeap": {
           "n": 7,
-          "min": 18113561,
-          "median": 18118973,
-          "p95": 18122432.6,
-          "max": 18123689
+          "min": 18195529,
+          "median": 18885327,
+          "p95": 20393106.4,
+          "max": 20393152
         },
         "transferBytes": {
           "n": 7,
-          "min": 61673,
-          "median": 61673,
-          "p95": 61673,
-          "max": 61673
+          "min": 62009,
+          "median": 62009,
+          "p95": 62009,
+          "max": 62009
         },
         "requests": {
           "n": 7,
-          "min": 196,
-          "median": 196,
-          "p95": 196,
-          "max": 196
+          "min": 197,
+          "median": 197,
+          "p95": 197,
+          "max": 197
         },
         "interaction": null
       }
@@ -2688,17 +2689,17 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 16.7,
-            "median": 18.3,
-            "p95": 18.6,
-            "max": 18.6
+            "min": 16.6,
+            "median": 18.5,
+            "p95": 22,
+            "max": 22.4
           },
           "total": {
             "n": 7,
-            "min": 17.5,
+            "min": 17.3,
             "median": 19.2,
-            "p95": 19.3,
-            "max": 19.3
+            "p95": 22.6,
+            "max": 23
           },
           "bytes": {
             "n": 7,
@@ -2709,10 +2710,10 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 11174,
-            "median": 11178,
-            "p95": 11188.9,
-            "max": 11191
+            "min": 11168,
+            "median": 11180,
+            "p95": 11182.7,
+            "max": 11183
           }
         },
         "interaction": null,
@@ -2722,52 +2723,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 34.9,
-          "median": 39.1,
-          "p95": 43.2,
-          "max": 44.3
+          "min": 36.2,
+          "median": 40.4,
+          "p95": 46.7,
+          "max": 48.4
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 66.6,
-          "median": 70.6,
-          "p95": 75.2,
-          "max": 75.4
+          "min": 66.7,
+          "median": 75.1,
+          "p95": 78.3,
+          "max": 78.5
         },
         "load": {
           "n": 7,
           "min": 67.2,
-          "median": 71.1,
-          "p95": 75.7,
-          "max": 75.9
+          "median": 75.5,
+          "p95": 78.8,
+          "max": 79
         },
         "fcp": {
           "n": 7,
           "min": 60,
           "median": 64,
-          "p95": 85.6,
-          "max": 88
+          "p95": 87.2,
+          "max": 92
         },
         "lcp": {
           "n": 7,
-          "min": 76,
-          "median": 88,
-          "p95": 96,
-          "max": 96
+          "min": 80,
+          "median": 92,
+          "p95": 104.4,
+          "max": 108
         },
         "ready": {
           "n": 7,
-          "min": 142.2,
-          "median": 150.9,
-          "p95": 157.2,
-          "max": 159
+          "min": 145.7,
+          "median": 151.4,
+          "p95": 157.1,
+          "max": 157.2
         },
         "tti": {
           "n": 7,
-          "min": 142.2,
-          "median": 150.9,
-          "p95": 157.2,
-          "max": 159
+          "min": 145.7,
+          "median": 151.4,
+          "p95": 157.1,
+          "max": 157.2
         },
         "totalBlockingTime": {
           "n": 7,
@@ -2792,17 +2793,17 @@
         },
         "jsHeap": {
           "n": 7,
-          "min": 8063907,
-          "median": 8161378,
-          "p95": 8226961.1,
-          "max": 8235914
+          "min": 8101644,
+          "median": 8136032,
+          "p95": 8168223,
+          "max": 8172852
         },
         "transferBytes": {
           "n": 7,
-          "min": 25576,
-          "median": 25596,
-          "p95": 25606.4,
-          "max": 25607
+          "min": 25586,
+          "median": 25603,
+          "p95": 25604.7,
+          "max": 25605
         },
         "requests": {
           "n": 7,
@@ -2821,47 +2822,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 25.7,
-            "median": 27,
-            "p95": 28.7,
-            "max": 29.3
+            "min": 18.7,
+            "median": 20,
+            "p95": 21.4,
+            "max": 21.9
           },
           "total": {
             "n": 7,
-            "min": 28.9,
-            "median": 31.9,
-            "p95": 33.8,
-            "max": 34.5
+            "min": 22.5,
+            "median": 24.8,
+            "p95": 26.5,
+            "max": 26.9
           },
           "bytes": {
             "n": 7,
-            "min": 71757,
-            "median": 71757,
-            "p95": 71757,
-            "max": 71757
+            "min": 72085,
+            "median": 72085,
+            "p95": 72085,
+            "max": 72085
           },
           "gzipBytes": {
             "n": 7,
-            "min": 18988,
-            "median": 18989,
-            "p95": 18993.4,
-            "max": 18994
+            "min": 19034,
+            "median": 19039,
+            "p95": 19041,
+            "max": 19041
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 52.1,
-            "median": 53.3,
-            "p95": 54.8,
-            "max": 55.3
+            "min": 50,
+            "median": 50.1,
+            "p95": 50.5,
+            "max": 50.6
           },
           "total": {
             "n": 7,
-            "min": 52.4,
-            "median": 53.7,
-            "p95": 55.2,
-            "max": 55.7
+            "min": 50.4,
+            "median": 50.5,
+            "p95": 50.8,
+            "max": 50.9
           },
           "bytes": {
             "n": 7,
@@ -2884,52 +2885,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 35.9,
-          "median": 36.2,
-          "p95": 42.3,
-          "max": 42.3
+          "min": 23.8,
+          "median": 26.8,
+          "p95": 28.2,
+          "max": 28.5
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 75,
-          "median": 77,
-          "p95": 81.7,
-          "max": 82
+          "min": 65.8,
+          "median": 66.9,
+          "p95": 71.7,
+          "max": 71.8
         },
         "load": {
           "n": 7,
-          "min": 75.5,
-          "median": 77.5,
-          "p95": 82.1,
-          "max": 82.5
+          "min": 66.3,
+          "median": 67.3,
+          "p95": 72.2,
+          "max": 72.3
         },
         "fcp": {
           "n": 7,
           "min": 140,
-          "median": 144,
-          "p95": 150.8,
-          "max": 152
+          "median": 140,
+          "p95": 148,
+          "max": 148
         },
         "lcp": {
           "n": 7,
           "min": 140,
-          "median": 144,
-          "p95": 150.8,
-          "max": 152
+          "median": 140,
+          "p95": 148,
+          "max": 148
         },
         "ready": {
           "n": 7,
-          "min": 124,
-          "median": 129.7,
-          "p95": 133.7,
-          "max": 134.9
+          "min": 121.4,
+          "median": 123.4,
+          "p95": 131.1,
+          "max": 131.7
         },
         "tti": {
           "n": 7,
-          "min": 124,
-          "median": 129.7,
-          "p95": 133.7,
-          "max": 134.9
+          "min": 121.4,
+          "median": 123.4,
+          "p95": 131.1,
+          "max": 131.7
         },
         "totalBlockingTime": {
           "n": 7,
@@ -2941,44 +2942,44 @@
         "longTasks": {
           "n": 7,
           "min": 0,
-          "median": 0,
-          "p95": 0,
-          "max": 0
+          "median": 1,
+          "p95": 1,
+          "max": 1
         },
         "domNodes": {
           "n": 7,
-          "min": 1612,
-          "median": 1612,
-          "p95": 1612,
-          "max": 1612
+          "min": 1613,
+          "median": 1613,
+          "p95": 1613,
+          "max": 1613
         },
         "jsHeap": {
           "n": 7,
-          "min": 14577054,
-          "median": 14619714,
-          "p95": 14666586.6,
-          "max": 14678970
+          "min": 14639264,
+          "median": 14657141,
+          "p95": 14771775.1,
+          "max": 14786617
         },
         "transferBytes": {
           "n": 7,
-          "min": 72057,
-          "median": 72057,
-          "p95": 72057,
-          "max": 72057
+          "min": 72385,
+          "median": 72385,
+          "p95": 72385,
+          "max": 72385
         },
         "requests": {
           "n": 7,
-          "min": 176,
-          "median": 176,
-          "p95": 176,
-          "max": 176
+          "min": 177,
+          "median": 177,
+          "p95": 177,
+          "max": 177
         },
         "interaction": {
           "n": 7,
-          "min": 366.6,
-          "median": 378.2,
-          "p95": 384.4,
-          "max": 386.3
+          "min": 363.8,
+          "median": 370.6,
+          "p95": 506.4,
+          "max": 511.4
         }
       }
     },
@@ -2989,47 +2990,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 23.8,
-            "median": 24.5,
-            "p95": 27,
-            "max": 27.8
+            "min": 17.7,
+            "median": 19.3,
+            "p95": 20.6,
+            "max": 20.9
           },
           "total": {
             "n": 7,
-            "min": 28.3,
-            "median": 29.2,
-            "p95": 29.7,
-            "max": 29.8
+            "min": 22.5,
+            "median": 24,
+            "p95": 25.4,
+            "max": 25.6
           },
           "bytes": {
             "n": 7,
-            "min": 68145,
-            "median": 68145,
-            "p95": 68145,
-            "max": 68145
+            "min": 68485,
+            "median": 68485,
+            "p95": 68485,
+            "max": 68485
           },
           "gzipBytes": {
             "n": 7,
-            "min": 18636,
-            "median": 18641,
-            "p95": 18643,
-            "max": 18643
+            "min": 18695,
+            "median": 18699,
+            "p95": 18704.1,
+            "max": 18705
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 51.5,
-            "median": 51.9,
-            "p95": 53.4,
-            "max": 53.5
+            "min": 50.1,
+            "median": 50.9,
+            "p95": 51.3,
+            "max": 51.3
           },
           "total": {
             "n": 7,
-            "min": 51.8,
-            "median": 52.2,
-            "p95": 53.7,
-            "max": 53.8
+            "min": 50.4,
+            "median": 51.3,
+            "p95": 51.7,
+            "max": 51.7
           },
           "bytes": {
             "n": 7,
@@ -3052,52 +3053,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 32,
-          "median": 32.9,
-          "p95": 35.9,
-          "max": 36.3
+          "min": 23.5,
+          "median": 25.9,
+          "p95": 27,
+          "max": 27.2
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 57.3,
-          "median": 58.2,
-          "p95": 61.9,
-          "max": 61.9
+          "min": 52.1,
+          "median": 52.5,
+          "p95": 54.7,
+          "max": 55.3
         },
         "load": {
           "n": 7,
-          "min": 57.4,
-          "median": 58.3,
-          "p95": 62,
-          "max": 62
+          "min": 52.2,
+          "median": 52.5,
+          "p95": 54.8,
+          "max": 55.4
         },
         "fcp": {
           "n": 7,
-          "min": 144,
+          "min": 140,
           "median": 144,
           "p95": 148,
           "max": 148
         },
         "lcp": {
           "n": 7,
-          "min": 144,
+          "min": 140,
           "median": 144,
           "p95": 148,
           "max": 148
         },
         "ready": {
           "n": 7,
-          "min": 137,
-          "median": 138.8,
-          "p95": 142,
-          "max": 142.2
+          "min": 134.5,
+          "median": 135.4,
+          "p95": 140,
+          "max": 140.7
         },
         "tti": {
           "n": 7,
-          "min": 137,
-          "median": 138.8,
-          "p95": 142,
-          "max": 142.2
+          "min": 134.5,
+          "median": 135.4,
+          "p95": 140,
+          "max": 140.7
         },
         "totalBlockingTime": {
           "n": 7,
@@ -3115,38 +3116,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 1604,
-          "median": 1604,
-          "p95": 1604,
-          "max": 1604
+          "min": 1605,
+          "median": 1605,
+          "p95": 1605,
+          "max": 1605
         },
         "jsHeap": {
           "n": 7,
-          "min": 19833919,
-          "median": 20660331,
-          "p95": 26208787.7,
-          "max": 26438600
+          "min": 20570538,
+          "median": 21082590,
+          "p95": 25300312.8,
+          "max": 25303434
         },
         "transferBytes": {
           "n": 7,
-          "min": 68445,
-          "median": 68445,
-          "p95": 68445,
-          "max": 68445
+          "min": 68785,
+          "median": 68785,
+          "p95": 68785,
+          "max": 68785
         },
         "requests": {
           "n": 7,
-          "min": 168,
-          "median": 168,
-          "p95": 168,
-          "max": 168
+          "min": 169,
+          "median": 169,
+          "p95": 169,
+          "max": 169
         },
         "interaction": {
           "n": 7,
-          "min": 361.3,
-          "median": 372.6,
-          "p95": 374.3,
-          "max": 374.6
+          "min": 363.3,
+          "median": 370.9,
+          "p95": 489.5,
+          "max": 489.5
         }
       }
     },
@@ -3157,47 +3158,47 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 27.2,
-            "median": 27.4,
-            "p95": 29,
-            "max": 29.4
+            "min": 20.9,
+            "median": 22.5,
+            "p95": 24.3,
+            "max": 24.5
           },
           "total": {
             "n": 7,
-            "min": 32.1,
-            "median": 32.4,
-            "p95": 33.4,
-            "max": 33.6
+            "min": 25.9,
+            "median": 27.3,
+            "p95": 28.6,
+            "max": 29
           },
           "bytes": {
             "n": 7,
-            "min": 71813,
-            "median": 71813,
-            "p95": 71813,
-            "max": 71813
+            "min": 72149,
+            "median": 72149,
+            "p95": 72149,
+            "max": 72149
           },
           "gzipBytes": {
             "n": 7,
-            "min": 19014,
-            "median": 19016,
-            "p95": 19020.1,
-            "max": 19021
+            "min": 19085,
+            "median": 19086,
+            "p95": 19091.4,
+            "max": 19092
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 51.9,
-            "median": 52.3,
-            "p95": 53.2,
-            "max": 53.2
+            "min": 50.4,
+            "median": 51.1,
+            "p95": 53.7,
+            "max": 54.1
           },
           "total": {
             "n": 7,
-            "min": 52.1,
-            "median": 52.6,
-            "p95": 53.5,
-            "max": 53.6
+            "min": 50.7,
+            "median": 51.4,
+            "p95": 54.2,
+            "max": 54.6
           },
           "bytes": {
             "n": 7,
@@ -3220,52 +3221,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 35,
-          "median": 37.6,
-          "p95": 40.3,
-          "max": 40.4
+          "min": 26.1,
+          "median": 28.2,
+          "p95": 29.9,
+          "max": 29.9
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 68.1,
-          "median": 72.2,
-          "p95": 75.7,
-          "max": 76.3
+          "min": 60.8,
+          "median": 63.7,
+          "p95": 65.2,
+          "max": 65.5
         },
         "load": {
           "n": 7,
-          "min": 68.2,
-          "median": 72.3,
-          "p95": 75.8,
-          "max": 76.3
+          "min": 60.8,
+          "median": 63.8,
+          "p95": 65.3,
+          "max": 65.5
         },
         "fcp": {
           "n": 7,
-          "min": 168,
-          "median": 176,
-          "p95": 182.8,
-          "max": 184
+          "min": 164,
+          "median": 168,
+          "p95": 177.6,
+          "max": 180
         },
         "lcp": {
           "n": 7,
-          "min": 168,
-          "median": 176,
-          "p95": 182.8,
-          "max": 184
+          "min": 164,
+          "median": 168,
+          "p95": 177.6,
+          "max": 180
         },
         "ready": {
           "n": 7,
-          "min": 160.7,
-          "median": 165.5,
-          "p95": 173.7,
-          "max": 175.7
+          "min": 157.3,
+          "median": 161.6,
+          "p95": 167,
+          "max": 168.4
         },
         "tti": {
           "n": 7,
-          "min": 160.7,
-          "median": 165.5,
-          "p95": 173.7,
-          "max": 175.7
+          "min": 157.3,
+          "median": 161.6,
+          "p95": 167,
+          "max": 168.4
         },
         "totalBlockingTime": {
           "n": 7,
@@ -3283,38 +3284,38 @@
         },
         "domNodes": {
           "n": 7,
-          "min": 1652,
-          "median": 1652,
-          "p95": 1652,
-          "max": 1652
+          "min": 1653,
+          "median": 1653,
+          "p95": 1653,
+          "max": 1653
         },
         "jsHeap": {
           "n": 7,
-          "min": 20310782,
-          "median": 25655904,
-          "p95": 25901435.3,
-          "max": 26002019
+          "min": 20380156,
+          "median": 20389308,
+          "p95": 26072903.4,
+          "max": 26073033
         },
         "transferBytes": {
           "n": 7,
-          "min": 72113,
-          "median": 72113,
-          "p95": 72113,
-          "max": 72113
+          "min": 72449,
+          "median": 72449,
+          "p95": 72449,
+          "max": 72449
         },
         "requests": {
           "n": 7,
-          "min": 194,
-          "median": 194,
-          "p95": 194,
-          "max": 194
+          "min": 195,
+          "median": 195,
+          "p95": 195,
+          "max": 195
         },
         "interaction": {
           "n": 7,
-          "min": 345.1,
-          "median": 351.4,
-          "p95": 357.1,
-          "max": 357.2
+          "min": 339.6,
+          "median": 351,
+          "p95": 477.6,
+          "max": 478.8
         }
       }
     },
@@ -3325,17 +3326,17 @@
         "page": {
           "ttfb": {
             "n": 7,
-            "min": 32.5,
-            "median": 33.9,
-            "p95": 36.9,
-            "max": 38
+            "min": 34.1,
+            "median": 34.8,
+            "p95": 35.2,
+            "max": 35.2
           },
           "total": {
             "n": 7,
-            "min": 33.7,
-            "median": 35.9,
-            "p95": 39.1,
-            "max": 40.3
+            "min": 36,
+            "median": 36.7,
+            "p95": 37.1,
+            "max": 37.2
           },
           "bytes": {
             "n": 7,
@@ -3346,26 +3347,26 @@
           },
           "gzipBytes": {
             "n": 7,
-            "min": 23756,
-            "median": 23762,
-            "p95": 23764.4,
-            "max": 23765
+            "min": 23759,
+            "median": 23763,
+            "p95": 23769.4,
+            "max": 23770
           }
         },
         "interaction": {
           "ttfb": {
             "n": 7,
-            "min": 47.4,
-            "median": 48.8,
-            "p95": 49.1,
-            "max": 49.1
+            "min": 49.3,
+            "median": 49.9,
+            "p95": 51.2,
+            "max": 51.3
           },
           "total": {
             "n": 7,
-            "min": 47.9,
-            "median": 48.9,
-            "p95": 49.5,
-            "max": 49.6
+            "min": 49.7,
+            "median": 50.3,
+            "p95": 51.8,
+            "max": 51.9
           },
           "bytes": {
             "n": 7,
@@ -3388,52 +3389,52 @@
       "browser": {
         "ttfb": {
           "n": 7,
-          "min": 39.5,
-          "median": 42.4,
-          "p95": 47.3,
-          "max": 48.9
+          "min": 40.8,
+          "median": 42.1,
+          "p95": 42.9,
+          "max": 43.1
         },
         "domContentLoaded": {
           "n": 7,
-          "min": 99,
+          "min": 102.3,
           "median": 102.8,
-          "p95": 108.8,
-          "max": 110.8
+          "p95": 104.4,
+          "max": 104.8
         },
         "load": {
           "n": 7,
-          "min": 99.9,
-          "median": 103.7,
-          "p95": 109.7,
-          "max": 111.7
+          "min": 103.1,
+          "median": 103.6,
+          "p95": 105.1,
+          "max": 105.4
         },
         "fcp": {
           "n": 7,
-          "min": 112,
-          "median": 128,
-          "p95": 133.6,
-          "max": 136
+          "min": 80,
+          "median": 116,
+          "p95": 128,
+          "max": 128
         },
         "lcp": {
           "n": 7,
-          "min": 112,
-          "median": 128,
-          "p95": 133.6,
-          "max": 136
+          "min": 116,
+          "median": 116,
+          "p95": 128,
+          "max": 128
         },
         "ready": {
           "n": 7,
-          "min": 110.2,
-          "median": 114.1,
-          "p95": 121.1,
-          "max": 122.4
+          "min": 113.6,
+          "median": 114.3,
+          "p95": 116.9,
+          "max": 117.3
         },
         "tti": {
           "n": 7,
-          "min": 110.2,
-          "median": 114.1,
-          "p95": 121.1,
-          "max": 122.4
+          "min": 113.6,
+          "median": 114.3,
+          "p95": 116.9,
+          "max": 117.3
         },
         "totalBlockingTime": {
           "n": 7,
@@ -3444,7 +3445,7 @@
         },
         "longTasks": {
           "n": 7,
-          "min": 1,
+          "min": 0,
           "median": 1,
           "p95": 1,
           "max": 1
@@ -3458,17 +3459,17 @@
         },
         "jsHeap": {
           "n": 7,
-          "min": 6582420,
-          "median": 6605828,
-          "p95": 6646423.2,
-          "max": 6646608
+          "min": 6561484,
+          "median": 6592944,
+          "p95": 6632876.4,
+          "max": 6634296
         },
         "transferBytes": {
           "n": 7,
-          "min": 26275,
-          "median": 26279,
-          "p95": 26286.8,
-          "max": 26288
+          "min": 26273,
+          "median": 26288,
+          "p95": 26292,
+          "max": 26292
         },
         "requests": {
           "n": 7,
@@ -3479,10 +3480,10 @@
         },
         "interaction": {
           "n": 7,
-          "min": 611.5,
+          "min": 617.6,
           "median": 645.5,
-          "p95": 648.3,
-          "max": 648.3
+          "p95": 773.6,
+          "max": 782.7
         }
       }
     }
