@@ -5,6 +5,7 @@ export { createStarterKitLayout, type StarterKitPageOptions } from './starter-ki
 export { default as StarterKitContentLayout } from './StarterKitContentLayout.svelte'
 export {
   AlfakitCopilot,
+  AlfakitLanguageSwitcher,
   AlfakitNotifications,
   AlfakitSearch,
   AlfakitTenantSwitcher,

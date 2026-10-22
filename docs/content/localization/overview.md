@@ -134,9 +134,13 @@ The top bar button lists every language in its own name with the current one che
 
 The button is the `panel:language-switcher` registry key (`data-slot="language-switcher"`): replace it with `createAlfakit({ components: { 'panel:language-switcher': MyLanguageMenu } })` or eject it with `php artisan alfakit:eject panel:language-switcher`. Frontend code can ask `showsLanguageSwitcher(localization, 'topbar' | 'user-menu' | 'auth')` and `collapsesLanguageSwitcher(localization, hasUserMenu)` from `@alfakit/core`.
 
+### In a starter kit
+
+A [`starterKit()` panel](../getting-started/starter-kits) renders inside your app's layout, so the panel's top bar and user menu, where the menu usually sits, are not there. Put `<AlfakitLanguageSwitcher />` from `@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte` in your header instead (`alfakit:install --starter-kit` adds it next to the search and the bell; run it again with `--no-npm` and the `--panel` you installed with to add it to a header set up earlier). It renders nothing until the panel has two or more locales, shows a languages button with the current language in its own name at once, and loads the menu with the panel's other header components. Picking a language switches it as the panel's menu does and reloads the page: AlfaKit's pages and the header components show it, and in a right-to-left language AlfaKit mirrors its own content while `<html lang dir>` stays your app's. `languageSwitcher()` positions do not apply to it; `->localeSwitcher(false)` hides it too.
+
 ### Hide the menu
 
-The menu shows automatically when a panel has more than one locale. Use `->localeSwitcher(false)` to hide it everywhere, including the sign-in pages, for example when the language comes only from the user's profile; `->languageSwitcher('hidden')` hides it inside the panel only.
+The menu shows automatically when a panel has more than one locale. Use `->localeSwitcher(false)` to hide it everywhere, including the sign-in pages, for example when the language comes only from the user's profile; `->languageSwitcher('hidden')` hides it inside the panel only (a starter kit's `<AlfakitLanguageSwitcher />` stays).
 
 ## Translate your own labels
 

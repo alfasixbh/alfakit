@@ -9,6 +9,7 @@ import {
   starterKitBreadcrumbsFromProps,
   starterKitDashboardWidgets,
   starterKitNavigation,
+  starterKitPanelLocale,
   starterKitWidgets,
   toStarterKitBreadcrumbs,
   toStarterKitNavGroups,
@@ -192,6 +193,53 @@ describe('starter kit header components panel data', () => {
       id: 'admin',
     })
     expect(loadedStarterKitPanel('/admin/_alfakit/starter-kit')).not.toBeNull()
+
+    vi.unstubAllGlobals()
+    resetStarterKitPanels()
+  })
+
+  it('loads the panel data again in a new language', async () => {
+    resetStarterKitPanels()
+    let code = 'en'
+    const fetchMock = vi
+      .fn()
+      .mockImplementation(
+        async () =>
+          new Response(
+            JSON.stringify({ id: 'admin', endpoints: { action: '/a' }, localization: { code } }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } },
+          ),
+      )
+    vi.stubGlobal('fetch', fetchMock)
+
+    const source = (current: string) => ({
+      navigation,
+      widgets: {
+        endpoint: '/admin/_alfakit/starter-kit',
+        language: {
+          label: 'Change language',
+          current: { code: current, tag: current, label: current, direction: 'ltr' as const },
+        },
+      },
+    })
+
+    expect(starterKitPanelLocale(source('en'))).toBe('en')
+    expect(starterKitPanelLocale({ navigation, widgets: { endpoint: '/e' } })).toBeUndefined()
+
+    await loadStarterKitPanel('/admin/_alfakit/starter-kit', 'en')
+    await loadStarterKitPanel('/admin/_alfakit/starter-kit', 'en')
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+
+    // After a switch the shared prop names the new language: its data loads once more.
+    code = 'fr'
+    expect(loadedStarterKitPanel('/admin/_alfakit/starter-kit', 'fr')).toBeNull()
+    await expect(
+      loadStarterKitPanel('/admin/_alfakit/starter-kit', starterKitPanelLocale(source('fr'))),
+    ).resolves.toMatchObject({ localization: { code: 'fr' } })
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(loadedStarterKitPanel('/admin/_alfakit/starter-kit', 'en')).toMatchObject({
+      localization: { code: 'en' },
+    })
 
     vi.unstubAllGlobals()
     resetStarterKitPanels()

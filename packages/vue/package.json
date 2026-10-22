@@ -1,6 +1,6 @@
 {
   "name": "@alfakit/vue",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Vue 3 + shadcn-vue renderer for Alfakit, the Laravel admin panel builder by Alfa Six.",
   "license": "MIT",
   "author": "Alfa Six (https://alfasixbh.com)",

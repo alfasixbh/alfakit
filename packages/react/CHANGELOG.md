@@ -1,5 +1,13 @@
 # @alfakit/react
 
+## 0.1.8
+
+### Patch Changes
+
+- `<AlfakitLanguageSwitcher />`: a drop-in header component for starter kits, so users can switch the panel's language from the app header. `LocaleOptions` is exported for custom switchers.
+- Updated dependencies
+  - @alfakit/core@0.1.8
+
 ## 0.1.7
 
 ### Patch Changes

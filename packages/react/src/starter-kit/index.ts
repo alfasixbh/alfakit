@@ -9,6 +9,7 @@ export {
 } from './starter-kit'
 export {
   AlfakitCopilot,
+  AlfakitLanguageSwitcher,
   AlfakitNotifications,
   AlfakitSearch,
   AlfakitTenantSwitcher,

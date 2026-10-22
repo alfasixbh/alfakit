@@ -4,6 +4,7 @@ import {
   Translator,
   loadStarterKitPanel,
   loadedStarterKitPanel,
+  starterKitPanelLocale,
   starterKitWidgetsPanel,
   type PanelSchema,
   type StarterKitWidgets,
@@ -16,19 +17,20 @@ import type { AlfakitContextValue, AnyComponent } from '../../context'
 
 /**
  * The panel the loaded components render with, once its data (`widgets.endpoint`) has
- * loaded: null until then. A tenant switch (another endpoint) loads its own.
+ * loaded: null until then. It is loaded per endpoint (a tenant switch) and language (a
+ * language switch), so the components follow a switch.
  */
 export function useWidgetsPanel(source: Ref<StarterKitWidgets>): ComputedRef<PanelSchema | null> {
   const version = ref(0)
 
   watch(
-    () => source.value.widgets.endpoint,
-    (endpoint, _old, onCleanup) => {
+    () => [source.value.widgets.endpoint, starterKitPanelLocale(source.value)] as const,
+    ([endpoint, locale], _old, onCleanup) => {
       let active = true
 
       onCleanup(() => (active = false))
 
-      void loadStarterKitPanel(endpoint).then(
+      void loadStarterKitPanel(endpoint, locale).then(
         () => active && version.value++,
         () => {},
       )
@@ -39,7 +41,10 @@ export function useWidgetsPanel(source: Ref<StarterKitWidgets>): ComputedRef<Pan
   return computed(() => {
     void version.value
 
-    const base = loadedStarterKitPanel(source.value.widgets.endpoint)
+    const base = loadedStarterKitPanel(
+      source.value.widgets.endpoint,
+      starterKitPanelLocale(source.value),
+    )
 
     return base ? starterKitWidgetsPanel(base, source.value) : null
   })

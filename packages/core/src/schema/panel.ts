@@ -92,8 +92,8 @@ export interface StarterKitNavigationSchema {
 
 /**
  * The `widgets` of a `starterKit()` panel's shared navigation: what `<AlfakitSearch />`,
- * `<AlfakitNotifications />` and `<AlfakitTenantSwitcher />` show on any host page before
- * their code and the panel data (`endpoint`) have loaded.
+ * `<AlfakitNotifications />`, `<AlfakitTenantSwitcher />` and `<AlfakitLanguageSwitcher />`
+ * show on any host page before their code and the panel data (`endpoint`) have loaded.
  */
 export interface StarterKitWidgetsSchema {
   /** GET: the panel data the components render with (the `alfakit` prop of the panel's pages). */
@@ -111,6 +111,12 @@ export interface StarterKitWidgetsSchema {
     registrationLabel?: string
     searchable?: true
   }
+  /**
+   * `<AlfakitLanguageSwitcher />`: the button's label ("Change language") and the current
+   * language, when the panel has a language switcher with two or more languages
+   * (`locales()`). The languages and the locale endpoint come with the panel data.
+   */
+  language?: { label: string; current: LocaleSchema }
   /** While impersonating: the banner the header components show on the host's own pages. */
   impersonation?: ImpersonationSchema
   /**

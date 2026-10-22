@@ -4,6 +4,7 @@
  * Only loaded in the browser (`import('./loaded')`).
  */
 export { default as LoadedCopilot } from './LoadedCopilot.svelte'
+export { default as LoadedLanguageSwitcher } from './LoadedLanguageSwitcher.svelte'
 export { default as LoadedNotifications } from './LoadedNotifications.svelte'
 export { default as LoadedSearch } from './LoadedSearch.svelte'
 export { default as LoadedTenantSwitcher } from './LoadedTenantSwitcher.svelte'

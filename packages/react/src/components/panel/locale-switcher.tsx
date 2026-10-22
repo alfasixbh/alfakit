@@ -24,7 +24,8 @@ function useSwitch() {
   }
 }
 
-function LocaleOptions() {
+/** The panel's languages as radio items, each in its own name: picking one switches to it. */
+export function LocaleOptions() {
   const localization = useLocalization()
   const change = useSwitch()
 

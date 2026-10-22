@@ -4,11 +4,12 @@ import {
   registerStarterKitCopilotShortcut,
   registerStarterKitSearchShortcut,
   requestStarterKitCopilot,
+  requestStarterKitLanguages,
   requestStarterKitSearch,
   tenantNameText,
   type StarterKitWidgets,
 } from '@alfakit/core'
-import { BellIcon, ChevronsUpDownIcon, SearchIcon, SparklesIcon } from 'lucide-react'
+import { BellIcon, ChevronsUpDownIcon, LanguagesIcon, SearchIcon, SparklesIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { useHydrated } from '../hooks/use-hydrated'
 
@@ -133,6 +134,45 @@ export function CopilotTrigger({ source, onLoad }: WidgetProps & { onLoad?: () =
       }}
     >
       <SparklesIcon className="size-4" aria-hidden="true" />
+    </button>
+  )
+}
+
+/** The language button's look, before and after its menu has loaded. */
+export const languageTriggerClasses =
+  'hover:bg-accent hover:text-accent-foreground data-[state=open]:bg-accent inline-flex h-9 min-w-9 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 text-sm font-medium outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50'
+
+/**
+ * The language button until its menu has loaded: the languages icon and the current
+ * language in its own name (from `sm`). A click is remembered and opens the menu once loaded.
+ */
+export function LanguageSwitcherTrigger({ source, onLoad }: WidgetProps & { onLoad?: () => void }) {
+  const language = source.widgets.language
+
+  return (
+    <button
+      type="button"
+      data-slot="language-switcher-trigger"
+      aria-label={language?.label}
+      aria-haspopup="menu"
+      title={language?.label}
+      className={languageTriggerClasses}
+      onPointerEnter={() => onLoad?.()}
+      onClick={() => {
+        requestStarterKitLanguages()
+        onLoad?.()
+      }}
+    >
+      <LanguagesIcon className="size-4" aria-hidden="true" />
+      {language && (
+        <span
+          lang={language.current.tag}
+          dir={language.current.direction}
+          className="hidden sm:inline"
+        >
+          {language.current.label}
+        </span>
+      )}
     </button>
   )
 }

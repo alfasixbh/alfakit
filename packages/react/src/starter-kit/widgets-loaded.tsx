@@ -7,22 +7,26 @@ import {
   loadStarterKitPanel,
   loadedStarterKitPanel,
   openRequestedStarterKitSearch,
+  showsLanguageSwitcher,
   starterKitCopilot,
+  starterKitPanelLocale,
   starterKitWidgetsPage,
   starterKitWidgetsPanel,
   takeRequestedStarterKitCopilot,
+  takeRequestedStarterKitLanguages,
   tenantNameText,
   type PanelSchema,
   type StarterKitWidgets,
 } from '@alfakit/core'
 import { router, usePage } from '@inertiajs/react'
-import { ChevronsUpDownIcon, PlusIcon } from 'lucide-react'
+import { ChevronsUpDownIcon, LanguagesIcon, PlusIcon } from 'lucide-react'
 import { Direction } from 'radix-ui'
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { AiCopilot } from '../components/ai/copilot'
 import { NotificationsMenu } from '../components/notifications/notifications-menu'
 import { RealtimeNotifications } from '../components/notifications/realtime-notifications'
 import { GlobalSearch } from '../components/panel/global-search'
+import { LocaleOptions } from '../components/panel/locale-switcher'
 import { TenantName } from '../components/panel/nav-label'
 import { TenantMenu } from '../components/panel/tenant-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar'
@@ -38,6 +42,7 @@ import { TooltipProvider } from '../components/ui/tooltip'
 import {
   AlfakitProvider,
   StandaloneProvider,
+  useLocalization,
   useT,
   type AlfakitContextValue,
   type AnyComponent,
@@ -45,16 +50,18 @@ import {
 import { Icon } from '../lib/icons'
 import {
   CopilotTrigger,
+  LanguageSwitcherTrigger,
   NotificationsTrigger,
   SearchTrigger,
   TenantSwitcherTrigger,
+  languageTriggerClasses,
   type WidgetProps,
 } from './widgets-triggers'
 
 /**
  * The loaded header components of starter kit mode: the panel's own search palette,
- * notifications menu and tenant menu, rendered outside Alfakit pages with the panel data
- * from `widgets.endpoint`. This module only loads in the browser.
+ * notifications menu, tenant menu and language menu, rendered outside Alfakit pages with
+ * the panel data from `widgets.endpoint`. This module only loads in the browser.
  */
 
 // One context for the browser session: its own translator (the panel's strings), an empty
@@ -75,17 +82,24 @@ function useWidgetsContext(panel: PanelSchema): AlfakitContextValue {
   return widgetsContext
 }
 
-/** The panel the components render with, once its data has loaded (null until then). */
+/**
+ * The panel the components render with, once its data has loaded (null until then). It is
+ * loaded per endpoint (a tenant switch) and language (a language switch), so the components
+ * follow a switch instead of keeping the old language's strings.
+ */
 function useWidgetsPanel(source: StarterKitWidgets): PanelSchema | null {
   const endpoint = source.widgets.endpoint
-  const [loaded, setLoaded] = useState(() => loadedStarterKitPanel(endpoint))
-  const base = loadedStarterKitPanel(endpoint) ?? loaded
+  const locale = starterKitPanelLocale(source)
+  const [loaded, setLoaded] = useState(() => loadedStarterKitPanel(endpoint, locale))
+  // Until the new language's data arrives, not the old language's.
+  const current =
+    loaded && (locale === undefined || loaded.localization?.code === locale) ? loaded : null
+  const base = loadedStarterKitPanel(endpoint, locale) ?? current
 
   useEffect(() => {
     let active = true
 
-    // Another endpoint (a tenant switch) loads its own panel data.
-    void loadStarterKitPanel(endpoint).then(
+    void loadStarterKitPanel(endpoint, locale).then(
       (panel) => active && setLoaded(panel),
       () => {},
     )
@@ -93,7 +107,7 @@ function useWidgetsPanel(source: StarterKitWidgets): PanelSchema | null {
     return () => {
       active = false
     }
-  }, [endpoint])
+  }, [endpoint, locale])
 
   const { navigation, widgets } = source
 
@@ -181,6 +195,68 @@ export function LoadedCopilot({ source }: WidgetProps) {
     <WidgetShell panel={panel}>
       <AiCopilot component={component} autoOpen={autoOpen || takeRequestedStarterKitCopilot()} />
     </WidgetShell>
+  )
+}
+
+/**
+ * The panel's language menu (its languages in their own names, `LocaleOptions`): picking
+ * one posts to the panel's locale endpoint and reloads the page in it. Nothing without a
+ * language switcher with two or more languages.
+ */
+export function LoadedLanguageSwitcher({ source }: WidgetProps) {
+  const panel = useWidgetsPanel(source)
+
+  if (!panel) return <LanguageSwitcherTrigger source={source} />
+
+  if (!showsLanguageSwitcher(panel.localization, 'auth')) return null
+
+  return (
+    <WidgetShell panel={panel}>
+      <LanguageMenu />
+    </WidgetShell>
+  )
+}
+
+function LanguageMenu() {
+  const t = useT()
+  const localization = useLocalization()
+  const [open, setOpen] = useState(false)
+  // Taken once per mount (effects run twice in StrictMode).
+  const requested = useRef<boolean | null>(null)
+
+  // A click on the trigger before the menu loaded opens it once mounted: a frame later, as
+  // the menu closes again when it opens while focus is still on the replaced button.
+  useEffect(() => {
+    requested.current ??= takeRequestedStarterKitLanguages()
+
+    if (!requested.current) return
+
+    const frame = requestAnimationFrame(() => setOpen(true))
+
+    return () => cancelAnimationFrame(frame)
+  }, [])
+  const label = t('change_language', {}, 'Change language')
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          data-slot="language-switcher-trigger"
+          aria-label={label}
+          title={label}
+          className={languageTriggerClasses}
+        >
+          <LanguagesIcon className="size-4" aria-hidden="true" />
+          <span lang={localization.tag} dir={localization.direction} className="hidden sm:inline">
+            {localization.label}
+          </span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-40">
+        <LocaleOptions />
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 

@@ -15,25 +15,27 @@ import {
 } from 'vue'
 import { lazyComponent } from '../../lib/lazy'
 import CopilotTrigger from './CopilotTrigger.vue'
+import LanguageSwitcherTrigger from './LanguageSwitcherTrigger.vue'
 import NotificationsTrigger from './NotificationsTrigger.vue'
 import SearchTrigger from './SearchTrigger.vue'
 import TenantSwitcherTrigger from './TenantSwitcherTrigger.vue'
 
 /**
  * Drop-in header components of starter kit mode (`Panel::starterKit()`): AlfaKit's search,
- * notifications bell and tenant switcher in the host's own header, on every page of the
+ * notifications bell, tenant switcher and language switcher in the host's own header, on every page of the
  * application. They read the shared `alfakitNavigation` prop, render a lightweight trigger
  * straight away, and load their code and the panel data once mounted (never during SSR).
  *
  * ```vue
  * <script setup lang="ts">
- * import { AlfakitCopilot, AlfakitNotifications, AlfakitSearch } from '@alfakit/vue'
+ * import { AlfakitCopilot, AlfakitLanguageSwitcher, AlfakitNotifications, AlfakitSearch } from '@alfakit/vue'
  * </script>
  *
  * <template>
  *   <AlfakitSearch />
  *   <AlfakitNotifications />
  *   <AlfakitCopilot />
+ *   <AlfakitLanguageSwitcher />
  * </template>
  * ```
  */
@@ -64,6 +66,12 @@ const LoadedTenantSwitcher = lazyComponent(
   'AlfakitLoadedTenantSwitcher',
   () => import('./loaded').then((module) => module.LoadedTenantSwitcher),
   TenantSwitcherTrigger,
+)
+
+const LoadedLanguageSwitcher = lazyComponent(
+  'AlfakitLoadedLanguageSwitcher',
+  () => import('./loaded').then((module) => module.LoadedLanguageSwitcher),
+  LanguageSwitcherTrigger,
 )
 
 const LoadedCopilot = lazyComponent(
@@ -158,4 +166,18 @@ export const AlfakitCopilot = headerWidget(
   'starter-kit-copilot',
   'copilot',
   LoadedCopilot,
+)
+
+/**
+ * The panel's language menu (`locales()`): the current language straight away, and each
+ * language in its own name once loaded. Picking one switches the panel's language (the
+ * session, the cookie and `persistLocaleUsing()`) and reloads the page, so AlfaKit pages and
+ * the header components show it; the host's own pages and `<html lang dir>` are the app's.
+ * Renders nothing for guests or with fewer than two languages.
+ */
+export const AlfakitLanguageSwitcher = headerWidget(
+  'AlfakitLanguageSwitcher',
+  'starter-kit-language-switcher',
+  'language',
+  LoadedLanguageSwitcher,
 )

@@ -5,6 +5,7 @@ export { createStarterKitPage, type StarterKitPageOptions } from './starter-kit'
 export { default as StarterKitContentLayout } from './StarterKitContentLayout.vue'
 export {
   AlfakitCopilot,
+  AlfakitLanguageSwitcher,
   AlfakitNotifications,
   AlfakitSearch,
   AlfakitTenantSwitcher,

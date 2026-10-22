@@ -56,6 +56,7 @@ export const HOST_IMPORTS = [
     'AlfakitNotifications',
     'AlfakitTenantSwitcher',
     'AlfakitCopilot',
+    'AlfakitLanguageSwitcher',
 ]
 
 /** What a starter kit's `resources/js/pages/Alfakit/Page.*` imports (the `alfakit:install` stubs). */

@@ -4,12 +4,14 @@ import {
   type PanelSchema,
   type StarterKitNavigationSchema,
 } from '@alfakit/core'
+import { router as inertiaCore } from '@inertiajs/core'
 import { router } from '@inertiajs/vue3'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { h } from 'vue'
 import {
   AlfakitCopilot,
+  AlfakitLanguageSwitcher,
   AlfakitNotifications,
   AlfakitSearch,
   AlfakitTenantSwitcher,
@@ -306,5 +308,99 @@ describe('starter kit header components', () => {
 
     expect(wrapper.html()).toBe('')
     wrapper.unmount()
+  })
+
+  describe('language switcher', () => {
+    const locales = [
+      { code: 'en', tag: 'en', label: 'English', direction: 'ltr' as const },
+      { code: 'fr', tag: 'fr', label: 'Français', direction: 'ltr' as const },
+    ]
+    const localized = (code: 'en' | 'fr'): PanelSchema => ({
+      ...loaded,
+      endpoints: { ...loaded.endpoints, locale: '/admin/_alfakit/locale' },
+      localization: {
+        ...locales.find((locale) => locale.code === code)!,
+        switcher: true,
+        switcherPosition: 'user-menu',
+        locales,
+      } as PanelSchema['localization'],
+      translations: { change_language: code === 'fr' ? 'Changer de langue' : 'Change language' },
+    })
+    const withLanguage = (code: 'en' | 'fr'): StarterKitNavigationSchema => ({
+      ...navigation,
+      widgets: {
+        ...navigation.widgets!,
+        language: {
+          label: code === 'fr' ? 'Changer de langue' : 'Change language',
+          current: locales.find((locale) => locale.code === code)!,
+        },
+      },
+    })
+
+    it('renders nothing with one language', () => {
+      const wrapper = mount(AlfakitLanguageSwitcher)
+
+      expect(wrapper.html()).toBe('')
+      wrapper.unmount()
+    })
+
+    it('shows the current language, posts the new one and follows the refreshed page', async () => {
+      // `switchLocale()` posts through Inertia's core router.
+      const post = vi.spyOn(inertiaCore, 'post').mockImplementation(() => {})
+      let language: 'en' | 'fr' = 'en'
+      setPageProps({ alfakitNavigation: [withLanguage('en')] })
+      fetchMock.mockImplementation(async (url: string) =>
+        respond(url.startsWith('/admin/_alfakit/starter-kit') ? localized(language) : {}),
+      )
+
+      const wrapper = mount(AlfakitLanguageSwitcher, { attachTo: document.body })
+
+      // Straight away, from the shared prop.
+      expect(document.querySelector('[data-slot="starter-kit-language-switcher"]')).not.toBeNull()
+      const trigger = wrapper.find('button[aria-label="Change language"]')
+      expect(trigger.text()).toBe('English')
+
+      // A click before the menu loaded opens it once loaded.
+      await trigger.trigger('click')
+
+      const option = () =>
+        [...document.querySelectorAll<HTMLElement>('[role="menuitemradio"]')].find((item) =>
+          item.textContent?.includes('Français'),
+        )
+      await until(() => option() !== undefined)
+      option()!.click()
+      await flush()
+
+      expect(post).toHaveBeenCalledWith(
+        '/admin/_alfakit/locale',
+        { locale: 'fr' },
+        expect.objectContaining({ preserveState: false }),
+      )
+      wrapper.unmount()
+
+      // The page reloads in French: the shared prop names it, and the panel data loads again.
+      language = 'fr'
+      setPageProps({ alfakitNavigation: [withLanguage('fr')] })
+      const reloaded = mount(AlfakitLanguageSwitcher, { attachTo: document.body })
+
+      await until(() => document.querySelector('button[aria-label="Changer de langue"]') !== null)
+      await until(
+        () =>
+          fetchMock.mock.calls.filter(([url]) =>
+            String(url).startsWith('/admin/_alfakit/starter-kit'),
+          ).length === 2,
+      )
+      await flush()
+
+      const french = document.querySelector('[data-slot="starter-kit-language-switcher"] button')!
+      expect(french.getAttribute('aria-label')).toBe('Changer de langue')
+      expect(french.textContent).toContain('Français')
+      expect(
+        fetchMock.mock.calls.filter(([url]) =>
+          String(url).startsWith('/admin/_alfakit/starter-kit'),
+        ),
+      ).toHaveLength(2)
+      reloaded.unmount()
+    })
   })
 })

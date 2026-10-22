@@ -9,6 +9,7 @@ import { lazy, Suspense } from 'react'
 import { lazyComponent } from '../lib/lazy'
 import {
   CopilotTrigger,
+  LanguageSwitcherTrigger,
   NotificationsTrigger,
   SearchTrigger,
   TenantSwitcherTrigger,
@@ -17,17 +18,18 @@ import {
 
 /**
  * Drop-in header components of starter kit mode (`Panel::starterKit()`): AlfaKit's search,
- * notifications bell and tenant switcher in the host's own header, on every page of the
+ * notifications bell, tenant switcher and language switcher in the host's own header, on every page of the
  * application. They read the shared `alfakitNavigation` prop, render a lightweight trigger
  * straight away, and load their code and the panel data the first time they render
  * (in the browser, never during SSR).
  *
  * ```tsx
- * import { AlfakitCopilot, AlfakitNotifications, AlfakitSearch } from '@alfakit/react'
+ * import { AlfakitCopilot, AlfakitLanguageSwitcher, AlfakitNotifications, AlfakitSearch } from '@alfakit/react'
  *
  * <AlfakitSearch />
  * <AlfakitNotifications />
  * <AlfakitCopilot />
+ * <AlfakitLanguageSwitcher />
  * ```
  */
 export interface AlfakitHeaderWidgetProps {
@@ -64,6 +66,11 @@ const LoadedCopilot = lazyComponent<WidgetProps>(
 function preloadCopilot() {
   void LoadedCopilot.preload()
 }
+
+const LoadedLanguageSwitcher = lazyComponent<WidgetProps>(
+  () => load().then((module) => module.LoadedLanguageSwitcher),
+  (props) => <LanguageSwitcherTrigger {...props} />,
+)
 
 // Only needed while impersonating: its code loads then (and never on AlfaKit pages).
 const LazyImpersonationBanner = lazy(() => import('./impersonation-banner'))
@@ -172,6 +179,30 @@ export function AlfakitCopilot({ panel }: AlfakitHeaderWidgetProps = {}) {
       {banner}
       <span data-slot="starter-kit-copilot" className="inline-flex">
         <LoadedCopilot source={source} />
+      </span>
+    </>
+  )
+}
+
+/**
+ * The panel's language menu (`locales()`): the current language straight away, and each
+ * language in its own name once loaded. Picking one switches the panel's language (the
+ * session, the cookie and `persistLocaleUsing()`) and reloads the page, so AlfaKit pages and
+ * the header components show it; the host's own pages and `<html lang dir>` are the app's.
+ * Renders nothing for guests or with fewer than two languages.
+ */
+export function AlfakitLanguageSwitcher({ panel }: AlfakitHeaderWidgetProps = {}) {
+  const source = useWidgets(panel, 'language')
+
+  const banner = <StarterKitImpersonationBanner source={source} />
+
+  if (!source?.widgets.language) return banner
+
+  return (
+    <>
+      {banner}
+      <span data-slot="starter-kit-language-switcher" className="inline-flex">
+        <LoadedLanguageSwitcher source={source} />
       </span>
     </>
   )

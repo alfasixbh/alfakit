@@ -1,6 +1,7 @@
 import {
   loadStarterKitPanel,
   loadedStarterKitPanel,
+  starterKitPanelLocale,
   starterKitWidgetsPanel,
   type PanelSchema,
   type StarterKitWidgets,
@@ -8,19 +9,21 @@ import {
 
 /**
  * The panel the loaded components render with, once its data (`widgets.endpoint`) has
- * loaded: null until then. A tenant switch (another endpoint) loads its own. Call during
- * component initialisation.
+ * loaded: null until then. It is loaded per endpoint (a tenant switch) and language (a
+ * language switch), so the components follow a switch. Call during component
+ * initialisation.
  */
 export function useWidgetsPanel(source: () => StarterKitWidgets): {
   readonly current: PanelSchema | null
 } {
   let version = $state(0)
   const endpoint = $derived(source().widgets.endpoint)
+  const locale = $derived(starterKitPanelLocale(source()))
 
   $effect(() => {
     let active = true
 
-    void loadStarterKitPanel(endpoint).then(
+    void loadStarterKitPanel(endpoint, locale).then(
       () => active && version++,
       () => {},
     )
@@ -33,7 +36,7 @@ export function useWidgetsPanel(source: () => StarterKitWidgets): {
   const panel = $derived.by(() => {
     void version
 
-    const base = loadedStarterKitPanel(endpoint)
+    const base = loadedStarterKitPanel(endpoint, locale)
 
     return base ? starterKitWidgetsPanel(base, source()) : null
   })

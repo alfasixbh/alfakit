@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.1.8
+
+### Patch Changes
+
+- The starter kit header components' panel data is cached per language, so after a language switch they show the new language (used by `<AlfakitLanguageSwitcher />`).
+
 ## 0.1.7
 
 ### Patch Changes

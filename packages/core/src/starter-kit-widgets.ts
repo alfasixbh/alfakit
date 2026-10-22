@@ -15,7 +15,8 @@ import { preferCurrentStarterKitPanel, starterKitNavigations } from './starter-k
 /**
  * The drop-in header components of starter kit mode: `<AlfakitSearch />` (the command
  * palette and global search), `<AlfakitNotifications />` (the database notifications bell),
- * `<AlfakitTenantSwitcher />` and `<AlfakitCopilot />` (the AI plugin's copilot). They render
+ * `<AlfakitTenantSwitcher />`, `<AlfakitLanguageSwitcher />` and `<AlfakitCopilot />` (the AI
+ * plugin's copilot). They render
  * on every page of the host application, from the `widgets` of the shared
  * `alfakitNavigation` prop; their code and the panel data (translations, endpoints, the
  * palette, realtime) load the first time one of them renders.
@@ -58,14 +59,29 @@ export function isAlfakitPage(props: unknown): boolean {
 
 // ---------------------------------------------------------------- Panel data
 
-// Loaded once per endpoint (the tenant-scoped one inside a tenant) for the browser session;
-// Inertia visits keep it, a full page load starts over.
+// Loaded once per endpoint and language (the tenant-scoped endpoint inside a tenant) for the
+// browser session; Inertia visits keep it, a full page load starts over.
 const requests = new Map<string, Promise<PanelSchema>>()
 const panels = new Map<string, PanelSchema>()
 
-/** Load (once) the panel data the header components render with. */
-export function loadStarterKitPanel(endpoint: string): Promise<PanelSchema> {
-  let request = requests.get(endpoint)
+/**
+ * The language the panel data is loaded in: the current language of the shared prop
+ * (`widgets.language`, panels with a language switcher). After a language switch the prop
+ * names the new one, so the header components load the panel data (translations, the
+ * reading direction) again instead of keeping the old language's.
+ */
+export function starterKitPanelLocale(source: StarterKitWidgets): string | undefined {
+  return source.widgets.language?.current.code
+}
+
+function panelKey(endpoint: string, locale: string | undefined): string {
+  return locale === undefined ? endpoint : `${endpoint}#${locale}`
+}
+
+/** Load (once per language) the panel data the header components render with. */
+export function loadStarterKitPanel(endpoint: string, locale?: string): Promise<PanelSchema> {
+  const key = panelKey(endpoint, locale)
+  let request = requests.get(key)
 
   if (!request) {
     request = requestJson<unknown>(endpoint)
@@ -76,16 +92,16 @@ export function loadStarterKitPanel(endpoint: string): Promise<PanelSchema> {
           throw new Error(`The starter kit endpoint ${endpoint} did not answer the panel data.`)
         }
 
-        panels.set(endpoint, panel)
+        panels.set(key, panel)
 
         return panel
       })
       .catch((error: unknown) => {
         // A failed request (offline, expired session) is retried by the next render.
-        requests.delete(endpoint)
+        requests.delete(key)
         throw error
       })
-    requests.set(endpoint, request)
+    requests.set(key, request)
   }
 
   return request
@@ -100,9 +116,9 @@ function isPanelData(value: unknown): value is PanelSchema {
   )
 }
 
-/** The panel data once loaded, or null (so remounts render straight away). */
-export function loadedStarterKitPanel(endpoint: string): PanelSchema | null {
-  return panels.get(endpoint) ?? null
+/** The panel data once loaded (in `locale`, when given), or null (so remounts render straight away). */
+export function loadedStarterKitPanel(endpoint: string, locale?: string): PanelSchema | null {
+  return panels.get(panelKey(endpoint, locale)) ?? null
 }
 
 /** @internal Forget the loaded panel data (tests). */
@@ -251,6 +267,24 @@ export function starterKitCopilot(panel: PanelSchema): AiCopilotSchema | null {
   }
 
   return null
+}
+
+// ---------------------------------------------------------------- Language switcher
+
+let languagesRequested = false
+
+/** Ask for the language menu to open as soon as it has loaded (a click on its trigger). */
+export function requestStarterKitLanguages(): void {
+  languagesRequested = true
+}
+
+/** Whether the language menu was asked for before it loaded (and forget the request). */
+export function takeRequestedStarterKitLanguages(): boolean {
+  const requested = languagesRequested
+
+  languagesRequested = false
+
+  return requested
 }
 
 // ---------------------------------------------------------------- Dashboard widgets
