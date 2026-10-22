@@ -1,5 +1,13 @@
 # @alfakit/react
 
+## 0.1.7
+
+### Patch Changes
+
+- Released with AlfaKit 0.1.7 to keep the npm and PHP versions the same (no frontend changes).
+- Updated dependencies
+  - @alfakit/core@0.1.7
+
 ## 0.1.6
 
 ### Patch Changes

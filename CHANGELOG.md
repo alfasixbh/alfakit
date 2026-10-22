@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-10-22
+
+### Fixed
+
+- A resource whose `$recordTitleAttribute` is a rich text attribute (a comment's `body`) showed the HTML in breadcrumbs, headings and global search (`<p>Edited reply</p>`); records are titled by the text.
+
 ## [0.1.6] - 2026-10-21
 
 ### Upgrading from 0.1.5
@@ -1105,7 +1111,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.6...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.7...HEAD
+[0.1.7]: https://github.com/alfasixbh/alfakit/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/alfasixbh/alfakit/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/alfasixbh/alfakit/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/alfasixbh/alfakit/compare/v0.1.3...v0.1.4
