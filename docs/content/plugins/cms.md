@@ -93,7 +93,7 @@ The plugin adds these resources to the panel, under a **Content** navigation gro
 A page has a title, a slug, an optional parent page, block content, publishing settings and SEO settings.
 
 - **Paths** follow the page tree: a page with the slug `team` under `company` lives at `/company/team`. The path is stored on the page and kept in sync when a parent moves. A page can't be placed under itself or one of its descendants, and two pages of the same site can't share a path.
-- **Home page**: turn on **Home page** to serve a page at the site root. There is one home page per tenant and language; marking another page as home releases the previous one.
+- **Home page**: turn on **Home page** to serve a page at the site root. There is one home page per tenant and language; marking another page as home releases the previous one. Your app's own `/` route wins over it (see [The public site](#the-public-site)).
 - **Order**: `sort` orders sibling pages (menus have their own order).
 - **Layout**: with `->layouts(['default' => 'Default', 'landing' => 'Landing'])`, editors pick a layout and the page's `layout` reaches the frontend, where your page component can switch on it.
 
@@ -466,6 +466,15 @@ CmsPlugin::make()->publicRoutes(prefix: '', middleware: ['web'], domain: null);
 ```
 
 This registers `sitemap.xml`, `robots.txt` and a catch-all route for published pages. The catch-all is a Laravel fallback route, so every route of your application wins over it; a path without a live page answers 404 (after checking redirects). With a `prefix`, the site lives below it (`/site/about`). Only the first panel with `publicRoutes()` serves the site.
+
+That includes `/`: Laravel's starter kits and a fresh app route it to their welcome page, so the CMS home page doesn't show until that route serves it. Keep the route's name (the starter kits' auth pages link to `home`) and point it at the CMS page controller:
+
+```php
+// routes/web.php
+use AlfaSix\AlfakitCms\Http\Controllers\PageController;
+
+Route::get('/', PageController::class)->name('home');
+```
 
 Pages render the `Alfakit/CmsPage` Inertia component with a `cms` prop: the page (blocks, SEO, breadcrumbs, translations), the shared menus, the site (name, URL, language, direction, languages) and the renderers' strings. Register the component in your public site's Inertia app:
 
