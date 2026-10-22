@@ -350,7 +350,7 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
         return `created reply ${state.replyId}`
     })
 
-    await step('B19', 'Edit the reply', async () => {
+    await step('B19', 'Edit the reply; its breadcrumb shows the reply text, not HTML', async () => {
         if (!state.replyId) skip('no reply was created')
         await open(`${comment}/replies/${state.replyId}/edit`)
         await breadcrumbs(['Posts', 'Comments', 'Replies'])
@@ -359,6 +359,11 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
         await toast('Saved')
         const body = plain(app.php(`App\\Models\\Reply::find(${state.replyId})?->body`))
         if (body !== `${state.replyBody} edited`) throw new Error(`The database has body "${body}"`)
+        // ReplyResource is titled by its rich text body: the breadcrumb shows the text, not HTML.
+        await open(`${comment}/replies/${state.replyId}/edit`)
+        const trail = await breadcrumbs([`${state.replyBody} edited`])
+        if (/<\/?[a-z]/i.test(trail)) throw new Error(`The breadcrumb shows HTML: "${trail}"`)
+        return trail
     })
 
     await step('B20', 'Delete the reply', async () => {

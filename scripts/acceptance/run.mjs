@@ -521,8 +521,19 @@ async function runCell(renderer, mode) {
                         '--view',
                         '--nested=CommentResource',
                     ])
+                    // As the nested resources docs suggest: title replies by their (rich text) body.
+                    const replyFile = app.path('app/Alfakit/Resources/ReplyResource.php')
+                    writeFileSync(
+                        replyFile,
+                        readFileSync(replyFile, 'utf8').replace(
+                            /(protected static \?string \$model = Reply::class;)/,
+                            "$1\n\n    protected static ?string $recordTitleAttribute = 'body';",
+                        ),
+                    )
                     const resource = lint('app/Alfakit/Resources/ReplyResource.php')
                     const problems = []
+                    if (!/\$recordTitleAttribute = 'body'/.test(resource))
+                        problems.push('could not set ReplyResource::$recordTitleAttribute')
                     if (!/\$parentResource\s*=\s*CommentResource::class/.test(resource))
                         problems.push(
                             'ReplyResource has no $parentResource = CommentResource::class',
