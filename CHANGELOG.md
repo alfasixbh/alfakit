@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Fixed
+
+- `->plugin()` registers every plugin passed to it (`->plugin(KanbanPlugin::make(), CmsPlugin::make())`); PHP dropped the extra ones without an error, so the second plugin did nothing.
+
 ## [0.1.7] - 2026-10-22
 
 ### Fixed
