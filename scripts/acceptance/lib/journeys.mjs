@@ -624,6 +624,70 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
         },
     )
 
+    await step(
+        'B32',
+        "Starter kit: the header's <AlfakitLanguageSwitcher /> switches AlfaKit's language",
+        async () => {
+            if (mode !== 'starter-kit') skip('starter-kit mode only')
+            const switcher = page.locator('[data-slot="starter-kit-language-switcher"] button')
+            // The page re-renders in the new language after the POST and its reload: wait
+            // for AlfaKit's content root to carry it (poll, don't sleep).
+            const contentDir = (dir) =>
+                page
+                    .waitForFunction(
+                        (expected) =>
+                            document
+                                .querySelector('[data-slot="content"]')
+                                ?.closest('[dir]')
+                                ?.getAttribute('dir') === expected,
+                        dir,
+                        { timeout: 15_000 },
+                    )
+                    .catch(() => {})
+            const pick = async (name) => {
+                // The menu loads with the header components' panel data.
+                await page.waitForLoadState('networkidle').catch(() => {})
+                // One click: right after a switch the first paint's button is still there, and
+                // the menu opens once loaded (a lost click is the bug this guards).
+                await switcher.first().click()
+                const item = page.getByRole('menuitemradio', { name })
+                await see(item, `the "${name}" language`)
+                const posted = page.waitForResponse(
+                    (r) => r.url().includes('/_alfakit/locale') && r.request().method() === 'POST',
+                )
+                await item.first().click()
+                await posted
+                await page.waitForLoadState('networkidle').catch(() => {})
+            }
+            try {
+                await open('/dashboard')
+                await see(switcher.first(), 'the language switcher in the app header')
+                await open(`${PANEL}/posts`)
+                const before = await direction()
+                await pick('العربية')
+                await contentDir('rtl')
+                const rtl = await direction()
+                if (rtl.content !== 'rtl' || rtl.html !== before.html)
+                    throw new Error(
+                        `Expected AlfaKit's content rtl and <html dir> unchanged after picking Arabic in the header, got ${JSON.stringify({ before, rtl })}`,
+                    )
+                await pick('English')
+                await contentDir('ltr')
+                const ltr = await direction()
+                if (ltr.content !== 'ltr')
+                    throw new Error(
+                        `Expected ltr after picking English, got ${JSON.stringify(ltr)}`,
+                    )
+                return `ar ${JSON.stringify(rtl)}, en ${JSON.stringify(ltr)}`
+            } finally {
+                if (route)
+                    await switchTo('en').catch((error) =>
+                        log(`switching back to en failed: ${error.message}`),
+                    )
+            }
+        },
+    )
+
     // ---------------------------------------------------------------- tables
     await step(
         'B30',

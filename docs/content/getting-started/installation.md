@@ -7,9 +7,9 @@ description: Install the PHP package and the renderer for your framework.
 
 ## Requirements
 
-- PHP 8.4 or newer, Laravel 13
+- PHP 8.4 or newer with the `intl` extension (Herd, Laravel Cloud and most PHP builds include it), Laravel 13
 - Node 22+, a package manager (npm, pnpm, bun or yarn)
-- An Inertia application using Tailwind CSS 4 — the official **React**, **Vue** or **Svelte** starter kits are the supported baseline (`laravel new my-app --react`)
+- An Inertia application using Tailwind CSS 4 — the official **React**, **Vue** or **Svelte** starter kits are the supported baseline (`laravel new my-app --react`, `--vue` or `--svelte`). AlfaKit needs nothing particular from the installer's other questions: any database, Pest or PHPUnit, with or without Laravel Boost (see [AI agents](ai-agents)), and let it run `npm install` and the first build.
 
 ## Choose how to use AlfaKit
 
@@ -22,6 +22,8 @@ AlfaKit runs in one of three modes. The [setup wizard](setup-wizard) asks which 
 | **Standalone**              | AlfaKit forms, tables, actions and widgets in your own Inertia pages, without a panel                     | Your app's own auth                                                               | You only want AlfaKit components in pages you build yourself. See [Outside panels](../standalone/overview)                           |
 
 You can add a separate admin panel to a starter kit app too: choose **Admin panel** in the wizard (`--mode=panel`). Both can live in one app.
+
+Step 1 and the setup wizard (step 2) work for every mode. Steps 3 to 6 set up the **Admin panel** by hand; for the other two modes by hand, run step 1, then follow [Inside a Laravel starter kit](#inside-a-laravel-starter-kit) or [Using AlfaKit outside panels](#using-alfakit-outside-panels).
 
 ## 1. Install the Composer package
 
@@ -91,6 +93,8 @@ It asks for a name, email address and password and creates the user with your ap
 php artisan make:alfakit-resource Post --generate
 ```
 
+A resource is built on an Eloquent model with a table, and a new Laravel app has only `User`. Create the model first (`php artisan make:model Post --migration`, add its columns to the migration, `php artisan migrate`), or follow the [Quick start](quick-start), which builds a `Post` model step by step. Without the model the command warns, writes a default form and table, and the resource's pages fail with `Class "App\Models\Post" not found` until the model and its table exist. `make:alfakit-resource Post --model --migration` creates an empty model and migration with the resource: fill in the migration, run it, then generate again with `--generate --force`.
+
 The resource saves its form with Eloquent's `create()` and `update()`, so the model must allow mass assignment of the fields: list them in `protected $fillable = [...]` (or use `protected $guarded = [];`). `--generate` warns when the model would refuse a field.
 
 `--generate` inspects the `posts` table and creates sensible form fields and table columns. Add `--view` for a view page, `--soft-deletes` for the trashed filter and restore actions (the model must use `SoftDeletes`), or `--simple` for modal-based CRUD on a single page.
@@ -121,7 +125,13 @@ Forms, tables, infolists, actions and widgets also work in your application's ow
 php artisan alfakit:install --standalone
 ```
 
-It imports `@alfakit/<adapter>/standalone.css` into `resources/css/app.css`, installs the npm renderer, and creates an example `app/Alfakit/Standalone/ContactForm.php` with a `contact` page. In an app that already has a panel, only the stylesheet import is needed. See [Outside panels](../standalone/overview).
+It imports `@alfakit/<adapter>/standalone.css` into `resources/css/app.css`, installs the npm renderer, and creates an example `app/Alfakit/Standalone/ContactForm.php` with a `contact` page (`resources/js/pages/contact.tsx`, `Contact.vue` or `Contact.svelte`). The page needs a route, which the installer prints; add it to `routes/web.php` (the page name is `'Contact'` in Vue and Svelte) and open `/contact`:
+
+```php
+Route::inertia('/contact', 'contact', ['form' => \App\Alfakit\Standalone\ContactForm::make()]);
+```
+
+In an app that already has a panel, only the stylesheet import is needed. See [Outside panels](../standalone/overview).
 
 ## More languages (optional)
 

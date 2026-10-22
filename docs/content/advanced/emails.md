@@ -39,7 +39,7 @@ Nothing to set up: the theme reads the default panel. Emails sent from a queue h
     'logo_height' => 32,          // pixels
     'primary_color' => null,      // any CSS colour (default: the panel's primary colour)
     'font' => null,               // font family (default: the panel's font)
-    'url' => null,                // where the logo links to (default: the panel URL)
+    'url' => null,                // where the logo links to (default: the panel URL; the app URL for a starter kit panel)
 ],
 ```
 

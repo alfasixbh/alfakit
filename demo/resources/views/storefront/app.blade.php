@@ -17,6 +17,9 @@
             html { background-color: #FFF4E4; }
         </style>
 
+        @if ($renderer === 'react')
+            @viteReactRefresh
+        @endif
         @vite(["resources/css/{$renderer}.css", "resources/js/{$renderer}/app.{$extension}"])
 
         <x-inertia::head>

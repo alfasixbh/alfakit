@@ -54,6 +54,7 @@
             <script type="application/ld+json">{!! json_encode($seo['jsonLd'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
         @endif
         <link rel="alternate" type="application/rss+xml" href="{{ url('/blog/rss.xml') }}" title="AlfaKit blog">
+        @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         <link rel="alternate" type="text/plain" href="/llms.txt" title="AlfaKit documentation for AI agents">
 

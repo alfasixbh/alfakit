@@ -11,6 +11,8 @@ A bundle is a set of first-party plugins that belong together. `alfakit:setup --
 php artisan alfakit:setup --bundle=saas
 ```
 
+Bundles register plugins on a panel, so they work in the **Admin panel** and **Inside your starter kit** modes (in a starter kit the groups show in your app sidebar). In **standalone** mode there is no panel: the wizard skips bundles and says so.
+
 | Bundle       | Name             | Plugins                                                                                                                                                                               |
 | ------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `saas`       | SaaS starter     | [Teams](../plugins/teams), [Billing](../plugins/billing), [Shield](../plugins/shield), [Feature flags](../plugins/feature-flags), [Analytics](../plugins/analytics)                   |
@@ -74,6 +76,6 @@ php artisan alfakit:setup --mode=panel --bundle=all --plugins=all --users --demo
 composer run dev
 ```
 
-Open `/admin` and sign in with the account printed by `database/seeders/AlfakitDemoSeeder.php`. The seeder only runs outside production. Some plugins need a key or a service to do their real work (Cashier keys for billing, a provider key for AI, a queue worker for webhooks and backups); the summary lists them, and everything else works straight away.
+Open `/admin` and sign in with the demo admin from `database/seeders/AlfakitDemoSeeder.php` (`admin@example.com` / `password`; the seeder only runs outside production). Teams is on this panel, so you first create a team (**Create team**) and the panel then lives under `/admin/{team}`. Some plugins need a key or a service to do their real work (Cashier keys for billing, a provider key for AI, a queue worker for webhooks and backups), and a few stay hidden or answer 403 until you allow access with their `authorize()` or gate (Ops, Feature flags, Translation manager, Mail templates); the summary lists each of these, and everything else works straight away.
 
 To try the plugins without installing anything, use the [live demo](https://demo.alfakit.dev): `demo@alfakit.dev` / `password`.

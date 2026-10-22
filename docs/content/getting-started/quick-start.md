@@ -5,11 +5,11 @@ description: Build a blog admin in ten minutes.
 
 # Quick start
 
-This walkthrough builds a small blog admin: posts with categories, tags and comments. It assumes you have [installed AlfaKit](installation).
+This walkthrough builds a small blog admin: posts with tags and comments. It assumes you have [installed AlfaKit](installation) as an **admin panel** or **inside a starter kit**; every step is the same in both, and the few differences are noted. It builds resources, which need a panel, so it doesn't apply to standalone mode ([Outside panels](../standalone/overview) has its own walkthrough).
 
 ## The panel
 
-`app/Providers/Alfakit/AdminPanelProvider.php` was created by the installer:
+`app/Providers/Alfakit/AdminPanelProvider.php` was created by the installer (in a starter kit it has `->starterKit()` instead of `->login()`, `->passwordReset()`, `->profile()`, the colours and the dashboard page; see [Inside a starter kit](starter-kits#the-panel)):
 
 ```php
 public function panel(Panel $panel): Panel
@@ -33,7 +33,7 @@ public function panel(Panel $panel): Panel
 
 ## Signing in
 
-The panel lives at `/admin` with its own login page. If the setup wizard didn't create your user, create one now:
+The panel lives at `/admin` with its own login page. If the setup wizard didn't create your user, create one now (in a starter kit, sign in or register with your app's own pages instead, and open the panel's links from the app sidebar):
 
 ```bash
 php artisan make:alfakit-user
@@ -213,10 +213,21 @@ public static function table(Table $table): Table
 ## Comments as a relation manager
 
 ```bash
-php artisan make:alfakit-relation-manager PostResource comments body
+php artisan make:alfakit-relation-manager PostResource comments body --register
 ```
 
-Register it in `PostResource::getRelations()`. It appears below the form on edit and view pages, with create / edit / delete in modals.
+`--register` adds it to `PostResource::getRelations()` for you. Without it, add the line yourself; the class lives in the resource's own folder, so name it from there (the resource doesn't import `RelationManagers`):
+
+```php
+public static function getRelations(): array
+{
+    return [
+        PostResource\RelationManagers\CommentsRelationManager::class,
+    ];
+}
+```
+
+It appears below the form on edit and view pages, with create / edit / delete in modals.
 
 ## A dashboard widget
 
@@ -224,7 +235,7 @@ Register it in `PostResource::getRelations()`. It appears below the form on edit
 php artisan make:alfakit-widget BlogStats --type=stats
 ```
 
-The panel's `->discoverWidgets(...)` picks up every widget in `app/Alfakit/Widgets`, so it shows on the dashboard right away; register widgets from elsewhere in `->widgets([...])`. The dashboard renders every panel widget in a grid.
+The panel's `->discoverWidgets(...)` picks up every widget in `app/Alfakit/Widgets`, so it shows on the dashboard right away (`/admin`, or your app's own `/dashboard` in a starter kit); register widgets from elsewhere in `->widgets([...])`. The dashboard renders every panel widget in a grid. The generated widget shows three example stats; replace them in `getStats()`.
 
 ## Next steps
 

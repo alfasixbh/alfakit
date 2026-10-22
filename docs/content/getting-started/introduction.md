@@ -34,7 +34,7 @@ Livewire is a great choice when your application is Blade-based. AlfaKit exists 
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Panels     | Multiple panels, auth, branding, dark mode, navigation groups, global search, user menu, database notifications                                                                                    |
 | Resources  | List / create / edit / view pages, relation managers, soft deletes, policies, global search                                                                                                        |
-| Forms      | 25 fields, sections, tabs, wizards, repeaters, file uploads, rich text, relationship-aware saving, server-side reactivity                                                                          |
+| Forms      | 27 fields, sections, tabs, wizards, repeaters, file uploads, rich text, relationship-aware saving, server-side reactivity                                                                          |
 | Tables     | Sorting, searching, filters, bulk actions, inline editing, reordering, polling, column toggling                                                                                                    |
 | Actions    | Buttons, groups, confirmation modals, modal forms, slide-overs, hooks, keyboard shortcuts                                                                                                          |
 | Dashboards | Stats, Chart.js charts, table widgets, custom widgets                                                                                                                                              |
@@ -44,4 +44,4 @@ Livewire is a great choice when your application is Blade-based. AlfaKit exists 
 
 ## Supported stack
 
-AlfaKit v1 supports PHP 8.4+, Laravel 13 and Inertia.js 3 with Tailwind CSS 4. Each renderer tracks its ecosystem: React 19 with shadcn/ui, Vue 3.5 with shadcn-vue, Svelte 5 with shadcn-svelte.
+AlfaKit 0.1 supports PHP 8.4+ (with the `intl` extension), Laravel 13 and Inertia.js 3 with Tailwind CSS 4. Each renderer tracks its ecosystem: React 19 with shadcn/ui, Vue 3.5 with shadcn-vue, Svelte 5 with shadcn-svelte.

@@ -20,7 +20,7 @@ The default is a **minimal install**: every optional step defaults to _no_, no p
     - `panel`: an admin panel with its own login, layout and navigation;
     - `starter-kit`: the panel inside your starter kit app, using its auth, layout and sidebar (`alfakit:install --starter-kit`), the default when a starter kit is detected;
     - `standalone`: AlfaKit components in your own Inertia pages, without a panel.
-3. **Roles and permissions** (optional): installs the [Shield plugin](../plugins/shield), registers it, runs `alfakit-shield:install` and adds spatie's `HasRoles` trait to your `User` model.
+3. **Roles and permissions** (optional): installs the [Shield plugin](../plugins/shield), registers it, runs `alfakit-shield:install` and adds spatie's `HasRoles` trait to your `User` model. The summary then tells you to generate the permissions and make yourself a super admin (`php artisan alfakit-shield:generate --panel=admin && php artisan alfakit-shield:super-admin --panel=admin`).
 4. **Users resource**: runs [`alfakit:users`](../resources/users), with a roles field when you chose roles.
 5. **AI providers** (optional): runs [`alfakit:ai-setup`](#ai-providers).
 6. **Realtime** (optional): runs [`alfakit:realtime`](#realtime).
@@ -35,27 +35,27 @@ The default is a **minimal install**: every optional step defaults to _no_, no p
 
 Every question has a flag. Without `--no-interaction` the wizard only asks what the flags didn't answer; with it, a step whose flag is missing is skipped.
 
-| Flag                                    | Answers                                                                               |
-| --------------------------------------- | ------------------------------------------------------------------------------------- |
-| `--adapter=react\|vue\|svelte`          | The renderer (default: detected from `package.json`)                                  |
-| `--panel=admin`                         | The panel id                                                                          |
-| `--mode=panel\|starter-kit\|standalone` | How AlfaKit is installed (default: `starter-kit` when one is detected)                |
-| `--users`                               | Generate the users resource                                                           |
-| `--roles`                               | Roles and permissions with Shield                                                     |
-| `--ai=openai,anthropic`                 | The `laravel/ai` providers to configure                                               |
-| `--realtime`                            | Reverb and live notifications                                                         |
-| `--plugins=activity-log,comments`       | First-party plugins (slugs below), or `all`                                           |
-| `--bundle=saas,ops`                     | [Plugin bundles](bundles): `saas`, `content`, `backoffice`, `support`, `ops` or `all` |
-| `--brand-color="#2563eb"`               | The primary colour: a hex colour or any CSS colour function (`oklch(…)`)              |
-| `--logo=images/logo.svg`                | A path under `public/` (written as `asset(…)`) or a URL                               |
-| `--font=Inter`                          | The font family                                                                       |
-| `--demo`                                | Write and run the demo seeder                                                         |
-| `--admin-email=you@example.com`         | Create the admin user you sign in with (needs `--admin-password`)                     |
-| `--admin-name=Admin`                    | The admin user's name (default `Admin`)                                               |
-| `--admin-password=…`                    | The admin user's password                                                             |
-| `--migrate`                             | Run the migrations without asking                                                     |
-| `--no-install`                          | Never run Composer or npm: the summary lists the commands to run yourself             |
-| `--force`                               | Overwrite generated files                                                             |
+| Flag                                    | Answers                                                                                                        |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `--adapter=react\|vue\|svelte`          | The renderer (default: detected from `package.json`)                                                           |
+| `--panel=admin`                         | The panel id                                                                                                   |
+| `--mode=panel\|starter-kit\|standalone` | How AlfaKit is installed (default: `starter-kit` when one is detected)                                         |
+| `--users`                               | Generate the users resource                                                                                    |
+| `--roles`                               | Roles and permissions with Shield                                                                              |
+| `--ai=openai,anthropic`                 | The `laravel/ai` providers to configure                                                                        |
+| `--realtime`                            | Reverb and live notifications                                                                                  |
+| `--plugins=activity-log,comments`       | First-party plugins (slugs below), or `all`                                                                    |
+| `--bundle=saas,ops`                     | [Plugin bundles](bundles): `saas`, `content`, `backoffice`, `support`, `ops` or `all`                          |
+| `--brand-color="#2563eb"`               | The primary colour: a hex colour or any CSS colour function (`oklch(…)`)                                       |
+| `--logo=images/logo.svg`                | A path under `public/` (written as `asset(…)`; put the file there, or the panel shows a broken image) or a URL |
+| `--font=Inter`                          | The font family                                                                                                |
+| `--demo`                                | Write and run the demo seeder                                                                                  |
+| `--admin-email=you@example.com`         | Create the admin user you sign in with (needs `--admin-password`)                                              |
+| `--admin-name=Admin`                    | The admin user's name (default `Admin`)                                                                        |
+| `--admin-password=…`                    | The admin user's password                                                                                      |
+| `--migrate`                             | Run the migrations without asking                                                                              |
+| `--no-install`                          | Never run Composer or npm: the summary lists the commands to run yourself                                      |
+| `--force`                               | Overwrite generated files                                                                                      |
 
 A complete unattended run:
 
@@ -104,14 +104,14 @@ Sets up [`laravel/ai`](https://github.com/laravel/ai) (it offers to install it w
 - publishes `config/ai.php` when it isn't there yet, and sets the default provider (`'default'`) and, optionally, its default text model (`models.text.default`);
 - sends a tiny request to each provider's cheapest text model and reports which keys work. Keys are never printed, and anything key-like in an error message is masked.
 
-| Flag                      | Description                                           |
-| ------------------------- | ----------------------------------------------------- |
-| `--providers=openai,groq` | The providers to configure, without the question      |
-| `--default=openai`        | The default provider                                  |
-| `--model=`                | The default provider's default text model             |
-| `--check`                 | Only report which providers have a key, and test them |
-| `--no-test`               | Don't send the test request                           |
-| `--no-install`            | Don't install `laravel/ai` when it is missing         |
+| Flag                      | Description                                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `--providers=openai,groq` | The providers to configure, without the question                                                                    |
+| `--default=openai`        | The default provider                                                                                                |
+| `--model=`                | The default provider's default text model                                                                           |
+| `--check`                 | Only report which providers have a key, and test them; never installs anything (exits 1 when laravel/ai is missing) |
+| `--no-test`               | Don't send the test request                                                                                         |
+| `--no-install`            | Don't install `laravel/ai` when it is missing                                                                       |
 
 Without interaction, keys come from the environment of the command, so they stay out of your shell history and CI logs:
 

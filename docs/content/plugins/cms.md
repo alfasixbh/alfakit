@@ -498,6 +498,7 @@ Import a stylesheet that loads Tailwind first: `resources/css/alfakit.css` in pa
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        @viteReactRefresh {{-- React only: your own block components under npm run dev --}}
         @vite(['resources/js/site.tsx'])
         <x-inertia::head />
     </head>

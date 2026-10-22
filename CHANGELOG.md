@@ -6,10 +6,42 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.8] - 2026-10-22
+
+### Added
+
+- Starter kits: `<AlfakitLanguageSwitcher />` (`@alfakit/react`, `@alfakit/vue`, `@alfakit/svelte`), a drop-in header component for the panel's `->locales()`. A starter kit draws its own header and user menu, so the panel's language switcher never showed and users could not change the language. It shows a languages button with the current language at once, renders nothing with fewer than two locales (or `localeSwitcher(false)`), and switches the language as the panel's own menu does; AlfaKit pages and the header components then show the new language (their panel data loads per language), and `<html lang dir>` stays the app's. `alfakit:install --starter-kit` adds it to the `alfakit:header` block of new installs.
+
+### Upgrading from 0.1.7
+
+- Update the packages: `composer update "alfasix/*"`, `npm install @alfakit/react@latest` (or `@alfakit/vue`, `@alfakit/svelte`), `php artisan alfakit:upgrade`, `npm run build`.
+- Starter kit apps: run `php artisan alfakit:install --starter-kit --no-npm` again (with the `--panel` and `--path` you installed with) to add `<AlfakitLanguageSwitcher />` to the header block an earlier version wrote; it only adds what is missing. `php artisan alfakit:upgrade` reminds you while a header lacks it. Then `npm run build`.
+
 ### Fixed
 
+- `alfakit:add` (and realtime and AI setup) asks before Composer may update or downgrade packages your app already has to install something; answering no keeps them. Under `--no-interaction` it goes ahead and says how to undo it (restore composer.json and composer.lock, then `composer install`).
+- In panel mode inside a starter kit app, `alfakit:add teams` and `alfakit:add ai` no longer suggest (or add) `<AlfakitTenantSwitcher />` and `<AlfakitCopilot />` for the kit's header, which isn't AlfaKit's there.
+- `make:alfakit-resource --nested` that links an existing relation manager to a nested resource whose `body` is rich text now lists it as text, not HTML.
+- Record titles are cut at 80 characters in breadcrumbs, headings and global search (a comment titled by its body showed the whole comment), and generated resources no longer pick `status`, `type` and similar columns as the title.
 - Docs: the CMS home page didn't show in a starter kit or fresh app, whose own `/` (welcome) route wins over CMS pages; the CMS page and the Boost skill say how to serve it from the `home` route.
+- Starter kits: emails in AlfaKit's theme (including the app's own "verify your email address" mail, which the theme renders) linked their logo into the panel (`/admin/posts`), so every new user of the app was sent to the admin panel from their sign-up email. A starter kit panel's emails now link to the app (`app.url`); `alfakit.mail.url` still overrides it.
+- `alfakit:add --list <plugin>` showed only the name and the install command for a plugin that wasn't installed yet, in every app installed from Packagist, so "see a plugin first" showed nothing to see. AlfaKit now ships every first-party plugin's highlights, demo tour and related plugins (`resources/plugins/showcase.json`), and a test keeps it equal to the plugins' own `composer.json`.
+- `alfakit:setup`: the summary left out the roles step when you declined it; it now lists "Roles and permissions … skipped" like every other step.
+- `alfakit:ai-setup --check`, which the docs offer as a deployment guard, ran `composer require laravel/ai` when the package was missing (without a prompt under `--no-interaction`). It now only reports: it says laravel/ai is not installed and exits with code 1.
+- `alfakit:realtime` failed to install Reverb in a new Laravel 13 app: `composer require laravel/reverb` can't resolve while the app locks `guzzlehttp/psr7` 3.x (through guzzle 8), so realtime never switched on. AlfaKit's Composer step (realtime, AI, plugins) now retries once with `--with-all-dependencies` when Composer says that is what's needed, and says so.
+- `alfakit:setup` run again in a standalone install of a starter kit app (for example to add a bundle) installed a starter kit panel on top of it, because only a panel provider counted as "already installed". A re-run without `--mode` now keeps standalone mode, and skips bundles and plugins, which need a panel.
+- Teams: `alfakit:add teams`, and the setup wizard's `saas` bundle and `--bundle=all` / `--plugins=all` (the docs' "local playground"), registered Teams but left the user model without `HasTeams`, so creating the first team ended on a 404 and every team page answered 404. They now add `HasTeams`, `implements HasDefaultTenant, HasTenants` and, next to spatie's `HasRoles` (Shield), the `HasTeams::teams insteadof HasRoles` block.
+- `alfakit:setup` run again asked "Generate a users resource?" although the resource existed, and reported it as skipped when you said no. An existing users resource is now reported as already set up, without the question.
+- `make:alfakit-relation-manager` told you to register `RelationManagers\CommentsRelationManager::class` in `getRelations()`, which doesn't resolve from the resource's namespace (`Class "App\Alfakit\Resources\RelationManagers\CommentsRelationManager" not found`). It now prints `PostResource\RelationManagers\CommentsRelationManager::class` and mentions `--register`.
+- `make:alfakit-resource Comment --nested=PostResource` after the quick start (which already made `CommentsRelationManager`) skipped the existing manager, so it never linked to the nested resource: **New comment** still opened a modal and the nested create and edit pages could only be reached by typing their URL. The existing manager now gets `$relatedResource = CommentResource::class`.
+- `make:alfakit-resource --generate` for a model with no `name`/`title`-like column (a comment with a `post_id` and a `body`) wrote no `$recordTitleAttribute` (breadcrumbs and headings said "Comment") and a table of only the hidden timestamps, so the list showed empty rows. Such a model is now named by its first text column, and its table lists that text (rich text as plain text).
+- `alfakit:migrate-from-filament` refused to run after its own `--dry-run` ("uncommitted changes"), because the report the dry run wrote counted as a change. The report is now ignored by the clean-tree check; the docs also commit the `composer require` before migrating.
+- `alfakit:migrate-from-filament` on a Blade and Livewire app without `--adapter` told you to make a new starter kit app and said the code "was migrated" even in a dry run; it now says `--adapter=react` sets Inertia up in this app, and "would be migrated" in a dry run.
 - `->plugin()` registers every plugin passed to it (`->plugin(KanbanPlugin::make(), CmsPlugin::make())`); PHP dropped the extra ones without an error, so the second plugin did nothing.
+
+### Known
+
+- `alfakit:remove teams` leaves `HasTeams` and the tenancy contracts on the user model that `alfakit:add teams` added; remove them by hand.
 
 ## [0.1.7] - 2026-10-22
 
@@ -1116,7 +1148,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.7...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.8...HEAD
+[0.1.8]: https://github.com/alfasixbh/alfakit/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/alfasixbh/alfakit/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/alfasixbh/alfakit/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/alfasixbh/alfakit/compare/v0.1.4...v0.1.5

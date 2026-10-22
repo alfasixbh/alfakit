@@ -50,6 +50,9 @@
         {{-- Plugin stylesheets and scripts (Assets::register()), before the app's own CSS so it can override them. --}}
         {!! \AlfaSix\Alfakit\Support\Assets\Assets::renderTags($alfakitPanel->getId(), \Illuminate\Support\Facades\Vite::cspNonce()) !!}
 
+        @if (collect($alfakitPanel->getViteEntries())->contains(fn (string $entry): bool => str_contains($entry, '/react/')))
+            @viteReactRefresh
+        @endif
         @vite($alfakitPanel->getViteEntries())
 
         <x-inertia::head>

@@ -11,9 +11,10 @@ AlfaKit's PHP API mirrors Filament's (see [Coming from Filament](filament-compar
 
 ```bash
 composer require alfasix/alfakit
+git commit -am "Require AlfaKit"   # the migration needs a clean working tree
 
 # Preview: prints every change and writes alfakit-migration-report.md, touches nothing else
-php artisan alfakit:migrate-from-filament --dry-run
+php artisan alfakit:migrate-from-filament --dry-run --adapter=react
 
 # Migrate
 php artisan alfakit:migrate-from-filament --adapter=react
@@ -29,7 +30,7 @@ php artisan alfakit:migrate-from-filament --adapter=react
 | `--no-npm`        | Skip installing the `@alfakit/<adapter>` npm package                                                                                                                                                                                                         |
 | `--rector=`       | Also run the Rector set before the built-in rewriter: a path to a Rector binary, or `auto` for the app's own `vendor/bin/rector`. By default (or with `none`) the built-in token rewriter does everything; it is the path the measured share below refers to |
 
-The command needs a clean git working tree (so the migration is one reviewable diff) and refuses otherwise unless you pass `--force`. Without git it first copies every touched file to `storage/alfakit-migration-backup-<timestamp>/`. Running it again finds nothing to do.
+The command needs a clean git working tree (so the migration is one reviewable diff) and refuses otherwise unless you pass `--force`; that is why the snippet commits the `composer require` first. The report a `--dry-run` wrote doesn't count as a change. Without git it first copies every touched file to `storage/alfakit-migration-backup-<timestamp>/`. Running it again finds nothing to do.
 
 ## What it converts
 
@@ -84,11 +85,11 @@ A class that extends a plugin class with no drop-in equivalent keeps working on 
 
 Everything that needs a decision is marked in the code with `// TODO(alfakit-migration): …` (`{{-- … --}}` in Blade views, `/* … */` in theme CSS), so `grep -rn "TODO(alfakit-migration)"` lists what is left. The report starts with a summary: how many Filament constructs were found (class references, fluent methods, render hooks, views, themes, config keys, scripts and plugins), how many were converted automatically and how many need a manual step.
 
-The repository's test corpus, a Filament 5.10 shop back office written from Filament's documented APIs (`packages/alfakit/tests/Fixtures/Filament5App`: resources with forms, tables, infolists, relation managers, a wizard, repeaters, import/export, filters including `QueryBuilder`, clusters, tenancy, multi-factor authentication, six widgets, custom pages with Blade views, render hooks, a theme, three Livewire components and nine plugins), converts **91.8% of its 573 constructs** automatically (526; the 47 manual steps are the Blade views and Livewire components, the plugin installs, the theme, a kanban board page and a Livewire test). `MigrateFromFilament5CorpusTest` checks that the result lints, passes PHPStan level 5 against AlfaKit, boots with its own providers in a separate process and renders every panel page (20 pages and 2 redirects), including the dashboard's deferred widgets.
+The repository's test corpus, a Filament 5.10 shop back office written from Filament's documented APIs (`packages/alfakit/tests/Fixtures/Filament5App`: resources with forms, tables, infolists, relation managers, a wizard, repeaters, import/export, filters including `QueryBuilder`, clusters, tenancy, multi-factor authentication, six widgets, custom pages with Blade views, render hooks, a theme, three Livewire components and nine plugins), converts **91.8% of its 574 constructs** automatically (527 with 0.1.7; the 47 manual steps are the Blade views and Livewire components, the plugin installs, the theme, a kanban board page and a Livewire test). `MigrateFromFilament5CorpusTest` checks that the result lints, passes PHPStan level 5 against AlfaKit, boots with its own providers in a separate process and renders every panel page (20 pages and 2 redirects), including the dashboard's deferred widgets.
 
 ## What it reports
 
-`alfakit-migration-report.md` starts with the summary and the `alfakit:add` command for the plugins, lists what was done, then groups every item **by file** (manual steps marked **TODO** first, then notes about what was converted), and finally **by topic** as `file:line — what — suggested change`. The console prints the same, grouped by file, followed by the next steps (`npm install && npm run build`, the `alfakit:add` command for the plugins, `alfakit:optimize-clear`). A dry run counts the same constructs as the real run. The topics are:
+`alfakit-migration-report.md` starts with the summary and the `alfakit:add` command for the plugins, lists what was done, then groups every item **by file** (manual steps marked **TODO** first, then notes about what was converted), and finally **by topic** as `file:line — what — suggested change`. The console prints the same, grouped by file, followed by the next steps (`npm install && npm run build`, the `alfakit:add` command for the plugins, `alfakit:optimize-clear`). A dry run counts the same constructs as the real run with the same options (without `--adapter`, a Blade and Livewire app gets one more manual step: setting up Inertia). The topics are:
 
 - **Classes without an AlfaKit equivalent**: `HasForms` / `InteractsWithForms` and the other Livewire traits, `RenderHook`, `FilamentAsset`, … each with the replacement.
 - **Methods removed or changed**: every stripped or renamed fluent method, return types changed to match the parent.

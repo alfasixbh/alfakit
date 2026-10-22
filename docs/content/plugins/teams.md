@@ -32,7 +32,7 @@ php artisan migrate
 
 The migration creates `teams` (`name`, `slug`, `logo_path`, `personal_team`, `auto_join_domain`), `team_user` (the membership with its `role`) and `team_invitations`, and adds `current_team_id` to `users`.
 
-**2. Give users teams.** `HasTeams` implements both tenancy contracts:
+**2. Give users teams.** `HasTeams` implements both tenancy contracts (`php artisan alfakit:add teams` and the setup wizard's `saas` bundle add both, and the `insteadof` block below, to your user model for you):
 
 ```php
 use AlfaSix\Alfakit\Contracts\HasDefaultTenant;

@@ -23,7 +23,7 @@ The account owns the Manama boutique and manages Dubai and London, so the store 
 
 ## The renderer switcher
 
-The top bar of every panel page has a **React · Vue · Svelte** switch. It opens the _same_ page in the other renderer: the store, the record, the filters and the query string are kept, so `/react/admin/manama/orders?tab=open` becomes `/vue/admin/manama/orders?tab=open`. The storefront header has the same switch. Next to it, a theme picker and a mobile preset (bottom navigation on phones) change the design for your session; the user menu switches language, including Arabic in right to left.
+The top bar of every panel page has a **React · Vue · Svelte** switch. It opens the _same_ page in the other renderer: the store, the record, the filters and the query string are kept, so `/react/admin/manama/orders?tab=open` becomes `/vue/admin/manama/orders?tab=open`. The storefront header has the same switch. Next to it, a theme picker and a mobile preset (bottom navigation on phones) change the design for your session; the language button in the top bar switches language, including Arabic in right to left.
 
 ## What to look at
 
