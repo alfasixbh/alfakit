@@ -130,15 +130,19 @@ watch(
 // on the page renders one (checked after every component mounted).
 const ownsToaster = ref(false)
 
-onMounted(() => {
-  ensureStandaloneRuntime()
-
-  // Partial reloads (sorting, paging, inline edits) request this component's own prop.
+// Partial reloads (sorting, paging, inline edits) request this component's own prop.
+// Registered in setup (browser only), before the children's `onMounted`: a `deferLoading()`
+// table's first reload must already ask for this prop, not the panel `page` prop.
+if (typeof window !== 'undefined') {
   watch(
     () => findStandalonePropName(inertiaPage.props as Record<string, unknown>, props.component),
     (name, _old, onCleanup) => onCleanup(registerStandaloneProp(name ?? null)),
     { immediate: true },
   )
+}
+
+onMounted(() => {
+  ensureStandaloneRuntime()
 
   // The watcher runs before the new payload renders: hand it over, or the response would
   // count as stale and lazy widgets (a calendar after its action) keep their old schema.

@@ -114,6 +114,35 @@ describe('form settings from PHP', () => {
     expect((wrapper.find('input[type="time"]').element as HTMLInputElement).value).toBe('09:30')
   })
 
+  it("names the calendar grid after the field, not Reka's default (W-V2-02)", async () => {
+    const { wrapper } = renderForm(
+      [
+        {
+          type: 'DatePicker',
+          key: 'starts_on',
+          name: 'starts_on',
+          statePath: 'starts_on',
+          label: 'Starts on',
+          format: 'Y-m-d',
+          hasDate: true,
+          hasTime: false,
+          native: false,
+          timezone: 'UTC',
+          firstDayOfWeek: 1,
+          closeOnDateSelection: true,
+        } as SchemaComponent,
+      ],
+      { starts_on: '2026-10-05' },
+    )
+
+    await wrapper.find('button').trigger('click')
+    await new Promise((resolve) => setTimeout(resolve, 20))
+
+    const grid = document.body.querySelector('[data-slot="calendar"], [role="application"]')
+
+    expect(grid?.getAttribute('aria-label')).toMatch(/^Starts on/)
+  })
+
   it('jumps to the errored wizard step once, then lets the user move', async () => {
     const { store, wrapper } = renderForm(
       [

@@ -1,5 +1,10 @@
 <script lang="ts">
-  import type { AnyActionSchema, ContentSlotItem, SchemaComponent } from '@alfakit/core'
+  import type {
+    ActionContext,
+    AnyActionSchema,
+    ContentSlotItem,
+    SchemaComponent,
+  } from '@alfakit/core'
   import { cn } from '../../lib/utils'
   import { usePageActionContext } from '../actions/action-context'
   import ActionList from '../actions/ActionList.svelte'
@@ -7,16 +12,24 @@
 
   /**
    * Actions and components placed in a layout component's fixed spot (a section's
-   * `afterHeader()`, a callout's `controls()`). Actions run in the page's action context,
-   * like section header actions.
+   * `afterHeader()`, a callout's `controls()`). Actions run in the owner's action context
+   * (`context`: inside a form, the owner's field context, so `$get` / `$set` work), else
+   * the page's.
    */
   let {
     items,
     name,
     class: className,
-  }: { items: ContentSlotItem[] | undefined; name: string; class?: string } = $props()
+    context: ownerContext,
+  }: {
+    items: ContentSlotItem[] | undefined
+    name: string
+    class?: string
+    context?: ActionContext
+  } = $props()
 
-  const context = usePageActionContext()
+  const pageContext = usePageActionContext()
+  const context = $derived(ownerContext ?? pageContext)
 
   type Group =
     | { kind: 'actions'; key: string; actions: AnyActionSchema[] }

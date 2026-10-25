@@ -86,7 +86,7 @@ export function SectionComponent({ component }: { component: SectionSchema }) {
       {component.headerActions && component.headerActions.length > 0 && (
         <ActionList actions={component.headerActions} context={context} size="sm" />
       )}
-      <MixedContent items={component.afterHeader} name="section-after-header" />
+      <MixedContent items={component.afterHeader} name="section-after-header" context={context} />
       {component.collapsible && (
         <CollapsibleTrigger asChild>
           <Button
@@ -123,7 +123,7 @@ export function SectionComponent({ component }: { component: SectionSchema }) {
             className={actionsAlignmentClass(component.footerActionsAlignment) || undefined}
           />
         )}
-        <MixedContent items={component.footer} name="section-footer-content" />
+        <MixedContent items={component.footer} name="section-footer-content" context={context} />
       </div>
     ) : null
 

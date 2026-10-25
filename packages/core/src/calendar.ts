@@ -211,6 +211,13 @@ export function calendarOptions(
     moreLinkHint: (count: number) =>
       t('calendar.more_events_hint', { count }, 'Show :count more events'),
     closeHint: t('close', {}, 'Close'),
+    // The toolbar's chevrons are `role="img"` without a name; the buttons around them are
+    // named (`buttonHints`), so the icons are decorative.
+    viewDidMount: ({ el }: { el: HTMLElement }) => {
+      el.closest('.fc')
+        ?.querySelectorAll('.fc-icon')
+        .forEach((icon) => icon.setAttribute('aria-hidden', 'true'))
+    },
     timeHint: t('calendar.time', {}, 'Time'),
     eventHint: t('calendar.event', {}, 'Event'),
     weekText: t('calendar.week_number_short', {}, 'W'),

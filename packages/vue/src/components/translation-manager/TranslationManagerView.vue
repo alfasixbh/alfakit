@@ -356,7 +356,7 @@ const editLabel = (key: string, locale: string) =>
             <tr>
               <th
                 scope="col"
-                class="bg-muted sticky start-0 z-10 min-w-56 border-b px-3 py-2 text-start font-medium"
+                class="bg-card sticky start-0 z-10 min-w-56 border-b [background-image:linear-gradient(var(--muted),var(--muted))] px-3 py-2 text-start font-medium"
               >
                 {{ t('translation-manager.key', {}, 'Key') }}
               </th>

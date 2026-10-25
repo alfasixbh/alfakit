@@ -187,5 +187,9 @@ describe('column order', () => {
       body: { token: 't', component: 'table', columns: ['b', 'a'] },
     })
     expect(reloads[0]).toEqual({ only: ['page'] })
+
+    // A table visit follows (Reset, Apply with visibility changes): no reload racing it.
+    await saveColumnOrder('/columns', 't', 'table', [], { reload: false })
+    expect(reloads).toHaveLength(1)
   })
 })

@@ -71,7 +71,9 @@ function StatCard({ stat }: { stat: StatSchema }) {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <span className="text-muted-foreground text-sm font-medium">{stat.label}</span>
+          <span className="text-muted-foreground text-sm font-medium">
+            <bdi>{stat.label}</bdi>
+          </span>
           {(stat.value === null || stat.value === '') && stat.placeholder ? (
             <span
               className="text-muted-foreground text-2xl font-semibold tracking-tight"
@@ -86,7 +88,7 @@ function StatCard({ stat }: { stat: StatSchema }) {
                 stat.color && textColorClasses[stat.color],
               )}
             >
-              {stat.value}
+              <bdi>{stat.value}</bdi>
             </span>
           )}
           {stat.description && (
@@ -101,7 +103,8 @@ function StatCard({ stat }: { stat: StatSchema }) {
               {stat.descriptionIcon && stat.descriptionIconPosition !== 'after' && (
                 <Icon name={stat.descriptionIcon} className="size-3.5" />
               )}
-              {stat.description}
+              {/* Mixed-direction text (a Latin "-3% this month" in Arabic) keeps its order. */}
+              <bdi>{stat.description}</bdi>
               {stat.descriptionIcon && stat.descriptionIconPosition === 'after' && (
                 <Icon name={stat.descriptionIcon} className="size-3.5" />
               )}

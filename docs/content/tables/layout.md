@@ -39,6 +39,8 @@ $table->columns([
 Inside a `Grid`, columns and layouts take `columnSpan()` and `columnStart()`, like form components: a number applies from `lg` up, `columnSpanFull()` spans every column at every size, and a breakpoint map is used as given.
 
 ```php
+use AlfaSix\Alfakit\Tables\Columns\Layout\Grid;
+
 Grid::make(['default' => 1, 'lg' => 3])->schema([
     TextColumn::make('title')->columnSpan(2),
     TextColumn::make('status'),
@@ -46,6 +48,8 @@ Grid::make(['default' => 1, 'lg' => 3])->schema([
     TextColumn::make('price')->columnSpan(['md' => 2])->columnStart(['md' => 2]),
 ]);
 ```
+
+This is the table layout `Grid`, not the form one (`AlfaSix\Alfakit\Schemas\Components\Grid`). A resource whose form already imports the form `Grid` needs an alias for one of them, for example `use AlfaSix\Alfakit\Tables\Columns\Layout\Grid as GridLayout;`. Passing a form layout to `columns()` throws an error that names the table class to use.
 
 Every layout accepts `visibleFrom('md')`, `hiddenFrom('lg')`, `hidden()` / `visible()`, `extraAttributes()` and, inside a `Split`, `grow(false)` so it only takes the width of its content. Columns use their own `grow(false)` in a `Split` (an avatar, an icon). Layouts nest freely.
 

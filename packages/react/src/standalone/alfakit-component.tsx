@@ -8,7 +8,7 @@ import {
 } from '@alfakit/core'
 import { usePage } from '@inertiajs/react'
 import { Direction } from 'radix-ui'
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from 'react'
 import { PageActionProvider } from '../components/actions/action-context'
 import { ActionList } from '../components/actions/action-list'
 import { ActionModals } from '../components/actions/action-modals'
@@ -55,6 +55,9 @@ export interface AlfakitComponentProps {
  * <AlfakitComponent component={orders} className="max-w-4xl" />
  * ```
  */
+// `useLayoutEffect` warns during a server render, where nothing registers anyway.
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
+
 export function AlfakitComponent({
   component,
   components,
@@ -138,7 +141,9 @@ export function AlfakitComponent({
   // Partial reloads (sorting, paging, inline edits) request this component's own prop.
   const propName = findStandalonePropName(props, component)
 
-  useEffect(() => registerStandaloneProp(propName ?? null), [propName])
+  // A layout effect runs before the children's effects: a `deferLoading()` table's first
+  // reload must already ask for this component's prop, not the panel `page` prop.
+  useIsomorphicLayoutEffect(() => registerStandaloneProp(propName ?? null), [propName])
 
   useEffect(() => {
     void state.loadLazy(component)

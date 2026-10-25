@@ -36,6 +36,8 @@ Exports use AlfaKit's exporter, so its tables must exist (`php artisan vendor:pu
 php artisan vendor:publish --tag=alfakit-analytics-config
 ```
 
+On SQLite (a new Laravel app's default), give the connection a busy timeout (`'busy_timeout' => 5000` for `sqlite` in `config/database.php`): hits are stored after each response, and without it two page views close together can fail with "database is locked" and be lost.
+
 The plugin schedules `alfakit-analytics:aggregate` hourly; make sure the Laravel scheduler runs (`php artisan schedule:work` locally, a cron entry in production).
 
 ## Register

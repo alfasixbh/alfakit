@@ -70,7 +70,9 @@ describe('reorder mode', () => {
     const endpoints = { reorder: '/re', cell: '/c' }
 
     await reorderTable(endpoints, 't', 'table', [2, 1], { reload: false })
-    expect(posts).toEqual([{ token: 't', component: 'table', order: [2, 1] }])
+    expect(posts).toEqual([
+      expect.objectContaining({ token: 't', component: 'table', order: [2, 1] }),
+    ])
     expect(reloads).toHaveLength(0)
 
     await reorderTable(endpoints, 't', 'table', [1, 2])

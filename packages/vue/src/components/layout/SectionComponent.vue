@@ -104,7 +104,11 @@ const t = useT()
           :context="context"
           size="sm"
         />
-        <MixedContent :items="props.component.afterHeader" name="section-after-header" />
+        <MixedContent
+          :items="props.component.afterHeader"
+          name="section-after-header"
+          :context="context"
+        />
         <CollapsibleTrigger v-if="props.component.collapsible" as-child>
           <Button
             type="button"
@@ -155,7 +159,11 @@ const t = useT()
               :context="context"
               :class="actionsAlignmentClass(props.component.footerActionsAlignment) || undefined"
             />
-            <MixedContent :items="props.component.footer" name="section-footer-content" />
+            <MixedContent
+              :items="props.component.footer"
+              name="section-footer-content"
+              :context="context"
+            />
           </div>
         </div>
       </CollapsibleContent>
@@ -208,7 +216,11 @@ const t = useT()
           :context="context"
           size="sm"
         />
-        <MixedContent :items="props.component.afterHeader" name="section-after-header" />
+        <MixedContent
+          :items="props.component.afterHeader"
+          name="section-after-header"
+          :context="context"
+        />
         <CollapsibleTrigger v-if="props.component.collapsible" as-child>
           <Button
             type="button"
@@ -250,7 +262,11 @@ const t = useT()
             :context="context"
             :class="actionsAlignmentClass(props.component.footerActionsAlignment) || undefined"
           />
-          <MixedContent :items="props.component.footer" name="section-footer-content" />
+          <MixedContent
+            :items="props.component.footer"
+            name="section-footer-content"
+            :context="context"
+          />
         </div>
       </CollapsibleContent>
     </section>

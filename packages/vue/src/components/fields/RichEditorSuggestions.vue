@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { EditorSuggestions } from '@alfakit/core'
+import { fixedContainingBlockOffset, type EditorSuggestions } from '@alfakit/core'
 import type { Editor } from '@tiptap/vue-3'
+import { computed } from 'vue'
 import { useT } from '../../context'
 import { cn } from '../../lib/utils'
 import { useStore } from '../../composables/use-store'
@@ -13,6 +14,16 @@ const props = defineProps<{
 }>()
 const t = useT()
 const state = useStore(props.suggestions.store)
+// Inside a modal the dialog's transform is the containing block of this fixed list.
+const position = computed(() => {
+  const coords = state.value.coords
+
+  if (!coords) return undefined
+
+  const offset = fixedContainingBlockOffset(props.editor?.view.dom)
+
+  return { left: `${coords.left - offset.x}px`, top: `${coords.bottom + 4 - offset.y}px` }
+})
 </script>
 
 <template>
@@ -23,11 +34,7 @@ const state = useStore(props.suggestions.store)
     :aria-label="t('editor.suggestions', {}, 'Suggestions')"
     data-slot="rich-editor-suggestions"
     class="bg-popover text-popover-foreground fixed z-50 min-w-48 overflow-hidden rounded-md border p-1 shadow-md"
-    :style="
-      state.coords
-        ? { left: `${state.coords.left}px`, top: `${state.coords.bottom + 4}px` }
-        : undefined
-    "
+    :style="position"
   >
     <div
       v-if="state.loading && state.items.length === 0"

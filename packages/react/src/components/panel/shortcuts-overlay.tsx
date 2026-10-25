@@ -1,6 +1,6 @@
 import type { ShortcutListGroup, ShortcutListItem } from '@alfakit/core'
 import {
-  bindingFromEvent,
+  ShortcutRecorder,
   flattenActionGroup,
   saveShortcutOverrides,
   shortcutOverlayGroups,
@@ -52,50 +52,55 @@ export function ShortcutsOverlay({
     }
   }
 
-  // While recording, the next key press is the new binding (Escape cancels). Listening in the
-  // capture phase keeps the key from closing the dialog or running another shortcut.
+  // While recording, the keys pressed are the new binding: one key (with modifiers) or a
+  // sequence ("g o"), finished a second after the last key (Escape cancels). Listening in
+  // the capture phase keeps the keys from closing the dialog or running another shortcut.
   useEffect(() => {
     if (!recording) return
 
     shortcuts.setPaused(true)
+
+    const recorder = new ShortcutRecorder({
+      onDone: (binding) => {
+        setRecording(null)
+
+        const conflict = shortcuts.conflict([binding], recording)
+
+        if (conflict) {
+          setMessage(
+            t(
+              'shortcuts.conflict',
+              { label: conflict.label },
+              `Already used by “${conflict.label}”.`,
+            ),
+          )
+
+          return
+        }
+
+        void save(recording, [binding])
+      },
+    })
 
     const listener = (event: KeyboardEvent) => {
       event.preventDefault()
       event.stopPropagation()
 
       if (event.key === 'Escape') {
+        recorder.cancel()
         setRecording(null)
         setMessage(t('shortcuts.cancelled', {}, 'Change cancelled.'))
 
         return
       }
 
-      const binding = bindingFromEvent(event)
-
-      if (!binding) return
-
-      const conflict = shortcuts.conflict([binding], recording)
-
-      setRecording(null)
-
-      if (conflict) {
-        setMessage(
-          t(
-            'shortcuts.conflict',
-            { label: conflict.label },
-            `Already used by “${conflict.label}”.`,
-          ),
-        )
-
-        return
-      }
-
-      void save(recording, [binding])
+      recorder.press(event)
     }
 
     window.addEventListener('keydown', listener, true)
 
     return () => {
+      recorder.cancel()
       window.removeEventListener('keydown', listener, true)
       shortcuts.setPaused(false)
     }

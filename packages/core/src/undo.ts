@@ -146,6 +146,18 @@ export class UndoShortcuts {
 export const undoShortcuts = new UndoShortcuts()
 
 /**
+ * Undo tokens whose offer ended (used or expired) in this browser tab. A toast whose button
+ * mounts again (the toaster re-rendering it while it closes, another toast arriving) must
+ * not offer a used token to Ctrl/Cmd+Z again.
+ */
+const finishedUndoTokens = new Set<string>()
+
+/** Whether the offer with this token was used or expired. */
+export function isUndoFinished(undo: Pick<NotificationUndoSchema, 'token'>): boolean {
+  return finishedUndoTokens.has(undo.token)
+}
+
+/**
  * Wire one toast's undo button: the countdown, the shortcut and the request. `onTick` gets
  * the seconds left; `onClose` runs when the offer ends (undone or expired) so the toast can
  * close. Returns `{ undo, stop }`.
@@ -159,6 +171,13 @@ export function bindUndo(
     onBusy?: (busy: boolean) => void
   },
 ): { undo: () => Promise<void>; stop: () => void } {
+  if (isUndoFinished(undo)) {
+    handlers.onTick(0)
+    handlers.onClose()
+
+    return { undo: async () => {}, stop: () => {} }
+  }
+
   let done = false
   let stopCountdown: () => void = () => {}
   let withdraw: () => void = () => {}
@@ -174,6 +193,7 @@ export function bindUndo(
     }
 
     done = true
+    finishedUndoTokens.add(undo.token)
     stop()
     handlers.onBusy?.(true)
 
@@ -188,6 +208,7 @@ export function bindUndo(
   stopCountdown = startUndoCountdown(undo.seconds, handlers.onTick, () => {
     if (!done) {
       done = true
+      finishedUndoTokens.add(undo.token)
       withdraw()
       handlers.onClose()
     }

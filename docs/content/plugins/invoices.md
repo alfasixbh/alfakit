@@ -251,6 +251,8 @@ The default `InvoicePolicy` combines `authorize()` with the document's state:
 - Only drafts can be deleted.
 - Paid, partially paid, converted and void documents are locked.
 
+The resource applies these state rules itself as well, so they also hold for users a `Gate::before()` lets through, such as [Shield](shield)'s super admin.
+
 Register your own policy with `Gate::policy(Invoice::class, MyPolicy::class)`. As everywhere in AlfaKit, an ability your policy doesn't define is allowed unless the panel uses `strictAuthorization()`.
 
 Receipts record a sale that was paid on the spot. Creating a receipt in the panel records a payment for its total.

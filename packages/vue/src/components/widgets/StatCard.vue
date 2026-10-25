@@ -39,7 +39,9 @@ const props = defineProps<{ stat: StatSchema }>()
     >
       <div class="flex items-start justify-between gap-3">
         <div class="flex flex-col gap-1">
-          <span class="text-muted-foreground text-sm font-medium">{{ props.stat.label }}</span>
+          <span class="text-muted-foreground text-sm font-medium"
+            ><bdi>{{ props.stat.label }}</bdi></span
+          >
           <span
             v-if="(props.stat.value === null || props.stat.value === '') && props.stat.placeholder"
             class="text-muted-foreground text-2xl font-semibold tracking-tight"
@@ -54,7 +56,7 @@ const props = defineProps<{ stat: StatSchema }>()
                 props.stat.color && textColorClasses[props.stat.color],
               )
             "
-            >{{ props.stat.value }}</span
+            ><bdi>{{ props.stat.value }}</bdi></span
           >
           <span
             v-if="props.stat.description"
@@ -72,7 +74,8 @@ const props = defineProps<{ stat: StatSchema }>()
               :name="props.stat.descriptionIcon"
               class="size-3.5"
             />
-            {{ props.stat.description }}
+            <!-- Mixed-direction text (a Latin "-3% this month" in Arabic) keeps its order. -->
+            <bdi>{{ props.stat.description }}</bdi>
             <Icon
               v-if="props.stat.descriptionIcon && props.stat.descriptionIconPosition === 'after'"
               :name="props.stat.descriptionIcon"

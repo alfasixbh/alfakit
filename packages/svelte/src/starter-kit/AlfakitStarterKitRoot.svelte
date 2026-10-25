@@ -68,7 +68,7 @@
     {@render children?.()}
     <!-- The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
          render: float it in the corner (nothing without `alfakitDebug`). -->
-    <div data-slot="starter-kit-debug-panel" class="fixed end-16 bottom-4 z-40">
+    <div data-slot="starter-kit-debug-panel" class="fixed right-16 bottom-16 z-40">
       <DebugPanelSlot />
     </div>
   </AlfakitRoot>

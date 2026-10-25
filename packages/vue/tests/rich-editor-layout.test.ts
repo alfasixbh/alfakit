@@ -121,9 +121,18 @@ describe('RichEditor layout', () => {
       )
       expect(item).toBeDefined()
     })
-    item!.click()
+    // The menu must not hand focus back to its trigger after a pick (typing would be lost).
+    const triggerFocus = vi.spyOn(trigger, 'focus')
+    item!.focus()
+    item!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
 
     await vi.waitFor(() => expect(editor()!.isActive('heading', { level: 2 })).toBe(true))
+    // Typing goes on in the editor: focus doesn't return to the group's trigger.
+    await flushPromises()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(triggerFocus).not.toHaveBeenCalled()
+    expect(document.activeElement).not.toBe(trigger)
+    expect(editor()!.view.dom.contains(document.activeElement)).toBe(true)
   })
 
   it('shows a floating toolbar for the selection', async () => {

@@ -698,6 +698,8 @@ export class ActionRunner {
             action: actionPath(action, context),
             record: context.record ?? undefined,
             arguments: context.arguments,
+            // A field action inside a record action's modal on a list tab.
+            tableQuery: currentPageQuery(),
             data,
             state: sent,
             fingerprints: form?.currentFingerprints,

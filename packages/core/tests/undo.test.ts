@@ -102,11 +102,40 @@ describe('undo', () => {
   it('closes the toast when the countdown ends without undoing', () => {
     const onClose = vi.fn()
 
-    bindUndo('n2', { token: 'tok', seconds: 2, url: '/undo' }, { onTick: () => {}, onClose })
+    bindUndo(
+      'n2',
+      { token: 'tok-expiring', seconds: 2, url: '/undo' },
+      { onTick: () => {}, onClose },
+    )
     vi.advanceTimersByTime(2000)
 
     expect(onClose).toHaveBeenCalledTimes(1)
     press({ key: 'z', ctrlKey: true })
     expect(visits).toHaveLength(0)
+  })
+
+  it('does not offer a used token to Ctrl/Cmd+Z again when its button binds again', async () => {
+    const undone = bindUndo(
+      'n3',
+      { token: 'tok-used', seconds: 8, url: '/undo' },
+      { onTick: () => {}, onClose: () => {} },
+    )
+    await undone.undo()
+
+    // The toaster re-renders the closing toast: its button binds the same offer again.
+    const onClose = vi.fn()
+    bindUndo('n3', { token: 'tok-used', seconds: 8, url: '/undo' }, { onTick: () => {}, onClose })
+    expect(onClose).toHaveBeenCalledTimes(1)
+
+    // A newer offer is the one Ctrl/Cmd+Z undoes.
+    bindUndo(
+      'n4',
+      { token: 'tok-new', seconds: 8, url: '/undo' },
+      { onTick: () => {}, onClose: () => {} },
+    )
+    press({ key: 'z', ctrlKey: true })
+    await vi.waitFor(() => expect(visits).toHaveLength(2))
+
+    expect(visits.map((visit) => visit.data)).toEqual([{ undo: 'tok-used' }, { undo: 'tok-new' }])
   })
 })

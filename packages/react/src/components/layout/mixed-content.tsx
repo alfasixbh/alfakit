@@ -1,4 +1,4 @@
-import type { AnyActionSchema, ContentSlotItem } from '@alfakit/core'
+import type { ActionContext, AnyActionSchema, ContentSlotItem } from '@alfakit/core'
 import type { ReactNode } from 'react'
 import { cn } from '../../lib/utils'
 import { usePageActionContext } from '../actions/action-context'
@@ -7,19 +7,23 @@ import { RenderComponent } from '../schema/schema-renderer'
 
 /**
  * Actions and components placed in a layout component's fixed spot (a section's
- * `afterHeader()`, a callout's `controls()`). Actions run in the page's action context,
- * like section header actions.
+ * `afterHeader()`, a callout's `controls()`). Actions run in the owner's action context
+ * (`context`: inside a form, the owner's field context, so `$get` / `$set` work), else the
+ * page's.
  */
 export function MixedContent({
   items,
   name,
   className,
+  context: ownerContext,
 }: {
   items: ContentSlotItem[] | undefined
   name: string
   className?: string
+  context?: ActionContext
 }) {
-  const context = usePageActionContext()
+  const pageContext = usePageActionContext()
+  const context = ownerContext ?? pageContext
 
   if (!items?.length) {
     return null

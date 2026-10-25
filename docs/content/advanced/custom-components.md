@@ -174,7 +174,12 @@ const { value, setValue, error, id, disabled, aria } = useField<string | null>(
 
 <template>
     <FieldWrapper :field="props.component" :html-for="id" :error="error">
-        <div :id="id" role="radiogroup" :aria-label="props.component.label" v-bind="aria">
+        <div
+            :id="id"
+            role="radiogroup"
+            :aria-label="props.component.label ?? undefined"
+            v-bind="aria"
+        >
             <button
                 v-for="swatch in props.component.swatches"
                 :key="swatch"

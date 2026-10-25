@@ -239,6 +239,8 @@
             props={{
               value: calendarValue,
               onValueChange: onCalendarChange,
+              // The grid's accessible name: the field, not the library's default.
+              calendarLabel: component.label || t('form.pick_date', {}, 'Pick a date'),
               locale,
               dir: direction,
               today: toCalendarDate(wallClockNow(component.timezone)),

@@ -543,19 +543,24 @@
       <DialogHeader>
         <DialogTitle>{t('table.spreadsheet.paste_title', {}, 'Paste cells')}</DialogTitle>
         <DialogDescription>
-          {choice(
-            'table.spreadsheet.paste_summary',
-            preview?.plan.changes.length ?? 0,
-            {},
-            ':count cell will change|:count cells will change',
-          )}
-          {#if (preview?.plan.skipped ?? 0) > 0}
-            {choice(
-              'table.spreadsheet.paste_skipped',
-              preview?.plan.skipped ?? 0,
+          <!-- One line per count: translations can't join two sentences. -->
+          <span class="block"
+            >{choice(
+              'table.spreadsheet.paste_summary',
+              preview?.plan.changes.length ?? 0,
               {},
-              ':count read-only cell is skipped|:count read-only cells are skipped',
-            )}
+              ':count cell will change|:count cells will change',
+            )}</span
+          >
+          {#if (preview?.plan.skipped ?? 0) > 0}
+            <span class="block" data-slot="spreadsheet-paste-skipped"
+              >{choice(
+                'table.spreadsheet.paste_skipped',
+                preview?.plan.skipped ?? 0,
+                {},
+                ':count read-only cell is skipped|:count read-only cells are skipped',
+              )}</span
+            >
           {/if}
         </DialogDescription>
       </DialogHeader>

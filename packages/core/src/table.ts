@@ -1,5 +1,6 @@
 import type { VisitOptions } from '@inertiajs/core'
 import { inertiaReload, inertiaVisit, requestJson } from './http'
+import { currentPageQuery } from './page-query'
 import type { AnyActionSchema } from './schema/actions'
 import type { Option, RecordKey } from './schema/common'
 import type {
@@ -470,7 +471,8 @@ export async function updateTableCell(
 ): Promise<unknown> {
   const response = await requestJson<{ state: unknown }>(endpoints.cell, {
     method: 'POST',
-    body: { token, component, record, column, state },
+    // The page's tab, filters and view: the record is looked up in the table as shown.
+    body: { token, component, record, column, state, tableQuery: currentPageQuery() },
   })
 
   return response.state
@@ -483,7 +485,10 @@ export async function reorderTable(
   order: RecordKey[],
   options: { reload?: boolean } = {},
 ): Promise<void> {
-  await requestJson(endpoints.reorder, { method: 'POST', body: { token, component, order } })
+  await requestJson(endpoints.reorder, {
+    method: 'POST',
+    body: { token, component, order, tableQuery: currentPageQuery() },
+  })
 
   if (options.reload ?? true) inertiaReload()
 }

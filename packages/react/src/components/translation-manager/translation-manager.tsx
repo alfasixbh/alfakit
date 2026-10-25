@@ -330,7 +330,7 @@ function TranslationManagerView({ schema }: { schema: TranslationManagerSchema }
                 <tr>
                   <th
                     scope="col"
-                    className="bg-muted sticky start-0 z-10 min-w-56 border-b px-3 py-2 text-start font-medium"
+                    className="bg-card sticky start-0 z-10 min-w-56 border-b [background-image:linear-gradient(var(--muted),var(--muted))] px-3 py-2 text-start font-medium"
                   >
                     {t('translation-manager.key', {}, 'Key')}
                   </th>

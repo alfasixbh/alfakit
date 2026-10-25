@@ -14,7 +14,7 @@ composer require alfasix/alfakit
 git commit -am "Require AlfaKit"   # the migration needs a clean working tree
 
 # Preview: prints every change and writes alfakit-migration-report.md, touches nothing else
-php artisan alfakit:migrate-from-filament --dry-run --adapter=react
+php artisan alfakit:migrate-from-filament --dry-run --adapter=react   # or --adapter=vue, --adapter=svelte
 
 # Migrate
 php artisan alfakit:migrate-from-filament --adapter=react

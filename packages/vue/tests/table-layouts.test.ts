@@ -305,6 +305,7 @@ describe('column manager reset', () => {
     vi.stubGlobal('fetch', fetch)
     panel.endpoints.tableColumns = '/columns'
     vi.mocked(router.visit).mockClear()
+    vi.mocked(router.reload).mockClear()
 
     const wrapper = mountWithAlfakit(
       () => h(DataTable, { table: { ...base, reorderableColumns: true, toggleableColumns: true } }),
@@ -332,6 +333,9 @@ describe('column manager reset', () => {
     expect(decodeURIComponent(String(vi.mocked(router.visit).mock.calls.at(-1)![0]))).toContain(
       'columns[0]=name',
     )
+    // Only the visit with the default columns: a reload of the old URL alongside it could
+    // finish last and bring the toggled columns back (W-V2-10).
+    expect(router.reload).not.toHaveBeenCalled()
 
     wrapper.unmount()
     delete panel.endpoints.tableColumns

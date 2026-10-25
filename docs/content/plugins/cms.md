@@ -42,7 +42,7 @@ If you can write pages but not publish them, you'll see **Submit for review** in
 
 ### Going back to an earlier version
 
-The **Revisions** tab lists every saved version, who saved it and when. **Compare** tells you in plain words what would change ("The title changes from … to …", "A FAQ block is removed"). **Restore** brings that version back; the current version stays in the list, so you can always undo.
+The **Revisions** list, below the page's form, shows every saved version, who saved it and when. **Compare** tells you in plain words what would change ("The title changes from … to …", "A FAQ block is removed"). **Restore** brings that version back; the current version stays in the list, so you can always undo.
 
 ### Search engines and sharing
 
@@ -379,7 +379,7 @@ CmsPlugin::make()->review(false); // no review workflow
 
 ### Revisions
 
-Every save that changes the title, slug, parent, home page flag, content, SEO or layout of the live page records a revision with its author. The **Revisions** tab of the editor lists them with a preview link, **Compare** (what restoring would change, in plain sentences: `RevisionDiff::describe()`) and a **Restore** action. Restoring copies that version back as a new revision ("Restored from revision 3"), so nothing is lost; it never changes whether the page is published. When the restored path is now used by another page, the current slug is kept.
+Every save that changes the title, slug, parent, home page flag, content, SEO or layout of the live page records a revision with its author. The **Revisions** table below the editor's form lists them with a preview link, **Compare** (what restoring would change, in plain sentences: `RevisionDiff::describe()`) and a **Restore** action. Restoring copies that version back as a new revision ("Restored from revision 3"), so nothing is lost; it never changes whether the page is published. When the restored path is now used by another page, the current slug is kept.
 
 Revisions beyond the 50 newest per page are pruned; change that with `->revisionsLimit(100)` (`0` keeps all).
 

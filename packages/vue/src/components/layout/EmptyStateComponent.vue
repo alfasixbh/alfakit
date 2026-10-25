@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import type { EmptyStateComponentSchema } from '@alfakit/core'
+import { computed } from 'vue'
 import { colorClass, iconBackgroundColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
 import { usePageActionContext } from '../actions/action-context'
+import { useOptionalFormStore } from '../form/form-context'
 import ActionList from '../actions/ActionList.vue'
+import { useFieldActionContext } from '../schema/field-actions'
 import MixedContent from './MixedContent.vue'
 
 const props = defineProps<{ component: EmptyStateComponentSchema }>()
-const context = usePageActionContext()
+// Inside a form the actions run as field actions of this component, so `$get` / `$set`
+// reach the form (like a section's header actions).
+const form = useOptionalFormStore()
+const pageContext = usePageActionContext()
+const fieldContext = useFieldActionContext(() => props.component)
+const context = computed(() => (form ? fieldContext.value : pageContext))
 </script>
 
 <template>
@@ -49,6 +57,7 @@ const context = usePageActionContext()
     />
     <MixedContent
       :items="props.component.footer"
+      :context="context"
       name="empty-state-footer"
       class="justify-center"
     />

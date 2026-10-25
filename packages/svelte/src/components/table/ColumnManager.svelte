@@ -158,7 +158,7 @@
     dropTarget = null
   }
 
-  const save = async (order: string[]): Promise<boolean> => {
+  const save = async (order: string[], options: { reload?: boolean } = {}): Promise<boolean> => {
     const endpoint = panel.endpoints.tableColumns
 
     if (!endpoint) return false
@@ -166,7 +166,7 @@
     saving = true
 
     try {
-      await saveColumnOrder(endpoint, token, component, order)
+      await saveColumnOrder(endpoint, token, component, order, options)
 
       return true
     } catch (error) {
@@ -258,7 +258,8 @@
     announcement = ''
     open = false
 
-    if (order) await save(order)
+    // The visibility visit renders the new order too: no second reload racing it.
+    if (order) await save(order, { reload: !columns })
 
     if (columns) visitTable(table.identifier, { columns }, ['page'])
   }
@@ -267,7 +268,8 @@
   const reset = async () => {
     if (reorderable) {
       orderDraft = null
-      await save([])
+      // The visibility visit below renders the defined order too.
+      await save([], { reload: !toggleable })
     }
 
     if (toggleable) {

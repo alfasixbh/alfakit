@@ -34,6 +34,8 @@ public static function infolist(Schema $schema): Schema
 }
 ```
 
+The example uses a quick-start `Post` with a few extra columns (`price`, `gallery`, `brand_color`, `meta`) and a `UserResource` (from `php artisan alfakit:users`); entries for attributes your model doesn't have show their placeholder, and without a users resource leave out the author's `url()`.
+
 `html()` and `markdown()` sanitise string state on the server, and `url()` drops `javascript:` and other unsafe schemes; see [Security](../advanced/security#html-output).
 
 Entries share `TextColumn`'s formatting API (`date()`, `money()`, `limit()`, `badge()`, `listWithLineBreaks()`, …) plus `helperText()`, `hint()`, `tooltip()`, `url()`, `placeholder()`, `getStateUsing()`, `state()`, `default()`, and the [field actions](../forms/field-actions) `prefixActions()`, `suffixActions()` and `hintActions()`.

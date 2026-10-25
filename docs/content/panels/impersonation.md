@@ -24,7 +24,7 @@ ImpersonateAction::make()
     ->backTo(UserResource::getUrl('index'));                                             // after leaving (default: the page you came from)
 ```
 
-The panel home is the first page in the navigation that the impersonated user may open. On a starter kit panel where they may open none, it is your app's `dashboard` route.
+The panel home is the first page in the navigation that the impersonated user may open. On a starter kit panel where they may open none, it is your app's `dashboard` route. In a starter kit, a target who hasn't verified their email address is sent to your app's verification prompt, which has no header and so no banner: **Log out** there ends both sessions (see [How it works](#how-it-works)).
 
 ## Who can impersonate whom
 

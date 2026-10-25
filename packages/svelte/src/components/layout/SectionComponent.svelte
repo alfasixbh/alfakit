@@ -95,7 +95,7 @@
       {#if component.headerActions && component.headerActions.length > 0}
         <ActionList actions={component.headerActions} {context} size="sm" />
       {/if}
-      <MixedContent items={component.afterHeader} name="section-after-header" />
+      <MixedContent items={component.afterHeader} name="section-after-header" {context} />
       {#if component.collapsible}
         <CollapsibleTrigger>
           {#snippet child({ props })}
@@ -147,7 +147,7 @@
           class={actionsAlignmentClass(component.footerActionsAlignment) || undefined}
         />
       {/if}
-      <MixedContent items={component.footer} name="section-footer-content" />
+      <MixedContent items={component.footer} name="section-footer-content" {context} />
     </div>
   {/if}
 {/snippet}

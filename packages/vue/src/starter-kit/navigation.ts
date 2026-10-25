@@ -1,8 +1,10 @@
 import {
   starterKitNavigation,
   toStarterKitNavGroups,
+  toStarterKitUserMenuItems,
   type StarterKitNavGroup,
   type StarterKitNavigationSchema,
+  type StarterKitUserMenuItem,
 } from '@alfakit/core'
 import { usePage } from '@inertiajs/vue3'
 import { computed, type ComputedRef } from 'vue'
@@ -15,6 +17,11 @@ export interface AlfakitNavigation {
   navigation: StarterKitNavigationSchema | null
   /** Its groups as plain items (`title`, `href`, `icon`, `isActive`, `badge`, `children`). */
   groups: StarterKitNavGroup[]
+  /**
+   * The panel's user menu links (`userMenuItems()`, Billing's entry…) for the kit's user
+   * menu: `<AlfakitUserMenuItems />` renders them with the app's dropdown items.
+   */
+  userMenuItems: StarterKitUserMenuItem[]
 }
 
 /**
@@ -33,6 +40,10 @@ export function useAlfakitNavigation(panelId?: string): ComputedRef<AlfakitNavig
   return computed(() => {
     const navigation = starterKitNavigation(page.props, panelId)
 
-    return { navigation, groups: toStarterKitNavGroups(navigation?.groups) }
+    return {
+      navigation,
+      groups: toStarterKitNavGroups(navigation?.groups),
+      userMenuItems: toStarterKitUserMenuItems(navigation?.userMenu),
+    }
   })
 }

@@ -33,7 +33,7 @@ On a [starter kit panel](../getting-started/starter-kits) AlfaKit's pages render
 @alfakitPwa
 ```
 
-It renders the manifest link, the light and dark `theme-color` and the iOS icon of the `pwa()` panel (the current one, else your starter kit panel; `@alfakitPwa('admin')` names one), and nothing for a panel without `pwa()`. AlfaKit's pages register the service worker; its scope is the panel path (`/admin`), so your own pages outside it are not cached or controlled.
+It renders the manifest link, the light and dark `theme-color` and the iOS icon of the `pwa()` panel (the current one, else your starter kit panel; `@alfakitPwa('admin')` names one), and nothing for a panel without `pwa()`. AlfaKit's pages register the service worker; its scope is the panel path (`/admin`), so your own pages outside it are not cached or controlled. Your app owns the user menu there, so **Install app** is offered in the command palette of [`<AlfakitSearch />`](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header) while an AlfaKit page is open (and by the browser's own install button); it is not offered in the palette on your own pages. With Web Push (`push: true`), the menu of the header bell, [`<AlfakitNotifications />`](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header), has a **Turn on notifications** button (`data-slot="pwa-push"`) on every page of the app; `togglePushNotifications()`, `subscribeToPush()` and `unsubscribeFromPush()` from `@alfakit/core` are there for your own buttons (see [Customising](#customising)).
 
 ## The manifest
 

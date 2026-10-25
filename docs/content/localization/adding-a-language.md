@@ -73,7 +73,7 @@ php artisan alfakit:lang:check
 +--------+------------+------------+---------+--------------+----------+
 ```
 
-It counts keys, not wording: a scaffold from `alfakit:lang:add` shows 100% while its strings are still English. Add `-v` to list the keys. The command fails when strings are missing or a translation dropped a `:placeholder`, so it can run in CI. A missing string falls back to English (`app.fallback_locale`), so a half-translated language still works.
+It counts keys, not wording: a scaffold from `alfakit:lang:add` shows 100% while its strings are still English. Add `-v` to list the keys. The command fails when strings are missing or a translation dropped a `:placeholder`, so it can run in CI. A missing string falls back to the base language's pack for a regional or script variant (`ar` for `ar_EG`), then to English (`app.fallback_locale`), so a half-translated language still works.
 
 ## Translations for plugins
 

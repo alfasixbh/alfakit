@@ -172,7 +172,14 @@ describe('starter kit mode', () => {
   })
 
   it('reads the shared navigation for the host sidebar', () => {
-    setPageProps({ alfakitNavigation: [navigation] } as Partial<AlfakitPageProps>)
+    setPageProps({
+      alfakitNavigation: [
+        {
+          ...navigation,
+          userMenu: [{ label: 'Billing', icon: 'credit-card', url: '/admin/billing' }],
+        },
+      ],
+    } as Partial<AlfakitPageProps>)
 
     const { result } = renderHook(() => useAlfakitNavigation())
 
@@ -183,6 +190,9 @@ describe('starter kit mode', () => {
       href: '/admin/posts',
       isActive: true,
     })
+    expect(result.current.userMenuItems).toMatchObject([
+      { title: 'Billing', href: '/admin/billing', icon: 'credit-card' },
+    ])
     expect(renderHook(() => useAlfakitNavigation('other')).result.current.groups).toEqual([])
   })
 })

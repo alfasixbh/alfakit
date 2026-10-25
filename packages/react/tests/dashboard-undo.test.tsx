@@ -199,7 +199,8 @@ describe('undo toasts', () => {
     render(
       <Wrapper>
         <input aria-label="Search" />
-        <UndoButton undo={{ token: 'tok', seconds: 8, url: '/undo' }} toastId="t2" />
+        {/* Undo tokens are single-use: a used one is never offered again (W-V1-15). */}
+        <UndoButton undo={{ token: 'tok2', seconds: 8, url: '/undo' }} toastId="t2" />
       </Wrapper>,
     )
 

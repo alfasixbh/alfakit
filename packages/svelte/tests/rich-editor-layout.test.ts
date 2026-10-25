@@ -77,9 +77,13 @@ describe('RichEditor layout', () => {
     await fireEvent.pointerDown(trigger, { button: 0, ctrlKey: false, pointerType: 'mouse' })
 
     const item = await screen.findByRole('menuitem', { name: /Heading 2/ })
+    // The menu must not hand focus back to its trigger after a pick (typing would be lost).
+    const triggerFocus = vi.spyOn(trigger, 'focus')
     await fireEvent.click(item)
 
     await waitFor(() => expect(editor().isActive('heading', { level: 2 })).toBe(true))
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(triggerFocus).not.toHaveBeenCalled()
   })
 
   it('shows a floating toolbar for the selection', async () => {

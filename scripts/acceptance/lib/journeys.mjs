@@ -179,6 +179,21 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
         return `created post ${state.postId}`
     })
 
+    await step(
+        'B33',
+        'Browser Back from the new post to the list shows the new post without a refresh',
+        async () => {
+            if (!state.postId) skip('no post was created')
+            // B05 went list → create → post by clicking: Back restores the list from history.
+            for (let i = 0; i < 3 && !/\/admin\/posts\/?$/.test(pathOf()); i++) {
+                await page.goBack()
+                await page.waitForLoadState('networkidle')
+            }
+            if (!/\/admin\/posts\/?$/.test(pathOf())) throw new Error(`Back landed on ${pathOf()}`)
+            await see(rowWith(state.postTitle), 'the new post in the list after Back')
+        },
+    )
+
     await step('B06', 'Edit the post (Save changes)', async () => {
         if (!state.postId) skip('no post was created')
         await open(`${PANEL}/posts/${state.postId}/edit`)

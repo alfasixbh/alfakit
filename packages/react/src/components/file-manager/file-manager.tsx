@@ -1389,7 +1389,8 @@ function Dialogs({
         open={dialog?.type === 'createFolder' || dialog?.type === 'rename'}
         onOpenChange={(open) => !open && close()}
       >
-        <DialogContent data-slot="file-manager-dialog">
+        {/* The title and the labelled field say it all: no description. */}
+        <DialogContent data-slot="file-manager-dialog" aria-describedby={undefined}>
           <form
             className="flex flex-col gap-4"
             onSubmit={(event) => {
@@ -1763,6 +1764,7 @@ function Preview({
         <DialogContent
           className="flex max-h-[90vh] flex-col sm:max-w-4xl"
           data-slot="file-manager-preview"
+          aria-describedby={undefined}
           onKeyDown={onKeyDown}
         >
           <DialogHeader>

@@ -21,6 +21,13 @@ const GlobalTextarea = defineComponent({
   setup: () => () => h('div', { 'data-testid': 'global-textarea' }),
 })
 
+const deferredTable = () => {
+  const payload = structuredClone(table) as unknown as { content: Array<Record<string, unknown>> }
+  payload.content[0] = { ...payload.content[0], deferLoading: true, records: undefined }
+
+  return payload as unknown as StandaloneComponentSchema
+}
+
 beforeEach(() => {
   // A host application page: no `alfakit` panel prop, the payloads are plain props.
   globalThis.__alfakitPageProps = { form, posts: table, errors: {} }
@@ -38,6 +45,21 @@ beforeEach(() => {
 })
 
 describe('Several standalone forms on one page', () => {
+  it("loads a deferLoading() table through the component's own prop (W-C-15)", async () => {
+    const posts = deferredTable()
+    globalThis.__alfakitPageProps = { posts, errors: {} }
+    const { router } = await import('@inertiajs/vue3')
+    vi.mocked(router.reload).mockClear()
+
+    const wrapper = mount(
+      defineComponent({ setup: () => () => h(AlfakitComponent, { component: posts }) }),
+    )
+    await flush()
+
+    expect(router.reload).toHaveBeenCalledWith({ only: ['posts'] })
+    wrapper.unmount()
+  })
+
   it('gives two forms with the same fields their own field ids', async () => {
     const Host = defineComponent({
       setup: () => () =>

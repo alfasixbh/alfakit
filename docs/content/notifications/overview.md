@@ -209,7 +209,7 @@ $panel->toastPosition(ToastPosition::BottomEnd); // or 'bottom-end'
 
 ## Custom toasts
 
-`->view('my-toast', ['level' => 'critical'])` renders a component registered in `createAlfakit({ components: { 'my-toast': MyToast } })` instead of the default toast.
+`->view('my-toast', ['level' => 'critical'])` renders a component registered in `createAlfakit({ components: { 'my-toast': MyToast } })` instead of the default toast. The component receives one prop, `notification` (the `NotificationSchema`: `title`, `body`, `status`, `actions`, …), with the data you passed in `notification.viewData` (`notification.viewData.level`). A component file in `resources/js/alfakit/components/` (`my-toast.vue`) registers itself under its file name.
 
 ## Action notifications
 

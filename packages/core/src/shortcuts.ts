@@ -198,6 +198,82 @@ export function bindingFromEvent(event: KeyboardEvent): string | null {
   return isValidShortcut(binding) ? binding : null
 }
 
+/**
+ * Whether two bindings can't both work: the same keys, or one is the start of the other's
+ * sequence ("g" would run before "g o" could finish).
+ */
+export function shortcutsClash(a: string, b: string): boolean {
+  const left = a.trim().toLowerCase().split(/\s+/)
+  const right = b.trim().toLowerCase().split(/\s+/)
+  const length = Math.min(left.length, right.length)
+
+  return left.slice(0, length).every((step, index) => step === right[index])
+}
+
+/**
+ * Records a new binding in the shortcuts overlay: a key (with modifiers) or a sequence of up
+ * to `maxSteps` keys ("g o"). The binding is finished `timeout` ms after the last key (the
+ * matcher's sequence timeout) or at `maxSteps`. Escape is the caller's (cancel).
+ */
+export class ShortcutRecorder {
+  private steps: string[] = []
+
+  private timer: ReturnType<typeof setTimeout> | null = null
+
+  constructor(
+    private readonly options: {
+      onDone: (binding: string) => void
+      onStep?: (steps: string[]) => void
+      timeout?: number
+      maxSteps?: number
+    },
+  ) {}
+
+  /** Record a keydown; returns false for keys a binding can't hold (lone modifiers). */
+  press(event: KeyboardEvent): boolean {
+    const step = bindingFromEvent(event)
+
+    if (!step) {
+      return false
+    }
+
+    this.steps.push(step)
+    this.options.onStep?.([...this.steps])
+    this.clearTimer()
+
+    if (this.steps.length >= (this.options.maxSteps ?? 3)) {
+      this.finish()
+    } else {
+      this.timer = setTimeout(() => this.finish(), this.options.timeout ?? 1000)
+    }
+
+    return true
+  }
+
+  /** Stop without a binding. */
+  cancel(): void {
+    this.clearTimer()
+    this.steps = []
+  }
+
+  private finish(): void {
+    this.clearTimer()
+    const binding = this.steps.join(' ')
+    this.steps = []
+
+    if (binding !== '') {
+      this.options.onDone(binding)
+    }
+  }
+
+  private clearTimer(): void {
+    if (this.timer !== null) {
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+  }
+}
+
 export interface ShortcutRegistryOptions {
   /** Milliseconds between the keys of a sequence (default 1000). */
   sequenceTimeout?: number
@@ -316,7 +392,9 @@ export class ShortcutRegistry {
   /** Another shortcut already using one of these keys. */
   conflict(keys: string[], exceptId?: string): RegisteredShortcut | undefined {
     return this.list().find(
-      (entry) => entry.id !== exceptId && entry.keys.some((key) => keys.includes(key)),
+      (entry) =>
+        entry.id !== exceptId &&
+        entry.keys.some((key) => keys.some((candidate) => shortcutsClash(key, candidate))),
     )
   }
 

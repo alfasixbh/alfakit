@@ -118,6 +118,8 @@ Saving validates the form, then runs:
 5. the saved notification.
 
 ```php
+use Illuminate\Support\Str;
+
 protected function mutateFormDataBeforeFill(array $data): array
 {
     $data['site_name'] = Str::title($data['site_name']);

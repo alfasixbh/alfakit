@@ -110,7 +110,7 @@ If your plugin needs custom fields or widgets, publish a JavaScript component an
 createAlfakit({ components: { 'blog-stats': BlogStats } })
 ```
 
-Any schema component created with `View::make('blog-stats')` or a widget with `protected static ?string $component = 'blog-stats'` resolves through that registry. See [Custom components](../adapters/custom-components).
+Any schema component created with `View::make('blog-stats')` or a widget with `protected static ?string $component = 'blog-stats'` resolves through that registry. In a [starter kit](../getting-started/starter-kits#the-page-file) app the registry is set up in `resources/js/pages/Alfakit/Page.tsx` (`Page.vue`, `Page.svelte`) instead: pass the same components to `createStarterKitPage({ components })` (`createStarterKitLayout()` in Svelte). `make:alfakit-plugin --frontend=…` writes a package whose `components` export you spread into either. See [Custom components](../adapters/custom-components).
 
 ## Distributing a whole panel
 

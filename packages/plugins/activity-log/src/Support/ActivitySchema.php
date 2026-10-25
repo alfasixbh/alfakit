@@ -221,7 +221,8 @@ final class ActivitySchema
                         ->hiddenLabel()
                         ->getStateUsing(static fn (Model $record): array => ActivityPresenter::propertyRows($record))
                         ->keyLabel(self::trans('fields.property'))
-                        ->valueLabel(self::trans('fields.value')),
+                        ->valueLabel(self::trans('fields.value'))
+                        ->columnSpanFull(),
                 ])
                 ->visible(static fn (?Model $record): bool => $record !== null && ActivityPresenter::propertyRows($record) !== []),
         ];
@@ -235,6 +236,8 @@ final class ActivitySchema
         return RepeatableEntry::make($name)
             ->label(self::trans('fields.changes'))
             ->hiddenLabel()
+            // Sections lay out two columns from `lg` up: the table takes the whole row, also in the narrow view modal.
+            ->columnSpanFull()
             ->getStateUsing(static fn (Model $record): array => ActivityPresenter::changeRows($record))
             ->table([
                 TableColumn::make(self::trans('fields.attribute')),

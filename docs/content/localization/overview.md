@@ -93,8 +93,13 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->locale;
     }
 }
+```
 
-// Panel
+In the panel provider:
+
+```php
+use App\Models\User;
+
 $panel->persistLocaleUsing(fn (User $user, string $locale) => $user->update(['locale' => $locale]));
 ```
 
@@ -111,6 +116,8 @@ Select::make('locale')->label(__('Language'))->panelLocales();
 ### Your own resolution rules
 
 ```php
+use Illuminate\Http\Request;
+
 $panel->resolveLocaleUsing(function (Request $request, array $locales): ?string {
     return $request->user()?->team?->locale; // null falls back to the normal order
 });

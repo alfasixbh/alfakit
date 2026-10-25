@@ -5,7 +5,7 @@ description: How tables behave on millions of rows, what pagination, sorting and
 
 # Large tables
 
-An AlfaKit table never loads every record. Every query is built and run in PHP and only the current page (25 rows by default) is sent to the browser, so the page size the user sees stays the same at 1,000 or 1,000,000 rows. What grows with the table is the work the **database** does to find that page. This page explains where that work goes and how to keep it small.
+An AlfaKit table never loads every record. Every query is built and run in PHP and only the current page (10 rows by default, `paginationPageOptions()` sets the choices) is sent to the browser, so the page size the user sees stays the same at 1,000 or 1,000,000 rows. What grows with the table is the work the **database** does to find that page. This page explains where that work goes and how to keep it small.
 
 ## Where the time goes
 

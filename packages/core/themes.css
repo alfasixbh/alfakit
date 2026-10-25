@@ -742,6 +742,10 @@
     max-height: none;
     width: 100%;
     max-width: 100%;
+    /* The shadcn centring utilities read these variables. Resetting them survives a
+       minifier that drops `translate: none` in favour of the utilities' `translate`. */
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
     translate: none;
     transform: none;
     border-radius: 0;

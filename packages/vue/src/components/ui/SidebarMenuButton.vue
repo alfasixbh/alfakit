@@ -8,6 +8,10 @@ import TooltipContent from './TooltipContent.vue'
 import TooltipTrigger from './TooltipTrigger.vue'
 import { useSidebar } from './use-sidebar'
 
+// Attributes from an `as-child` parent (CollapsibleTrigger's click handler and ARIA state,
+// a nav item's extra attributes) go on the button, not on the renderless Tooltip root.
+defineOptions({ inheritAttrs: false })
+
 const props = withDefaults(
   defineProps<
     PrimitiveProps & {
@@ -27,6 +31,7 @@ const { isMobile, state } = useSidebar()
   <Tooltip v-if="props.tooltip">
     <TooltipTrigger as-child>
       <Primitive
+        v-bind="$attrs"
         data-slot="sidebar-menu-button"
         data-sidebar="menu-button"
         :data-size="props.size"
@@ -46,6 +51,7 @@ const { isMobile, state } = useSidebar()
   </Tooltip>
   <Primitive
     v-else
+    v-bind="$attrs"
     data-slot="sidebar-menu-button"
     data-sidebar="menu-button"
     :data-size="props.size"

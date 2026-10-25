@@ -29,7 +29,7 @@
   >
     <div class="flex items-start justify-between gap-3">
       <div class="flex flex-col gap-1">
-        <span class="text-muted-foreground text-sm font-medium">{stat.label}</span>
+        <span class="text-muted-foreground text-sm font-medium"><bdi>{stat.label}</bdi></span>
         {#if (stat.value === null || stat.value === '') && stat.placeholder}
           <span
             class="text-muted-foreground text-2xl font-semibold tracking-tight"
@@ -40,7 +40,7 @@
             class={cn(
               'text-2xl font-semibold tracking-tight',
               stat.color && textColorClasses[stat.color],
-            )}>{stat.value}</span
+            )}><bdi>{stat.value}</bdi></span
           >
         {/if}
         {#if stat.description}
@@ -56,7 +56,8 @@
                 name={stat.descriptionIcon}
                 class="size-3.5"
               />{/if}
-            {stat.description}
+            <!-- Mixed-direction text (a Latin "-3% this month" in Arabic) keeps its order. -->
+            <bdi>{stat.description}</bdi>
             {#if stat.descriptionIcon && stat.descriptionIconPosition === 'after'}<Icon
                 name={stat.descriptionIcon}
                 class="size-3.5"

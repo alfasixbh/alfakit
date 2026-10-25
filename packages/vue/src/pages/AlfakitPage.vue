@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { openDefaultAction, resolveLazyComponents, type DefaultActionOpener } from '@alfakit/core'
+import {
+  customPageProps,
+  openDefaultAction,
+  resolveLazyComponents,
+  type DefaultActionOpener,
+} from '@alfakit/core'
 import { Head } from '@inertiajs/vue3'
 import { computed, onMounted, watch } from 'vue'
 import { providePageActionContext } from '../components/actions/action-context'
@@ -28,6 +33,11 @@ const title = computed(() =>
     : panel.value.brandName,
 )
 const custom = computed(() => (page.value?.view ? pages[page.value.view.component] : undefined))
+// A custom component brings its own `PageShell` (as in panel mode, where it is the Inertia
+// page itself) and takes the live props, so `reloadProps()` reaches it.
+const customProps = computed(() =>
+  customPageProps(page.value?.view?.props, props.value as Record<string, unknown>),
+)
 
 // The page's default action (`$defaultAction`, `?tableAction=`) opens once the page has
 // hydrated, and once per page: re-renders after the action ran don't open it again.
@@ -61,9 +71,9 @@ providePageActionContext({
         )
       }}
     </div>
+    <component :is="custom" v-else-if="page.view && custom" v-bind="customProps" :page="page" />
     <PageShell v-else :page="page">
-      <component :is="custom" v-if="page.view && custom" v-bind="page.view.props" :page="page" />
-      <PageContent v-else :page="page" />
+      <PageContent :page="page" />
     </PageShell>
   </template>
 </template>

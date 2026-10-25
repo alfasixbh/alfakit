@@ -101,7 +101,7 @@ php artisan alfakit:add teams --panel=app
 
 Then add `->starterKit()` (and `->databaseNotifications()`) to `AppPanelProvider`, without `->login()` or `->registration()`: the app's own sign-in is used. `alfakit:add teams` adds `<AlfakitTenantSwitcher />` to the app header block the installer wrote (`alfakit:header`; add it yourself next to `<AlfakitSearch />` if you removed the block). It is the way to **Members**, **Team settings** and **Create team**:
 
-- on the team panel's pages (`/app/{team}/…`) the header components and `useAlfakitNavigation()` (the `AlfakitNav` sidebar) follow that panel, so the sidebar lists the team's navigation (and **Members** with `membersNavigation()`);
+- on the team panel's pages (`/app/{team}/…`) the header components and `useAlfakitNavigation()` (the `AlfakitNav` sidebar) follow that panel, so the sidebar lists the team's navigation (and **Members** with `membersNavigation()`); the team panel's dashboard is listed under the team's name, since the app sidebar already has the app's own **Dashboard** (a `$navigationLabel` on your `Dashboard` class wins);
 - on the app's own pages and the admin panel's, `<AlfakitTenantSwitcher />` lists the user's teams from the first panel with tenancy, while the sidebar keeps the first panel's navigation. Pass `panel="app"` (or `useAlfakitNavigation('app')`) to pin a component to one panel.
 
 ## What the plugin configures

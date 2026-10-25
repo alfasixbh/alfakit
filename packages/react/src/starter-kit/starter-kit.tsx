@@ -185,8 +185,9 @@ export function AlfakitStarterKitRoot({
         <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>
           {children}
           {/* The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
-              render: float it in the corner instead (nothing without `alfakitDebug`). */}
-          <div data-slot="starter-kit-debug-panel" className="fixed end-16 bottom-4 z-40">
+              render: float it in the corner instead (nothing without `alfakitDebug`). The corner is the
+              document's right: the kit's sidebar stays on the left in a right-to-left panel language. */}
+          <div data-slot="starter-kit-debug-panel" className="fixed right-16 bottom-16 z-40">
             <DebugPanelSlot />
           </div>
         </AlfakitRoot>

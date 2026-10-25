@@ -71,23 +71,14 @@ This:
 
 - sets the provider as the panel's `tenantBillingProvider()` (and `requiresSubscription()` as `requiresTenantSubscription()`) on tenancy panels, which adds the `/{tenant}/billing` route and a **Billing** entry to the tenant menu (customise it with the `billing` key of `tenantMenuItems()`);
 - registers the plans page at `/{tenant}/billing/plans` (`/billing/plans` without tenancy);
-- on panels without tenancy, registers `/billing` and adds a **Billing** entry to the user menu. In [starter-kit mode](../getting-started/starter-kits) your app owns the user menu, so the entry isn't shown: link to `route('alfakit.{panel}.billing')` (for example `route('alfakit.admin.billing')`, `/admin/billing`) from your own menu (see [In a starter kit](#in-a-starter-kit));
+- on panels without tenancy, registers `/billing` and adds a **Billing** entry to the user menu (in [starter-kit mode](../getting-started/starter-kits), to your app's user menu through `<AlfakitUserMenuItems />`, see [In a starter kit](#in-a-starter-kit));
 - with `requiresSubscription()`, sends customers without an active subscription to the plans page.
 
 ### In a starter kit
 
-A [starter-kit](../getting-started/starter-kits) panel has no AlfaKit user menu. With `requiresSubscription()`, opening any panel page from the app sidebar leads an unsubscribed user to the plans page; to let users reach billing at any time, add an entry to the kit's user menu, `resources/js/components/user-menu-content.tsx` (React), next to **Settings** (import `CreditCard` from `lucide-react`):
+A [starter-kit](../getting-started/starter-kits) panel has no AlfaKit user menu; your app's user menu shows the panel's entries instead. `alfakit:install --starter-kit` adds `<AlfakitUserMenuItems />` to it (`resources/js/components/user-menu-content.tsx`, `UserMenuContent.vue`, `UserMenuContent.svelte`), so **Billing** appears there between **Settings** and **Log out** on its own. Apps installed with 0.1.9 or earlier: run `php artisan alfakit:install --starter-kit --no-npm` again (with the `--panel` you installed with); `alfakit:upgrade` reminds you.
 
-```tsx
-<DropdownMenuItem asChild>
-    <a className="block w-full cursor-pointer" href="/admin/billing">
-        <CreditCard className="mr-2" />
-        Billing
-    </a>
-</DropdownMenuItem>
-```
-
-A plain `<a>` is enough: the billing route answers with a full page redirect to the plans page, the checkout or the portal. In Vue and Svelte the menu is `UserMenuContent.vue` / `UserMenuContent.svelte`.
+With `requiresSubscription()`, opening any panel page from the app sidebar leads an unsubscribed user to the plans page; the **Billing** entry lets users reach billing at any time. The billing route answers with a full page redirect to the plans page, the checkout or the portal.
 
 ### The billing route
 

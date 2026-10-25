@@ -58,6 +58,8 @@ $table->views([
 ]);
 ```
 
+The column, filter and view names are an invoice table's; use your own table's. `isAdmin()` here and `hasRole()` below stand for your own user check: Laravel's `User` model has neither, and calling one that doesn't exist fails the page with "Call to undefined method".
+
 | Method                    | Effect                                                                                                                                |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `label()`, `icon()`       | the tab's text and icon (the label defaults to the name in title case)                                                                |

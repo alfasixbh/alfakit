@@ -74,6 +74,8 @@ Select::make('author_id')
     ]);
 ```
 
+The create modal saves exactly the fields of `createOptionForm()` with `create()`, so the related model must accept them (fillable) and every other required column needs a default. A new Laravel app's `users` table requires a `password`, so for authors add `createOptionUsing()` (see below) to set one, or the create fails with "NOT NULL constraint failed: users.password".
+
 The buttons are suffix actions named `createOption` and `editOption`. The create modal validates its form, creates the related record on the server (owned by the current tenant on tenant panels), saves the form's own relationships and selects the new record; on a `multiple()` select it is added to the selection. The edit button shows for a single select with a value, fills the modal from the selected record and saves it.
 
 Both check the related model's policy: creating needs `create`, editing needs `update` on the selected record (missing policies or methods allow it, as for [resources](../resources/authorization)). The record being edited is looked up through the select's own query, so `modifyQueryUsing` constraints and the tenant scope apply; a value outside that query can't be edited. Neither button is shown on a disabled or read-only select.

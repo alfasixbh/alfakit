@@ -6,7 +6,9 @@ import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
 import { usePageActionContext } from '../actions/action-context'
+import { useOptionalFormStore } from '../form/form-context'
 import ActionList from '../actions/ActionList.vue'
+import { useFieldActionContext } from '../schema/field-actions'
 import MixedContent from './MixedContent.vue'
 
 const CALLOUT_COLORS: Record<string, string> = {
@@ -29,7 +31,12 @@ const CALLOUT_ICON_SIZES: Record<string, string> = {
 }
 
 const props = defineProps<{ component: CalloutSchema }>()
-const context = usePageActionContext()
+// Inside a form the actions run as field actions of this component, so `$get` / `$set`
+// reach the form (like a section's header actions).
+const form = useOptionalFormStore()
+const pageContext = usePageActionContext()
+const fieldContext = useFieldActionContext(() => props.component)
+const context = computed(() => (form ? fieldContext.value : pageContext))
 const tone = computed(() => props.component.color ?? props.component.status)
 // `iconColor()`, or the status colour once `color(null)` removed the background.
 const iconColor = computed(
@@ -78,10 +85,16 @@ const iconColor = computed(
         size="sm"
         :class="cn('mt-2', actionsAlignmentClass(props.component.footerActionsAlignment))"
       />
-      <MixedContent :items="props.component.footer" name="callout-footer" class="mt-2" />
+      <MixedContent
+        :items="props.component.footer"
+        :context="context"
+        name="callout-footer"
+        class="mt-2"
+      />
     </div>
     <MixedContent
       :items="props.component.controls"
+      :context="context"
       name="callout-controls"
       class="-me-1 -mt-1 shrink-0 gap-1"
     />

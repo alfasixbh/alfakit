@@ -42,6 +42,8 @@ $panel->id('admin')->theme('corporate');
 $panel->id('portal')->theme('soft')->colors(['primary' => '#0f766e']);
 ```
 
+A provider from `make:alfakit-panel` or the setup wizard already calls `->colors(['primary' => '#2563eb'])` further down the chain. Colour calls add up and later names win, so change that call instead of adding a second `colors()` before it, or the generated blue stays.
+
 ## Changing one part of a theme
 
 Keep a theme and change single aspects. See [Design options](design-options) for everything you can set:

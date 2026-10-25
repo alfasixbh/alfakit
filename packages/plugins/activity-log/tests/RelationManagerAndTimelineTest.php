@@ -100,3 +100,13 @@ it('limits and filters the timeline', function (): void {
     expect($entry->getActivities($article))->toHaveCount(2)
         ->and($entry->modifyQueryUsing(fn ($query) => $query->where('event', 'created'))->limit(null)->getActivities($article))->toHaveCount(1);
 });
+
+it('spans the changes table and the properties list across their sections', function (): void {
+    expect(AlfaSix\AlfakitActivityLog\Support\ActivitySchema::changesEntry()->getColumnSpan())->toContain('full');
+
+    $sections = AlfaSix\AlfakitActivityLog\Support\ActivitySchema::infolist();
+    $properties = $sections[2]->getChildComponents()[0];
+
+    expect($properties)->toBeInstanceOf(AlfaSix\Alfakit\Infolists\Components\KeyValueEntry::class)
+        ->and($properties->getColumnSpan())->toContain('full');
+});

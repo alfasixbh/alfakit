@@ -524,15 +524,20 @@ const vFocus = { mounted: (element: HTMLElement) => element.focus() }
         <DialogHeader>
           <DialogTitle>{{ t('table.spreadsheet.paste_title', {}, 'Paste cells') }}</DialogTitle>
           <DialogDescription>
-            {{
+            <!-- One line per count: translations can't join two sentences. -->
+            <span class="block">{{
               choice(
                 'table.spreadsheet.paste_summary',
                 preview?.plan.changes.length ?? 0,
                 {},
                 ':count cell will change|:count cells will change',
               )
-            }}
-            <template v-if="(preview?.plan.skipped ?? 0) > 0">
+            }}</span>
+            <span
+              v-if="(preview?.plan.skipped ?? 0) > 0"
+              class="block"
+              data-slot="spreadsheet-paste-skipped"
+            >
               {{
                 choice(
                   'table.spreadsheet.paste_skipped',
@@ -541,7 +546,7 @@ const vFocus = { mounted: (element: HTMLElement) => element.focus() }
                   ':count read-only cell is skipped|:count read-only cells are skipped',
                 )
               }}
-            </template>
+            </span>
           </DialogDescription>
         </DialogHeader>
         <div data-slot="spreadsheet-paste" class="flex flex-col gap-3">

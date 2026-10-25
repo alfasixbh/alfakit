@@ -164,7 +164,9 @@
   })
 
   // Partial reloads (sorting, paging, inline edits) request this component's own prop.
-  $effect(() => {
+  // `$effect.pre` runs before the children's effects: a `deferLoading()` table's first
+  // reload must already ask for this prop, not the panel `page` prop.
+  $effect.pre(() => {
     const name = findStandalonePropName(inertiaPage.props as Record<string, unknown>, component)
 
     return registerStandaloneProp(name ?? null)

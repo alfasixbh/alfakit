@@ -36,6 +36,9 @@ export function usePageBlock(key: string): ComputedRef<ContentBlock | undefined>
  */
 export const AppPage = defineComponent({
   name: 'AppPage',
+  // The page component's undeclared Inertia props fall through to here; AppPage takes no
+  // HTML attributes and renders several root nodes.
+  inheritAttrs: false,
   setup(_, { slots }) {
     const page = useAppPage()
     const panel = usePanel()

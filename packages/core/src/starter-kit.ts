@@ -7,11 +7,13 @@ import {
 } from './error-notifications'
 import { reloadOnExpiredPage } from './http'
 import { navigationItemText } from './navigation'
+import { installPrefetchInvalidation } from './prefetch'
 import type { NotificationSchema } from './schema/notifications'
 import type {
   AlfakitPageProps,
   BreadcrumbSchema,
   ErrorNotificationsSchema,
+  MenuItemSchema,
   NavigationGroupSchema,
   NavigationItemSchema,
   PanelSchema,
@@ -195,6 +197,68 @@ export function toStarterKitNavGroups(
   })
 }
 
+/**
+ * A user menu entry of a `starterKit()` panel for the kit's own dropdown items
+ * (`<AlfakitUserMenuItems />`). `group` changes where a separator goes; `method: 'post'`
+ * links are sent as POST (like the kit's Log out).
+ */
+export interface StarterKitUserMenuItem {
+  key: string
+  title: string
+  href: string
+  icon?: string
+  openInNewTab: boolean
+  method?: 'post'
+  group: number
+  /** Whether a separator goes before this entry (it starts a new group). */
+  startsGroup: boolean
+}
+
+/** A panel's shared user menu links as plain items for the host's dropdown primitives. */
+export function toStarterKitUserMenuItems(
+  items: MenuItemSchema[] | null | undefined,
+): StarterKitUserMenuItem[] {
+  const links = (items ?? []).filter(
+    (item): item is MenuItemSchema & { url: string } =>
+      typeof item.url === 'string' && item.url !== '' && item.action === undefined,
+  )
+
+  return links.map((item, index) => {
+    const group = item.group ?? 0
+
+    return {
+      key: `${index}:${item.label ?? ''}`,
+      title: item.label ?? item.url,
+      href: item.url,
+      icon: item.icon ?? undefined,
+      openInNewTab: item.openInNewTab === true,
+      method: item.method,
+      group,
+      startsGroup: index > 0 && group !== (links[index - 1]!.group ?? 0),
+    }
+  })
+}
+
+/**
+ * The props of a custom page component (`Page::$component`) rendered by `Alfakit/Page` (a
+ * starter kit resolves only that page): its view data, with the page's live top-level props
+ * of the same names, so a partial reload (`reloadProps('items')`) reaches the component.
+ */
+export function customPageProps(
+  viewProps: Record<string, unknown> | null | undefined,
+  pageProps: Record<string, unknown> | null | undefined,
+): Record<string, unknown> {
+  const merged: Record<string, unknown> = { ...(viewProps ?? {}) }
+
+  for (const key of Object.keys(merged)) {
+    if (pageProps && Object.prototype.hasOwnProperty.call(pageProps, key)) {
+      merged[key] = pageProps[key]
+    }
+  }
+
+  return merged
+}
+
 // ---------------------------------------------------------------- Browser runtime
 
 /**
@@ -232,7 +296,8 @@ export function currentStarterKitPanel(): PanelSchema | null {
 /**
  * The listeners `createAlfakit()` installs, once per page load, for starter kit mode: reload
  * on an expired CSRF token (419), the panel's error notifications instead of Inertia's error
- * modal, a notification for failed internal requests and the panel's SPA URL exceptions.
+ * modal, a notification for failed internal requests, the panel's SPA URL exceptions, and
+ * dropping prefetched pages after a save (and reloading pages Back restores after one).
  * Returns false when they were already installed (or on the server).
  */
 export function installStarterKitRuntime(
@@ -244,6 +309,7 @@ export function installStarterKitRuntime(
   runtime.installed = true
 
   reloadOnExpiredPage()
+  installPrefetchInvalidation()
   installSpaUrlExceptions(() => runtime.panel)
   installErrorNotifications(() => ({ errorNotifications: runtime.errorNotifications }), show)
   setRequestErrorReporter((error) => {

@@ -84,6 +84,30 @@ describe('default actions', () => {
     expect(openDefaultAction(schema, opener, trigger)).toBe(true)
   })
 
+  it("gives Inertia's page and history state the cleaned URL too (W-V1-12)", async () => {
+    const { router } = await import('../src/http')
+    const replace = vi.spyOn(router, 'replace').mockImplementation(() => {})
+    window.history.replaceState(
+      { page: { url: '/admin/posts?activeTab=drafts&tableAction=delete&tableActionRecord=2' } },
+      '',
+      '/admin/posts?activeTab=drafts&tableAction=delete&tableActionRecord=2',
+    )
+
+    openDefaultAction(
+      page({ defaultAction: { action: action(), component: 'table', record: 2 } }),
+      { opened: null },
+      vi.fn(),
+    )
+
+    expect(replace).toHaveBeenCalledWith(
+      expect.objectContaining({ url: '/admin/posts?activeTab=drafts' }),
+    )
+    expect((window.history.state as { page: { url: string } }).page.url).toBe(
+      '/admin/posts?activeTab=drafts',
+    )
+    replace.mockRestore()
+  })
+
   it('keys default actions by page, record and action', () => {
     const schema = page({ defaultAction: { action: action(), component: 'page' } })
 

@@ -160,6 +160,7 @@ describe('starter kit mode', () => {
               items: [{ label: 'Posts', url: '/admin/posts', active: true }],
             },
           ],
+          userMenu: [{ label: 'Billing', icon: 'credit-card', url: '/admin/billing' }],
         },
       ],
     } as Partial<AlfakitPageProps>)
@@ -172,6 +173,9 @@ describe('starter kit mode', () => {
       href: '/admin/posts',
       isActive: true,
     })
+    expect(navigation.value.userMenuItems).toMatchObject([
+      { title: 'Billing', href: '/admin/billing', icon: 'credit-card' },
+    ])
     expect(useAlfakitNavigation('other').value.groups).toEqual([])
   })
 })

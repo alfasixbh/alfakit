@@ -73,7 +73,7 @@ const toggle = (key: string, checked: boolean) => {
     <div class="flex flex-col gap-2">
       <div
         v-if="props.component.searchable || (props.component.bulkToggleable && !readOnly)"
-        class="flex items-center gap-2"
+        class="flex min-w-0 flex-wrap items-center gap-2"
       >
         <Input
           v-if="props.component.searchable"
@@ -82,7 +82,7 @@ const toggle = (key: string, checked: boolean) => {
           :aria-label="props.component.searchPrompt ?? t('search', {}, 'Search')"
           class="h-8"
         />
-        <div v-if="props.component.bulkToggleable && !readOnly" class="flex gap-1">
+        <div v-if="props.component.bulkToggleable && !readOnly" class="flex flex-wrap gap-1">
           <Button
             v-if="!props.component.selectAllAction?.hidden"
             type="button"

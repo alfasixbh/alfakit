@@ -112,7 +112,7 @@ class ProfileForm extends \AlfaSix\Alfakit\Standalone\Form
 }
 ```
 
-The `avatar` field needs an `avatar` column on `users` (a nullable string) that is fillable; without it `update()` drops the stored path silently. The file goes to `alfakit.default_filesystem_disk` (your `FILESYSTEM_DISK`: `local`, a private disk, in a new Laravel app); add `->disk('public')` to show it with `Storage::url()`.
+The `avatar` field needs an `avatar` column on `users` (a nullable string) that is fillable; without it `update()` drops the stored path silently. The file goes to `alfakit.default_filesystem_disk` (your `FILESYSTEM_DISK`: `local`, a private disk, in a new Laravel app); add `->disk('public')` to show it with `Storage::url()`. In a Laravel starter kit the sidebar's user menu already reads `users.avatar` as an image URL, so a stored path such as `avatars/…png` shows as a broken image (404) on every page: use another column (`avatar_path`), or store on the `public` disk and add an accessor that returns `Storage::url()`.
 
 ```php
 // In the controller:
@@ -178,7 +178,7 @@ public function authorize(): bool
 }
 ```
 
-Both run when the payload is built (403 on the page) and again on every internal request, so a token cannot outlive a permission.
+`authorize()` runs when the payload is built (403 on the page) and again on every internal request, so a token cannot outlive a permission. `requiresAuthentication()` is checked on the internal requests (a guest's submit, live update or upload answers 401); the page itself still renders for a guest, so put its route in the `auth` middleware group as well.
 
 ## After submit
 

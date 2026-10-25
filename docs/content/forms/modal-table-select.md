@@ -80,7 +80,15 @@ Arguments only change what the picker shows. To restrict what may be saved, scop
 ## Records and relationships
 
 - With `relationship()`, the table lists the related model's records (`BelongsTo` for a single value, `BelongsToMany` with `multiple()`), limited to the current tenant. `BelongsToMany` selections are synced when the form is saved, like a multiple `Select`.
-- Without a relationship, the table configuration must set a `query()` (a resource class lists its model); the current tenant scope is applied to it. Use `recordTitleAttribute('title')` (or `getOptionLabelFromRecordUsing()`) for the labels of selected records.
+- Without a relationship, the table configuration must set a `query()` (a resource class lists its model); the current tenant scope is applied to it. Label the selected records with the field's own `recordTitleAttribute('title')` (or `getOptionLabelFromRecordUsing()`); these are `ModalTableSelect` methods, not `Table` methods:
+
+    ```php
+    ModalTableSelect::make('reviewers')
+        ->multiple()
+        ->recordTitleAttribute('name')
+        ->tableConfiguration(UsersTable::class); // configure(): ->query(User::query())->columns([...])
+    ```
+
 - The table configuration's `modifyQueryUsing()` narrows the list. Its `checkIfRecordIsSelectableUsing()` disables rows.
 - Inside `Repeater` items (also `relationship()` repeaters such as order lines), each item has its own picker: the browser sends the form state with the request, so items added in the browser work before they are saved, and `live()`/`afterStateUpdated()` on the picker run for new items too.
 

@@ -23,7 +23,7 @@ The palette is on whenever the panel has global search or commands. Turn its ext
 $panel->commandPalette(false);
 ```
 
-In a [starter kit](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header) the palette opens from `<AlfakitSearch />` in your app header with recent records, "New …" links and the panel navigation; panel commands, page actions, theme switching and the shortcuts overlay need an AlfaKit page around them and are left out there.
+In a [starter kit](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header) the palette opens from `<AlfakitSearch />` in your app header with recent records, "New …" links and the panel navigation; panel commands, page actions, theme switching and the shortcuts overlay need an AlfaKit page around them and are left out there. **Install app** (`pwa()`) is offered while an AlfaKit page is open, not on your own pages.
 
 ## Panel commands
 

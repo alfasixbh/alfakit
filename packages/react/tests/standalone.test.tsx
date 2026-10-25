@@ -11,6 +11,13 @@ import { createStandaloneContext } from '../src/standalone/runtime'
 const form = contactForm as unknown as StandaloneComponentSchema
 const table = postsTable as unknown as StandaloneComponentSchema
 
+const deferredTable = () => {
+  const payload = structuredClone(table) as unknown as { content: Array<Record<string, unknown>> }
+  payload.content[0] = { ...payload.content[0], deferLoading: true, records: undefined }
+
+  return payload as unknown as StandaloneComponentSchema
+}
+
 beforeEach(() => {
   // A host application page: no `alfakit` panel prop, the payloads are plain props.
   globalThis.__alfakitPageProps = { form, posts: table, errors: {} }
@@ -28,6 +35,17 @@ beforeEach(() => {
 })
 
 describe('AlfakitComponent (outside panels)', () => {
+  it("loads a deferLoading() table through the component's own prop (W-C-15)", async () => {
+    const posts = deferredTable()
+    globalThis.__alfakitPageProps = { posts, errors: {} }
+    const { router } = await import('@inertiajs/react')
+    vi.mocked(router.reload).mockClear()
+
+    render(<AlfakitComponent component={posts} />)
+
+    expect(router.reload).toHaveBeenCalledWith({ only: ['posts'] })
+  })
+
   it('renders a form from its payload without createAlfakit()', () => {
     render(<AlfakitComponent component={form} className="max-w-xl" />)
 

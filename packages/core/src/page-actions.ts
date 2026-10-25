@@ -1,6 +1,7 @@
 import type { ActionContext } from './actions'
 import type { AlfakitFlash } from './flash'
 import type { FormStore } from './form'
+import { router } from './http'
 import type { WizardProgress } from './modal-actions'
 import type { ActionSchema } from './schema/actions'
 import type { FormBlock } from './schema/form'
@@ -85,6 +86,33 @@ export function withoutDefaultActionQuery(href: string): string {
   return /^https?:\/\//.test(href) ? url.toString() : relative
 }
 
+/**
+ * Inertia keeps the page's URL in the history state (`state.page.url`) and writes it back
+ * on its next history update (a partial reload, the modal's requests), which brought the
+ * `tableAction` keys back into the address bar. The cleaned state carries the clean URL.
+ */
+function replacePageUrl(href: string): void {
+  const url = new URL(href, window.location.origin)
+  const relative = `${url.pathname}${url.search}${url.hash}`
+
+  // Inertia's own page (and so its later history writes) gets the clean URL too.
+  try {
+    router.replace({ url: relative, preserveState: true, preserveScroll: true })
+  } catch {
+    // No Inertia app on the page (tests, a host page before its app booted).
+  }
+
+  window.history.replaceState(withPageUrl(window.history.state, relative), '', href)
+}
+
+function withPageUrl(state: unknown, relative: string): unknown {
+  const page = (state as { page?: { url?: unknown } } | null)?.page
+
+  if (!page || typeof page.url !== 'string') return state
+
+  return { ...(state as object), page: { ...page, url: relative } }
+}
+
 export interface DefaultActionOpener {
   /** Key of the default action opened last (see `defaultActionKey()`). */
   opened: string | null
@@ -116,7 +144,7 @@ export function openDefaultAction(
     const clean = withoutDefaultActionQuery(window.location.href)
 
     if (clean !== window.location.href) {
-      window.history.replaceState(window.history.state, '', clean)
+      replacePageUrl(clean)
     }
   }
 

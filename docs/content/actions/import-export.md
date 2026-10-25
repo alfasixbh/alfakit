@@ -16,11 +16,13 @@ php artisan vendor:publish --tag=alfakit-import-export-migrations
 php artisan migrate
 ```
 
-In an app where AlfaKit is already installed, publish the migration as above. `alfakit:install --import-export` runs the whole installer again with the migration added: use it only for a new install, together with the mode flag you install with (`--starter-kit`, `--standalone`); run without a mode flag in a starter kit app, it adds the admin panel's own Vite entry and stylesheet to the kit.
+`alfakit:install --import-export` does the same: in an app where AlfaKit is already installed it only publishes the import/export migrations (in a starter kit app too: your Vite config, stylesheet and providers are left alone). On a new install it runs the whole installer with the migration added; pass the mode flag you install with (`--starter-kit`, `--standalone`).
 
 The completion notifications are [database notifications](../notifications/overview), so the panel needs `->databaseNotifications()` and a `notifications` table (`php artisan make:notifications-table`).
 
 The rows are processed by queued jobs. Run a worker (`php artisan queue:work`). With the `sync` queue driver the jobs run during the request, and the result appears as a toast right away.
+
+Outside panels ([standalone tables](../standalone/tables)) there is no notification bell: the completion notification (with its download links) is still stored for the user in the `notifications` table, so it needs that table too, but it only shows as a toast when the jobs run during the request (`sync`). With a queue worker, list the user's database notifications in your own page.
 
 Options in `config/alfakit.php`:
 

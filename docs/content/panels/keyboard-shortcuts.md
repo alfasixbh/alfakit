@@ -28,7 +28,7 @@ In a [starter kit](../getting-started/starter-kits) these shortcuts, command sho
 
 ## The overlay
 
-<kbd>?</kbd> opens a dialog listing everything available on the current page, grouped (general, navigation, commands, actions on this page). Users can change a shortcut ("Change", then press the new keys; <kbd>Esc</kbd> cancels), turn it off or reset it. A key already used by another shortcut is refused. Action key bindings are listed but not changeable.
+<kbd>?</kbd> opens a dialog listing everything available on the current page, grouped (general, navigation, commands, actions on this page). Users can change a shortcut ("Change", then press the new key with its modifiers, or a sequence of up to three keys such as <kbd>G</kbd> then <kbd>O</kbd>; the keys are saved a second after the last one, <kbd>Esc</kbd> cancels), turn it off or reset it. Keys already used by another shortcut are refused, including a key that starts another shortcut's sequence (<kbd>G</kbd> would shadow <kbd>G</kbd> then <kbd>O</kbd>). Action key bindings are listed but not changeable.
 
 Custom keys are stored per user and panel on the server. Publish the table to keep them in the database (without it they live in the cache):
 

@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { CalloutSchema } from '@alfakit/core'
-  import { actionsAlignmentClass } from '@alfakit/core'
+  import { actionsAlignmentClass, fieldActionContext } from '@alfakit/core'
   import { extraProps } from '../../lib/attributes'
   import { colorClass, textColorClasses } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
   import { cn } from '../../lib/utils'
   import { usePageActionContext } from '../actions/action-context'
+  import { useOptionalFormStore } from '../form/form-context.svelte'
   import ActionList from '../actions/ActionList.svelte'
   import MixedContent from './MixedContent.svelte'
 
@@ -29,7 +30,13 @@
   }
 
   let { component }: { component: CalloutSchema } = $props()
-  const context = usePageActionContext()
+  // Inside a form the actions run as field actions of this component, so `$get` / `$set`
+  // reach the form (like a section's header actions).
+  const form = useOptionalFormStore()
+  const pageContext = usePageActionContext()
+  const context = $derived(
+    form ? fieldActionContext({ token: pageContext.token, form, key: component.key }) : pageContext,
+  )
   const tone = $derived(component.color ?? component.status)
   // `iconColor()`, or the status colour once `color(null)` removed the background.
   const iconColor = $derived(
@@ -75,11 +82,12 @@
         class={cn('mt-2', actionsAlignmentClass(component.footerActionsAlignment))}
       />
     {/if}
-    <MixedContent items={component.footer} name="callout-footer" class="mt-2" />
+    <MixedContent items={component.footer} name="callout-footer" class="mt-2" {context} />
   </div>
   <MixedContent
     items={component.controls}
     name="callout-controls"
     class="-me-1 -mt-1 shrink-0 gap-1"
+    {context}
   />
 </div>

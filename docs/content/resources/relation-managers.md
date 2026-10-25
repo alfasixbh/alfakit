@@ -87,7 +87,7 @@ class CommentsRelationManager extends RelationManager
 }
 ```
 
-Passing a property the manager doesn't declare as public throws. A keyed manager's identifier is `relationManager:{class}@{key}`; groups take keys too (`'contacts' => RelationGroup::make(...)`), and their members may be `make([...])` configurations.
+Passing a property the manager doesn't declare as public throws. One class registered more than once (also as members of a group) needs a key per registration: two unkeyed registrations with different properties throw, since they would share one identifier. A keyed manager's identifier is `relationManager:{class}@{key}`; groups take keys too (`'contacts' => RelationGroup::make(...)`), and their members may be `make([...])` configurations.
 
 ## Relation groups
 

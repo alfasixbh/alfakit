@@ -5,7 +5,7 @@ description: Money in any currency with the right precision and symbol, locale-a
 
 # Currencies, numbers and dates
 
-All formatting is driven by ICU, through PHP's intl extension on the server and the browser's `Intl` APIs in the frontend. Every ISO 4217 currency and every locale works without configuration tables. The Bahraini dinar has three decimals, the yen has none, the euro symbol goes after the amount in German, and Arabic can use Arabic-Indic digits. Which digits a language gets is ICU's choice: current ICU writes plain `ar` with Latin digits (`1,234.50 €`) and regional variants such as `ar_EG` or `ar_SA` with Arabic-Indic ones (`١٬٢٣٤٫٥٠ €`); list the variant in `locales()` if you want them.
+All formatting is driven by ICU, through PHP's intl extension on the server and the browser's `Intl` APIs in the frontend. Every ISO 4217 currency and every locale works without configuration tables. The Bahraini dinar has three decimals, the yen has none, the euro symbol goes after the amount in German, and Arabic can use Arabic-Indic digits. Which digits a language gets is ICU's choice: current ICU writes plain `ar` with Latin digits (`1,234.50 €`) and regional variants such as `ar_EG` or `ar_SA` with Arabic-Indic ones (`١٬٢٣٤٫٥٠ €`); list the variant in `locales()` if you want them. A variant without a language pack of its own takes its base language's strings, so `ar_EG` shows the Arabic pack with Arabic-Indic digits.
 
 ## The panel's currency
 
@@ -101,7 +101,7 @@ Dates are stored in your app timezone (`config('app.timezone')`, usually UTC). T
 $panel->timezone(fn () => auth()->user()?->timezone);
 ```
 
-- Date and date-time columns and entries convert to that timezone. Month and day names follow the user's language: "5 janvier 2026", "5 يناير 2026".
+- Date and date-time columns and entries convert to that timezone. `date()` and `dateTime()` keep their pattern (`M j, Y`, `M j, Y H:i`) and translate the month names: "janv. 5, 2026", "يناير 5, 2026". For each language's own word order, use `isoDate()` / `isoDateTime()` (Carbon's localised `LL` / `LLL`): "5 janvier 2026", "5 يناير 2026".
 - `since()` gives relative times in the user's language: "il y a 3 jours", "منذ 3 أيام".
 - `DateTimePicker` shows the stored moment in the user's timezone and converts it back on save. Date-only and time-only pickers are not shifted, because they don't describe a moment.
 - A field can still set its own: `DateTimePicker::make('departs_at')->timezone('Asia/Bahrain')`.

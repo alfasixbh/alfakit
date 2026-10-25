@@ -37,7 +37,7 @@ class PostResource extends Resource
 
 Hide an item with `protected static bool $shouldRegisterNavigation = false;` or override `shouldRegisterNavigation()`.
 
-In a [starter kit panel](../getting-started/starter-kits) the same items, groups, parent items, badges (deferred ones too) and custom items are listed in your app's sidebar by `<AlfakitNav />`. The user menu, sidebar width, breadcrumbs and avatars on this page belong to AlfaKit's own layout, which a starter kit replaces with yours.
+In a [starter kit panel](../getting-started/starter-kits) the same items, groups, parent items, badges (deferred ones too) and custom items are listed in your app's sidebar by `<AlfakitNav />`. The [user menu](#user-menu)'s link entries show in your app's user menu through [`<AlfakitUserMenuItems />`](../getting-started/starter-kits#the-user-menu); the sidebar width, breadcrumbs and avatars on this page belong to AlfaKit's own layout, which a starter kit replaces with yours.
 
 ### Setting navigation options from outside the class
 

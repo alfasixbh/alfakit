@@ -20,6 +20,33 @@ const actionsComponent = (extra: Record<string, unknown> = {}) =>
 const renderSchema = (components: SchemaComponent[]) =>
   render(Wrapper, { props: { component: SchemaRenderer, props: { components } } })
 
+const embeddedComponents = () =>
+  [
+    {
+      type: 'Callout',
+      key: 'tip',
+      heading: 'Tip',
+      actions: [{ type: 'Action', name: 'pay', label: 'Pay', hasAction: true }],
+      controls: [
+        { action: { type: 'Action', name: 'dismiss', label: 'Dismiss', hasAction: true } },
+      ],
+      footer: [{ action: { type: 'Action', name: 'later', label: 'Later', hasAction: true } }],
+    },
+    {
+      type: 'EmptyState',
+      key: 'nothing',
+      heading: 'Nothing',
+      actions: [{ type: 'Action', name: 'create', label: 'Create', hasAction: true }],
+    },
+  ] as unknown as SchemaComponent[]
+
+const embeddedCases = [
+  ['Pay', 'tip', 'pay'],
+  ['Dismiss', 'tip', 'dismiss'],
+  ['Later', 'tip', 'later'],
+  ['Create', 'nothing', 'create'],
+] as const
+
 afterEach(() => vi.unstubAllGlobals())
 
 describe('Actions schema component', () => {
@@ -70,6 +97,44 @@ describe('Actions schema component', () => {
       state: { rating: 1 },
     })
   })
+})
+
+describe('callout, empty state and mixed-content actions in a form', () => {
+  it.each(embeddedCases)(
+    'runs %s as a field action of its component with the form state',
+    async (label, key, action) => {
+      const bodies: Array<Record<string, unknown>> = []
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async (_url: string, init?: RequestInit) => {
+          bodies.push(JSON.parse(String(init?.body ?? '{}')) as Record<string, unknown>)
+
+          return new Response(
+            JSON.stringify({
+              status: 'success',
+              form: { components: embeddedComponents(), state: { title: 'paid' } },
+            }),
+            { status: 200 },
+          )
+        }),
+      )
+
+      const store = new FormStore(
+        { components: embeddedComponents(), state: { title: 'x' } },
+        { token: 't', component: 'form' },
+      )
+      render(Wrapper, { props: { component: FormHarness, props: { store } } })
+
+      await fireEvent.click(screen.getByRole('button', { name: label }))
+
+      await waitFor(() => expect(store.getValue('title')).toBe('paid'))
+      expect(bodies[0]).toMatchObject({
+        component: `field:form::${key}`,
+        action,
+        state: { title: 'x' },
+      })
+    },
+  )
 })
 
 describe('CodeEntry', () => {

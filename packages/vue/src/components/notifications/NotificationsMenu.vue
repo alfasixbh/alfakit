@@ -4,9 +4,13 @@ import {
   notificationTintStyles,
   onDatabaseNotificationsSent,
   onOpenDatabaseNotifications,
+  pwaStore,
+  startPwa,
+  togglePushNotifications,
 } from '@alfakit/core'
-import { BellIcon, CheckCheckIcon, Trash2Icon } from '@lucide/vue'
+import { BellIcon, BellOffIcon, BellRingIcon, CheckCheckIcon, Trash2Icon } from '@lucide/vue'
 import { computed, onMounted, onScopeDispose, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import { useStore } from '../../composables/use-store'
 import { useDirection, useFormatter, usePanel, useT } from '../../context'
 import { cssColor, textColorClasses } from '../../lib/colors'
@@ -94,6 +98,24 @@ onScopeDispose(() => stopOpenListener?.())
 
 onScopeDispose(() => center?.stopPolling())
 const format = useFormatter()
+
+// `pwa(push: true)` in a starter kit: the app's user menu has no AlfaKit entries, so Web
+// Push is turned on or off from the bell's menu.
+const pwa = useStore(pwaStore)
+const pushToggle = computed(
+  () =>
+    Boolean(panel.value.starterKit && panel.value.pwa?.push) && pwa.value.push !== 'unsupported',
+)
+onMounted(() => {
+  if (panel.value.starterKit && panel.value.pwa?.push) startPwa(panel.value.pwa)
+})
+async function togglePush() {
+  const { message } = await togglePushNotifications()
+  const text = t(message.key, {}, message.fallback)
+
+  if (message.error) toast.error(text)
+  else toast.success(text)
+}
 </script>
 
 <template>
@@ -150,6 +172,28 @@ const format = useFormatter()
       <div class="flex items-center justify-between border-b px-3 py-2">
         <span class="text-sm font-semibold">{{ t('notifications', {}, 'Notifications') }}</span>
         <div class="flex items-center gap-1">
+          <Button
+            v-if="pushToggle"
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            data-slot="pwa-push"
+            :disabled="pwa.pushBusy || pwa.push === 'denied'"
+            :title="
+              pwa.push === 'subscribed'
+                ? t('pwa.notifications.disable', {}, 'Turn off notifications')
+                : t('pwa.notifications.enable', {}, 'Turn on notifications')
+            "
+            :aria-label="
+              pwa.push === 'subscribed'
+                ? t('pwa.notifications.disable', {}, 'Turn off notifications')
+                : t('pwa.notifications.enable', {}, 'Turn on notifications')
+            "
+            @click="void togglePush()"
+          >
+            <BellOffIcon v-if="pwa.push === 'subscribed'" />
+            <BellRingIcon v-else />
+          </Button>
           <Button
             v-if="state.unreadCount > 0"
             type="button"

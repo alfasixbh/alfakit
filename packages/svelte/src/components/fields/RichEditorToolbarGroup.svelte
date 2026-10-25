@@ -48,6 +48,16 @@
 
     return buttons.some((name) => commands[name]?.active?.(editor))
   })
+  // After a pick, typing goes on in the editor (the command focused it); the menu would
+  // otherwise return focus to its trigger. Closing without a pick (Escape) still does.
+  let picked = false
+  const closeAutoFocus = (event: Event) => {
+    if (!picked) return
+
+    picked = false
+    event.preventDefault()
+    editor.commands.focus()
+  }
   const pressed = (name: string): boolean => {
     void tick
 
@@ -85,6 +95,7 @@
       align="start"
       aria-label={group.label}
       class={cn(!group.textual && 'flex min-w-0 flex-row gap-0.5')}
+      onCloseAutoFocus={closeAutoFocus}
     >
       {#each buttons as name (name)}
         {@const label = commandLabel(name, commands, translate)}
@@ -92,7 +103,10 @@
           aria-label={group.textual ? undefined : label}
           title={label}
           class={cn(pressed(name) && 'bg-accent text-accent-foreground')}
-          onSelect={() => onRun(name)}
+          onSelect={() => {
+            picked = true
+            onRun(name)
+          }}
         >
           {@render icon(name)}
           {#if group.textual}<span>{label}</span>{/if}

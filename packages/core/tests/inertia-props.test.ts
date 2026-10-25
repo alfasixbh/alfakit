@@ -18,9 +18,10 @@ import {
   withTableTotals,
 } from '../src/table-totals'
 
-const { prefetch, flushAll, listeners } = vi.hoisted(() => ({
+const { prefetch, flushAll, reload, listeners } = vi.hoisted(() => ({
   prefetch: vi.fn(),
   flushAll: vi.fn(),
+  reload: vi.fn(),
   listeners: new Map<string, (event: unknown) => void>(),
 }))
 
@@ -33,6 +34,7 @@ vi.mock('@inertiajs/core', async (importOriginal) => {
       ...original.router,
       prefetch,
       flushAll,
+      reload,
       on: (name: string, callback: (event: unknown) => void) => {
         listeners.set(name, callback)
         return () => listeners.delete(name)
@@ -231,7 +233,7 @@ describe('prefetching', () => {
   })
 
   it('flushes prefetched pages after non-GET visits and mutating requests', () => {
-    installPrefetchInvalidation()
+    const uninstall = installPrefetchInvalidation()
     flushAll.mockClear()
 
     listeners.get('finish')?.({ detail: { visit: { method: 'get' } } })
@@ -244,5 +246,37 @@ describe('prefetching', () => {
     expect(isMutatingRequest('/admin/_alfakit/table/cell', 'POST')).toBe(true)
     expect(isMutatingRequest('/admin/_alfakit/schema/refresh', 'POST')).toBe(false)
     expect(isMutatingRequest('/admin/_alfakit/actions', 'GET')).toBe(false)
+    uninstall()
+  })
+
+  it('reloads a page restored by Back when records changed since it was shown', () => {
+    const uninstall = installPrefetchInvalidation()
+    const navigate = (url: string): void =>
+      listeners.get('navigate')?.({ detail: { page: { url } } })
+    reload.mockClear()
+
+    navigate('/admin/posts')
+    navigate('/admin/posts/create')
+    listeners.get('finish')?.({ detail: { visit: { method: 'post' } } })
+    navigate('/admin/posts/1/edit')
+
+    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
+    navigate('/admin/posts')
+    expect(reload).toHaveBeenCalledTimes(1)
+
+    // Shown again after the reload: going Back to it later needs no request.
+    navigate('/admin/posts')
+    navigate('/admin/posts/1/edit')
+    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
+    navigate('/admin/posts')
+    expect(reload).toHaveBeenCalledTimes(1)
+
+    // A normal visit after a popstate that restored nothing is not a restore.
+    window.dispatchEvent(new PopStateEvent('popstate', { state: null }))
+    listeners.get('start')?.({})
+    navigate('/admin/tags')
+    expect(reload).toHaveBeenCalledTimes(1)
+
+    uninstall()
   })
 })

@@ -11,6 +11,7 @@ import type {
 } from '@alfakit/core'
 import {
   applyBodyAttributes,
+  customPageProps,
   hasRelationManagerTabs,
   isLazyPlaceholder,
   openDefaultAction,
@@ -102,9 +103,12 @@ export function AlfakitPage() {
     return (
       <PageActionProvider value={{ token: page.token, component: 'page' }}>
         <Head title={title} />
-        <PageShell page={page}>
-          <Custom {...page.view.props} page={page} />
-        </PageShell>
+        {/* The component brings its own PageShell (as in panel mode, where it is the Inertia
+            page itself) and takes the live props, so `reloadProps()` reaches it. */}
+        <Custom
+          {...customPageProps(page.view.props, props as Record<string, unknown>)}
+          page={page}
+        />
       </PageActionProvider>
     )
   }

@@ -2,6 +2,7 @@ import { modalTableQuery } from './advanced-fields'
 import { debugRecorder } from './debug'
 import { reportRequestError } from './error-notifications'
 import { HttpError, requestJson } from './http'
+import { currentPageQuery } from './page-query'
 import { mergeRefreshResponse } from './partial'
 import type { ModalTableSelectResponse } from './schema/advanced-fields'
 import type { FieldSchema, SchemaComponent, TabSchema } from './schema/components'
@@ -383,6 +384,9 @@ export class FormStore {
       token: this.options.token,
       component: this.options.component,
       record: this.options.record ?? undefined,
+      // A record action's modal on a list tab: the server finds the record through the
+      // page's tab and filters, as the modal request itself does.
+      tableQuery: currentPageQuery(),
       ...this.options.params?.(),
     }
   }
@@ -447,20 +451,43 @@ export class FormStore {
       return
     }
 
-    const field = this.findField(path)
+    const target = this.liveTarget(path)
 
-    if (field?.live && !field.live.onBlur) {
-      this.scheduleRefresh(path, field.live.debounce ?? 150)
+    if (target?.field.live && !target.field.live.onBlur) {
+      this.scheduleRefresh(target.path, target.field.live.debounce ?? 150)
     }
   }
 
   /** Call when a field loses focus so `live(onBlur: true)` fields refresh. */
   blur(path: string): void {
+    const target = this.liveTarget(path)
+
+    if (target?.field.live?.onBlur && this.state.dirty.has(path)) {
+      void this.refresh(target.path)
+    }
+  }
+
+  /**
+   * The field whose `live()` a change at `path` triggers, and the path to refresh: a
+   * translatable field's language input (`title.en`) reports its field (`title`), whose
+   * `afterStateUpdated()` gets the whole `{ code: value }` state.
+   */
+  private liveTarget(path: string): { field: FieldSchema; path: string } | undefined {
     const field = this.findField(path)
 
-    if (field?.live?.onBlur && this.state.dirty.has(path)) {
-      void this.refresh(path)
-    }
+    if (field) return { field, path }
+
+    const dot = path.lastIndexOf('.')
+
+    if (dot <= 0) return undefined
+
+    const parentPath = path.slice(0, dot)
+    const parent = this.findField(parentPath)
+    const code = path.slice(dot + 1)
+
+    return parent?.translatable?.locales.some((locale) => locale.code === code)
+      ? { field: parent, path: parentPath }
+      : undefined
   }
 
   /** Replace the whole state (e.g. after the server returns a refreshed payload). */

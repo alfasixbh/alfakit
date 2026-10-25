@@ -1,5 +1,11 @@
 # @alfakit/vue
 
+## 0.1.10
+
+### Patch Changes
+
+- Back after a save shows fresh data; parent navigation items expand; custom page components render once with live props; no extraneous-attribute warning on `AppPage`; `useAlfakitNavigation().userMenuItems` for starter kits; push toggle in `<AlfakitNotifications />`; rich editor focus, form-context actions and column manager Reset fixes.
+
 ## 0.1.9
 
 ### Patch Changes

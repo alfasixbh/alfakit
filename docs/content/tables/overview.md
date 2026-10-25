@@ -63,7 +63,7 @@ Sorts are followed by the primary key in the same direction (`defaultKeySort()`,
 
 ## State
 
-Sorting, searching, filters, pagination and toggled columns live in the **query string** (`?sort=title&direction=desc&search=…&filters[status][value]=published&page=2`). The renderer updates the URL with Inertia partial reloads, so table state is shareable, bookmarkable and works with the browser's back button. Several tables on one page get prefixed keys through `->queryStringIdentifier('comments')` (relation managers and widgets do this automatically). Grouping uses `group` and `groupDirection`; `persistInSession()` (or `persistFiltersInSession()`, `persistSearchInSession()`, `persistSortInSession()`, `persistRecordsPerPageInSession()`, `persistColumnsInSession()`, `persistGroupInSession()`) also remembers those values in the session ([Filters](/docs/tables/filters#remembering-the-table-state)).
+Sorting, searching, filters, pagination and toggled columns live in the **query string** (`?sort=title&direction=desc&search=…&filters[status][value]=published&page=2`). The renderer updates the URL with Inertia partial reloads, so table state is shareable, bookmarkable and survives a reload. The URL is replaced rather than pushed (as Livewire's `#[Url]` does in Filament), so each sort or page change doesn't add a history entry: the browser's back button leaves the page instead of stepping back through earlier table states. Several tables on one page get prefixed keys through `->queryStringIdentifier('comments')` (relation managers and widgets do this automatically). Grouping uses `group` and `groupDirection`; `persistInSession()` (or `persistFiltersInSession()`, `persistSearchInSession()`, `persistSortInSession()`, `persistRecordsPerPageInSession()`, `persistColumnsInSession()`, `persistGroupInSession()`) also remembers those values in the session ([Filters](/docs/tables/filters#remembering-the-table-state)).
 
 ## Query
 
@@ -107,6 +107,8 @@ $table
 ```
 
 As in Filament, reorder mode turns pagination off: the toggle reloads the table with `?reordering=1` (prefixed with the table's query-string identifier) and the server lists every record, so records can move between pages. Clicking **Done** saves the order and reloads the table with its pages. `paginatedWhileReordering()` keeps the pages instead; records then only move within the current page.
+
+A reorderable table is listed in its saved order (the `reorderable()` column and direction) also outside reorder mode, so the order users set is the order they see; it takes the place of `defaultSort()`, which only applies to tables that aren't reorderable. Clicking a sortable header still sorts by that column.
 
 `beforeReordering()` and `afterReordering()` receive `array $order`, the moved record keys (as strings) in their new order, and run around saving it, after the authorisation checks (the `reorder` ability and `update` on every moved record). A closure can also type-hint `Table $table`.
 

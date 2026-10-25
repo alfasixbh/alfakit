@@ -86,6 +86,13 @@ export interface StarterKitNavigationSchema {
   brandName: string
   /** Empty for tenancy panels outside a tenant (their items link to tenant routes). */
   groups: NavigationGroupSchema[]
+  /**
+   * The panel's own user menu links (`userMenuItems()`, plugin entries such as Billing's),
+   * for `<AlfakitUserMenuItems />` in the kit's user menu. Links only (entries with server
+   * logic or a modal need an AlfaKit page); omitted when there are none, and for tenancy
+   * panels outside a tenant.
+   */
+  userMenu?: MenuItemSchema[]
   /** What the drop-in header components render before they load. */
   widgets?: StarterKitWidgetsSchema
 }

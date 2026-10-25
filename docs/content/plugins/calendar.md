@@ -17,7 +17,7 @@ composer require alfasix/alfakit-calendar
 
 The FullCalendar packages ship as dependencies of `@alfakit/react`, `@alfakit/vue` and `@alfakit/svelte`; there is nothing to install on the frontend.
 
-**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where a calendar discovered in `app/Alfakit/Widgets` shows on the app's own `/dashboard`, and [outside panels](../standalone/component-kit#kanban-boards-and-calendars): put the widget in a `Standalone\Widgets` component and list `CalendarPlugin::class` in `alfakit.standalone.plugins`.
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where a calendar discovered in `app/Alfakit/Widgets` shows on the app's own `/dashboard`, and [outside panels](../standalone/component-kit#kanban-boards-and-calendars): put the widget in a `Standalone\Widgets` component and list `CalendarPlugin::class` in `alfakit.standalone.plugins`. The class name registers the plugin with its defaults, so events can't be dragged there; for `editable()` or other options register it configured instead, in a service provider's `boot()`: `Alfakit::getStandalonePanel()->plugin(CalendarPlugin::make()->editable())`.
 
 Register the plugin on the panel. It shares the calendar's translations with the frontend and holds panel-wide defaults:
 

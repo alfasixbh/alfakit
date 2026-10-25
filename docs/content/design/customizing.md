@@ -50,18 +50,18 @@ $panel->id('portal')->viteTheme('resources/css/portal.css');
 /* resources/css/portal.css */
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import '@alfakit/react/styles.css';
+@import '@alfakit/react/styles.css'; /* or @alfakit/vue, @alfakit/svelte */
 
-@source '../../node_modules/@alfakit/react/dist';
+@source '../../node_modules/@alfakit/react/dist'; /* the same package as above */
 @source '../js/alfakit';
 @source '../../app/**/*.php';
 
 :root {
-    --radius: 1.25rem;
+    --background: oklch(0.985 0.01 180);
 }
 ```
 
-Add the file to Vite's `input` list. You can also scope CSS in a shared stylesheet with the `data-panel` attribute: `:root[data-panel='portal'] { … }`.
+The panel writes `--radius`, `--alfakit-font` and the `->colors()` variables inline on `<html>`, so a stylesheet can't override them without `!important`; set those with `->radius()`, `->font()` and `->colors()` on the panel instead. Use your renderer's package in both lines (`@alfakit/vue/styles.css` and `node_modules/@alfakit/vue/dist` in a Vue app): another renderer's path fails the build with "Can't resolve '@alfakit/react/styles.css'". Add the file to Vite's `input` list. You can also scope CSS in a shared stylesheet with the `data-panel` attribute: `:root[data-panel='portal'] { … }`.
 
 ## Hooks for CSS
 

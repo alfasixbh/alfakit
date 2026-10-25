@@ -551,6 +551,40 @@ const CLOSED: SuggestionState = {
  * The mention and merge tag popup: call `update(editor)` after every editor transaction
  * and `handleKeyDown()` from the editor's key handler; render `store` as a listbox.
  */
+/**
+ * Where a `position: fixed` popup placed at viewport coordinates next to `element` must be
+ * moved by: a transformed ancestor (a modal's centring `translate`, its zoom animation)
+ * becomes the containing block of fixed descendants, so viewport coordinates would be
+ * offset by that ancestor's position (the mention list of an editor in a modal showed
+ * outside it). Zero when no ancestor does that, and during a server render.
+ */
+export function fixedContainingBlockOffset(element: Element | null | undefined): {
+  x: number
+  y: number
+} {
+  if (!element || typeof window === 'undefined') return { x: 0, y: 0 }
+
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    const style = window.getComputedStyle(node)
+    const translate = style.getPropertyValue('translate')
+
+    if (
+      (style.transform && style.transform !== 'none') ||
+      (translate !== '' && translate !== 'none') ||
+      (style.filter && style.filter !== 'none') ||
+      (style.perspective && style.perspective !== 'none') ||
+      /\b(paint|layout|strict|content)\b/.test(style.contain ?? '') ||
+      (style.willChange ?? '').includes('transform')
+    ) {
+      const rect = node.getBoundingClientRect()
+
+      return { x: rect.left + node.clientLeft, y: rect.top + node.clientTop }
+    }
+  }
+
+  return { x: 0, y: 0 }
+}
+
 export class EditorSuggestions {
   public readonly store: Store<SuggestionState> = createStore<SuggestionState>({ ...CLOSED })
 

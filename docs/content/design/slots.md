@@ -79,6 +79,7 @@ Some slots only exist on one kind of page, whatever their scopes: the `RESOURCE_
 `Slots::register()` adds content to every panel, from any service provider's `boot()`: the equivalent of Filament's `FilamentView::registerRenderHook()`. It takes the same content and scopes, and `panels` limits it to panel ids:
 
 ```php
+use AlfaSix\Alfakit\Schemas\Components\View;
 use AlfaSix\Alfakit\Theming\Slot;
 use AlfaSix\Alfakit\Theming\Slots;
 

@@ -1,5 +1,11 @@
 # @alfakit/svelte
 
+## 0.1.10
+
+### Patch Changes
+
+- Back after a save shows fresh data; `useAlfakitNavigation().userMenuItems` for starter kits; push toggle in `<AlfakitNotifications />`; rich editor focus, form-context actions, column manager Reset and `<AlfakitComponent>` deferred loading fixes.
+
 ## 0.1.9
 
 ### Patch Changes

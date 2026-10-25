@@ -51,7 +51,7 @@ const respond = (body: unknown) =>
   })
 
 const until = async (check: () => boolean) => {
-  for (let attempt = 0; attempt < 50 && !check(); attempt++) {
+  for (let attempt = 0; attempt < 250 && !check(); attempt++) {
     await new Promise((resolve) => setTimeout(resolve, 10))
     await flush()
   }
@@ -81,7 +81,7 @@ beforeEach(() => {
             create: [{ label: 'New order', url: '/admin/orders/create' }],
             recent: [{ title: 'Order #7', url: '/admin/orders/7/edit', group: 'Order' }],
           })
-        : respond({ shortcuts: { 'command:clear-cache': ['mod+j'] } }),
+        : respond({ shortcuts: { 'command:clear-cache': ['mod+j x'] } }),
     ),
   )
 })
@@ -244,14 +244,16 @@ describe('keyboard shortcuts', () => {
       .querySelector<HTMLElement>('[aria-label="Change the shortcut for Clear cache"]')!
       .click()
     await flush()
+    // A sequence: the keys pressed until a second passes without one.
     keydown(window, 'j', { ctrlKey: true, code: 'KeyJ' })
-    await until(() => shortcuts.keysFor('command:clear-cache')[0] === 'mod+j')
+    keydown(window, 'x', { code: 'KeyX' })
+    await until(() => shortcuts.keysFor('command:clear-cache')[0] === 'mod+j x')
 
-    expect(shortcuts.keysFor('command:clear-cache')).toEqual(['mod+j'])
+    expect(shortcuts.keysFor('command:clear-cache')).toEqual(['mod+j x'])
     const [url, init] = vi.mocked(fetch).mock.calls.at(-1)! as [string, RequestInit]
     expect(url).toBe('/shortcuts')
     expect(JSON.parse(String(init.body))).toEqual({
-      shortcuts: { 'command:clear-cache': ['mod+j'] },
+      shortcuts: { 'command:clear-cache': ['mod+j x'] },
     })
     wrapper.unmount()
   })

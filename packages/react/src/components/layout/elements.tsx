@@ -25,6 +25,8 @@ import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
 import { usePageActionContext } from '../actions/action-context'
 import { ActionList } from '../actions/action-list'
+import { useOptionalFormStore } from '../form/form-context'
+import { useFieldActionContext } from '../schema/field-actions'
 import { RenderComponent } from '../schema/schema-renderer'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { MixedContent } from './mixed-content'
@@ -67,7 +69,12 @@ const CALLOUT_ICON_SIZES: Record<string, string> = {
 }
 
 export function CalloutComponent({ component }: { component: CalloutSchema }) {
-  const context = usePageActionContext()
+  // Inside a form the actions run as field actions of this component, so `$get` / `$set`
+  // reach the form (like a section's header actions).
+  const form = useOptionalFormStore()
+  const pageContext = usePageActionContext()
+  const fieldContext = useFieldActionContext(component)
+  const context = form ? fieldContext : pageContext
   const tone = component.color ?? component.status
   // `iconColor()`, or the status colour once `color(null)` removed the background.
   const iconColor = component.iconColor ?? (component.color ? undefined : component.status)
@@ -113,19 +120,30 @@ export function CalloutComponent({ component }: { component: CalloutSchema }) {
             className={cn('mt-2', actionsAlignmentClass(component.footerActionsAlignment))}
           />
         )}
-        <MixedContent items={component.footer} name="callout-footer" className="mt-2" />
+        <MixedContent
+          items={component.footer}
+          name="callout-footer"
+          className="mt-2"
+          context={context}
+        />
       </div>
       <MixedContent
         items={component.controls}
         name="callout-controls"
         className="-me-1 -mt-1 shrink-0 gap-1"
+        context={context}
       />
     </div>
   )
 }
 
 export function EmptyStateComponent({ component }: { component: EmptyStateComponentSchema }) {
-  const context = usePageActionContext()
+  // Inside a form the actions run as field actions of this component, so `$get` / `$set`
+  // reach the form (like a section's header actions).
+  const form = useOptionalFormStore()
+  const pageContext = usePageActionContext()
+  const fieldContext = useFieldActionContext(component)
+  const context = form ? fieldContext : pageContext
 
   return (
     <div
@@ -158,7 +176,12 @@ export function EmptyStateComponent({ component }: { component: EmptyStateCompon
       {component.actions && component.actions.length > 0 && (
         <ActionList actions={component.actions} context={context} className="mt-2 justify-center" />
       )}
-      <MixedContent items={component.footer} name="empty-state-footer" className="justify-center" />
+      <MixedContent
+        items={component.footer}
+        name="empty-state-footer"
+        className="justify-center"
+        context={context}
+      />
     </div>
   )
 }

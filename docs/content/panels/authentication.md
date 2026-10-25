@@ -29,6 +29,8 @@ class Login extends \AlfaSix\Alfakit\Auth\Pages\Login
         ]);
     }
 
+    // Only for users who sign in with a `username` column: leave this method out otherwise,
+    // or every sign-in fails with "These credentials do not match our records".
     protected function getCredentials(array $data): array
     {
         return ['username' => $data['email'], 'password' => $data['password']];

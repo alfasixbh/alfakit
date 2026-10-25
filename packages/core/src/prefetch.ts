@@ -34,12 +34,19 @@ export function prefetchTablePage(
   )
 }
 
+/** Mutations so far; a page last shown before the latest one has stale props. */
+let mutationCount = 0
+
+/** The mutation count when each URL was last shown. */
+const shownAt = new Map<string, number>()
+
 /**
  * Drop prefetched pages and mark deferred table totals stale: records may have changed.
  */
 export function invalidatePrefetchedPages(): void {
   if (typeof window === 'undefined') return
 
+  mutationCount++
   router.flushAll()
   invalidateTableTotals()
 }
@@ -58,14 +65,51 @@ export function isMutatingRequest(url: string, method: string): boolean {
   }
 }
 
+let installed = false
+
 /**
  * Invalidate prefetched pages and table totals after every Inertia visit that is not a
- * GET (actions, form saves). Returns a function that removes the listener.
+ * GET (actions, form saves), and reload a page the browser's Back or Forward button
+ * restores from history when records changed since it was shown: Inertia restores the
+ * saved props without asking the server. Returns a function that removes the listeners.
  */
 export function installPrefetchInvalidation(): () => void {
-  if (typeof window === 'undefined') return () => {}
+  // Panels and standalone components on one page share the listeners.
+  if (typeof window === 'undefined' || installed) return () => {}
 
-  return router.on('finish', (event) => {
+  installed = true
+  let restoring = false
+  const onPopstate = (): void => {
+    restoring = true
+  }
+  window.addEventListener('popstate', onPopstate)
+
+  // A visit started after the popstate (a hash-only change fires no navigate) is not a restore.
+  const removeStart = router.on('start', () => {
+    restoring = false
+  })
+  const removeFinish = router.on('finish', (event) => {
     if (event.detail.visit.method !== 'get') invalidatePrefetchedPages()
   })
+  const removeNavigate = router.on('navigate', (event) => {
+    const url = event.detail.page.url
+    const restored = restoring
+    restoring = false
+
+    // A URL never shown in this page load may come from before it: reload it too.
+    if (restored && (shownAt.get(url) ?? -1) < mutationCount) {
+      router.reload()
+      return
+    }
+
+    shownAt.set(url, mutationCount)
+  })
+
+  return () => {
+    installed = false
+    window.removeEventListener('popstate', onPopstate)
+    removeStart()
+    removeFinish()
+    removeNavigate()
+  }
 }

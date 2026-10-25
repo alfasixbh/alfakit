@@ -439,20 +439,23 @@ export function keepMoveButtonFocus(button: HTMLElement | null | undefined): voi
 
 /**
  * Store the user's column order on the server (per user, in the session), then reload the
- * table so it renders in the new order.
+ * table so it renders in the new order. `reload: false` when a table visit follows (Reset,
+ * Apply with visibility changes): that visit renders the new order, and a reload of the
+ * current URL running alongside it could finish last and bring the old columns back.
  */
 export async function saveColumnOrder(
   endpoint: string,
   token: string,
   component: string,
   columns: string[],
+  options: { reload?: boolean } = {},
 ): Promise<string[]> {
   const response = await requestJson<{ columns: string[] }>(endpoint, {
     method: 'POST',
     body: { token, component, columns },
   })
 
-  inertiaReload({ only: ['page'] })
+  if (options.reload ?? true) inertiaReload({ only: ['page'] })
 
   return response.columns
 }

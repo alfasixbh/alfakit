@@ -313,3 +313,42 @@ export function resetPwa(): void {
   updateTimer = null
   pwaStore.set({ ...initialState })
 }
+
+/**
+ * Turn Web Push on or off for this browser, and the message to show for the outcome
+ * (a translation key, its English fallback, and whether it is an error).
+ */
+export async function togglePushNotifications(): Promise<{
+  outcome: PwaPushOutcome
+  message: { key: string; fallback: string; error: boolean }
+}> {
+  const outcome =
+    pwaStore.get().push === 'subscribed' ? await unsubscribeFromPush() : await subscribeToPush()
+
+  const message =
+    outcome === 'subscribed'
+      ? {
+          key: 'pwa.notifications.enabled',
+          fallback: 'Notifications are on for this device',
+          error: false,
+        }
+      : outcome === 'unsubscribed'
+        ? {
+            key: 'pwa.notifications.disabled',
+            fallback: 'Notifications are off for this device',
+            error: false,
+          }
+        : outcome === 'denied'
+          ? {
+              key: 'pwa.notifications.blocked',
+              fallback: 'Notifications are blocked in your browser settings',
+              error: true,
+            }
+          : {
+              key: 'pwa.notifications.failed',
+              fallback: 'Couldn’t change notifications. Try again.',
+              error: true,
+            }
+
+  return { outcome, message }
+}

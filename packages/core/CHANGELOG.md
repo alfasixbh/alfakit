@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.1.10
+
+### Patch Changes
+
+- Pages restored by the browser's Back button reload when records changed since they were shown (and starter kits drop prefetched pages after a save); list-tab state on cell edits, reordering, wizard steps and field actions; single-use undo tokens; multi-key shortcut recording; starter-kit user menu links and Web Push toggle; translatable `live()` fields; deferred tables outside panels; mobile slide-over translate fix.
+
 ## 0.1.9
 
 ### Patch Changes

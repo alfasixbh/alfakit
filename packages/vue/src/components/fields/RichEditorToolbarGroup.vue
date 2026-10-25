@@ -44,6 +44,20 @@ const active = computed(() => {
   return buttons.value.some((name) => props.commands[name]?.active?.(props.editor))
 })
 const label = (name: string) => commandLabel(name, props.commands, translate)
+// After a pick, typing goes on in the editor (the command focused it); the menu would
+// otherwise return focus to its trigger. Closing without a pick (Escape) still does.
+let picked = false
+const pick = (name: string) => {
+  picked = true
+  emit('run', name)
+}
+const closeAutoFocus = (event: Event) => {
+  if (!picked) return
+
+  picked = false
+  event.preventDefault()
+  props.editor.commands.focus()
+}
 const pressed = (name: string) => {
   void props.tick
 
@@ -79,6 +93,7 @@ const pressed = (name: string) => {
       align="start"
       :aria-label="props.group.label"
       :class="cn(!props.group.textual && 'flex min-w-0 flex-row gap-0.5')"
+      @close-auto-focus="closeAutoFocus"
     >
       <DropdownMenuItem
         v-for="name in buttons"
@@ -86,7 +101,7 @@ const pressed = (name: string) => {
         :aria-label="props.group.textual ? undefined : label(name)"
         :title="label(name)"
         :class="cn(pressed(name) && 'bg-accent text-accent-foreground')"
-        @select="emit('run', name)"
+        @select="pick(name)"
       >
         <RichEditorToolIcon :name="name" :label="label(name)" :tools="props.tools" />
         <span v-if="props.group.textual">{{ label(name) }}</span>

@@ -70,7 +70,7 @@
 <FieldWrapper field={component} htmlFor={field.id} error={field.error}>
   <div class="flex flex-col gap-2">
     {#if component.searchable || (component.bulkToggleable && !field.readOnly)}
-      <div class="flex items-center gap-2">
+      <div class="flex min-w-0 flex-wrap items-center gap-2">
         {#if component.searchable}
           <Input
             bind:value={search}
@@ -80,7 +80,7 @@
           />
         {/if}
         {#if component.bulkToggleable && !field.readOnly}
-          <div class="flex gap-1">
+          <div class="flex flex-wrap gap-1">
             {#if !component.selectAllAction?.hidden}
               <Button
                 type="button"

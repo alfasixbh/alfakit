@@ -54,6 +54,8 @@ $panel
 
 `$page` is a class name, so `is_subclass_of($page, EditRecord::class)` matches every edit page, and `$page::getResource()` is available on resource pages.
 
+The design attributes follow every navigation, but stylesheets don't: `viteTheme()` is read when the root view renders, so its result applies on a full page load only. After an Inertia visit the page keeps the stylesheets it was loaded with (opening the editor from the list doesn't load `editor.css`; going back from a reloaded editor keeps it). Scope page-specific CSS to an attribute the page sets, such as `:root[data-layout='topbar'] …`, and keep it in your panel stylesheet, or link to the page with a full reload.
+
 ## Per tenant
 
 ```php

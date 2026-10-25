@@ -539,14 +539,25 @@ export function Spreadsheet({ table, token, component, onClose }: SpreadsheetPro
           <DialogHeader>
             <DialogTitle>{t('table.spreadsheet.paste_title', {}, 'Paste cells')}</DialogTitle>
             <DialogDescription>
-              {choice(
-                'table.spreadsheet.paste_summary',
-                preview?.plan.changes.length ?? 0,
-                {},
-                ':count cell will change|:count cells will change',
+              {/* One line per count: translations can't join two sentences. */}
+              <span className="block">
+                {choice(
+                  'table.spreadsheet.paste_summary',
+                  preview?.plan.changes.length ?? 0,
+                  {},
+                  ':count cell will change|:count cells will change',
+                )}
+              </span>
+              {(preview?.plan.skipped ?? 0) > 0 && (
+                <span className="block" data-slot="spreadsheet-paste-skipped">
+                  {choice(
+                    'table.spreadsheet.paste_skipped',
+                    preview?.plan.skipped ?? 0,
+                    {},
+                    ':count read-only cell is skipped|:count read-only cells are skipped',
+                  )}
+                </span>
               )}
-              {(preview?.plan.skipped ?? 0) > 0 &&
-                ` ${choice('table.spreadsheet.paste_skipped', preview?.plan.skipped ?? 0, {}, ':count read-only cell is skipped|:count read-only cells are skipped')}`}
             </DialogDescription>
           </DialogHeader>
           <div data-slot="spreadsheet-paste" className="flex flex-col gap-3">

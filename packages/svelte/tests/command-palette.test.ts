@@ -76,7 +76,7 @@ beforeEach(() => {
             create: [{ label: 'New order', url: '/admin/orders/create' }],
             recent: [{ title: 'Order #7', url: '/admin/orders/7/edit', group: 'Order' }],
           })
-        : respond({ shortcuts: { 'command:clear-cache': ['mod+j'] } }),
+        : respond({ shortcuts: { 'command:clear-cache': ['mod+j x'] } }),
     ),
   )
 })
@@ -193,14 +193,18 @@ describe('keyboard shortcuts', () => {
     await fireEvent.click(
       screen.getByRole('button', { name: 'Change the shortcut for Clear cache' }),
     )
+    // A sequence: the keys pressed until a second passes without one.
     keydown(window, 'j', { ctrlKey: true, code: 'KeyJ' })
+    keydown(window, 'x', { code: 'KeyX' })
 
-    await waitFor(() => expect(shortcuts.keysFor('command:clear-cache')).toEqual(['mod+j']))
+    await waitFor(() => expect(shortcuts.keysFor('command:clear-cache')).toEqual(['mod+j x']), {
+      timeout: 3000,
+    })
 
     const [url, init] = vi.mocked(fetch).mock.calls.at(-1)! as [string, RequestInit]
     expect(url).toBe('/shortcuts')
     expect(JSON.parse(String(init.body))).toEqual({
-      shortcuts: { 'command:clear-cache': ['mod+j'] },
+      shortcuts: { 'command:clear-cache': ['mod+j x'] },
     })
   })
 

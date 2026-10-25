@@ -121,7 +121,7 @@ Action::make('send')
 
 ### Custom modal content
 
-`modalContent()` and `modalContentFooter()` accept read-only schema components (one or an array), the name of a frontend component registered with `createAlfakit({ components })` plus the data to pass it, or a Blade view. Any of these may come from a closure, which gets the action's `$record`, `$data`, `$arguments`… injected:
+`modalContent()` and `modalContentFooter()` accept read-only schema components (one or an array), the name of a frontend component registered with `createAlfakit({ components })` (outside panels: `configureAlfakit({ components })`, see [Customizing standalone components](../standalone/customizing#replacing-renderers)) plus the data to pass it, or a Blade view. Any of these may come from a closure, which gets the action's `$record`, `$data`, `$arguments`… injected:
 
 ```php
 // A registered frontend component; closures in the data are resolved with the action's injections.

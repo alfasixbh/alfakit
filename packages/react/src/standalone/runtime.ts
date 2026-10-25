@@ -3,6 +3,7 @@ import {
   ComponentRegistry,
   FlashNotificationTracker,
   Translator,
+  installPrefetchInvalidation,
   reloadOnExpiredPage,
   resolveRequestErrorNotification,
   type NotificationSchema,
@@ -27,6 +28,8 @@ export function ensureStandaloneRuntime(): void {
 
   browserReady = true
   reloadOnExpiredPage()
+  // Pages restored by Back after a change are reloaded; shared with a surrounding panel.
+  installPrefetchInvalidation()
 }
 
 /**

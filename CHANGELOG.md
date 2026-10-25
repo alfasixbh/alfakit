@@ -6,6 +6,84 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-10-25
+
+### Upgrading from 0.1.9
+
+- Starter kit apps: run `php artisan alfakit:install --starter-kit --no-npm --panel=<your panel id>` again. It generates `<AlfakitUserMenuItems />` and adds it to the kit's user menu, so the panel's `userMenuItems()` (and Billing's entry) show there; `alfakit:upgrade` reminds you.
+
+### Fixed
+
+- After saving a record, the browser's Back button showed the list (or any earlier page) without the change until a refresh, in panels, starter kits and outside panels, in every renderer. Inertia restores the page saved in history without asking the server; AlfaKit now reloads a restored page when records changed since it was shown. Starter kits also never dropped prefetched pages after a save; they now do.
+- Inline cell edits, row reordering, wizard steps and live fields of a record action's modal answered 404 on any list tab but the default one (e.g. a draft on the Drafts tab): these requests now carry the page's tab, view and filters like the modal request itself.
+- Starter kits: the panel's `userMenuItems()` and plugin entries such as Billing's **Billing** couldn't be reached (the app's user menu only had Settings and Log out). The panel shares its user menu links (`useAlfakitNavigation().userMenuItems`), and `alfakit:install --starter-kit` generates `<AlfakitUserMenuItems />` (built from the app's own dropdown items) and adds it before **Log out**. Existing apps: run `php artisan alfakit:install --starter-kit --no-npm` again; `alfakit:upgrade` reminds you.
+- Tables showed row checkboxes when the user could see none of the bulk actions (all hidden or unauthorised, e.g. a Shield role without delete); selection now follows the visible bulk actions.
+- Starter kits: a second `starterKit()` panel (a Teams workspace) listed its dashboard as a second **Dashboard** in the app sidebar, next to the app's own; a starter kit panel's main dashboard is listed under the team's name (or the panel's brand name) unless it has its own label. The page keeps its "Dashboard" title.
+- Vue panels: navigation items with children couldn't be expanded (the sidebar button with a tooltip dropped the collapsible trigger's click handler and `aria-expanded`, and a parent item's `extraAttributes`).
+- Ctrl/Cmd+Z after an earlier **Undo** had been clicked re-sent the used undo token ("This can no longer be undone") instead of undoing the newest action: used and expired undo offers are no longer registered again when a toast's button re-renders.
+- Keyboard shortcuts overlay: **Change** recorded only the first key, so sequences couldn't be set, and a key that starts another shortcut's sequence (`g` against `g o`) was accepted and silently shadowed it. The overlay records up to three keys (saved a second after the last one) and refuses prefixes of other shortcuts.
+- Rich editor: after picking from a `ToolbarButtonGroup` (e.g. Heading 2), focus went back to the group's button, so the next keys were lost; it stays in the editor (Escape without a pick still returns to the button).
+- Forms: actions of a `Callout`, an `EmptyState` and those placed in `afterHeader()`, `footer()` or `controls()` ran as page actions without the form's state, so `$get`/`$set` couldn't reach the form (and the page reloaded); inside a form they run as field actions of their component, like a section's header actions.
+- Column manager with `reorderableColumns()`: **Reset** (and **Apply** with visibility changes) sometimes kept the toggled columns, because the order save's reload of the old URL raced the visibility visit; the save no longer reloads when a table visit follows.
+- Outside panels, a `deferLoading()` table showed "Loading…" forever: its first reload asked for the panel's `page` prop before `<AlfakitComponent>` had registered its own prop.
+- `->mobile()` (bottom preset): on phones every modal was pushed half off the screen when the app's CSS build dropped `translate: none`; the slide-over also resets the Tailwind translate variables.
+- `live()` and `afterStateUpdated()` never ran for a `translatable()` field (its language inputs write `title.en`); they refresh the field (`title`) with its whole state, as documented.
+- Starter kits: a custom page component (`Page::$component`) was wrapped in a second page shell (two headers) and kept its first props after `reloadProps()`; it renders once, with the page's live props.
+- Starter kits with `pwa(push: true)`: Web Push couldn't be turned on (the toggle was only in AlfaKit's user menu); the menu of `<AlfakitNotifications />` has a **Turn on notifications** button.
+- Spreadsheet paste preview: "2 cells will change 2 read-only cells are skipped" ran two sentences together; each count is on its own line.
+- Date pickers (`native(false)`, Vue and Svelte): the calendar grid was announced as "Event Date" in every language; it is named after the field (else "Pick a date").
+- CheckboxList: the search field and the select-all / deselect-all links overflowed a phone-width page; the row wraps.
+- Opening an action from the URL (`?tableAction=…`) left the keys in the address bar once the modal's requests ran (Inertia wrote its stored page URL back), so a reload opened the modal again; Inertia's page gets the cleaned URL too.
+- The floating debug-panel (starter kits) and schema inspector buttons sat under Herd's "Edit with Herd" pill at the bottom corner; they sit higher (`bottom-16`).
+- Translation manager: language headers scrolled sideways showed through the sticky **Key** header; it has an opaque background.
+- File manager: the name prompt and the preview dialogs logged a "Missing Description" warning (Vue, React); they opt out of a description explicitly.
+- Rich editor mention chips had too little contrast (blue text on its 10% tint); they use the foreground colour with a primary ring.
+- Rich editor mentions and merge tags in a modal or slide-over: the suggestion list was positioned against the dialog's transform and showed outside it (invisible); it corrects for its containing block.
+- Outside panels, `numeric()` columns and entries ignored the app's language ("1,234,567" in German); they format in the app's locale like money does.
+- Calendar widgets: FullCalendar's toolbar chevrons were unnamed `role="img"` elements (axe: role-img-alt); they are hidden from assistive technology, the buttons keep their names.
+- Stats in right-to-left languages: a Latin description such as "-3% this month" lost its order; label, value and description are isolated (`<bdi>`).
+- Vue: generated app pages logged "Extraneous non-props attributes … AppPage"; `<AppPage>` doesn't inherit attributes.
+- Starter kits in a right-to-left panel language: the floating debug and schema-inspector buttons covered the kit's user menu (they followed AlfaKit's direction, not the page's); they stay in the bottom-right corner.
+- A resource whose table uses `records()` (array rows instead of a query) crashed its list page; array rows get no record URL.
+- `make:alfakit-table`, `make:alfakit-form` and `make:alfakit-infolist` print the component tag in the app's renderer syntax (`<AlfakitComponent :component="…" />` in Vue), not React's.
+- `alfakit:doctor` passes a standalone install without a panel (its stylesheet imports `@alfakit/*/standalone.css`) instead of failing the panel check.
+- Ops: **Retry all** on failed jobs stopped at the first job that could no longer be retried; each job is retried on its own and failures are reported.
+- Forms: a masked `numeric()`/`integer()` TextInput (`mask('9,999,999')->stripCharacters(',')->numeric()`) renders as a text input with a numeric keyboard, so the mask's separators can be typed.
+- A regional variant in `locales()` without a language pack of its own (`ar_EG`) showed every AlfaKit string in English; it takes its base language's strings (`ar`), then English.
+- A blank `ALFAKIT_CURRENCY=` (or a `currency()` closure returning `''`) made every money column fail with "[] is not an ISO 4217 currency code"; blank counts as unset.
+- Starter kit dashboards and standalone pages: a chart widget's `filtersSchema()` filters were ignored; the widget endpoint reads the chart filters from the page's query string.
+- Tables: passing anything other than a column, column group or table layout to `columns()` (e.g. the form `Grid` imported by mistake) throws an error naming the table layout class, instead of rendering an empty table.
+- Tables: `paginationPageOptions()` without 10 (e.g. `[25, 50]`) starts on the first option instead of 10 records.
+- Activity log: the Changes table and the Properties list span their whole section (they were squeezed into half of it, and clipped in the relation manager's view modal).
+- Calendar: Edit and Delete in an event's view modal close it when they succeed (it came back with old values, or for the deleted record).
+- Kanban: a card due today (a date without a time) is no longer marked overdue before the day ends.
+- Forms plugin: a new conditional-logic rule shows its Value input right away.
+- Webhooks: the event id has its own row in a delivery's details (it overlapped the sent date).
+- Invoices: paid, void and other locked documents stay locked for users a `Gate::before()` lets through (Shield's super admin could edit, delete, void or mark them paid again).
+
+- Outside panels, **Undo** (the toast's button and Ctrl/Cmd+Z) did nothing: the standalone endpoints had no undo route. They do now.
+- Outside panels, import and export failed: the import modal answered 500 (no example-file route), and export and import notifications had no download links. The signed download routes are registered and runs started outside panels find their panel.
+- `PostResource::make('archived')` next to the plain `PostResource` answered 404 at `/posts/archived` (the plain registration's `/{record}` route matched first); configured registrations are routed first.
+- `hiddenLabel()` actions lost their label: the icon button's accessible name was the action's name and it had no tooltip. The label is the tooltip and the accessible name.
+- Delete on a nested record's page, when the nested resource has no index page, returned to the deleted record (404); it lands on the parent's page.
+- Relation managers: one class registered twice without keys (`[CommentsRelationManager::make(['status' => 'pending']), CommentsRelationManager::class]`) showed the first registration twice; it now throws and asks for keys (identical duplicates are still merged).
+
+### Documentation
+
+- Starter kits: **Install app** (`pwa()`) is in `<AlfakitSearch />`'s palette on AlfaKit pages; plugin frontend components go to `createStarterKitPage({ components })`; the user menu section describes `<AlfakitUserMenuItems />`.
+- Getting started: the Filament migration snippet names `--adapter=vue` and `--adapter=svelte`.
+- Authentication: the custom login `getCredentials()` override is only for a `username` column. Impersonation explains targets who haven't verified their email.
+- Users resource: when a suspended or banned user sees the reason on the login page. Import/export: `alfakit:install --import-export` in an installed app only publishes the migrations.
+- Forms: the create-option modal saves only its own fields (`createOptionUsing()` for a `users` relationship); `recordTitleAttribute()` belongs on the modal table select field; alias `Builder`, layout `Group` and table `Grid` when they clash with other imports; text colour markup; the wizard's `submitActionLabel()`.
+- Tables: table state replaces the URL; reorderable tables list in their saved order; replicating records with a unique column; saved views' example methods are the app's own; the default page size is 10.
+- Localization: missing `User` and `Request` imports in the locale examples (they answered 500); right-to-left fonts in a starter kit edit `@theme inline` `--font-sans`; `isoDate()`/`isoDateTime()` for each language's own date order.
+- Design: a per-page `viteTheme()` applies on full page loads; the per-panel stylesheet example for Vue and Svelte; themes, slots, notifications, widgets and customizing examples got missing imports and Vue variants.
+- Widgets on a starter kit's `/dashboard`: pass custom widget components and register chart formatters. Custom toasts read `notification.viewData`.
+- Custom pages and app pages with their own component open in starter kits; Vue component example.
+- Outside panels: `requiresAuthentication()` guards internal requests (put the route in `auth`); an `avatar` path column breaks a kit's user menu image; registering generated components with `configureAlfakit()`.
+- Actions: import/export, modals and the prebuilt actions describe how they work outside panels (no bell for import results; register modal components with `configureAlfakit()`; give Create/Edit/View a `form()` outside resources). Resources: global search searches every configured registration; relation managers registered twice need keys.
+- Plugins: Billing's Vue user menu entry, Settings hooks import `Str`, Calendar outside panels needs the configured plugin to drag events, Tree's `parent_id` is a select, CMS revisions sit below the form, Analytics on SQLite needs a busy timeout. The Vue custom field example passes vue-tsc.
+
 ## [0.1.9] - 2026-10-25
 
 ### Upgrading from 0.1.8
@@ -1192,7 +1270,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.9...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.10...HEAD
+[0.1.10]: https://github.com/alfasixbh/alfakit/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/alfasixbh/alfakit/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/alfasixbh/alfakit/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/alfasixbh/alfakit/compare/v0.1.6...v0.1.7

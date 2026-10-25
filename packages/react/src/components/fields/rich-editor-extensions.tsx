@@ -11,6 +11,7 @@ import {
   customBlockNodeConfig,
   EditorSuggestions,
   fieldActionContext,
+  fixedContainingBlockOffset,
   groupCustomBlocks,
   groupTriggerButton,
   isCustomBlockResult,
@@ -358,6 +359,9 @@ export function ToolbarGroupButton({
   onRun: (name: string) => void
 }) {
   const buttons = group.buttons.filter((name) => commands[name])
+  // After a pick, typing goes on in the editor (the command focused it); the menu would
+  // otherwise return focus to its trigger. Closing without a pick (Escape) still does.
+  const picked = useRef(false)
 
   if (buttons.length === 0) return null
 
@@ -385,6 +389,13 @@ export function ToolbarGroupButton({
         align="start"
         aria-label={group.label}
         className={cn(!group.textual && 'flex min-w-0 flex-row gap-0.5')}
+        onCloseAutoFocus={(event) => {
+          if (!picked.current) return
+
+          picked.current = false
+          event.preventDefault()
+          editor.commands.focus()
+        }}
       >
         {buttons.map((name) => {
           const label = commandLabel(name, commands, translate)
@@ -396,7 +407,10 @@ export function ToolbarGroupButton({
               aria-label={group.textual ? undefined : label}
               title={label}
               className={cn(pressed && 'bg-accent text-accent-foreground')}
-              onSelect={() => onRun(name)}
+              onSelect={() => {
+                picked.current = true
+                onRun(name)
+              }}
             >
               {icons(name)}
               {group.textual && <span>{label}</span>}
@@ -436,7 +450,15 @@ export function SuggestionPopup({
       data-slot="rich-editor-suggestions"
       className="bg-popover text-popover-foreground fixed z-50 min-w-48 overflow-hidden rounded-md border p-1 shadow-md"
       // Runtime coordinates cannot be Tailwind classes.
-      style={state.coords ? { left: state.coords.left, top: state.coords.bottom + 4 } : undefined}
+      // Inside a modal the dialog's transform is the containing block of this fixed list.
+      style={
+        state.coords
+          ? {
+              left: state.coords.left - fixedContainingBlockOffset(editor.view.dom).x,
+              top: state.coords.bottom + 4 - fixedContainingBlockOffset(editor.view.dom).y,
+            }
+          : undefined
+      }
     >
       {state.loading && state.items.length === 0 ? (
         <div className="text-muted-foreground px-2 py-1.5 text-sm">

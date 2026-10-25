@@ -5,11 +5,17 @@
     NotificationCenter,
     onDatabaseNotificationsSent,
     onOpenDatabaseNotifications,
+    pwaStore,
+    startPwa,
+    togglePushNotifications,
   } from '@alfakit/core'
   import BellIcon from '@lucide/svelte/icons/bell'
+  import BellOffIcon from '@lucide/svelte/icons/bell-off'
+  import BellRingIcon from '@lucide/svelte/icons/bell-ring'
   import CheckCheckIcon from '@lucide/svelte/icons/check-check'
   import Trash2Icon from '@lucide/svelte/icons/trash'
-  import { onDestroy, untrack } from 'svelte'
+  import { onDestroy, onMount, untrack } from 'svelte'
+  import { toast } from 'svelte-sonner'
   import { useDirection, useFormatter, usePanel, useT } from '../../context.svelte'
   import { useStore } from '../../hooks/store.svelte'
   import { cssColor, textColorClasses } from '../../lib/colors'
@@ -50,6 +56,29 @@
         )
       : null
   })
+
+  // `pwa(push: true)` in a starter kit: the app's user menu has no AlfaKit entries, so Web
+  // Push is turned on or off from the bell's menu.
+  const pwa = useStore(pwaStore)
+  const kitPush = $derived(Boolean(panel.starterKit && panel.pwa?.push))
+  const pushToggle = $derived(kitPush && pwa.current.push !== 'unsupported')
+  const pushLabel = $derived(
+    pwa.current.push === 'subscribed'
+      ? t('pwa.notifications.disable', {}, 'Turn off notifications')
+      : t('pwa.notifications.enable', {}, 'Turn on notifications'),
+  )
+
+  onMount(() => {
+    if (kitPush) startPwa(panel.pwa)
+  })
+
+  async function togglePush() {
+    const { message } = await togglePushNotifications()
+    const text = t(message.key, {}, message.fallback)
+
+    if (message.error) toast.error(text)
+    else toast.success(text)
+  }
 
   let open = $state(false)
   const centerState = useStore(
@@ -162,6 +191,20 @@
       <div class="flex items-center justify-between border-b px-3 py-2">
         <span class="text-sm font-semibold">{t('notifications', {}, 'Notifications')}</span>
         <div class="flex items-center gap-1">
+          {#if pushToggle}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              data-slot="pwa-push"
+              disabled={pwa.current.pushBusy || pwa.current.push === 'denied'}
+              title={pushLabel}
+              aria-label={pushLabel}
+              onclick={() => void togglePush()}
+            >
+              {#if pwa.current.push === 'subscribed'}<BellOffIcon />{:else}<BellRingIcon />{/if}
+            </Button>
+          {/if}
           {#if centerState.current.unreadCount > 0}
             <Button
               type="button"

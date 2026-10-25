@@ -17,6 +17,7 @@ import {
   type StandaloneComponentSchema,
   type StarterKitNavigationSchema,
 } from '../src'
+import { toStarterKitUserMenuItems } from '../src/starter-kit'
 import dashboard from './fixtures/standalone/starter-kit-dashboard.json'
 
 const navigation: StarterKitNavigationSchema = {
@@ -243,5 +244,28 @@ describe('starter kit header components panel data', () => {
 
     vi.unstubAllGlobals()
     resetStarterKitPanels()
+  })
+})
+
+describe('starter kit user menu items', () => {
+  it('maps the shared user menu links and marks where a new group starts', () => {
+    const items = toStarterKitUserMenuItems([
+      { label: 'Billing', icon: 'credit-card', url: '/billing' },
+      { label: 'Plans', url: '/plans' },
+      { label: 'Docs', url: 'https://example.com', openInNewTab: true, group: 1 },
+      { label: 'Ping', action: { type: 'Action', name: 'ping' } },
+      { label: 'Leave', url: '/leave', method: 'post', group: 1 },
+    ])
+
+    expect(items.map((item) => [item.title, item.href, item.startsGroup])).toEqual([
+      ['Billing', '/billing', false],
+      ['Plans', '/plans', false],
+      ['Docs', 'https://example.com', true],
+      ['Leave', '/leave', false],
+    ])
+    expect(items[0]?.icon).toBe('credit-card')
+    expect(items[2]?.openInNewTab).toBe(true)
+    expect(items[3]?.method).toBe('post')
+    expect(toStarterKitUserMenuItems(undefined)).toEqual([])
   })
 })

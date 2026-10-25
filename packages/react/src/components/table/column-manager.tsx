@@ -114,13 +114,13 @@ export function ColumnManager({
     }
   }
 
-  const save = async (order: string[]): Promise<boolean> => {
+  const save = async (order: string[], options: { reload?: boolean } = {}): Promise<boolean> => {
     if (!panel.endpoints.tableColumns) return false
 
     setSaving(true)
 
     try {
-      await saveColumnOrder(panel.endpoints.tableColumns, token, component, order)
+      await saveColumnOrder(panel.endpoints.tableColumns, token, component, order, options)
 
       return true
     } catch (error) {
@@ -203,7 +203,8 @@ export function ColumnManager({
     setAnnouncement('')
     setOpen(false)
 
-    if (orderDraft && orderChanged) await save(orderDraft)
+    // The visibility visit renders the new order too: no second reload racing it.
+    if (orderDraft && orderChanged) await save(orderDraft, { reload: !columns })
 
     if (columns) visitTable(table.identifier, { columns }, ['page'])
   }
@@ -212,7 +213,8 @@ export function ColumnManager({
   const reset = async () => {
     if (reorderable) {
       setOrderDraft(null)
-      await save([])
+      // The visibility visit below renders the defined order too.
+      await save([], { reload: !toggleable })
     }
 
     if (toggleable) {

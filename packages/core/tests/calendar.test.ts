@@ -71,6 +71,19 @@ describe('calendarOptions', () => {
     expect((options.moreLinkText as (count: number) => string)(3)).toBe('+3 more')
   })
 
+  it('hides the decorative toolbar icons from assistive technology (W-V4-20)', () => {
+    const options = calendarOptions(widget, environment())
+    const root = document.createElement('div')
+    root.className = 'fc'
+    root.innerHTML =
+      '<button title="Previous"><span class="fc-icon fc-icon-chevron-left" role="img"></span></button><div class="view"></div>'
+
+    ;(options.viewDidMount as (arg: { el: HTMLElement }) => void)({
+      el: root.querySelector('.view')!,
+    })
+
+    expect(root.querySelector('.fc-icon')?.getAttribute('aria-hidden')).toBe('true')
+  })
   it('translates the hints FullCalendar would otherwise show in English', () => {
     const t = (key: string, replacements: Record<string, string | number> = {}) =>
       `${key}${Object.keys(replacements).length ? JSON.stringify(replacements) : ''}`

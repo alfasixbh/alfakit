@@ -251,6 +251,7 @@ const weekStartsOn = computed(
         <PopoverContent class="w-auto p-0" align="start">
           <Calendar
             :model-value="calendarValue"
+            :calendar-label="props.component.label || t('form.pick_date', {}, 'Pick a date')"
             :locale="locale"
             :dir="direction"
             :today="toCalendarDate(wallClockNow(props.component.timezone))"

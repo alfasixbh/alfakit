@@ -61,15 +61,18 @@ Keyboard navigation follows the direction too: in date pickers, tabs and reorder
 
 Many Latin fonts have no Arabic, Hebrew or Persian glyphs, so the browser falls back to a system font. For a consistent look, load a font that covers the scripts you support and list it in your panel's font stack. For example, use Noto Sans Arabic, IBM Plex Sans Arabic or Vazirmatn for Arabic and Persian, and Noto Sans Hebrew or Heebo for Hebrew:
 
-Load it at the very top of your stylesheet: an `@import url(…)` must precede every other rule, and below `@import 'tailwindcss'` the build warns and drops it. In a [starter kit](../getting-started/starter-kits) or [outside panels](../standalone/overview), AlfaKit uses your app's fonts, so add it to `resources/css/app.css` and extend `--font-sans`:
+Load it at the very top of your stylesheet: an `@import url(…)` must precede every other rule, and below `@import 'tailwindcss'` the build warns and drops it. In a [starter kit](../getting-started/starter-kits) or [outside panels](../standalone/overview), AlfaKit uses your app's fonts, so add it to `resources/css/app.css` and add the family to the `--font-sans` of the stylesheet's `@theme inline` block. The starter kits define `--font-sans` there, and Tailwind writes that value straight into the `font-sans` class on `<body>`, so a `--font-sans` set on `:root` has no effect:
 
 ```css
 /* resources/css/app.css: first line */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600&display=swap');
 
-/* at the end */
-:root {
-    --font-sans: 'Instrument Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+/* the starter kit's existing @theme inline block: add the family after the first one */
+@theme inline {
+    --font-sans:
+        Instrument Sans, 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    /* … the block's other tokens stay as they are */
 }
 ```
 

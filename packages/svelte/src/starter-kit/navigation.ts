@@ -1,8 +1,10 @@
 import {
   starterKitNavigation,
   toStarterKitNavGroups,
+  toStarterKitUserMenuItems,
   type StarterKitNavGroup,
   type StarterKitNavigationSchema,
+  type StarterKitUserMenuItem,
 } from '@alfakit/core'
 import { page } from '@inertiajs/svelte'
 
@@ -14,6 +16,11 @@ export interface AlfakitNavigation {
   readonly navigation: StarterKitNavigationSchema | null
   /** Its groups as plain items (`title`, `href`, `icon`, `isActive`, `badge`, `children`). */
   readonly groups: StarterKitNavGroup[]
+  /**
+   * The panel's user menu links (`userMenuItems()`, Billing's entry…) for the kit's user
+   * menu: `<AlfakitUserMenuItems />` renders them with the app's dropdown items.
+   */
+  readonly userMenuItems: StarterKitUserMenuItem[]
 }
 
 /**
@@ -34,6 +41,9 @@ export function useAlfakitNavigation(panelId?: string): AlfakitNavigation {
     },
     get groups() {
       return toStarterKitNavGroups(starterKitNavigation(page.props, panelId)?.groups)
+    },
+    get userMenuItems() {
+      return toStarterKitUserMenuItems(starterKitNavigation(page.props, panelId)?.userMenu)
     },
   }
 }
