@@ -426,6 +426,8 @@ const hasBody = computed(() =>
           cn(
             schema.stickyHeader &&
               'bg-background sticky -top-6 z-10 -mx-6 -mt-6 rounded-t-lg border-b px-6 pt-6 pb-4',
+            // Room for the close button (X): a long heading would run under it.
+            schema.closeButton !== false && (schema.stickyHeader ? 'pe-12' : 'pe-6'),
           )
         "
       >

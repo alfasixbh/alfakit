@@ -4,11 +4,14 @@ import contactForm from '../../core/tests/fixtures/standalone/contact-form.json'
 import postsTable from '../../core/tests/fixtures/standalone/posts-table.json'
 import { showToast } from '../src/components/notifications/toast'
 import { configureAlfakit } from '../src/standalone'
+import { createStandaloneContext } from '../src/standalone/runtime'
 import CustomIcon from './CustomIcon.svelte'
 import DualToasterHarness from './DualToasterHarness.svelte'
 import LayoutToasterHarness from './LayoutToasterHarness.svelte'
 import StandaloneHarness from './StandaloneHarness.svelte'
+import StandaloneInPanelHarness from './StandaloneInPanelHarness.svelte'
 import StatusBadge from './StatusBadge.svelte'
+import TwoFormsHarness from './TwoFormsHarness.svelte'
 
 const form = contactForm as unknown as StandaloneComponentSchema
 const table = postsTable as unknown as StandaloneComponentSchema
@@ -152,5 +155,38 @@ describe('live() outside panels', () => {
         (url) => url.startsWith(table.endpoints.components) && url.includes('targets=table'),
       ),
     ).toBe(true)
+  })
+})
+
+describe('AlfakitComponent inside a panel page', () => {
+  it("keeps its own action endpoints, without moving the panel's", () => {
+    const panel = createStandaloneContext(
+      {
+        action: 'http://localhost/admin/_alfakit/actions',
+        modal: 'http://localhost/admin/_alfakit/actions/modal',
+      },
+      undefined,
+      () => () => {},
+    )
+
+    render(StandaloneInPanelHarness, {
+      props: { component: contactForm as unknown as StandaloneComponentSchema, panel },
+    })
+
+    const endpoints = (panel.actions as unknown as { options: { endpoints: { action: string } } })
+      .options.endpoints
+    expect(endpoints.action).toBe('http://localhost/admin/_alfakit/actions')
+  })
+})
+
+describe('Several standalone forms on one page', () => {
+  it('gives two forms with the same fields their own field ids', () => {
+    render(TwoFormsHarness, {
+      props: { component: contactForm as unknown as StandaloneComponentSchema },
+    })
+
+    const ids = [...document.querySelectorAll('input[id], textarea[id]')].map((input) => input.id)
+    expect(ids.length).toBeGreaterThan(0)
+    expect(new Set(ids).size).toBe(ids.length)
   })
 })

@@ -48,6 +48,8 @@ class ContactForm extends \AlfaSix\Alfakit\Standalone\Form
 }
 ```
 
+`ContactRequest` is your own model: create it with `php artisan make:model ContactRequest -m`, give the migration the form's columns (`name`, `email`, `topic`, a nullable `order_number`, `message` as `text`), make them fillable (or set `protected $guarded = [];`) and run `php artisan migrate`.
+
 A standalone form with `submit()`: fill it in and send it.
 
 ```alfakit-example name="contact-form"
@@ -109,6 +111,8 @@ class ProfileForm extends \AlfaSix\Alfakit\Standalone\Form
     }
 }
 ```
+
+The `avatar` field needs an `avatar` column on `users` (a nullable string) that is fillable; without it `update()` drops the stored path silently. The file goes to `alfakit.default_filesystem_disk` (your `FILESYSTEM_DISK`: `local`, a private disk, in a new Laravel app); add `->disk('public')` to show it with `Storage::url()`.
 
 ```php
 // In the controller:

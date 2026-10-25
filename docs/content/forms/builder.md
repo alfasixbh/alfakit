@@ -38,6 +38,8 @@ Builder::make('content')
     ->maxItems(20);
 ```
 
+A resource generated with `--soft-deletes` (as in the [Quick start](../getting-started/quick-start)) already imports `Illuminate\Database\Eloquent\Builder` for `getEloquentQuery()`, and a second `use … Builder;` is a fatal error ("the name is already in use"). Alias the field there: `use AlfaSix\Alfakit\Forms\Components\Builder as BuilderField;` and `BuilderField::make('content')`.
+
 ## State
 
 The state is a list of items, each with the block name and the block's data, the same shape as Filament:
@@ -55,7 +57,7 @@ Store it in a JSON column with an `array` cast. When the form is filled, items w
 
 `Block::make('name')` sets the stored `type`. Then:
 
-- `label()` — a string, or a closure receiving the item's `$state` (its `data`; `null` in the block picker) to label each item after its content:
+- `label()` — a string, or a closure receiving the item's `$state` (its `data`; `null` in the block picker) to label each item after its content. The closure runs on the server: an item added in the browser shows the picker label until the form is rendered again (after saving, for example):
 
     ```php
     Block::make('heading')->label(fn (?array $state): string => $state === null ? 'Heading' : ($state['content'] ?? 'Untitled heading'))

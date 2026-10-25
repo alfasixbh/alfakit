@@ -27,6 +27,14 @@ With `pwa()` the panel gets:
 
 Nothing is added to panels without `pwa()`: no routes, no tags, no script.
 
+On a [starter kit panel](../getting-started/starter-kits) AlfaKit's pages render in your app's root view, so add the head tags yourself, in the `<head>` of `resources/views/app.blade.php`:
+
+```blade
+@alfakitPwa
+```
+
+It renders the manifest link, the light and dark `theme-color` and the iOS icon of the `pwa()` panel (the current one, else your starter kit panel; `@alfakitPwa('admin')` names one), and nothing for a panel without `pwa()`. AlfaKit's pages register the service worker; its scope is the panel path (`/admin`), so your own pages outside it are not cached or controlled.
+
 ## The manifest
 
 The manifest is built from the panel:

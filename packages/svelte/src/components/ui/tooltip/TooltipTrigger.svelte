@@ -4,4 +4,5 @@
   let { ...rest }: Primitive.TriggerProps = $props()
 </script>
 
-<Primitive.Trigger data-slot="tooltip-trigger" {...rest} />
+<!-- With a child snippet the child keeps its own data-slot (an action's `button`). -->
+<Primitive.Trigger {...rest.child ? {} : { 'data-slot': 'tooltip-trigger' }} {...rest} />

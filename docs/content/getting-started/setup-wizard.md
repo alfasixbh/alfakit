@@ -26,7 +26,7 @@ The default is a **minimal install**: every optional step defaults to _no_, no p
 6. **Realtime** (optional): runs [`alfakit:realtime`](#realtime).
 7. **First-party plugins** (optional): asks "Add first-party plugins now?" (default no; AlfaKit works without any). Answer yes to pick from the list (Space to tick, Enter to confirm); it installs them with Composer, registers them on the panel provider and publishes their migrations. Add more later with `php artisan alfakit:add`.
 8. **Branding**: writes the primary colour, logo and font to the panel provider (`->colors()`, `->brandLogo()`, `->font()`).
-9. **Demo data** (optional): writes `database/seeders/AlfakitDemoSeeder.php` (an admin and a dozen users) and seeds it. It never seeds in production.
+9. **Demo data** (optional): writes `database/seeders/AlfakitDemoSeeder.php` (an admin, `admin@example.com` with the password `password`, and a dozen users) and asks "Seed the demo data now?" (default yes; it runs the migrations first; with `--no-interaction` it seeds without asking). It never seeds in production.
 10. **Migrations**: asks once at the end when a step added migrations.
 11. **Admin user** (panel mode): offers to create the user you sign in with (`make:alfakit-user`), or creates it from `--admin-email`, `--admin-name` and `--admin-password`. In starter-kit mode you sign in with the app's own login.
 12. **Summary**: every step with its result, then the next steps (plugin notes, commands to run).

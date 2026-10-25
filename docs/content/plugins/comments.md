@@ -16,6 +16,8 @@ description: Comments with mentions, reactions and notifications on any record.
 
 Everything is built from AlfaKit components (entries, `Actions`, `RichEditor` modals, a table widget), so it renders in React, Vue and Svelte; there is no frontend package. No relation manager is needed.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel (mention notifications reach the kit's header bell). `CommentsEntry` also works in a [standalone](../standalone/overview) form bound to a record (`ProductForm::make(['record' => $product])`) for signed-in users; it is hidden for guests.
+
 ## Installation
 
 ```bash

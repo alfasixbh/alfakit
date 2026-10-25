@@ -4,6 +4,7 @@ import {
   FormStore,
   applyFormRefresh,
   formActionsVisible,
+  formIdPrefix,
   formIdentity,
   formRefreshFor,
   isImplicitSubmit,
@@ -18,9 +19,16 @@ import {
   wizardProgressStore,
 } from '@alfakit/core'
 import { router } from '@inertiajs/vue3'
-import { computed, onBeforeUnmount, onMounted, onScopeDispose, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onScopeDispose, useId, watch } from 'vue'
 import { useStore } from '../../composables/use-store'
-import { useActionRunner, useAlfakitProps, usePageSchema, usePanel, useT } from '../../context'
+import {
+  useActionRunner,
+  useAlfakitProps,
+  usePageSchema,
+  usePanel,
+  useStandalone,
+  useT,
+} from '../../context'
 import ActionList from '../actions/ActionList.vue'
 import SchemaRenderer from '../schema/SchemaRenderer.vue'
 import { showToast } from '../notifications/flash-toasts'
@@ -39,9 +47,14 @@ const runner = useActionRunner()
 const t = useT()
 const token = computed(() => page.value?.token ?? '')
 
+// Several standalone components can share a page (and field names): each form gets its own
+// field id prefix, so labels and errors point at their own inputs.
+const standalone = useStandalone()
+const instanceId = useId()
 const store = new FormStore(props.block, {
   token: token.value,
   component: props.block.component,
+  idPrefix: standalone ? formIdPrefix(`form-${instanceId}`) : undefined,
   refreshUrl: panel.value.endpoints.schemaRefresh,
   optionsUrl: panel.value.endpoints.schemaOptions,
   validateUrl: panel.value.endpoints.schemaValidate,

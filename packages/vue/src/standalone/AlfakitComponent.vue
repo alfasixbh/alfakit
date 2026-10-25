@@ -69,9 +69,16 @@ const poll = (target: string, interval: string | number | null | undefined) =>
   state.poll(target, interval)
 const refresh = (targets: string[]) => state.refresh(targets)
 
+// Inside a panel page: the panel's registry and translator, but this component's own action
+// runner, so its actions post to its own endpoints with its own token (not the panel's: 403).
 const context: AlfakitContextValue = parent
   ? {
       ...parent,
+      actions: createStandaloneContext(
+        { action: props.component.endpoints.action, modal: props.component.endpoints.modal },
+        props.components,
+        poll,
+      ).actions,
       registry: createStandaloneRegistry(props.components, parent.registry),
       poll,
       refresh,
@@ -201,7 +208,7 @@ onMounted(() => {
         <slot name="footer" />
       </div>
       <ActionModals />
-      <AlfakitToaster v-if="ownsToaster" claimed />
+      <AlfakitToaster v-if="ownsToaster" claimed :dir="direction" />
     </TooltipProvider>
   </component>
 </template>

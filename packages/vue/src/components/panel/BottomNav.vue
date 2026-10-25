@@ -40,7 +40,7 @@ const url = (item: NavigationItemSchema): string => navigationItemUrl(item) ?? '
     :aria-label="t('navigation', {}, 'Navigation')"
     class="md:hidden"
   >
-    <template v-for="item in items.primary" :key="item.label">
+    <template v-for="item in items.primary" :key="item.url ?? item.label">
       <a
         v-if="item.openInNewTab"
         v-bind="item.extraAttributes ?? {}"
@@ -91,7 +91,7 @@ const url = (item: NavigationItemSchema): string => navigationItemUrl(item) ?? '
         >
           <Link
             v-for="item in overflowLinks"
-            :key="item.label"
+            :key="item.url ?? item.label"
             :href="url(item)"
             :data-active="isNavigationItemActive(item) ? 'true' : undefined"
             class="hover:bg-accent data-[active=true]:bg-accent flex min-h-11 items-center gap-3 rounded-md px-3 font-medium [&_svg]:size-4"

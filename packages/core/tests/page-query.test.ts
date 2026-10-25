@@ -4,6 +4,7 @@ import type * as Http from '../src/http'
 import { currentPageQuery } from '../src/page-query'
 
 const posted: Record<string, unknown>[] = []
+const requested: { url: string; options: { query?: Record<string, unknown> } }[] = []
 
 vi.mock('../src/http', async (importOriginal) => {
   const original = await importOriginal<typeof Http>()
@@ -12,6 +13,11 @@ vi.mock('../src/http', async (importOriginal) => {
     ...original,
     inertiaPost: (_url: string, data: Record<string, unknown>) => {
       posted.push(data)
+    },
+    requestJson: (url: string, options: { query?: Record<string, unknown> }) => {
+      requested.push({ url, options })
+
+      return Promise.resolve({ cancelled: true })
     },
   }
 })
@@ -41,5 +47,24 @@ describe('page query string for table actions', () => {
     runner.execute({ type: 'Action', name: 'export' }, { token: 't', component: 'table' })
 
     expect(posted[0]).toMatchObject({ action: 'export', tableQuery: 'sort=title&direction=desc' })
+  })
+
+  it('sends the table state (the active tab) when a record action opens its modal', async () => {
+    window.history.replaceState(null, '', '/admin/posts?activeTab=drafts')
+
+    const runner = new ActionRunner({ endpoints: { action: '/actions', modal: '/modal' } })
+    // Private: the request every modal action makes (a record action, not a bulk one).
+    await (
+      runner as unknown as { fetchModal: (a: unknown, c: unknown) => Promise<unknown> }
+    ).fetchModal(
+      { type: 'Action', name: 'edit', hasModal: true },
+      { token: 't', component: 'table', record: '7' },
+    )
+
+    expect(requested[0]?.options.query).toMatchObject({
+      record: '7',
+      tableQuery: 'activeTab=drafts',
+    })
+    requested.length = 0
   })
 })

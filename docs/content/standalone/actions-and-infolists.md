@@ -60,6 +60,8 @@ class OrderDetails extends \AlfaSix\Alfakit\Standalone\Infolist
 'details' => OrderDetails::make(['record' => $order]),
 ```
 
+Render each prop with `<AlfakitComponent component={details} />` as in the [overview](overview#five-minute-example). The examples on this page use your own models: an `Order` with a `lines` relationship (each line `belongsTo` a `product`), `reorder()`, `isCancellable()` and `cancel()` (see [Tables](tables)); a `Team` with `members()` and `subscribe()`; a `Plan::options()` list; a `billing.invoices` route; and a `TeamStats` widget (`php artisan make:alfakit-widget TeamStats --type=stats`).
+
 `actions()` renders above the content, next to the heading when you set one (`->heading('Order #123')->subheading('Placed yesterday')`). Actions receive the bound record as `$record`.
 
 ## Actions on their own

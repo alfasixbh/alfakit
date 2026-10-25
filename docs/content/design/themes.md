@@ -7,6 +7,8 @@ description: Six complete designs, from a classic sidebar to top navigation and 
 
 A theme is a complete design, not a colour palette. It decides the page structure, how navigation, page titles, cards, inputs, buttons and tables look, and the spacing, corner radius, fonts and colours in light and dark mode.
 
+Themes apply to admin panels. A [starter kit](../getting-started/starter-kits#styles-and-theme) panel uses your app's own theme and appearance setting, and [components outside panels](../standalone/customizing) use your page's shadcn tokens, so `->theme()`, `->design()` and the other options on [Design options](design-options) and [Per-role design](per-role-design) have no effect there. [Slots](slots), per-component classes ([Customizing](customizing)) and [Icons](icons) still apply, as those pages describe.
+
 ```php
 $panel->theme('alfakit');
 ```
@@ -64,7 +66,7 @@ Generate one with:
 php artisan make:alfakit-theme acme --extends=alfakit --panel=admin
 ```
 
-It writes `app/Alfakit/Themes/AcmeTheme.php` (`AcmeTheme::make()` returns the `Theme`), `resources/css/alfakit/themes/acme.css` with the token blocks for light and dark mode, imports that file in `resources/css/alfakit.css`, and adds `->theme(\App\Alfakit\Themes\AcmeTheme::make())` to the panel provider (passing a `Theme` to `theme()` registers it). Rebuild your assets afterwards.
+It writes `app/Alfakit/Themes/AcmeTheme.php` (`AcmeTheme::make()` returns the `Theme`), `resources/css/alfakit/themes/acme.css` with the token blocks for light and dark mode, imports that file in `resources/css/alfakit.css`, and adds `->theme(\App\Alfakit\Themes\AcmeTheme::make())` to the panel provider (passing a `Theme` to `theme()` registers it). When the provider already calls `->theme(…)`, it leaves that call alone and prints the line to use instead; replace it yourself. Rebuild your assets afterwards.
 
 You can also register a theme yourself, usually on top of a built-in one, in a service provider:
 

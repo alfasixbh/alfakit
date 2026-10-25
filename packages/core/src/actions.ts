@@ -406,7 +406,9 @@ export class ActionRunner {
       records: records !== undefined && records.length > 0 ? records : undefined,
       allRecords: context.allRecords ? 1 : undefined,
       bulk: isBulk ? 1 : undefined,
-      tableQuery: isBulk ? currentPageQuery() : undefined,
+      // The table state (active tab, filters, search) for record and bulk actions alike: a
+      // record action on a non-default tab resolves its record through that tab's query.
+      tableQuery: currentPageQuery(),
       arguments: context.arguments,
     }
     const mountedData = this.mountedData(context)

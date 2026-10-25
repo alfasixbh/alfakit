@@ -15,6 +15,8 @@ description: Subscription billing for tenants or users with Stripe, Paddle or La
 
 On a panel with [tenancy](../panels/tenancy) the **tenant** is billed; on a panel without tenancy the **signed-in user** is.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel (see [In a starter kit](#in-a-starter-kit)). The plans page and the billing route are panel pages, so there is nothing to use [outside panels](../standalone/overview).
+
 ## Installation
 
 ```bash
@@ -63,12 +65,29 @@ $panel
     );
 ```
 
+On a panel without tenancy (the signed-in user pays), leave out `->tenant(Team::class)` and put Cashier's `Billable` trait on your `User` model.
+
 This:
 
 - sets the provider as the panel's `tenantBillingProvider()` (and `requiresSubscription()` as `requiresTenantSubscription()`) on tenancy panels, which adds the `/{tenant}/billing` route and a **Billing** entry to the tenant menu (customise it with the `billing` key of `tenantMenuItems()`);
 - registers the plans page at `/{tenant}/billing/plans` (`/billing/plans` without tenancy);
-- on panels without tenancy, registers `/billing` and adds a **Billing** entry to the user menu. In [starter-kit mode](../getting-started/starter-kits) your app owns the user menu, so the entry isn't shown: link to `route('alfakit.{panel}.billing')` (for example `route('alfakit.admin.billing')`) from your own menu;
+- on panels without tenancy, registers `/billing` and adds a **Billing** entry to the user menu. In [starter-kit mode](../getting-started/starter-kits) your app owns the user menu, so the entry isn't shown: link to `route('alfakit.{panel}.billing')` (for example `route('alfakit.admin.billing')`, `/admin/billing`) from your own menu (see [In a starter kit](#in-a-starter-kit));
 - with `requiresSubscription()`, sends customers without an active subscription to the plans page.
+
+### In a starter kit
+
+A [starter-kit](../getting-started/starter-kits) panel has no AlfaKit user menu. With `requiresSubscription()`, opening any panel page from the app sidebar leads an unsubscribed user to the plans page; to let users reach billing at any time, add an entry to the kit's user menu, `resources/js/components/user-menu-content.tsx` (React), next to **Settings** (import `CreditCard` from `lucide-react`):
+
+```tsx
+<DropdownMenuItem asChild>
+    <a className="block w-full cursor-pointer" href="/admin/billing">
+        <CreditCard className="mr-2" />
+        Billing
+    </a>
+</DropdownMenuItem>
+```
+
+A plain `<a>` is enough: the billing route answers with a full page redirect to the plans page, the checkout or the portal. In Vue and Svelte the menu is `UserMenuContent.vue` / `UserMenuContent.svelte`.
 
 ### The billing route
 

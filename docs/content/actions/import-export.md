@@ -12,10 +12,11 @@ description: CSV imports with column mapping and validation, CSV/XLSX exports of
 Both actions store their runs in three tables (`imports`, `exports`, `failed_import_rows`). Publish the migration and run it:
 
 ```bash
-php artisan alfakit:install --import-export
-# or: php artisan vendor:publish --tag=alfakit-import-export-migrations
+php artisan vendor:publish --tag=alfakit-import-export-migrations
 php artisan migrate
 ```
+
+In an app where AlfaKit is already installed, publish the migration as above. `alfakit:install --import-export` runs the whole installer again with the migration added: use it only for a new install, together with the mode flag you install with (`--starter-kit`, `--standalone`); run without a mode flag in a starter kit app, it adds the admin panel's own Vite entry and stylesheet to the kit.
 
 The completion notifications are [database notifications](../notifications/overview), so the panel needs `->databaseNotifications()` and a `notifications` table (`php artisan make:notifications-table`).
 

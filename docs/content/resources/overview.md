@@ -5,7 +5,9 @@ description: 'CRUD for an Eloquent model: form, table, pages and more.'
 
 # Resources
 
-A resource describes how one Eloquent model is managed. Generate one with:
+A resource describes how one Eloquent model is managed. Resources live in a panel, so they work the same in **Admin panel** mode and **inside a starter kit** (where their pages render in your app's layout and sidebar); standalone mode has no resources, see [Outside panels](../standalone/overview) for tables and forms in your own pages.
+
+The model and its table must exist first (see the [Quick start](../getting-started/quick-start#the-models)). Generate a resource with:
 
 ```bash
 php artisan make:alfakit-resource Post --generate --view --soft-deletes
@@ -257,10 +259,10 @@ Register configurations with `make($key)`, next to or instead of the plain class
 $panel->resources([
     OrderResource::class,                                                          // /orders
     OrderResource::make('archived')->archived()->navigationLabel('Archived orders'), // /orders/archived
-    OrderResource::make('returns')->slug('returns'),                                 // /returns
+    OrderResource::make('returns')->slug('returns')->navigationLabel('Returns'),    // /returns
 ]);
 ```
 
-Keys may contain letters, numbers, dashes and underscores and must be unique per resource. Each registration gets its own routes and navigation item. Pages, actions, forms and tables of a registration (including their internal requests) run with its configuration active, and `getUrl()` stays within it; link to another one with `getUrl(configuration: 'archived')`, or run code as another one with `OrderResource::withConfiguration('archived', fn () => …)`.
+Keys may contain letters, numbers, dashes and underscores and must be unique per resource. Each registration gets its own routes and navigation item; give each one its own navigation label, or two items read "Orders". `OrderResource::class` here is the same registration that `discoverResources()` already makes, so listing it again is harmless. Pages, actions, forms and tables of a registration (including their internal requests) run with its configuration active, and `getUrl()` stays within it; link to another one with `getUrl(configuration: 'archived')`, or run code as another one with `OrderResource::withConfiguration('archived', fn () => …)`.
 
 Configured registrations are not part of `$panel->getResources()` (use `getResourceConfigurations()` or `getResourceRegistrations()`), and global search, clusters and `getModelResource()` only use the plain registration.

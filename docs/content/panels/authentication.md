@@ -61,12 +61,14 @@ class User extends Authenticatable implements CanAccessPanel
     public function canAccessPanel(Panel $panel): bool
     {
         return match ($panel->getId()) {
-            'admin' => $this->is_admin,
+            'admin' => (bool) $this->is_admin, // a column of your own; the method must return a bool
             default => true,
         };
     }
 }
 ```
+
+In a [starter kit panel](../getting-started/starter-kits) your app's own login (Fortify) signs users in, and AlfaKit's login, registration, password reset, email verification and profile pages on this page are off (call them after `->starterKit()` to bring one back). `canAccessPanel()` still decides who may open the panel: users it refuses get a 403 on its pages, and the panel's links, header components and dashboard widgets are hidden from them on your own pages. It runs on every page of the app there (the navigation is shared), so an exception in it breaks your whole app, not just the panel.
 
 ## Guest access
 

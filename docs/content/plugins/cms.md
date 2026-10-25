@@ -20,8 +20,9 @@ This part is for the people who write the website. You don't need to know anythi
 3. Type a **title**. The address of the page is filled in for you; you can change it.
 4. Under **Content**, click **Add block** and pick what you want: a big heading (**Hero**), text, a picture, a gallery, questions and answers, a video… Each block says in one line what it is for.
 5. Drag blocks by their handle to change the order. Use the copy button to duplicate a block, and **Hide from visitors** in the block's menu to keep it without showing it to visitors (**Show to visitors** brings it back).
+6. Click **Create**. A new page starts with the **Status** _Draft_ (pick _Published_ to put it online straight away, and turn on **Home page** to serve it at the site root). The editor then opens with the buttons described below.
 
-Your work is **saved automatically as a draft** while you type ("All changes saved" appears next to **Live preview**). Nothing is visible to visitors until you publish.
+Once the page exists, your work is **saved automatically as a draft** while you type ("All changes saved" appears next to **Live preview**). Nothing is visible to visitors until you publish.
 
 ### Seeing it before visitors do
 
@@ -59,6 +60,8 @@ Turn on **Show advanced settings** to see **Search and sharing**. It shows how t
 ### Editing from the website
 
 If your site shows the **editing bar**, you'll see it at the bottom of every page while you're signed in: **Edit this page** takes you straight to the editor, **View draft** shows unpublished changes, **Back to dashboard** returns to the admin. The arrow button tucks the bar away.
+
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
 
 ## Installation
 
@@ -485,7 +488,8 @@ import '../css/alfakit.css' // panel mode: the stylesheet alfakit:install create
 
 createAlfakit({
     pages: { 'Alfakit/CmsPage': CmsPage },
-    components: { 'cms:block:pricing': PricingBlock },
+    // Your own blocks (see Custom blocks), once you have written them:
+    // components: { 'cms:block:pricing': PricingBlock },
 })
 ```
 
@@ -582,6 +586,7 @@ Every ability goes through the plugin's `authorize()` closure when you set one, 
 
 ```php
 use AlfaSix\AlfakitCms\Models\Page;
+use App\Models\User;
 
 CmsPlugin::make()->authorize(fn (string $ability, string $model, ?Model $record, ?User $user): bool => match (true) {
     $model === Page::class && $ability === 'publish' => $user?->hasRole('editor-in-chief') ?? false,

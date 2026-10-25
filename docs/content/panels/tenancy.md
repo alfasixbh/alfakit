@@ -19,6 +19,40 @@ $panel->tenant(Team::class, slugAttribute: 'slug', ownershipRelationship: 'team'
 
 The tenant menu takes the same entries as the [user menu](navigation#user-menu): actions (links or with modals, run in the current tenant), groups as nested arrays and keyed overrides of the built-in entries `profile` (tenant profile), `register` (tenant registration) and `billing` (the billing page of `tenantBillingProvider()`).
 
+## The tenant model
+
+Any Eloquent model can be the tenant. The examples on this page use a `Team` with a `slug` and a `team_user` pivot (the [Teams plugin](../plugins/teams) ships a complete one, with members, roles and invitations):
+
+```php
+Schema::create('teams', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('slug')->unique();
+    $table->timestamps();
+});
+
+Schema::create('team_user', function (Blueprint $table) {
+    $table->foreignId('team_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+});
+```
+
+```php
+class Team extends Model
+{
+    protected $guarded = [];
+
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+}
+```
+
+The user's side is a `teams()` relationship (`return $this->belongsToMany(Team::class);`), used below.
+
+In a [starter kit panel](../getting-started/starter-kits) tenancy works the same; `<AlfakitTenantSwitcher />` in your app header is the tenant menu.
+
 ## The user model
 
 ```php

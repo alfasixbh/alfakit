@@ -65,3 +65,30 @@ describe('navigation group flyouts in the collapsed sidebar', () => {
     expect(container.querySelector('[data-nav-flyout]')).toBeNull()
   })
 })
+
+it('renders two navigation items with the same label without a duplicate React key', () => {
+  const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+  withNavigation([
+    {
+      label: 'Shop',
+      collapsible: false,
+      items: [
+        { label: 'Orders', url: '/admin/orders' },
+        { label: 'Orders', url: '/admin/archive/orders' },
+      ],
+    },
+  ] as PanelSchema['navigation'])
+
+  render(
+    <Wrapper>
+      <SidebarProvider>
+        <AppSidebar />
+      </SidebarProvider>
+    </Wrapper>,
+  )
+
+  expect(screen.getAllByRole('link', { name: 'Orders' })).toHaveLength(2)
+  expect(errors.mock.calls.some((call) => String(call[0]).includes('same key'))).toBe(false)
+  errors.mockRestore()
+})

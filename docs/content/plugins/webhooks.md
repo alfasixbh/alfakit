@@ -19,6 +19,8 @@ description: Outgoing webhooks managed in the panel, with signed queued deliveri
 
 Everything is built from AlfaKit's resources, tables, forms, infolists and actions, so it renders in React, Vue and Svelte; there is no frontend package. It uses Laravel's HTTP client and queues and has no other dependencies.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Installation
 
 ```bash
@@ -44,6 +46,7 @@ The auto-disable notification is a database notification: create Laravel's `noti
 
 ```php
 use AlfaSix\AlfakitWebhooks\WebhooksPlugin;
+use App\Models\User;
 
 $panel->plugin(
     WebhooksPlugin::make()
@@ -57,6 +60,10 @@ $panel->plugin(
         ->authorize(fn (User $user): bool => $user->is_admin),
 );
 ```
+
+`$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
+
+`Customer` stands for one of your own Eloquent models (import it); leave `modelEvents()` out until you have one.
 
 Labels and descriptions can be closures, resolved when they are shown, so they follow the user's language: `'order.paid' => fn () => __('webhooks.events.order_paid')`. The labels of `modelEvents()` (":model created") are translated by the plugin, with the model's label from your `models` translation group.
 

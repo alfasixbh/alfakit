@@ -17,13 +17,15 @@ description: Browse Spatie Laravel Activitylog activities with a resource, a rel
 
 Everything is built from AlfaKit's resources, tables, infolists and actions, so it renders in React, Vue and Svelte; there is no frontend package.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where **Activity log** is listed in the app sidebar. The resource and the relation manager are panel pieces; Spatie's logging itself runs everywhere, [outside panels](../standalone/overview) too.
+
 ## Installation
 
 ```bash
 composer require alfasix/alfakit-activity-log
 ```
 
-Install Spatie's package as its documentation describes (publish and run the `activity_log` migration), and log your models:
+Install Spatie's package as its documentation describes (publish and run the `activity_log` migration: `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-migrations"`, then `php artisan migrate`), and log your models:
 
 ```php
 use Spatie\Activitylog\Models\Concerns\LogsActivity;

@@ -587,7 +587,7 @@ IconPicker::make('logo')->allowCustomSvg(); // also accept pasted SVG markup
 
 The popover has a search box (`searchable(false)` hides it), a set filter when there is more than one set, and a grid of icons. Searching runs on the server through the same authorised options endpoint as searchable selects, `perPage()` icons at a time (default 96): scrolling to the end of the grid or pressing "Load more icons" fetches the next page, so the browser never downloads a whole set (Lucide has about 1,900 icons, Material Design Icons over 7,000). Lucide's alias names are searched too (`home` finds `house`). The picker's code is loaded the first time one is shown.
 
-Keyboard: the arrow keys move through the grid (left and right follow the reading direction), Home and End jump to the first and last icon, Enter picks and Escape closes. The grid is a listbox driven from the search box, and every icon is named by its value for screen readers.
+Keyboard: the arrow keys move through the grid (left and right follow the reading direction), Home and End jump to the first and last icon, Enter picks the highlighted icon (press an arrow key first: nothing is highlighted after typing a search) and Escape closes. The grid is a listbox driven from the search box, and every icon is named by its value for screen readers.
 
 `sets()` accepts `lucide`, the prefix of a set registered with `Icons::iconify()` or `Icons::registerSet()` with a directory, and `heroicon-o` / `heroicon-s` / `heroicon-m` / `heroicon-c` (Heroicon names, drawn as their Lucide equivalent unless a real Heroicons set is registered). Closure sets can't be listed; put their names in `allowedIcons()`. `allowIcons()` and `disallowIcons()` are aliases of `allowedIcons()` and `exclude()`.
 

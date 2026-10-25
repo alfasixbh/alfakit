@@ -17,7 +17,7 @@ New installs can do all of this with one flag:
 php artisan alfakit:install --ssr
 ```
 
-It writes `resources/js/alfakit/ssr.tsx` (`ssr.ts` for Vue and Svelte), points `vite.config` at it and adds a `build:ssr` script. To set it up by hand, follow the steps below.
+It writes `resources/js/alfakit/ssr.tsx` (`ssr.ts` for Vue and Svelte), points `vite.config` at it and adds a `build:ssr` script. To set it up by hand, follow the steps below. `--ssr` sets up the admin panel's entry only: combined with `--starter-kit` or `--standalone` it currently does nothing (those pages render through your app's own Inertia entry).
 
 ### 1. The SSR entry
 
@@ -30,8 +30,9 @@ import { createAlfakitServer } from '@alfakit/react/server'
 
 createServer(
     createAlfakitServer({
-        components: { 'map-picker': MapPicker },
-        pages: { 'Custom/Reports': ReportsPage },
+        // The same components and pages as in app.tsx, for example:
+        // components: { 'map-picker': MapPicker },
+        // pages: { 'Custom/Reports': ReportsPage },
     }),
 )
 ```

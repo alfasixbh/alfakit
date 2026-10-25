@@ -118,7 +118,7 @@ function TopNavMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-48">
         {items.map((item) => (
-          <DropdownMenuItem key={item.label} asChild>
+          <DropdownMenuItem key={item.url ?? item.label} asChild>
             <Link
               {...extraProps(item.extraAttributes, cn('w-full', item.active && 'font-medium'))}
               href={item.url ?? '#'}
@@ -150,7 +150,7 @@ function TopNavGroup({ group }: { group: NavigationGroupSchema }) {
     return (
       <>
         {group.items.map((item) => (
-          <TopNavLink key={item.label} item={item} />
+          <TopNavLink key={item.url ?? item.label} item={item} />
         ))}
       </>
     )
@@ -181,7 +181,7 @@ function MobileNav({ onNavigate }: { onNavigate: () => void }) {
             .flatMap((item) => [item, ...(item.children ?? [])])
             .map((item) => (
               <Link
-                key={item.label}
+                key={item.url ?? item.label}
                 href={item.url ?? '#'}
                 onClick={onNavigate}
                 data-active={item.active ? 'true' : undefined}

@@ -24,6 +24,8 @@ class Dashboard extends BaseDashboard
 }
 ```
 
+In a [starter kit panel](../getting-started/starter-kits#widgets-on-your-dashboard) there is no dashboard page: the panel's widgets show on your app's `/dashboard` through `<AlfakitWidgets>`, with the `getWidgets()` and `getColumns()` of a registered `Dashboard` page.
+
 ## Customizable dashboards
 
 Let every user arrange their own dashboard: reorder widgets, resize them, hide them, add more from a library and go back to your layout at any time.
@@ -44,7 +46,7 @@ php artisan vendor:publish --tag=alfakit-dashboard-migrations
 php artisan migrate
 ```
 
-The dashboard shows an **Edit dashboard** button. In edit mode each widget gets a toolbar:
+The dashboard shows an **Edit dashboard** button (on panel dashboards; `<AlfakitWidgets>` on a starter kit's `/dashboard` doesn't offer editing yet). In edit mode each widget gets a toolbar:
 
 - a drag handle: drag it with the pointer, or focus it and use the arrow keys (left and right follow the reading direction, so they swap in right-to-left languages), Home and End. Each move is announced to screen readers.
 - a size picker with the spans the widget allows,

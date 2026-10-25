@@ -7,6 +7,8 @@ description: Layout, navigation, page headers, surfaces, inputs, buttons, tables
 
 Every theme is a combination of the options below. Override any of them on a panel, or combine them into [your own theme](themes#your-own-theme).
 
+Like themes, these options apply to admin panels only; a starter kit panel and components outside panels follow your app's own styles (see [Themes](themes)).
+
 ```php
 $panel->design(
     layout: 'rail',        // sidebar | topbar | rail
@@ -77,6 +79,8 @@ The bar is a renderer component: replace it everywhere with `createAlfakit({ com
 ## Density, radius and fonts
 
 ```php
+use AlfaSix\Alfakit\Theming\FontProvider;
+
 $panel
     ->density('compact')                       // comfortable | compact
     ->radius('0.5rem')                         // any CSS length; 0 for sharp corners

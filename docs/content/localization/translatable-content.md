@@ -16,7 +16,7 @@ TextInput::make('title')
 RichEditor::make('body')->translatable(locales: ['en', 'ar', 'fr']),
 ```
 
-The languages default to the panel's [`locales()`](overview). Pass `locales:` as codes, `code => label` pairs or `Locale` objects to choose others for one field.
+The languages default to the panel's [`locales()`](overview), in admin panels and starter kits alike. [Outside panels](../standalone/overview) there is no panel, so a field offers only the app's current language until you pass `locales:`. Pass `locales:` as codes, `code => label` pairs or `Locale` objects to choose others for one field.
 
 ## State and storage
 
@@ -54,10 +54,10 @@ TextInput::make('title')
 
 ## Displaying translations
 
-Tables and infolists show whatever the attribute returns. With spatie, `TextColumn::make('title')` shows the current locale's value; for an array-cast column without spatie, format it yourself:
+Tables and infolists show whatever the attribute returns. With spatie, `TextColumn::make('title')` shows the current locale's value. For an array-cast column without spatie, pick the language from the record yourself (a text column treats an array state as a list and formats each value on its own, so `formatStateUsing()` receives strings, not the array):
 
 ```php
-TextColumn::make('title')->formatStateUsing(fn (?array $state) => $state[app()->getLocale()] ?? $state['en'] ?? null);
+TextColumn::make('title')->getStateUsing(fn (Post $record) => $record->title[app()->getLocale()] ?? $record->title['en'] ?? null);
 ```
 
 ## Editing language for the whole page

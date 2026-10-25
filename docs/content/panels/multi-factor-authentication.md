@@ -23,6 +23,8 @@ $panel
 
 The profile page shows a section per method with **Set up** and **Remove** buttons. A user who has set up several methods can switch between them on the challenge page.
 
+In a [starter kit panel](../getting-started/starter-kits#two-factor-authentication) sign-in is your app's, so `multiFactorAuthentication()` is ignored there: use the starter kit's own two-factor settings (Fortify), which protect AlfaKit's pages too.
+
 ## The user model
 
 Each method needs a contract on your user model. The `InteractsWith…` traits implement them with columns on the users table:

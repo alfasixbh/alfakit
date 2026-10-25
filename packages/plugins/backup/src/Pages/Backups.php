@@ -181,7 +181,9 @@ class Backups extends Page
                     ->label(__('alfakit-backup::backup.actions.download.label'))
                     ->icon('download')
                     ->color('gray')
-                    ->url(static fn (array $record): string => static::getDownloadUrl($record['disk'], $record['path'])),
+                    // A plain link, not an Inertia visit: an Inertia link fetches the archive with XHR
+                    // and throws it away, so the browser never downloads it.
+                    ->url(static fn (array $record): string => static::getDownloadUrl($record['disk'], $record['path']), shouldOpenInNewTab: true),
                 Action::make('delete')
                     ->label(__('alfakit-backup::backup.actions.delete.label'))
                     ->icon('trash-2')

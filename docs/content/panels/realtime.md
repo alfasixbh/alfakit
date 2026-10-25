@@ -15,6 +15,8 @@ Everything runs on [Laravel broadcasting](https://laravel.com/docs/broadcasting)
 
 Real-time features are **off by default**. While they are off, AlfaKit registers no channel, route or model observer and loads nothing in the browser.
 
+It works the same on a [starter kit panel](../getting-started/starter-kits): `alfakit:realtime` imports Echo in your app's own entry (`resources/js/app.*`), presence, edit conflicts and live tables work on AlfaKit's pages, and the bell in your app header updates live.
+
 ## Setup
 
 ```bash

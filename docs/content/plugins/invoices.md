@@ -18,6 +18,8 @@ description: Invoices, quotes, credit notes and receipts with exact money, taxes
 
 Everything in the panel is built from AlfaKit components (a resource with a table repeater, actions, infolists and widgets), so it renders in React, Vue and Svelte. There is no frontend package.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Installation
 
 ```bash
@@ -61,6 +63,7 @@ composer require barryvdh/laravel-dompdf
 use AlfaSix\AlfakitInvoices\Enums\InvoiceType;
 use AlfaSix\AlfakitInvoices\Enums\Rounding;
 use AlfaSix\AlfakitInvoices\InvoicesPlugin;
+use App\Models\User;
 
 $panel
     ->currency('BHD')
@@ -79,6 +82,10 @@ $panel
             ->dashboardWidgets(),
     );
 ```
+
+`$user->can_bill` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->can_bill`.
+
+`Customer` and `Team` stand for your own models (import them): `customers()` lists who you bill, and `Team` is your panel's tenant model. Without tenancy, drop the `?Team $tenant` parameter; with neither model yet, leave `customers()` and `seller()` out: the form then has the customer's details typed in.
 
 This registers two resources:
 

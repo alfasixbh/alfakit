@@ -7,15 +7,19 @@ description: Settings pages backed by Spatie Laravel Settings.
 
 `alfasix/alfakit-settings` builds panel pages that edit a [Spatie Laravel Settings](https://github.com/spatie/laravel-settings) class: the form is filled from the settings and the save button writes them back. It mirrors Filament's `filament/spatie-laravel-settings-plugin`.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where settings pages are listed in the app sidebar like other panel pages. Settings pages are panel pages, so there is no [standalone](../standalone/overview) version; read the values anywhere with `app(GeneralSettings::class)`.
+
 ## Installation
 
 ```bash
 composer require alfasix/alfakit-settings
 ```
 
-Install Spatie's package as its documentation describes (publish and run the `settings` migration for the database repository) and create a settings class with its settings migration:
+Install Spatie's package as its documentation describes (publish and run the `settings` migration for the database repository) and create a settings class, `app/Settings/GeneralSettings.php`, with its settings migration:
 
 ```php
+namespace App\Settings;
+
 use Spatie\LaravelSettings\Settings;
 
 class GeneralSettings extends Settings
@@ -31,13 +35,29 @@ class GeneralSettings extends Settings
 }
 ```
 
+```bash
+php artisan vendor:publish --provider="Spatie\LaravelSettings\LaravelSettingsServiceProvider" --tag="migrations"
+php artisan make:settings-migration CreateGeneralSettings
+```
+
+```php
+// database/settings/…_create_general_settings.php
+public function up(): void
+{
+    $this->migrator->add('general.site_name', 'My site');
+    $this->migrator->add('general.maintenance_mode', false);
+}
+```
+
+Then `php artisan migrate`.
+
 ## Creating a settings page
 
 ```bash
 php artisan make:alfakit-settings-page ManageGeneral GeneralSettings
 ```
 
-writes `app/Alfakit/Pages/ManageGeneral.php` (in a panel folder when the app has several panels; `--panel=admin` picks it). The second argument is the settings class: a base name means `App\Settings\{Name}`, or pass the full class name. If the class exists, the form gets a field per typed public property (`Toggle` for `bool`, numeric `TextInput` for `int` and `float`, `TagsInput` for `array`, `TextInput` otherwise, required unless nullable). If it doesn't, the command creates it in `app/Settings` with the group from `--group` (default: the snake-cased name, `general`) and leaves an example field to replace; add properties and a settings migration (`php artisan make:settings-migration`).
+writes `app/Alfakit/Pages/ManageGeneral.php` (in a panel folder when the app has several panels; `--panel=admin` picks it). The second argument is the settings class: a base name means `App\Settings\{Name}`, or pass the full class name. If the class exists, the form gets a field per typed public property (`Toggle` for `bool`, numeric `TextInput` for `int` and `float`, `TagsInput` for `array`, `TextInput` otherwise, required unless nullable). If it doesn't, the command creates it in `app/Settings` with the group from `--group` (default: the snake-cased name, `general`) and a commented-out example field, so the page shows an empty form without a save button until you add properties, a settings migration (`php artisan make:settings-migration`) and their fields.
 
 Without the second argument the settings class is derived from the page name: `ManageFooter` uses `FooterSettings`. `--force` overwrites existing files. Publish the stubs with `php artisan vendor:publish --tag=alfakit-settings-stubs` to change what is generated.
 
@@ -73,6 +93,8 @@ Pages you don't discover can be registered through the plugin, which can also pu
 
 ```php
 use AlfaSix\AlfakitSettings\SettingsPlugin;
+use App\Alfakit\Pages\ManageFooter;
+use App\Alfakit\Pages\ManageGeneral;
 
 $panel->plugin(
     SettingsPlugin::make()

@@ -11,7 +11,7 @@ Every panel page has these shortcuts:
 | --------------------------------- | ----------------------------------------------------------------------------- |
 | <kbd>⌘K</kbd> / <kbd>Ctrl+K</kbd> | Open the [command palette](command-palette.md) (`globalSearchKeyBindings()`). |
 | <kbd>/</kbd>                      | Focus the table search.                                                       |
-| <kbd>G</kbd> then <kbd>D</kbd>    | Go to the dashboard.                                                          |
+| <kbd>G</kbd> then <kbd>D</kbd>    | Go to the dashboard (in a starter kit: your app's `/dashboard`).              |
 | <kbd>?</kbd>                      | Show the shortcuts overlay.                                                   |
 
 Panel commands add theirs with `shortcut()`, and actions keep their `keyBindings()`:
@@ -23,6 +23,8 @@ Action::make('publish')->keyBindings(['mod+shift+p'])->action(fn (Post $record) 
 ```
 
 A binding is up to three steps separated by spaces. Each step is optional modifiers and a key: `mod` (⌘ on macOS, Ctrl elsewhere), `ctrl`, `alt`, `shift`, `meta`, then a letter, digit, punctuation (`?`, `/`), `f1`–`f12` or a named key (`enter`, `escape`, `arrowup`…). Shortcuts without <kbd>Ctrl</kbd>, <kbd>⌘</kbd> or <kbd>Alt</kbd> don't fire while the user types in a field or a rich editor.
+
+In a [starter kit](../getting-started/starter-kits) these shortcuts, command shortcuts and the overlay work on AlfaKit's pages; on your app's own pages only the palette's ⌘K / Ctrl+K is bound.
 
 ## The overlay
 

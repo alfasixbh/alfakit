@@ -97,7 +97,7 @@ const linkClass =
                 </p>
                 <Link
                   v-for="item in group.items.flatMap((entry) => [entry, ...(entry.children ?? [])])"
-                  :key="item.label"
+                  :key="item.url ?? item.label"
                   :href="item.url ?? '#'"
                   :data-active="item.active ? 'true' : undefined"
                   class="hover:bg-accent data-[active=true]:bg-accent flex items-center gap-2 rounded-md px-2 py-2 font-medium [&_svg]:size-4"
@@ -133,7 +133,7 @@ const linkClass =
               :items="group.items"
               :active="group.items.some(isActive)"
             />
-            <template v-for="item in group.items" v-else :key="item.label">
+            <template v-for="item in group.items" v-else :key="item.url ?? item.label">
               <TopNavMenu
                 v-if="item.children && item.children.length > 0"
                 :label="item.label"

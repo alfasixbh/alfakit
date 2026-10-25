@@ -50,7 +50,7 @@ Some slots render once per item in the browser: `TABLE_HEADER_CELL` once per col
 ```php
 $panel
     ->slot(Slot::TABLE_HEADER_CELL, view('hints.title'), when: ['column' => 'title'])
-    ->slot(Slot::MODAL_SCHEMA_BEFORE, '<p class="text-sm">This cannot be undone.</p>', when: ['action' => ['delete', 'forceDelete']]);
+    ->slot(Slot::MODAL_SCHEMA_BEFORE, '<p class="text-sm">The record moves to the archive.</p>', when: ['action' => ['archive', 'edit']]);
 
 Slots::register(Slot::TABLE_HEADER_CELL, '<span>€</span>', when: ['column' => ['price', 'total']]);
 ```
@@ -152,23 +152,23 @@ Simple (auth) pages:
 
 Tables, widgets and modals:
 
-| Constant                                                 | Where                                                                        |
-| -------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `TABLE_HEADER_BEFORE` / `TABLE_HEADER_AFTER`             | Around every table's heading, description and actions                        |
-| `TABLE_TOOLBAR_BEFORE` / `TABLE_TOOLBAR_AFTER`           | Above and below every table's toolbar                                        |
-| `TABLE_TOOLBAR_START` / `TABLE_TOOLBAR_END`              | In every table's toolbar                                                     |
-| `TABLE_TOOLBAR_SEARCH_BEFORE` / `_AFTER`                 | Around every table's search field                                            |
-| `TABLE_TOOLBAR_REORDER_TRIGGER_BEFORE` / `_AFTER`        | Around the reorder button                                                    |
-| `TABLE_TOOLBAR_GROUPING_SELECTOR_BEFORE` / `_AFTER`      | Around the grouping selector                                                 |
-| `TABLE_TOOLBAR_COLUMN_MANAGER_TRIGGER_BEFORE` / `_AFTER` | Around the column manager button                                             |
-| `TABLE_FILTER_INDICATORS`                                | After the active filter indicators                                           |
-| `TABLE_SELECTION_INDICATOR_ACTIONS_BEFORE` / `_AFTER`    | Around "Select all" / "Deselect all" in the selection bar                    |
-| `TABLE_CONTENT_BEFORE` / `TABLE_CONTENT_AFTER`           | Before and after the rows (or empty state), above the pagination             |
-| `TABLE_HEADER_CELL`                                      | In every column header, after the label; data `column` (use `when`)          |
-| `TABLE_WIDGET_START` / `TABLE_WIDGET_END`                | Above and below the table of every table widget                              |
-| `MODAL_SCHEMA_BEFORE` / `MODAL_SCHEMA_AFTER`             | Above and below the fields of every action modal; data `action` (use `when`) |
+| Constant                                                 | Where                                                                                                                                                                      |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TABLE_HEADER_BEFORE` / `TABLE_HEADER_AFTER`             | Around every table's heading, description and actions                                                                                                                      |
+| `TABLE_TOOLBAR_BEFORE` / `TABLE_TOOLBAR_AFTER`           | Above and below every table's toolbar                                                                                                                                      |
+| `TABLE_TOOLBAR_START` / `TABLE_TOOLBAR_END`              | In every table's toolbar                                                                                                                                                   |
+| `TABLE_TOOLBAR_SEARCH_BEFORE` / `_AFTER`                 | Around every table's search field                                                                                                                                          |
+| `TABLE_TOOLBAR_REORDER_TRIGGER_BEFORE` / `_AFTER`        | Around the reorder button                                                                                                                                                  |
+| `TABLE_TOOLBAR_GROUPING_SELECTOR_BEFORE` / `_AFTER`      | Around the grouping selector                                                                                                                                               |
+| `TABLE_TOOLBAR_COLUMN_MANAGER_TRIGGER_BEFORE` / `_AFTER` | Around the column manager button                                                                                                                                           |
+| `TABLE_FILTER_INDICATORS`                                | After the active filter indicators                                                                                                                                         |
+| `TABLE_SELECTION_INDICATOR_ACTIONS_BEFORE` / `_AFTER`    | Around "Select all" / "Deselect all" in the selection bar                                                                                                                  |
+| `TABLE_CONTENT_BEFORE` / `TABLE_CONTENT_AFTER`           | Before and after the rows (or empty state), above the pagination                                                                                                           |
+| `TABLE_HEADER_CELL`                                      | In every column header, after the label; data `column` (use `when`)                                                                                                        |
+| `TABLE_WIDGET_START` / `TABLE_WIDGET_END`                | Above and below the table of every table widget                                                                                                                            |
+| `MODAL_SCHEMA_BEFORE` / `MODAL_SCHEMA_AFTER`             | Above and below the fields of every action modal that has fields (not confirmation-only modals such as Delete; use `modalDescription()` there); data `action` (use `when`) |
 
-Slots exist in every layout and every renderer, including the top navigation and the icon rail. Plugins add slot content the same way, from their `register()` method, or with `Slots::register()`.
+Slots exist in every layout and every renderer, including the top navigation and the icon rail. In a [starter kit](../getting-started/starter-kits) your app's layout replaces AlfaKit's chrome, so the slots of that chrome (`HEAD_*`, `SIDEBAR_*`, `TOPBAR_*`, `USER_MENU_*` and the other sidebar, top bar and menu slots) render nothing; content, page, resource, table and modal slots work as in an admin panel. [Components outside panels](../standalone/customizing) have no panel slots: put extra content in your own page around `<AlfakitComponent>`. Plugins add slot content the same way, from their `register()` method, or with `Slots::register()`.
 
 Filament hooks without a slot: `PAGE_SUB_NAVIGATION_SELECT_*` (the side sub-navigation stacks above the content on phones instead of becoming a select) and `ActionsRenderHook::MODAL_CUSTOM_CONTENT_*` (use `Action::modalContent()` / `modalContentFooter()`). `TABLE_FILTER_INDICATORS` and `TABLE_HEADER_CELL` add content next to the indicators and the header label rather than replacing them. Filament's `TOOLBAR_TOGGLE_COLUMN_TRIGGER_*` hooks map to the column manager trigger slots. `alfakit:migrate-from-filament` turns `->renderHook()` and `FilamentView::registerRenderHook()` calls into slots and reports hooks it cannot map.
 

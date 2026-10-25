@@ -5,6 +5,8 @@ description: Toasts and database notifications.
 
 # Notifications
 
+Toasts and database notifications work the same in admin panels and starter kit panels (where the bell is `<AlfakitNotifications />` in your header, see [Inside a starter kit](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header)). Outside panels, toasts come from `<AlfakitToaster />` (mounted automatically unless your layout places one); database notifications need a panel. See [Widgets and notifications outside panels](../standalone/widgets-and-notifications).
+
 ```php
 use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Notifications\Actions\Action;

@@ -46,7 +46,7 @@ RichEditor::make('content')->toolbarButtons([
 - **Columns**: `grid` asks for a number of columns (2 to 6) and inserts a column layout with an empty paragraph in each column; `gridAddColumnBefore` / `gridAddColumnAfter` add a column next to the one the cursor is in (up to 6), `gridDeleteColumn` deletes it with its content (a two-column grid is unwrapped), and `gridDelete` removes the layout the cursor is in. With `grid` in the toolbar these four buttons show in a floating toolbar next to the grid, unless `floatingToolbars()` sets a `grid` one. Stored as `<div data-type="grid" class="alfakit-grid alfakit-grid-cols-2"><div data-type="gridColumn" class="alfakit-grid-column">…</div>…</div>`; columns stack on small screens.
 - **Lead and small text**: `lead` toggles a larger intro paragraph (`<p class="alfakit-lead">`; Filament's `<p class="lead">` is read too), `small` toggles `<small>` text.
 - The `alfakit-grid*` and `alfakit-lead` styles ship in the panel's CSS (`themes.css`). When you render content outside a panel, copy those rules into your own stylesheet. The sanitiser only keeps `alfakit-*` classes, so the strict defaults are unchanged.
-- **Text colour** opens a palette. Colours are stored as `<span data-color="#dc2626" style="color: #dc2626">`.
+- **Text colour** opens a palette of named swatches under the toolbar. Colours are stored as `<span data-color="#dc2626" style="color: rgb(220, 38, 38);">`: `data-color` keeps the value from `textColors()`, and the browser writes the inline style as `rgb()`.
 
 ```php
 RichEditor::make('content')

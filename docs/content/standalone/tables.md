@@ -54,6 +54,8 @@ class OrdersTable extends \AlfaSix\Alfakit\Standalone\Table
 }
 ```
 
+The example assumes your own `Customer` model with an `orders()` relationship (and `User::customer()`), an `Order` model with `number`, `total` (in cents), `status` cast to a string-backed `OrderStatus` enum, `isCancellable()` and `cancel()` methods, and an `Export` job. Swap in your models; nothing else in the table depends on them.
+
 ## Parameters
 
 `make()` takes named parameters. Each one is assigned to a **public property of the same name** and passed to `mount()`; models are stored in the context token by route key and resolved again (through the property's type) on every internal request:
@@ -62,6 +64,15 @@ class OrdersTable extends \AlfaSix\Alfakit\Standalone\Table
 Route::get('/account/orders', fn (Request $request) => Inertia::render('Account/Orders', [
     'orders' => OrdersTable::make(['customer' => $request->user()->customer]),
 ]));
+```
+
+```tsx
+// React: resources/js/pages/Account/Orders.tsx
+import { AlfakitComponent, type StandaloneComponentSchema } from '@alfakit/react'
+
+export default function Orders({ orders }: { orders: StandaloneComponentSchema }) {
+    return <AlfakitComponent component={orders} />
+}
 ```
 
 Because the property is typed `Customer`, a token can only ever resolve a `Customer`. Enums and scalars are passed as they are. `record` and `tenant` are reserved: `record` binds a record (see [Forms](forms)), `tenant` sets the tenant for every internal request of the component (`->tenant($team)`).

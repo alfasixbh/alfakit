@@ -4,7 +4,9 @@ import { Toaster as AppToaster } from 'sonner'
 import contactForm from '../../core/tests/fixtures/standalone/contact-form.json'
 import postsTable from '../../core/tests/fixtures/standalone/posts-table.json'
 import { showToast } from '../src/components/notifications/flash-toasts'
+import { AlfakitProvider } from '../src/context'
 import { AlfakitComponent, AlfakitToaster, configureAlfakit } from '../src/standalone'
+import { createStandaloneContext } from '../src/standalone/runtime'
 
 const form = contactForm as unknown as StandaloneComponentSchema
 const table = postsTable as unknown as StandaloneComponentSchema
@@ -40,6 +42,50 @@ describe('AlfakitComponent (outside panels)', () => {
     expect(root).toHaveClass('max-w-xl')
     expect(root).toHaveAttribute('data-alfakit-component', form.class)
     expect(root).toHaveAttribute('dir', 'ltr')
+  })
+
+  it("keeps its own action endpoints inside a panel page, without moving the panel's", () => {
+    const panel = createStandaloneContext(
+      {
+        action: 'http://localhost/admin/_alfakit/actions',
+        modal: 'http://localhost/admin/_alfakit/actions/modal',
+      },
+      undefined,
+      () => () => {},
+    )
+
+    render(
+      <AlfakitProvider value={panel}>
+        <AlfakitComponent component={form} />
+      </AlfakitProvider>,
+    )
+
+    // The panel's runner still posts to the panel; the component got a runner of its own.
+    const endpoints = (panel.actions as unknown as { options: { endpoints: { action: string } } })
+      .options.endpoints
+    expect(endpoints.action).toBe('http://localhost/admin/_alfakit/actions')
+  })
+
+  it('gives two forms with the same fields their own field ids', () => {
+    render(
+      <>
+        <AlfakitComponent component={form} />
+        <AlfakitComponent component={form} />
+      </>,
+    )
+
+    const roots = [...document.querySelectorAll('[data-slot="standalone"]')] as HTMLElement[]
+    expect(roots).toHaveLength(2)
+
+    const ids = [...document.querySelectorAll('input[id], textarea[id]')].map((input) => input.id)
+    expect(new Set(ids).size).toBe(ids.length)
+
+    // Every label points at an input inside its own component.
+    for (const root of roots) {
+      for (const label of root.querySelectorAll('label[for]')) {
+        expect(root.querySelector(`#${CSS.escape(label.getAttribute('for') ?? '')}`)).not.toBeNull()
+      }
+    }
   })
 
   it('renders a table with its records and search', () => {

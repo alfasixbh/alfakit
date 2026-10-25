@@ -4,6 +4,7 @@
     FormStore,
     applyFormRefresh,
     formActionsVisible,
+    formIdPrefix,
     formRefreshFor,
     isImplicitSubmit,
     isLeavingVisit,
@@ -23,6 +24,7 @@
     useAlfakitProps,
     usePageSchema,
     usePanel,
+    useStandalone,
     useT,
   } from '../../context.svelte'
   import { useStore } from '../../hooks/store.svelte'
@@ -38,6 +40,8 @@
   const t = useT()
   // The token is re-issued on every response; keep the latest without resetting the form.
   const token = $derived(usePageSchema()?.token ?? '')
+  const standalone = useStandalone()
+  const instanceId = $props.id()
 
   /** A page form: its state lives in a FormStore, and its buttons are actions that post the current values through the action endpoint. */
   const store = provideForm(
@@ -46,6 +50,8 @@
         new FormStore(block, {
           token,
           component: block.component,
+          // Several standalone components can share a page (and field names): own field ids.
+          idPrefix: standalone ? formIdPrefix(`form-${instanceId}`) : undefined,
           refreshUrl: panel.endpoints.schemaRefresh,
           optionsUrl: panel.endpoints.schemaOptions,
           validateUrl: panel.endpoints.schemaValidate,

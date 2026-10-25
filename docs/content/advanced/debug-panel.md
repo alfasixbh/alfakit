@@ -7,6 +7,8 @@ description: A developer drawer in the top bar with the resolved schema tree, vi
 
 While you develop, a bug icon in the top bar opens a drawer that shows what the server resolved for the current page:
 
+In a [starter kit](../getting-started/starter-kits) AlfaKit's pages have no top bar of their own, so the button floats in the bottom corner of AlfaKit's pages instead.
+
 - **Schema** — the page tree as PHP built it: header actions, the form (with its operation), infolist, table (columns, filters, record, bulk and empty-state actions), widgets and relation managers. Hidden nodes are struck through with the reason (`hidden()`, `visible(false)`, `hiddenOn(edit)`, `toggled off`, `canView() returned false`), unauthorised actions, widgets and relation managers get a red badge, and fields show their state path.
 - **Form** — the live state of every form store on the page (page forms, filter forms, modal forms): values, dirty paths, validation errors and whether a live refresh is running.
 - **Requests** — every internal request the renderer made through the core HTTP helper (`/_alfakit/*`: actions, live refreshes, select options, uploads, table cells), newest first, with status, browser time, server time from the `Server-Timing` header, request and response sizes, and both bodies.

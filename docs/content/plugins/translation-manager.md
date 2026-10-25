@@ -19,6 +19,8 @@ description: Let non-developers edit your app's translations in the panel, with 
 
 The grid renders in React, Vue and Svelte (registry key `translation-manager`), right to left included.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Installation
 
 ```bash
@@ -43,12 +45,15 @@ composer require laravel/ai
 
 ```php
 use AlfaSix\AlfakitTranslationManager\TranslationManagerPlugin;
+use App\Models\User;
 
 $panel->plugin(
     TranslationManagerPlugin::make()
         ->authorize(fn (User $user): bool => $user->is_admin),
 );
 ```
+
+`$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
 
 Access is **denied by default**. Without `authorize()`, the `manageTranslations` gate decides, and nobody passes while it isn't defined:
 
@@ -59,6 +64,8 @@ Gate::define('manageTranslations', fn (User $user): bool => $user->hasRole('tran
 ```
 
 The check runs for the page, every header action and every request of the grid.
+
+The page lists the texts of your `lang` directory. A new Laravel app has none (the framework's own texts stay in `vendor`), so the grid starts empty: run `php artisan lang:publish` to get Laravel's `auth`, `pagination`, `passwords` and `validation` texts, add your own files, or use **Scan the code** (under **More**) to list the keys your code uses.
 
 ## Where edits are stored
 

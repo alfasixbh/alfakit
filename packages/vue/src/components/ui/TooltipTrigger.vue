@@ -5,7 +5,10 @@ const props = defineProps<TooltipTriggerProps>()
 </script>
 
 <template>
-  <TooltipTrigger v-bind="props" data-slot="tooltip-trigger">
+  <!-- With as-child the child keeps its own data-slot (an action's `button`). -->
+  <TooltipTrigger
+    v-bind="{ ...(props.asChild ? {} : { 'data-slot': 'tooltip-trigger' }), ...props }"
+  >
     <slot />
   </TooltipTrigger>
 </template>

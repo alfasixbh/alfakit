@@ -10,6 +10,8 @@ A page can carry a secondary navigation next to (or above) its content. Alfakit 
 - **Clusters** group pages and resources under one item of the main navigation. The cluster's pages are listed in the sub-navigation and their URLs start with the cluster's slug.
 - **Record sub-navigation** links the pages of one record to each other: view, edit and any custom record page of a resource.
 
+Both work the same in a [starter kit panel](../getting-started/starter-kits): the cluster is one item in your app sidebar and the sub-navigation renders inside your layout.
+
 ## Clusters
 
 Generate a cluster:

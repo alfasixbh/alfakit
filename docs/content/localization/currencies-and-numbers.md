@@ -5,7 +5,7 @@ description: Money in any currency with the right precision and symbol, locale-a
 
 # Currencies, numbers and dates
 
-All formatting is driven by ICU, through PHP's intl extension on the server and the browser's `Intl` APIs in the frontend. Every ISO 4217 currency and every locale works without configuration tables. The Bahraini dinar has three decimals, the yen has none, the euro symbol goes after the amount in German, and Arabic can use Arabic-Indic digits.
+All formatting is driven by ICU, through PHP's intl extension on the server and the browser's `Intl` APIs in the frontend. Every ISO 4217 currency and every locale works without configuration tables. The Bahraini dinar has three decimals, the yen has none, the euro symbol goes after the amount in German, and Arabic can use Arabic-Indic digits. Which digits a language gets is ICU's choice: current ICU writes plain `ar` with Latin digits (`1,234.50 €`) and regional variants such as `ar_EG` or `ar_SA` with Arabic-Indic ones (`١٬٢٣٤٫٥٠ €`); list the variant in `locales()` if you want them.
 
 ## The panel's currency
 
@@ -18,7 +18,7 @@ $panel->currency('EUR');
 $panel->currency(fn () => auth()->user()?->team?->currency ?? 'USD');
 ```
 
-Without it, AlfaKit uses `config('alfakit.currency')` and then Laravel's `Number::defaultCurrency()`. The panel currency is also applied to Laravel's `Number` helper for the request, so `Number::currency($amount)` in your own code agrees with the panel.
+Without it, AlfaKit uses `config('alfakit.currency')` and then Laravel's `Number::defaultCurrency()`. [Outside panels](../standalone/overview) there is no panel currency, so components use that config value (or the currency you pass to each column and field), and numbers and dates follow the app's language. The panel currency is also applied to Laravel's `Number` helper for the request, so `Number::currency($amount)` in your own code agrees with the panel.
 
 ## Showing money
 
@@ -89,7 +89,7 @@ Currency::fromMinorUnits(12345, 'BHD');    // "12.345", exact
 `numeric()` formats with the user's locale by default:
 
 ```php
-TextColumn::make('views')->numeric();                 // 1,234,567 · 1.234.567 · ١٬٢٣٤٬٥٦٧
+TextColumn::make('views')->numeric();                 // en 1,234,567 · de 1.234.567 · ar_EG ١٬٢٣٤٬٥٦٧
 TextColumn::make('rating')->numeric(decimalPlaces: 1);
 ```
 

@@ -20,7 +20,16 @@ function Tooltip({ ...props }: ComponentProps<typeof TooltipPrimitive.Root>) {
 }
 
 function TooltipTrigger({ ...props }: ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+  // With asChild the child keeps its own data-slot (an action's `button`, which the
+  // button-shape and touch-target CSS select).
+  // (The key must be left out, not set to undefined: Slot passes it on and the child's own
+  // `{...props}` would erase its data-slot.)
+  return (
+    <TooltipPrimitive.Trigger
+      {...(props.asChild ? {} : { 'data-slot': 'tooltip-trigger' })}
+      {...props}
+    />
+  )
 }
 
 function TooltipContent({

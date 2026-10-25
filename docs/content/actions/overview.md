@@ -7,6 +7,8 @@ description: Buttons that link, confirm, collect input and run code.
 
 An action is a button. It can link somewhere, open a modal (confirmation and/or form) and run server-side logic — with authorisation, validation, lifecycle hooks and notifications.
 
+Actions work on panel pages, in a [starter kit](../getting-started/starter-kits) and, outside panels, in your own Inertia pages (see [Actions and infolists](../standalone/actions-and-infolists)). The example below shows most options at once; `Post::due()`, `isPublished()` and `archive()` stand for your own model's methods, and it needs `use AlfaSix\Alfakit\Actions\Action;` and `use AlfaSix\Alfakit\Support\Enums\Size;`.
+
 ```php
 Action::make('archive')
     ->label('Archive')->icon('archive')->color('warning')->size(Size::Small)

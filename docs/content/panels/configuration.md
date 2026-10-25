@@ -24,6 +24,15 @@ class AdminPanelProvider extends PanelProvider
 
 Create additional panels with `php artisan make:alfakit-panel shop` — each gets its own provider, routes (`/shop`) and, by default, its own namespace (`App\Alfakit\Shop\…`).
 
+## In a starter kit, and outside panels
+
+A [starter kit panel](../getting-started/starter-kits) (`->starterKit()`) renders inside your app's layout, so only part of this page applies there:
+
+- **Applies:** identity and routing (`path()`, `middleware()`, `authMiddleware()`, `routes()`), components (resources, pages, widgets, discovery), features (database notifications, global search, plugins, tenancy, transactions, authorization, error notifications), `unsavedChangesAlerts()`, `spa()` / `spaUrlExceptions()`, and languages, currency and timezone (users switch language with [`<AlfakitLanguageSwitcher />`](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header)).
+- **Doesn't apply:** AlfaKit's own sign-in pages (off unless you call them after `starterKit()`), design and themes, branding (name, logo, favicon, font; `colors()` only feeds the `success`, `warning` and `info` statuses), light and dark mode (your appearance setting owns it), the layout options (sidebar, top bar, breadcrumbs, user menu: your layout owns them) and the credit line (not shown).
+
+Components [outside panels](../standalone/overview) are served by a hidden `standalone` panel that you don't configure; their options live on the components themselves.
+
 ## Identity and routing
 
 | Method                                                | Description                                                                                                                                                            |
@@ -112,14 +121,6 @@ $panel->defaultThemeMode(ThemeMode::Dark)   // Light, Dark or System (default)
 `defaultThemeMode()` is the scheme users start with until they pick one with the switcher. With `themeSwitcher(false)` the switcher disappears and every user gets the default mode; dark mode support stays on (unlike `darkMode(false)`). `darkMode(isForced: true)` still wins over both. Both `darkMode()` arguments take closures, resolved per request: `->darkMode(fn (): bool => ! request()->is('*/print/*'))`. The server resolves the mode for every request (the `HandleInertiaRequests` middleware reads the `alfakit_appearance` cookie through `$panel->resolveAppearance()`), so the root view renders the first paint in the right scheme, including with SSR; you don't need to call it yourself.
 
 Colours accept any CSS colour and override the theme's (`--primary`, `--destructive`, …); pass a closure to pick them per request (`->colors(fn (?Team $tenant) => [...])`), or use `Colors::register()` for every panel. `gray` tints the neutral tokens, and any other name becomes a colour you can use with `->color('brand')`; see [Themes](../design/themes#colours). `font()` loads the font from Bunny Fonts automatically, or from your own stylesheet with `font('Inter', url: asset('fonts/inter.css'))`. See [Themes](../design/themes).
-
-Every panel shows a small "Developed by Alfa Six" line with the Alfa Six emblem at the bottom of every page, including the sign-in pages. It links to the company that builds AlfaKit, and the emblem is navy in light mode and white in dark mode. It costs nothing and helps the project; you are free to remove it:
-
-```php
-$panel->credit(false);                       // remove it
-$panel->credit(fn () => ! auth()->user()->isCustomer()); // or decide per request
-$panel->creditUrl('https://alfasixbh.com');  // the link target
-```
 
 ## Layout
 

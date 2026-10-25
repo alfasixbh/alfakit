@@ -173,6 +173,24 @@ describe('keyboard shortcuts', () => {
     expect(within(overlay).getByText('Delete order')).toBeInTheDocument()
   })
 
+  it('sends G then D to dashboardUrl when the panel has one (a starter kit app dashboard)', () => {
+    setPageProps({
+      alfakit: { ...panel, ...paletteProps, url: '/admin/posts', dashboardUrl: '/dashboard' },
+      page,
+    })
+
+    render(
+      <Wrapper>
+        <KeyboardShortcuts />
+      </Wrapper>,
+    )
+
+    fireEvent.keyDown(document.body, { key: 'g' })
+    fireEvent.keyDown(document.body, { key: 'd' })
+
+    expect(router.visit).toHaveBeenCalledWith('/dashboard')
+  })
+
   it('does not run shortcuts while typing in a field', () => {
     const trigger = vi.spyOn(actions, 'trigger').mockResolvedValue()
 

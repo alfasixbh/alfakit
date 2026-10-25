@@ -11,13 +11,21 @@ The **Health** page shows the latest results of every check as a card (label, sh
 
 Everything is built from AlfaKit's pages, tables, widgets and actions, so it renders in React, Vue and Svelte; there is no frontend package.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where **Health** is listed in the app sidebar and `dashboardWidget()` shows on the app's own `/dashboard`. It is a panel page, so there is nothing to use [outside panels](../standalone/overview).
+
 ## Installation
 
 ```bash
 composer require alfasix/alfakit-health
 ```
 
-Install Spatie's package as its documentation describes: register your checks, configure a result store (`health.result_stores`; the page reads the first one) and schedule `health:check`.
+Install Spatie's package as its documentation describes: register your checks (in a service provider's `boot()`, for example `AppServiceProvider`), configure a result store (`health.result_stores`; the page reads the first one) and schedule `health:check`. The default store is the database, so publish and run its migration:
+
+```bash
+php artisan vendor:publish --tag="health-config"
+php artisan vendor:publish --tag="health-migrations"
+php artisan migrate
+```
 
 ```php
 use Spatie\Health\Checks\Checks\DatabaseCheck;

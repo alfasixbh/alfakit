@@ -15,13 +15,15 @@ description: Upload, show and order Spatie Media Library files in forms, tables 
 
 The three render as the built-in `FileUpload`, `ImageColumn` and `ImageEntry` in React, Vue and Svelte, so there is no frontend package to install.
 
+**Works in** an [admin panel](../getting-started/installation), a [starter kit](../getting-started/starter-kits) panel and [outside panels](../standalone/overview) (a standalone form bound to a record with `make(['record' => $product])`: the field saves its media after `submit()`).
+
 ## Installation
 
 ```bash
 composer require alfasix/alfakit-media-library
 ```
 
-Install the media library as its documentation describes (publish and run its `media` migration), and prepare your model:
+Install the media library as its documentation describes (publish and run its `media` migration: `php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"`, then `php artisan migrate`), run `php artisan storage:link` so previews on the `public` disk load (Herd and Valet serve `storage/app/public` without the link, a real server doesn't), and prepare your model:
 
 ```php
 use Spatie\MediaLibrary\HasMedia;

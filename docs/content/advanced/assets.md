@@ -28,6 +28,14 @@ Assets::register([
 - `Js::make('analytics')->html('<script>…</script>')` renders inline markup instead of a file (no path needed, nothing to publish). `<script>` tags without a `nonce` get the CSP nonce, unlike Filament where you add it yourself; plain JavaScript without a tag is wrapped in one. It takes a string, an `Htmlable` or a closure, and the markup is trusted, so never build it from user input.
 - Asset ids may only contain letters, numbers, dots, dashes and underscores, and packages look like `vendor/name`, so a registration can't write outside `public/vendor/alfakit`.
 
+### In a starter kit
+
+A [starter kit](../getting-started/starter-kits) app renders AlfaKit pages with its own root view (`resources/views/app.blade.php`), which doesn't print these tags, so `alfakit:install --starter-kit` adds this line to its `<head>`, before `@vite` (marked `alfakit:assets`). Apps installed before 0.1.9 get it by running `php artisan alfakit:install --starter-kit --no-npm` again (with the `--panel` you installed with), or by adding the line yourself:
+
+```blade
+{!! \AlfaSix\Alfakit\Support\Assets\Assets::renderTags(alfakit()->getCurrentPanel()?->getId(), \Illuminate\Support\Facades\Vite::cspNonce()) !!}
+```
+
 ## Publishing on deploy
 
 `alfakit:install` adds `@php artisan alfakit:upgrade` to the `post-autoload-dump` scripts of `composer.json`, so every `composer install` or `update` republishes the files (and clears AlfaKit's caches). Without it, run `php artisan alfakit:assets` (or `alfakit:upgrade`) in your deploy script. `public/vendor/alfakit` is generated: add it to `.gitignore`.

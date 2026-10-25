@@ -32,6 +32,18 @@ void createAlfakit({
 })
 ```
 
+In a [starter kit](../getting-started/starter-kits) install there is no `resources/js/alfakit/app.*`: the command copies the file and prints the registration to add to `resources/js/pages/Alfakit/Page.tsx` (`Page.vue`, `Page.svelte`) yourself, under `components` (the `discover` glob there registers `components/text-input.tsx` as `text-input`, not as `TextInput`):
+
+```tsx
+import { TextInputField } from '../../alfakit/components/text-input'
+
+export default createStarterKitPage({
+    layout: AppLayout,
+    components: { TextInput: TextInputField },
+    // discover: …
+})
+```
+
 Rebuild the frontend and the panel renders your copy. The command is idempotent: running it again leaves your edited copy alone and only adds missing registrations; `--force` overwrites the files.
 
 ## Notes

@@ -6,6 +6,50 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.9] - 2026-10-25
+
+### Upgrading from 0.1.8
+
+- Update the packages: `composer update "alfasix/*"`, `npm install @alfakit/react@latest` (or `@alfakit/vue`, `@alfakit/svelte`), `php artisan alfakit:upgrade`, `npm run build`.
+- Starter kit apps: run `php artisan alfakit:install --starter-kit --no-npm --panel=<your panel id>` again. It adds `Assets::renderTags()` to `resources/views/app.blade.php` (plugin stylesheets and scripts on starter kit pages) and changes nothing else that exists. With `->pwa()`, add the `@alfakitPwa` directive to the `<head>` of `app.blade.php` yourself.
+- Known from 0.1.8: `alfakit:remove teams` leaves the `HasTeams` trait and tenancy contracts that `alfakit:add teams` added to the user model.
+
+### Added
+
+- `@alfakitPwa`: a Blade directive for a starter kit's `app.blade.php` that renders a `pwa()` panel's manifest link, `theme-color` and iOS icon, which only AlfaKit's own root view added, so a starter kit panel couldn't be installed as an app.
+
+### Fixed
+
+- React panels went blank under `npm run dev` as soon as the app had its own JSX (a generated field, `withApp`): the panel's root view now adds Vite's React refresh preamble.
+- Pages with their own `$component` (custom pages, app pages) couldn't be opened in a starter kit ("Page not found"); they render through `Alfakit/Page` there.
+- Billing's `requiresSubscription()`: a starter kit's `/dashboard` widgets stayed loading forever for a user who must subscribe first; `Panel::hideStarterKitDashboardWhen()` leaves them off (Billing uses it).
+- Editable table cells (toggle, checkbox, select, text input) are disabled on records the user may not `update`, as the server refuses that edit; a switch used to flip and stay flipped after a 403. (A switch whose save fails for another reason still stays flipped until the page reloads; that frontend half is open.)
+- Outside panels, a table's spreadsheet **Save changes**, saved views and `deferLoading()` components had no endpoint to post to; standalone components now have them.
+- The standalone installer and the installation docs printed a `Route::inertia('/contact', …ContactForm::make())` route, which `php artisan optimize` can't cache (every request then failed); they now use a closure route.
+- `alfakit:install --starter-kit` adds `Assets::renderTags()` to the kit's `app.blade.php`, so plugin stylesheets and scripts (`Assets::register()`) load on starter kit pages.
+- `alfakit:install --import-export` in an app that already has AlfaKit only publishes the migrations; in a starter kit app it also added an admin panel's entry.
+- `alfakit:setup` run again after the npm step was declined or interrupted said "already set up" while the build failed; it runs the installer again when the renderer's npm package is missing. In starter-kit mode it skips the brand step (the kit's theme applies).
+- A custom undo whose action is no longer authorised shows "This can no longer be undone." instead of a raw 403 page.
+- `make:alfakit-table --model` no longer writes an unused `public Model $model;` or a wrong `make([...])` hint.
+- App auth kit: after `alfakit:auth` in a starter kit, the kit's Security settings answered 500 (`Route [password.confirm] not defined`).
+- A custom resource page with a fixed path listed after `/{record}` in `getPages()` was a 404; fixed paths are registered first.
+- Tables: a custom filter form passes every field to `query()` as `$data` (`null` when empty), as in Filament; the documented date range filter failed with "Undefined array key".
+- Teams: **Accept invitation** (and Decline) failed with "Schema [infolist] not found".
+- Billing: the plans page's Subscribe / Start trial / Manage billing are buttons again. Backup: **Download** saves the archive. Calendar: `$recordTitleAttribute` names the record in event modals ("View Standup", not "View 1").
+- Docs: every page of the docs was followed as written in React (and the most-used pages in Vue and Svelte) in a starter kit, an AlfaKit panel and outside panels; each page now says which setups it applies to, and missing steps, imports, models and wrong examples were corrected across Getting started, Panels, Resources, Forms, Tables, Actions, Localization, Design, Outside panels, Adapters, every plugin and Advanced.
+- A long action modal heading ("Delete Hello Svelte World edited") ran under the modal's close button; the header now keeps room for it.
+- Starter kits: the debug panel couldn't be opened, because its button lives in AlfaKit's top bar, which a starter kit doesn't render; AlfaKit pages in a starter kit now show it as a floating button (local, with `app.debug` on).
+- Starter kit and standalone pages: success, warning and info badges failed WCAG AA (success 2.87:1, warning 1.97:1); `standalone.css` now has the same status colours and foregrounds as the panel's stylesheet.
+- Two navigation items with the same label (in different groups, or a resource and a custom item) logged React "same key" errors and could render the wrong item: navigation items are keyed by URL first (React and Vue sidebar, bottom navigation and top navigation; Svelte already keyed them uniquely).
+- Standalone components' own toasts stayed left to right in a right-to-left language; the automatic toaster now follows the component's direction.
+- On any list tab but the default one, every row action with a modal failed ("The request failed"; the modal request answered 404): a record action's modal request didn't send the table state, so the server resolved the record without the tab's query. Modal requests now send it for record actions too (`@alfakit/core`).
+- Starter kits: **G then D** went to the panel's first page (a starter kit panel has no dashboard page); it now goes to the app's `/dashboard`, where the panel's widgets are. The panel schema has a new `dashboardUrl` for it.
+- Action buttons with a tooltip or a keyboard shortcut (the form's ⌘S submit, `authorizationTooltip()`) lost `data-slot="button"` to the tooltip trigger, so `buttons: 'pill'` / `'square'` and the 44 px phone touch targets skipped them. The tooltip trigger no longer replaces its child's data-slot.
+- Two standalone forms on one page with the same field names (the same form twice, or two forms with an `email`) rendered the same field ids, so a label focused the other form's input and errors were announced for the wrong field. Each standalone form now has its own id prefix (`@alfakit/react`, `@alfakit/vue`, `@alfakit/svelte`).
+- An `<AlfakitComponent>` inside a panel page (a custom page rendering a standalone form) shared the panel's action runner, so its submit and actions posted to the panel's `/admin/_alfakit/actions` with the component's token and got a 403. It now has its own runner (its own endpoints) and keeps the panel's registry and translator (`@alfakit/react`, `@alfakit/vue`, `@alfakit/svelte`).
+- `make:alfakit-plugin` wrote `"php": "^8.3"` into the plugin's `composer.json`, though AlfaKit needs PHP 8.4; it now requires the same PHP as AlfaKit (`^8.4`).
+- `alfakit:install --starter-kit` run again (the 0.1.7 → 0.1.8 upgrade step) reported "added <AlfakitSearch />, <AlfakitNotifications />, <AlfakitCopilot /> and <AlfakitLanguageSwitcher />" when it only added the language switcher; it now names only what it added.
+
 ## [0.1.8] - 2026-10-22
 
 ### Added
@@ -1148,7 +1192,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.8...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.9...HEAD
+[0.1.9]: https://github.com/alfasixbh/alfakit/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/alfasixbh/alfakit/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/alfasixbh/alfakit/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/alfasixbh/alfakit/compare/v0.1.5...v0.1.6

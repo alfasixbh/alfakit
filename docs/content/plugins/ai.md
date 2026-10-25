@@ -30,6 +30,8 @@ The safety rules are the same everywhere:
 
 The copilot is the only new frontend component (`ai:copilot`, lazy-loaded in React, Vue and Svelte). Everything else is built from AlfaKit's existing actions, modals and fields.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Installation
 
 ```bash
@@ -60,6 +62,8 @@ $panel->plugin(
         ->pricing(['gpt-4.1-mini' => ['input' => 0.4, 'output' => 1.6]]),
 );
 ```
+
+`Customer` stands for one of your own models (import it, or redact by table name: `'customers.notes'`). `->mcp()` needs `laravel/mcp` (see above); leave it out until it is installed.
 
 | Option                                         | Default                        | Description                                                                                     |
 | ---------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------- |
@@ -100,8 +104,12 @@ The plugin never breaks when AI isn't set up. `AiPlugin::isConfigured(?AiFeature
 Nothing is sent and no call is logged; the modals still open, the copilot answers with that message, and no provider error or 500 ever reaches the user. By default only the `local` environment shows the setup hint; choose who sees it in other environments:
 
 ```php
+use App\Models\User;
+
 AiPlugin::make()->setupHintVisible(fn (User $user): bool => $user->is_admin)
 ```
+
+`$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
 
 ### Sample answers (`demoResponses()`)
 

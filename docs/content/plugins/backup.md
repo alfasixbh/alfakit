@@ -15,13 +15,15 @@ The **Backups** page shows:
 
 The cards and the table refresh while the page is open. Everything is built from AlfaKit's pages, tables, widgets and actions, so it renders in React, Vue and Svelte; there is no frontend package.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where **Backups** is listed in the app sidebar. It is a panel page, so there is nothing to use [outside panels](../standalone/overview).
+
 ## Installation
 
 ```bash
 composer require alfasix/alfakit-backup
 ```
 
-Install and configure Spatie's package as its documentation describes (`config/backup.php`: the destination disks, the monitored backups and their health checks). Then register the plugin:
+Install and configure Spatie's package as its documentation describes (`php artisan vendor:publish --provider="Spatie\Backup\BackupServiceProvider"` writes `config/backup.php`: the destination disks, the monitored backups and their health checks; the defaults back up to the `local` disk). Then register the plugin:
 
 ```php
 use AlfaSix\AlfakitBackup\BackupPlugin;
@@ -29,7 +31,7 @@ use AlfaSix\AlfakitBackup\BackupPlugin;
 $panel->plugin(BackupPlugin::make());
 ```
 
-The page is at `/{panel}/backups`. Run a queue worker: backups are created by a queued job, never during the request.
+The page is at `/{panel}/backups`. Run a queue worker (`php artisan queue:work`, or `composer dev` in a starter kit): backups are created by a queued job, never during the request.
 
 ## Options
 

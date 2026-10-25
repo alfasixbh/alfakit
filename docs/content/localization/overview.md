@@ -7,6 +7,8 @@ description: Run a panel in any number of languages, with automatic language det
 
 AlfaKit panels can be shown in any language, including right-to-left ones. Every built-in string goes through Laravel's translator, dates use Carbon's localized formats, and numbers and money use PHP's intl extension. Nothing is hardcoded to English or to a region.
 
+This page is about panels, including [starter kit](#in-a-starter-kit) panels; for components in your own pages see [Outside panels](#outside-panels).
+
 ## Enable languages
 
 List the languages a panel offers with `locales()`. Codes follow Laravel's style (`en`, `pt_BR`, `zh_Hant`); hyphenated tags such as `pt-BR` work too.
@@ -96,6 +98,8 @@ class User extends Authenticatable implements HasLocalePreference
 $panel->persistLocaleUsing(fn (User $user, string $locale) => $user->update(['locale' => $locale]));
 ```
 
+`update()` only writes mass-assignable attributes, so add `locale` to the model's fillable list: `#[Fillable(['name', 'email', 'password', 'locale'])]` in a new Laravel 13 app, or `protected $fillable` in older ones. Otherwise the pick is silently not saved.
+
 `HasLocalePreference` is the same contract Laravel uses for mail and notifications, so emails go out in the user's language too.
 
 To add a language field to a profile or user form, use the panel's languages as options:
@@ -141,6 +145,10 @@ A [`starterKit()` panel](../getting-started/starter-kits) renders inside your ap
 ### Hide the menu
 
 The menu shows automatically when a panel has more than one locale. Use `->localeSwitcher(false)` to hide it everywhere, including the sign-in pages, for example when the language comes only from the user's profile; `->languageSwitcher('hidden')` hides it inside the panel only (a starter kit's `<AlfakitLanguageSwitcher />` stays).
+
+### Outside panels
+
+[Standalone components](../standalone/overview) have no panel, so `locales()`, the language menu and the order above do not apply to them. They render in the app's current language (`app()->getLocale()`, set by `APP_LOCALE` or your own locale middleware) and mirror for right-to-left languages; the built-in strings come from the same language packs. Switching languages is up to your app.
 
 ## Translate your own labels
 

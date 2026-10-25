@@ -16,6 +16,7 @@ import {
 import { usePage } from '@inertiajs/react'
 import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
 import { setToasterId, showToast } from '../components/notifications/flash-toasts'
+import { DebugPanelSlot } from '../components/panel/debug-panel-slot'
 import { Slot } from '../components/panel/slot'
 import {
   AlfakitProvider,
@@ -181,7 +182,14 @@ export function AlfakitStarterKitRoot({
         lang={panel?.localization?.tag}
         className="contents"
       >
-        <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>{children}</AlfakitRoot>
+        <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>
+          {children}
+          {/* The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
+              render: float it in the corner instead (nothing without `alfakitDebug`). */}
+          <div data-slot="starter-kit-debug-panel" className="fixed end-16 bottom-4 z-40">
+            <DebugPanelSlot />
+          </div>
+        </AlfakitRoot>
       </div>
     </AlfakitProvider>
   )

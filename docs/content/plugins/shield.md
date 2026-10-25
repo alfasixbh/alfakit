@@ -16,6 +16,8 @@ description: Roles and permissions for panels, built on spatie/laravel-permissio
 
 Everything is built from AlfaKit resources, forms and tables, so it works with the React, Vue and Svelte renderers without extra frontend code.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where **Roles** is listed in the app sidebar. Roles is a panel resource, so it has no [standalone](../standalone/overview) form; the permissions and policies it creates still apply to your app's own pages.
+
 ## Installation
 
 ```bash
@@ -64,6 +66,8 @@ php artisan alfakit-shield:super-admin --user=1 --panel=admin
 ```
 
 Until policies exist, AlfaKit allows every action on a resource (unless the panel uses `strictAuthorization()`), so run `generate` before giving people access.
+
+Policies cover resources. Pages and widgets are only guarded when they use `HasPageShield` / `HasWidgetShield` (see [Pages and widgets](#pages-and-widgets)), and plugin pages have their own switch: a user without any permission still sees **Backups**, **Health**, **Activity log** and settings pages until you set the plugin's `authorize()` (Backup, Health, Activity log) or add `HasPageShield` to your settings pages.
 
 ## Configuration
 
@@ -196,7 +200,7 @@ Publish the stubs with `php artisan vendor:publish --tag=alfakit-shield-stubs` t
 | Command                      |                                                                                                                                                                                                                                                                  |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `alfakit-shield:generate`    | Creates the permissions and policies. `--panel=` (default: every panel using the plugin), `--option=policies\|permissions\|policies_and_permissions`, `--resource=PostResource` (repeatable; class basename or subject), `--force` overwrites existing policies. |
-| `alfakit-shield:super-admin` | Gives a user the super admin role. `--user=` (asked when there are several users), `--panel=`, `--tenant=` on tenant-scoped panels.                                                                                                                              |
+| `alfakit-shield:super-admin` | Gives a user the super admin role. `--user=` (the user's id, not the e-mail address; asked when there are several users), `--panel=`, `--tenant=` on tenant-scoped panels.                                                                                       |
 | `alfakit-shield:install`     | See [Installation](#installation).                                                                                                                                                                                                                               |
 
 ## Tenancy

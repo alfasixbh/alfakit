@@ -9,6 +9,8 @@ description: Pages built from schema components or your own frontend component.
 php artisan make:alfakit-page Settings
 ```
 
+Custom pages work in admin panels and in [starter kit](../getting-started/starter-kits) panels (listed in your app's sidebar). Outside panels, build an ordinary Inertia page with [standalone components](../standalone/overview) instead.
+
 ## Schema-driven pages
 
 ```php
@@ -72,6 +74,8 @@ class Settings extends Page
 }
 ```
 
+`Setting` (with its `sync()` method) and `SystemStats` stand for your own model and widget; a new app has neither. For a ready-made settings store, see the [Settings plugin](../plugins/settings).
+
 Pages compose blocks in this order: header widgets, form, infolist, table, `content()`, footer widgets. Override `getContentBlocks()` to control it.
 
 ## Tables on pages
@@ -114,6 +118,8 @@ export default function Reports({ sales }) {
     )
 }
 ```
+
+Instead of listing it in `createAlfakit({ pages })`, a file in `resources/js/alfakit/pages/` registers itself (`pages/Reports.tsx` is `Pages/Reports`). In a starter kit, pages with their own `$component` can't be opened yet in 0.1.8 (the browser reports "Page not found: Pages/Reports"); use schema-driven pages there.
 
 `PageShell` gives you the app layout, breadcrumbs and header actions; drop it to render a completely custom screen. Use `usePageActionContext()` and `ActionList` to render the page's actions anywhere.
 

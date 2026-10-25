@@ -7,6 +7,8 @@ description: Stats, charts, tables and custom widgets for dashboards and pages.
 
 Widgets render on the dashboard (`->widgets([...])` on the panel) and on any page via `getHeaderWidgets()` / `getFooterWidgets()`.
 
+In a [starter kit](../getting-started/starter-kits#widgets-on-your-dashboard) the dashboard widgets show on your app's `/dashboard` (inside `<AlfakitWidgets>`). Outside panels, list the same widget classes in a `Widgets` component, see [Widgets and notifications outside panels](../standalone/widgets-and-notifications).
+
 ```bash
 php artisan make:alfakit-widget BlogStats --type=stats   # stats | chart | table | custom
 ```

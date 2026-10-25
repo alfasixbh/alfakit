@@ -8,6 +8,7 @@ import {
 import { usePage } from '@inertiajs/vue3'
 import { onMounted, onUnmounted, watch } from 'vue'
 import AlfakitRoot from '../AlfakitRoot.vue'
+import DebugPanelSlot from '../components/panel/DebugPanelSlot.vue'
 import { setToasterId, showToast } from '../components/notifications/flash-toasts'
 import { provideAlfakit } from '../context'
 import { starterKitContext, type StarterKitPageOptions } from './runtime'
@@ -66,6 +67,11 @@ onUnmounted(() => {
   >
     <AlfakitRoot :toaster-id="STARTER_KIT_TOASTER_ID">
       <slot />
+      <!-- The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
+           render: float it in the corner (nothing without `alfakitDebug`). -->
+      <div data-slot="starter-kit-debug-panel" class="fixed end-16 bottom-4 z-40">
+        <DebugPanelSlot />
+      </div>
     </AlfakitRoot>
   </div>
 </template>

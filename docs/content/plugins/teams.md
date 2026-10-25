@@ -20,6 +20,8 @@ description: 'Jetstream-style teams on top of multi-tenancy: members, roles, inv
 
 Everything renders with AlfaKit's own components (forms, tables, sections, modals), so it works in React, Vue and Svelte, in every theme and right to left. There is no frontend package.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Quick start (5 minutes)
 
 **1. Install and migrate.**
@@ -199,6 +201,8 @@ With the [Shield plugin](shield) on the same panel and `permission.teams` on, ea
 ## Teams
 
 ```php
+use App\Models\User;
+
 TeamsPlugin::make()
     ->personalTeams()                                                 // a team for every new user (`Registered` event)
     ->personalTeams(true, fn (User $user): string => "{$user->name}'s workspace")

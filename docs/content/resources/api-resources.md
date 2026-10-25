@@ -96,7 +96,7 @@ class SupplierDataSource extends DataSource
 }
 ```
 
-`records()` receives a `RecordsQuery` with the table's state: `search`, `columnSearches`, `sortColumn`, `sortDirection`, `filters` (each filter's state; read one with `$query->filter('status')`), `page`, `perPage` (`null` when the table shows all), `tab` (the active list tab key), `tenant` and `owner`, plus `offset()`. It can return:
+`records()` receives a `RecordsQuery` with the table's state: `search`, `columnSearches`, `sortColumn`, `sortDirection`, `filters` (each filter's state; `$query->filter('status')` returns its value, `$query->filter('created', 'from')` another key of its state), `page`, `perPage` (`null` when the table shows all), `tab` (the active list tab key), `tenant` and `owner`, plus `offset()`. It can return:
 
 - **The rows** (an array or collection of arrays, objects or models): the table then searches, sorts and pages them in memory, like [`records()`](../tables/records#custom-data) on any table. Fine for a few hundred records.
 - **A `LengthAwarePaginator` (or `Paginator`) of rows** when the source pages itself: the table shows it as is. Apply the search, sort and filters in the source.
@@ -178,6 +178,17 @@ Rename the list parameters with `$parameters` (`['search' => 'q', 'perPage' => '
 public function search(string $search, int $limit): iterable
 {
     return $this->records(new RecordsQuery(search: $search, perPage: $limit));
+}
+```
+
+Calling `records()` like this only narrows the results when `records()` applies `$query->search` itself, as `HttpDataSource` does. A `records()` that returns all its rows for the table to search in memory returns them all here too, so every search would list every record: filter them in `search()` instead:
+
+```php
+public function search(string $search, int $limit): iterable
+{
+    return collect($this->records(new RecordsQuery))
+        ->filter(fn (array $row): bool => str_contains(mb_strtolower($row['name']), mb_strtolower($search)))
+        ->take($limit);
 }
 ```
 

@@ -128,8 +128,14 @@ php artisan alfakit:install --standalone
 It imports `@alfakit/<adapter>/standalone.css` into `resources/css/app.css`, installs the npm renderer, and creates an example `app/Alfakit/Standalone/ContactForm.php` with a `contact` page (`resources/js/pages/contact.tsx`, `Contact.vue` or `Contact.svelte`). The page needs a route, which the installer prints; add it to `routes/web.php` (the page name is `'Contact'` in Vue and Svelte) and open `/contact`:
 
 ```php
-Route::inertia('/contact', 'contact', ['form' => \App\Alfakit\Standalone\ContactForm::make()]);
+use Inertia\Inertia;
+
+Route::get('/contact', fn () => Inertia::render('contact', ['form' => \App\Alfakit\Standalone\ContactForm::make()]));
 ```
+
+Use a closure as shown, not `Route::inertia('/contact', 'contact', [...ContactForm::make()])`: `Route::inertia()` stores its props in the route itself, so `php artisan optimize` (or `route:cache`) can't cache it and every request then fails.
+
+In an app made from a Laravel starter kit, the kit's `resources/js/app.tsx` / `app.ts` wraps every page that is not `Welcome`, `auth/*` or `settings/*` in `AppLayout`, whose user menu needs a signed-in user: open `/contact` signed in, or put the route inside the `auth` middleware group. For a public page, return `null` for it in the `layout` callback of `createInertiaApp()` (as the kit does for `Welcome`); otherwise a guest sees an empty user menu and a `Cannot read properties of null (reading 'name')` error in the console.
 
 In an app that already has a panel, only the stylesheet import is needed. See [Outside panels](../standalone/overview).
 
@@ -156,7 +162,7 @@ AlfaKit follows semantic versioning. Keep the PHP package and the npm renderer o
 
 ```bash
 composer update alfasix/alfakit
-npm update @alfakit/react
+npm update @alfakit/react   # or @alfakit/vue, @alfakit/svelte
 ```
 
 The schema contract between PHP and JavaScript is versioned with the packages, so a mismatched pair can render incomplete UI.

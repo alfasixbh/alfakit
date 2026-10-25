@@ -5,7 +5,7 @@ description: Icon names, Heroicons, custom SVG and image icons, icon sets, Iconi
 
 # Icons
 
-Icons are named with [Lucide](https://lucide.dev/icons) names everywhere in PHP: `->icon('users')`, `$navigationIcon = 'file-text'`, `IconColumn::make('status')->icon('circle-check')`. The renderer loads each icon on demand, so every Lucide icon is available without importing it.
+Icons are named with [Lucide](https://lucide.dev/icons) names everywhere in PHP: `->icon('users')`, `$navigationIcon = 'file-text'`, `IconColumn::make('status')->icon('circle-check')`. The renderer loads each icon on demand, so every Lucide icon is available without importing it. Everything on this page works the same in admin panels, starter kit panels and [components outside panels](../standalone/overview).
 
 Every icon value is resolved on the server by `Icons::resolve()`, which also understands Heroicons, image URLs, inline SVG and registered icon sets (below). Renderers receive one of three things: a Lucide name, an image URL (drawn as a decorative `<img>`) or sanitised `<svg>` markup (drawn inline, sized like any other icon).
 

@@ -133,7 +133,7 @@ function NavSubItem({ item }: { item: NavigationItemSchema }) {
           <CollapsibleContent>
             <SidebarMenuSub>
               {item.children.map((child) => (
-                <NavSubItem key={child.label} item={child} />
+                <NavSubItem key={child.url ?? child.label} item={child} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>
@@ -175,7 +175,7 @@ function NavItem({ item }: { item: NavigationItemSchema }) {
           <CollapsibleContent>
             <SidebarMenuSub>
               {item.children.map((child) => (
-                <NavSubItem key={child.label} item={child} />
+                <NavSubItem key={child.url ?? child.label} item={child} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>
@@ -263,7 +263,7 @@ function NavGroup({ group }: { group: NavigationGroupSchema }) {
     <SidebarGroupContent className={cn(flyout && 'group-data-[collapsible=icon]:hidden')}>
       <SidebarMenu>
         {group.items.map((item) => (
-          <NavItem key={item.label} item={item} />
+          <NavItem key={item.url ?? item.label} item={item} />
         ))}
       </SidebarMenu>
     </SidebarGroupContent>

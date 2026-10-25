@@ -70,7 +70,7 @@ const registrations = computed(() =>
   config.value
     ? JSON.stringify({
         token: page.value?.token ?? '',
-        home: panel.value.url ?? null,
+        home: panel.value.dashboardUrl ?? panel.value.url ?? null,
         commands: (panel.value.commandPalette?.commands ?? []).filter(
           (command) => command.keyBindings?.length && !command.disabled,
         ),

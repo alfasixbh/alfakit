@@ -59,7 +59,7 @@
     config
       ? JSON.stringify({
           token: page?.token ?? '',
-          home: panel.url ?? null,
+          home: panel.dashboardUrl ?? panel.url ?? null,
           commands: (panel.commandPalette?.commands ?? []).filter(
             (command) => command.keyBindings?.length && !command.disabled,
           ),

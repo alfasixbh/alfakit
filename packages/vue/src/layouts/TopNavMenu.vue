@@ -36,7 +36,7 @@ const props = defineProps<{
       <ChevronDownIcon class="opacity-60" />
     </DropdownMenuTrigger>
     <DropdownMenuContent align="start" class="min-w-48">
-      <DropdownMenuItem v-for="item in props.items" :key="item.label" as-child>
+      <DropdownMenuItem v-for="item in props.items" :key="item.url ?? item.label" as-child>
         <Link
           v-bind="item.extraAttributes ?? {}"
           :href="item.url ?? '#'"

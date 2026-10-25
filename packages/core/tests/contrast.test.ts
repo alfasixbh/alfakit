@@ -52,6 +52,27 @@ describe('theme contrast (WCAG 2.1 AA)', () => {
     }
   })
 
+  it("gives starter kit and standalone pages the panel's status colours (standalone.css)", () => {
+    const standalone = read('../standalone.css')
+    const status = [
+      '--success',
+      '--success-foreground',
+      '--warning',
+      '--warning-foreground',
+      '--info',
+      '--info-foreground',
+    ]
+
+    for (const [selector, mode] of [
+      [':root', 'light'],
+      ['.dark', 'dark'],
+    ] as const) {
+      const tokens = tokenBlock(standalone, selector)
+
+      for (const token of status) expect(tokens[token], `${mode} ${token}`).toBe(base[mode][token])
+    }
+  })
+
   const cases = [null, ...themeNames(themes)].flatMap((theme) =>
     (['light', 'dark'] as const).map((mode) => ({ theme, mode })),
   )

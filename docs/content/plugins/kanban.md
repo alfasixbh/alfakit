@@ -9,6 +9,8 @@ description: Kanban boards for any Eloquent model, as resource pages and dashboa
 
 The board renders in React, Vue and Svelte (registry key `kanban`) with no extra JavaScript dependencies. Moves are optimistic: the card moves at once and returns, with the server's reason, when the move is refused. The board works right to left and is announced to screen readers.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel (`KanbanWidget` also shows on the app's own `/dashboard`), and `KanbanWidget` works [outside panels](../standalone/component-kit#kanban-boards-and-calendars) in a `Standalone\Widgets` component with `KanbanPlugin::class` in `alfakit.standalone.plugins`.
+
 ## Installation
 
 ```bash
@@ -77,9 +79,28 @@ public static function getPages(): array
 }
 ```
 
+Registered next to the table, the board has no link of its own: the sidebar opens the resource's index. Add a header action to the list page so users can click through to it (the board's breadcrumbs lead back to the list):
+
+```php
+use AlfaSix\Alfakit\Actions\Action;
+use AlfaSix\Alfakit\Actions\CreateAction;
+
+// ListTasks
+protected function getHeaderActions(): array
+{
+    return [
+        Action::make('board')->label('Board')->icon('kanban')->color('gray')
+            ->url(TaskResource::getUrl('board')),
+        CreateAction::make(),
+    ];
+}
+```
+
+Registered as `'index'`, the board is what the sidebar link opens.
+
 The cards come from the resource's query, so tenancy, global scopes and nested resources apply, and the user needs the resource's `viewAny` ability. With `getFormSchema()` the page has a create action in its header, every column a **+** button that opens the same modal with the column filled in, clicking a card opens a view modal and every card has a menu with view, edit and delete. Without fields, view and edit open the resource's pages when it has them. `content()` components are shown below the board.
 
-The page is titled after the board, "Tasks board" (the resource's plural model label with the translated `alfakit-kanban::kanban.page.title`), with the resource list in the breadcrumbs before it; its sub-navigation label is the same. Set `protected static ?string $title = 'Sprint board';` (and `$navigationLabel` for the sub-navigation) to name it yourself.
+The page is titled after the board, "Tasks board" (the resource's plural model label with the translated `alfakit-kanban::kanban.page.title`), with the resource list in the breadcrumbs before it; its navigation label (in a cluster's or record's sub-navigation) is the same. Set `protected static ?string $title = 'Sprint board';` (and `$navigationLabel` for the sub-navigation) to name it yourself.
 
 ## A board widget
 

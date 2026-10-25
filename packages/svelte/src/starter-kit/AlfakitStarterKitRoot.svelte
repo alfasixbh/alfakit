@@ -8,6 +8,7 @@
   import { page } from '@inertiajs/svelte'
   import { onDestroy, onMount, type Snippet } from 'svelte'
   import AlfakitRoot from '../AlfakitRoot.svelte'
+  import DebugPanelSlot from '../components/panel/DebugPanelSlot.svelte'
   import { setToasterId, showToast } from '../components/notifications/toast'
   import { provideAlfakit, setGlobalAlfakitContext } from '../context.svelte'
   import { starterKitContext, type StarterKitPageOptions } from './runtime'
@@ -65,5 +66,10 @@
 >
   <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>
     {@render children?.()}
+    <!-- The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
+         render: float it in the corner (nothing without `alfakitDebug`). -->
+    <div data-slot="starter-kit-debug-panel" class="fixed end-16 bottom-4 z-40">
+      <DebugPanelSlot />
+    </div>
   </AlfakitRoot>
 </div>

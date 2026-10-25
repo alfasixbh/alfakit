@@ -21,7 +21,7 @@ class PostResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['title', 'excerpt', 'author.name'];   // dotted paths search relationships
+        return ['title', 'slug', 'author.name'];   // columns of the table; dotted paths search relationships
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -41,6 +41,8 @@ class PostResource extends Resource
 The search runs on `getGlobalSearchEloquentQuery()`, which defaults to `getEloquentQuery()` (tenant and parent scoping included). Override it to eager-load what the result details read, or to narrow the results:
 
 ```php
+use Illuminate\Database\Eloquent\Builder;
+
 public static function getGlobalSearchEloquentQuery(): Builder
 {
     return parent::getGlobalSearchEloquentQuery()->with(['author'])->where('status', '!=', 'archived');
@@ -53,13 +55,17 @@ Closing the palette, or navigating to another page, clears the search term and r
 
 ## Result actions
 
-Buttons next to a result, for shortcuts to related pages. Only actions with a URL are shown (nothing runs on the server from the search box); hidden and unauthorised actions are left out.
+Buttons next to a result, for shortcuts to related pages. Every URL must exist: a missing route or page throws and the whole search fails. Only actions with a URL are shown (nothing runs on the server from the search box); hidden and unauthorised actions are left out.
 
 ```php
+use AlfaSix\Alfakit\Actions\Action;
+
 public static function getGlobalSearchResultActions(Model $record): array
 {
     return [
+        // a 'comments' page in getPages(), e.g. ManagePostComments (see Resource pages)
         Action::make('comments')->icon('message-circle')->url(static::getUrl('comments', ['record' => $record])),
+        // your app's own public route for the post
         Action::make('preview')->url(route('posts.show', $record), shouldOpenInNewTab: true),
     ];
 }

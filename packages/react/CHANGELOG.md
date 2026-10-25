@@ -1,5 +1,13 @@
 # @alfakit/react
 
+## 0.1.9
+
+### Patch Changes
+
+- Row action modals work on every list tab; starter kits: the debug panel, "G then D" to the app dashboard and badge contrast; two standalone forms on a page get their own field ids; an `<AlfakitComponent>` in a panel page posts to its own endpoint; tooltips keep the button's `data-slot`; navigation items keyed by URL; modal headers leave room for the close button.
+- Updated dependencies
+  - @alfakit/core@0.1.9
+
 ## 0.1.8
 
 ### Patch Changes

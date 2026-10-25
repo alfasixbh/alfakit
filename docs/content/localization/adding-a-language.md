@@ -39,6 +39,8 @@ return [
 $panel->locales(['en', 'sw']);
 ```
 
+That enables it in an admin panel or a starter kit panel (the header's language switcher lists it too). [Outside panels](../standalone/overview), components follow the app's language, so set `APP_LOCALE=sw` or switch with your own locale middleware.
+
 Nothing else is needed. The direction, native name and first day of the week come from ICU, so `alfakit:lang:add ckb` already produces a right-to-left Central Kurdish panel.
 
 ## Override a few strings
@@ -71,7 +73,7 @@ php artisan alfakit:lang:check
 +--------+------------+------------+---------+--------------+----------+
 ```
 
-Add `-v` to list the keys. The command fails when strings are missing or a translation dropped a `:placeholder`, so it can run in CI. A missing string falls back to English (`app.fallback_locale`), so a half-translated language still works.
+It counts keys, not wording: a scaffold from `alfakit:lang:add` shows 100% while its strings are still English. Add `-v` to list the keys. The command fails when strings are missing or a translation dropped a `:placeholder`, so it can run in CI. A missing string falls back to English (`app.fallback_locale`), so a half-translated language still works.
 
 ## Translations for plugins
 

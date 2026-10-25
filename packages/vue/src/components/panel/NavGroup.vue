@@ -25,7 +25,7 @@ const contentClass = () => cn(flyout() && 'group-data-[collapsible=icon]:hidden'
   <SidebarGroup v-if="!props.group.label" v-bind="attributes()">
     <SidebarGroupContent>
       <SidebarMenu>
-        <NavItem v-for="item in props.group.items" :key="item.label" :item="item" />
+        <NavItem v-for="item in props.group.items" :key="item.url ?? item.label" :item="item" />
       </SidebarMenu>
     </SidebarGroupContent>
   </SidebarGroup>
@@ -36,7 +36,7 @@ const contentClass = () => cn(flyout() && 'group-data-[collapsible=icon]:hidden'
     </SidebarGroupLabel>
     <SidebarGroupContent :class="contentClass()">
       <SidebarMenu>
-        <NavItem v-for="item in props.group.items" :key="item.label" :item="item" />
+        <NavItem v-for="item in props.group.items" :key="item.url ?? item.label" :item="item" />
       </SidebarMenu>
     </SidebarGroupContent>
     <NavGroupFlyout v-if="flyout()" :group="props.group" />
@@ -67,7 +67,7 @@ const contentClass = () => cn(flyout() && 'group-data-[collapsible=icon]:hidden'
       <CollapsibleContent>
         <SidebarGroupContent :class="contentClass()">
           <SidebarMenu>
-            <NavItem v-for="item in props.group.items" :key="item.label" :item="item" />
+            <NavItem v-for="item in props.group.items" :key="item.url ?? item.label" :item="item" />
           </SidebarMenu>
         </SidebarGroupContent>
       </CollapsibleContent>

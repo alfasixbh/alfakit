@@ -49,7 +49,7 @@ class User extends Authenticatable implements CanImpersonate, CanBeImpersonated
 {
     public function canImpersonate(): bool
     {
-        return $this->hasRole(['admin', 'support']);
+        return $this->hasRole(['admin', 'support']); // hasRole() comes from spatie/laravel-permission's HasRoles (Shield); use your own check without it
     }
 
     public function canBeImpersonated(): bool

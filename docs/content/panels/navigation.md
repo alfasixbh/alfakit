@@ -23,7 +23,9 @@ class PostResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::where('status', 'draft')->count();
+        $drafts = static::getModel()::where('status', 'draft')->count();
+
+        return $drafts > 0 ? (string) $drafts : null; // null shows no badge; "0" would show one
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -34,6 +36,8 @@ class PostResource extends Resource
 ```
 
 Hide an item with `protected static bool $shouldRegisterNavigation = false;` or override `shouldRegisterNavigation()`.
+
+In a [starter kit panel](../getting-started/starter-kits) the same items, groups, parent items, badges (deferred ones too) and custom items are listed in your app's sidebar by `<AlfakitNav />`. The user menu, sidebar width, breadcrumbs and avatars on this page belong to AlfaKit's own layout, which a starter kit replaces with yours.
 
 ### Setting navigation options from outside the class
 
@@ -80,6 +84,8 @@ public static function getNavigationLabel(): string|Htmlable
 Order and configure groups on the panel:
 
 ```php
+use AlfaSix\Alfakit\Navigation\NavigationGroup;
+
 $panel->navigationGroups([
     'Blog',
     NavigationGroup::make('Settings')->icon('settings')->collapsed(),
@@ -115,6 +121,8 @@ Group related pages and resources under one item with its own sub-navigation, an
 ## Custom items
 
 ```php
+use AlfaSix\Alfakit\Navigation\NavigationItem;
+
 $panel->navigationItems([
     NavigationItem::make('Analytics')
         ->url('https://analytics.example.com', shouldOpenInNewTab: true)

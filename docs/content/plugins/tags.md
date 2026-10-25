@@ -15,13 +15,15 @@ description: Edit and show Spatie Laravel Tags in forms, tables and infolists.
 
 They render as the built-in `TagsInput`, `TextColumn` and `TextEntry` in React, Vue and Svelte; there is no frontend package.
 
+**Works in** an [admin panel](../getting-started/installation), a [starter kit](../getting-started/starter-kits) panel and [outside panels](../standalone/overview) (a standalone form bound to a record: the tags are synced after `submit()`). Existing tags are offered as the input's suggestions while typing.
+
 ## Installation
 
 ```bash
 composer require alfasix/alfakit-tags
 ```
 
-Install Spatie's package as its documentation describes (publish and run the `tags` and `taggables` migration) and add the trait to your model:
+Install Spatie's package as its documentation describes (publish and run the `tags` and `taggables` migration: `php artisan vendor:publish --provider="Spatie\Tags\TagsServiceProvider" --tag="tags-migrations"`, then `php artisan migrate`) and add the trait to your model:
 
 ```php
 use Spatie\Tags\HasTags;

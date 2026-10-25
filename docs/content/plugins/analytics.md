@@ -20,6 +20,8 @@ description: Privacy-first, cookieless web analytics for your app's public site,
 
 The dashboard is built from AlfaKit's stats, chart and widget components plus a top-list card (`analytics:breakdown`) that every renderer ships, so it renders in React, Vue and Svelte. There are no new Composer or npm dependencies.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Installation
 
 ```bash
@@ -40,6 +42,7 @@ The plugin schedules `alfakit-analytics:aggregate` hourly; make sure the Laravel
 
 ```php
 use AlfaSix\AlfakitAnalytics\AnalyticsPlugin;
+use App\Models\User;
 
 $panel->plugin(
     AnalyticsPlugin::make()
@@ -47,6 +50,8 @@ $panel->plugin(
         ->navigationGroup('Marketing'),
 );
 ```
+
+`$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
 
 Then open **Analytics → Sites**, add a site (name and domain) and copy its snippet.
 

@@ -79,6 +79,12 @@
       parent
         ? {
             ...parent,
+            // Its own action runner (its own endpoints and token), the panel's registry and translator.
+            actions: createStandaloneContext(
+              { action: component.endpoints.action, modal: component.endpoints.modal },
+              components,
+              poll,
+            ).actions,
             registry: createStandaloneRegistry(components, parent.registry),
             poll,
             refresh,
@@ -213,7 +219,7 @@
     </div>
     <ActionModals />
     {#if ownsToaster}
-      <AlfakitToaster claimed />
+      <AlfakitToaster claimed dir={direction} />
     {/if}
   {/if}
 </TooltipProvider>

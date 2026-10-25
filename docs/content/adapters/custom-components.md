@@ -73,7 +73,7 @@ use AlfaSix\Alfakit\Schemas\Components\Component;
 
 class ShippingPanel extends Component
 {
-    protected ?string $type = 'shipping-panel';
+    protected ?string $type = 'ShippingPanel'; // resources/js/alfakit/components/ShippingPanel.tsx registers under it
 
     protected function getSchemaProps(): array { return ['tone' => 'muted']; }
 }
@@ -84,6 +84,7 @@ ShippingPanel::make()->schema([TextInput::make('street'), TextInput::make('city'
 ```
 
 ```tsx
+// resources/js/alfakit/components/ShippingPanel.tsx
 import { SchemaChildren, type BaseComponent } from '@alfakit/react'
 
 export default function ShippingPanel({ component }: { component: BaseComponent }) {

@@ -98,6 +98,8 @@ Group::make([...])->columnSpan(2);
 Group::make([TextInput::make('street'), TextInput::make('city')])->statePath('address'); // nests state
 ```
 
+`Group` is `AlfaSix\Alfakit\Schemas\Components\Group`. A resource whose table groups rows imports `AlfaSix\Alfakit\Tables\Grouping\Group` too, and two `use … Group;` lines are a fatal error; alias one of them (`use AlfaSix\Alfakit\Schemas\Components\Group as LayoutGroup;`).
+
 ## Column span and start
 
 `columnSpan()` and `columnStart()` place a component in its parent grid. Like the grid's own `columns(3)`, a number applies from the `lg` breakpoint up, so on phones (where grids are one column) components stack; `'full'` applies at every size, and a breakpoint map is used as given:
@@ -224,6 +226,8 @@ Wizard::make([
     Step::make('Profile')->schema([...]),
 ])->startOnStep(1)->skippable()->submitActionLabel('Finish')->nextActionLabel('Continue')->previousActionLabel('Back');
 ```
+
+On the last step the wizard shows the `submitActionLabel()` text where Next was; it is a hint, not a button: the page's own button (Create, Save, or a standalone form's submit button) submits the form. Use `submitAction()` (below) for a real button there.
 
 Next validates the current step on the server (only that step's fields, with `beforeValidation()` and `afterValidation()` hooks on the `Step`) and stays on the step when it has errors. The whole form is validated again on submit, and the wizard jumps to the first step with an error. `skippable()` lets users jump between steps without validating them.
 

@@ -147,7 +147,9 @@ it('links each backup to its download', function (): void {
     $table = collect(inertiaProps('/backups-panel/backups')['page']['content'])->firstWhere('type', 'Table');
     $download = collect($table['records'][0]['actions'])->firstWhere('name', 'download');
 
-    expect($download['url'])->toContain('/backups-panel/backups/download?')->toContain('signature=');
+    expect($download['url'])->toContain('/backups-panel/backups/download?')->toContain('signature=')
+        // A plain link the browser follows (and downloads), not an Inertia visit.
+        ->and($download['openUrlInNewTab'] ?? null)->toBeTrue();
 });
 
 it('deletes a backup', function (): void {

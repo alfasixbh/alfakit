@@ -5,6 +5,8 @@ description: Restyle one component, give a panel its own stylesheet, or replace 
 
 # Customizing layouts and styles
 
+This page is about admin panels. In a [starter kit](../getting-started/starter-kits) your app's layout and stylesheet (`resources/css/app.css`) are in charge: `extraAttributes()` and the other per-component classes work the same, while `->viteTheme()`, the CSS hooks of AlfaKit's chrome and the `panel:*`/`layout:*` registry keys don't apply. Outside panels, see [Customizing standalone components](../standalone/customizing).
+
 Choose the level that fits the change:
 
 | You want to…                             | Use                                                                                    |

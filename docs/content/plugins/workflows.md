@@ -20,6 +20,8 @@ description: State machines and approval workflows for any model, with an approv
 
 Everything is built from AlfaKit's own components (actions, entries, `Callout`, `Html`, a page table), so it renders the same in React, Vue and Svelte. There is no frontend package and nothing to build.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. Its actions and approvals inbox need a panel; workflows and transitions themselves also run without one (from jobs, commands or [standalone](../standalone/overview) pages).
+
 ## Installation
 
 ```bash
@@ -134,6 +136,8 @@ class Invoice extends Model
 ```
 
 The `state` column is a plain string column (`$table->string('state')->nullable()`). New invoices start in `draft`, and a "created" entry starts their history.
+
+The example also uses `total`, `number`, `payment_reference` and `paid_at` columns, and `->role('manager')` finds approvers through spatie/laravel-permission's `role` scope (the [Shield](shield) plugin) or, without it, a `hasRole(string $role): bool` method on your user model. A new app has neither, so add one before trying it, or the submit modal answers "Nobody can approve the step". If the [Invoices](invoices) plugin is on the same panel, its resource already uses `/invoices`: give this resource another `$slug`.
 
 ### 2. The resource
 
@@ -389,6 +393,8 @@ The plugin adds an **Approvals** page (`/approvals`) to the navigation, with a b
 ## Plugin options
 
 ```php
+use App\Models\User;
+
 WorkflowsPlugin::make()
     ->inbox(true)                                  // false, or your subclass of ApprovalsInbox
     ->navigationGroup('Work')

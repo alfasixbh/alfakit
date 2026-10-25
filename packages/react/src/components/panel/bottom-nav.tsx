@@ -81,7 +81,7 @@ export function BottomNav() {
       className="md:hidden"
     >
       {primary.map((item) => (
-        <BottomNavLink key={item.label} item={item} />
+        <BottomNavLink key={item.url ?? item.label} item={item} />
       ))}
       {overflow.length > 0 && (
         <Sheet open={open} onOpenChange={setOpen}>
@@ -109,7 +109,7 @@ export function BottomNav() {
                 .flatMap((item) => [item, ...(item.children ?? [])])
                 .map((item) => (
                   <Link
-                    key={item.label}
+                    key={item.url ?? item.label}
                     href={navigationItemUrl(item) ?? '#'}
                     onClick={() => setOpen(false)}
                     data-active={isNavigationItemActive(item) ? 'true' : undefined}

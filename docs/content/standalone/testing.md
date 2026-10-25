@@ -12,7 +12,7 @@ use AlfaSix\Alfakit\Testing\PageTester;
 use App\Models\ContactRequest;
 use Inertia\Inertia;
 
-use function Pest\Laravel\{get, post, postJson};
+use function Pest\Laravel\{actingAs, get, getJson, post, postJson};
 
 beforeEach(function () {
     // X-Inertia with the app's asset version: any other one answers 409 once the app has a Vite build.
@@ -43,7 +43,7 @@ The form's submit action is named `submit`; table actions take `'component' => '
 
 ## Tables
 
-Table state is the page's query string:
+Table state is the page's query string. The next examples use the `OrdersTable` of [Tables](tables) on `/account/orders`; `$user`, `$order`, `$ann` and `$bob` are records your test creates (a user whose customer has the orders `INV-1`, `INV-2` and one that doesn't match `inv`, and a second user):
 
 ```php
 it('lists the customer orders sorted and searched', function () {
@@ -84,8 +84,10 @@ $stats = get('/account', $this->inertia)->json('props.stats');
 
 getJson('/_alfakit/standalone/components?'.http_build_query(['token' => $stats['token'], 'targets' => implode(',', $stats['lazy'])]))
     ->assertOk()
-    ->assertJsonPath('widget:team-stats.stats.0.value', 3);
+    ->assertJsonPath('widget:app-alfakit-widgets-team-stats.stats.0.value', 3);
 ```
+
+The answer is keyed by the lazy targets in `$stats['lazy']`: `widget:` followed by the widget's class name in kebab case (`App\Alfakit\Widgets\TeamStats` is `widget:app-alfakit-widgets-team-stats`).
 
 ## Unit tests
 

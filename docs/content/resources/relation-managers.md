@@ -11,6 +11,8 @@ A relation manager renders a table of related records under the form of an edit 
 php artisan make:alfakit-relation-manager PostResource comments body
 ```
 
+The generated class has one `body` field and column. The fuller example below also has an `author_name` field, so it needs that column on the [Quick start](../getting-started/quick-start)'s `comments` table (a migration with `$table->string('author_name')->nullable();`); without it, creating a comment fails with "table comments has no column named author_name".
+
 ```php
 namespace App\Alfakit\Resources\PostResource\RelationManagers;
 

@@ -83,7 +83,7 @@ return $panel
 php artisan migrate
 ```
 
-- **Impersonation** needs the signed-in user to implement `AlfaSix\Alfakit\Contracts\CanImpersonate`:
+- **Impersonation** needs the signed-in user to implement `AlfaSix\Alfakit\Contracts\CanImpersonate` (add it to the `implements` list your `User` already has). The examples here use an `is_admin` column, which a new app doesn't have: add it (`$table->boolean('is_admin')->default(false);` in a migration on `users`) or put your own rule there. Without the column `$this->is_admin` is `null` and the users list fails with "Return value must be of type bool, null returned":
 
     ```php
     use AlfaSix\Alfakit\Contracts\CanImpersonate;

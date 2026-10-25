@@ -9,6 +9,8 @@ description: A Google-Drive-lite file manager for any Laravel filesystem disk, w
 
 The UI renders in React, Vue and Svelte (registry keys `file-manager` and `FileManagerPicker`, lazy-loaded), works right to left and is announced to screen readers. Everything is listed, checked and changed on the server: the browser only sends paths relative to the manager's root.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Installation
 
 ```bash
@@ -74,12 +76,16 @@ Renaming checks the new name the same way (`notes.txt` can't become `notes.php`)
 ## Authorisation
 
 ```php
+use App\Models\User;
+
 FileManagerPlugin::make()
     ->authorize(fn (User $user): bool => $user->can('manage-files'))
     ->can('delete', fn (User $user, array $paths): bool => $user->is_admin)
     ->can(['rename', 'move'], fn (string $path): bool => ! str_starts_with($path, 'contracts'))
     ->readOnly(fn (User $user): bool => ! $user->is_editor);
 ```
+
+`$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
 
 - `authorize()`: who may open the page, the picker and every action.
 - `can()`: the abilities `upload`, `createFolder`, `rename`, `move`, `copy`, `delete`, `restore`, `download` and `share`. Closures receive `$ability`, `$disk`, `$path` (the item, or the target folder for uploads, folders, moves and copies), `$paths`, `$user` and `$tenant`.

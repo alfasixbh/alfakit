@@ -83,8 +83,18 @@ export function AlfakitComponent({
     const refresh = (targets: string[]) => state.refresh(targets)
 
     if (parent) {
+      // Inside a panel page: the panel's registry and translator, but this component's own
+      // action runner, so its actions post to its own endpoints with its own token (sharing
+      // the panel's runner sent them to the panel's endpoint: 403).
+      const own = createStandaloneContext(
+        { action: component.endpoints.action, modal: component.endpoints.modal },
+        components,
+        poll,
+      )
+
       return {
         ...parent,
+        actions: own.actions,
         registry: createStandaloneRegistry(components, parent.registry),
         poll,
         refresh,
@@ -201,7 +211,7 @@ export function AlfakitComponent({
         {footer}
       </div>
       <ActionModals />
-      {ownsToaster && <AlfakitToaster claimed />}
+      {ownsToaster && <AlfakitToaster claimed dir={direction} />}
     </PageActionProvider>
   )
 

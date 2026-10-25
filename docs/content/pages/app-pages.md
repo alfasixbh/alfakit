@@ -17,6 +17,8 @@ Some screens are not a form or a table: a point of sale, a kanban board, a sched
 | Partial reloads, polling and Echo listeners for your props                            | `getViewData()`                           |
 | Keyboard shortcuts, locale-aware number and money formatting, UI primitives           | Which keys do what                        |
 
+App pages are panel pages. In admin panels they work as described here; in a [starter kit](../getting-started/starter-kits) panel a page with its own `$component` can't be opened yet in 0.1.8 (the browser reports "Page not found: Pages/Pos"). Outside panels, use your own Inertia page with [standalone components](../standalone/overview).
+
 The rule from the rest of AlfaKit still holds: business logic, validation, prices and permissions stay in PHP. The component displays data and calls methods.
 
 ## The toolkit at a glance

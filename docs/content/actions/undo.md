@@ -44,6 +44,8 @@ Action::make('publish')
 
 `undoUsing()` receives `$record` / `$records` (the same record or selection), `$data` (the action's form data), `$arguments` and `$undoData`. It runs in a database transaction.
 
+The undo checks the action's `authorize()` again, against the record as it is now. An action that is only allowed in the state it changes (`->authorize(fn (Post $record) => $record->status === 'draft')` on a publish action) can't be undone: after it ran the record is no longer a draft, so the undo is refused. Authorise such actions by the user (a policy ability) rather than the record's state, or leave them without `undoable()`.
+
 ## Security
 
 The toast carries an encrypted undo token. It is bound to the user, panel and tenant, expires with the countdown (plus a few seconds of grace) and works once: what the undo needs (record keys, attribute snapshot, the action's context) stays on the server in the cache (`alfakit.undo.cache_store`), never in the browser. The undo request (`POST /_alfakit/actions/undo`) re-checks the page the action ran on (user, panel access, auth middleware, tenant, `canAccess()`) and the action's policy: built-in undos check the original ability (`delete`, `update`) on every record again, custom ones rebuild the action and check `isAuthorized()`. Expired, used or conflicting undos answer with a notification; forged tokens are refused.

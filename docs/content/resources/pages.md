@@ -39,8 +39,11 @@ Rows link to the edit page when the user may update the record, otherwise to the
 
 `getTabs()` adds tabs above the table, each narrowing its query. The keys are the values of `?activeTab=` in the URL; an unknown or hidden key shows the default tab (the first one, or `getDefaultActiveTab()`). Filters, search and sort are kept when switching tabs, and "select all" bulk actions only see the records of the active tab.
 
+The example uses the `status` column of the [Quick start](../getting-started/quick-start)'s `Post`:
+
 ```php
 use AlfaSix\Alfakit\Schemas\Components\Tabs\Tab;
+use App\Models\Post;
 use Illuminate\Database\Eloquent\Builder;
 
 public function getTabs(): array
@@ -49,10 +52,10 @@ public function getTabs(): array
         'all' => Tab::make('All'),
         'published' => Tab::make('Published')
             ->icon('circle-check')
-            ->badge(fn () => Post::query()->where('is_published', true)->count())
+            ->badge(fn () => Post::query()->where('status', 'published')->count())
             ->badgeColor('success')
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('is_published', true)),
-        'drafts' => Tab::make()->modifyQueryUsing(fn (Builder $query) => $query->where('is_published', false)),
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'published')),
+        'drafts' => Tab::make()->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'draft')),
     ];
 }
 
@@ -80,6 +83,7 @@ Three ways to put things above or below a list page's table:
 
 ```php
 use AlfaSix\Alfakit\Schemas\Components\{Callout, EmbeddedTable, Text};
+use AlfaSix\Alfakit\Schemas\Schema;
 
 public function content(Schema $schema): Schema
 {

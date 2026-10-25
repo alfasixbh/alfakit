@@ -3,6 +3,7 @@ import {
   FormStore,
   applyFormRefresh,
   formActionsVisible,
+  formIdPrefix,
   formIdentity,
   formRefreshFor,
   isImplicitSubmit,
@@ -17,8 +18,15 @@ import {
   wizardProgressStore,
 } from '@alfakit/core'
 import { router } from '@inertiajs/react'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { useActionRunner, useAlfakitProps, usePageSchema, usePanel, useT } from '../../context'
+import { useCallback, useEffect, useId, useMemo, useRef } from 'react'
+import {
+  useActionRunner,
+  useAlfakitProps,
+  usePageSchema,
+  usePanel,
+  useStandalone,
+  useT,
+} from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { ActionList } from '../actions/action-list'
 import { showToast } from '../notifications/flash-toasts'
@@ -42,12 +50,17 @@ export function FormBlock({ block }: { block: FormBlockSchema }) {
   // identity starts from server state again. The token is re-issued per response, so it
   // is swapped in place instead of being part of the identity.
   const identity = formIdentity(page, block)
+  // Several standalone components can share a page (and field names): each form gets its
+  // own field id prefix, so labels and errors point at their own inputs.
+  const standalone = useStandalone()
+  const instanceId = useId()
 
   const store = useMemo(
     () =>
       new FormStore(block, {
         token,
         component: block.component,
+        idPrefix: standalone ? formIdPrefix(`form-${instanceId}`) : undefined,
         refreshUrl: panel.endpoints.schemaRefresh,
         optionsUrl: panel.endpoints.schemaOptions,
         validateUrl: panel.endpoints.schemaValidate,

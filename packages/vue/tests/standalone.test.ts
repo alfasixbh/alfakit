@@ -6,7 +6,9 @@ import contactForm from '../../core/tests/fixtures/standalone/contact-form.json'
 import postsTable from '../../core/tests/fixtures/standalone/posts-table.json'
 import dashboard from '../../core/tests/fixtures/standalone/starter-kit-dashboard.json'
 import { showToast } from '../src/components/notifications/flash-toasts'
+import { ALFAKIT_KEY } from '../src/context'
 import { AlfakitComponent, AlfakitToaster, configureAlfakit } from '../src/standalone'
+import { createStandaloneContext } from '../src/standalone/runtime'
 import { flush } from './mocks'
 
 const form = contactForm as unknown as StandaloneComponentSchema
@@ -33,6 +35,53 @@ beforeEach(() => {
     removeEventListener: () => {},
     dispatchEvent: () => false,
   })) as typeof window.matchMedia
+})
+
+describe('Several standalone forms on one page', () => {
+  it('gives two forms with the same fields their own field ids', async () => {
+    const Host = defineComponent({
+      setup: () => () =>
+        h('div', [
+          h(AlfakitComponent, { component: form }),
+          h(AlfakitComponent, { component: form }),
+        ]),
+    })
+
+    const wrapper = mount(Host)
+    await flush()
+
+    const roots = wrapper.findAll('[data-slot="standalone"]')
+    expect(roots.length).toBe(2)
+
+    const ids = wrapper.findAll('input[id], textarea[id]').map((input) => input.attributes('id'))
+    expect(ids.length).toBeGreaterThan(0)
+    expect(new Set(ids).size).toBe(ids.length)
+    wrapper.unmount()
+  })
+})
+
+describe('AlfakitComponent inside a panel page', () => {
+  it("keeps its own action endpoints, without moving the panel's", async () => {
+    const panel = createStandaloneContext(
+      {
+        action: 'http://localhost/admin/_alfakit/actions',
+        modal: 'http://localhost/admin/_alfakit/actions/modal',
+      },
+      undefined,
+      () => () => {},
+    )
+    const Host = defineComponent({
+      provide: { [ALFAKIT_KEY as symbol]: panel },
+      setup: () => () => h(AlfakitComponent, { component: form }),
+    })
+
+    mount(Host, { attachTo: document.body })
+    await flush()
+
+    const endpoints = (panel.actions as unknown as { options: { endpoints: { action: string } } })
+      .options.endpoints
+    expect(endpoints.action).toBe('http://localhost/admin/_alfakit/actions')
+  })
 })
 
 describe('AlfakitComponent (outside panels)', () => {

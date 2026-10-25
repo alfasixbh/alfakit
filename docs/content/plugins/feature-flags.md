@@ -19,6 +19,8 @@ description: A control centre for Laravel Pennant, with a kill switch, stable pe
 
 Everything is built from AlfaKit's tables, infolists, forms and actions, so it renders in React, Vue and Svelte; there is no frontend package.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. It needs a panel, so it doesn't apply to [standalone](../standalone/overview) components.
+
 ## Installation
 
 ```bash
@@ -60,6 +62,10 @@ public function panel(Panel $panel): Panel
         );
 }
 ```
+
+`$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
+
+`App\Models\Team` stands for your own team model (import yours, or leave its `ScopeResolver` line out if you have none); a new app has only `User`.
 
 The pages live at `/{panel}/feature-flags` and `/{panel}/feature-flags/{feature}`.
 

@@ -126,6 +126,19 @@ describe('action modal options', () => {
     expect(closeTexts[0]?.closest('button')).not.toBeNull()
   })
 
+  it('keeps a long heading clear of the close button', async () => {
+    mockModals({
+      archive: { heading: 'Delete Hello Svelte World edited, a long heading' },
+      keep: { heading: 'Keep', closeButton: false },
+    })
+
+    renderAction('archive', 'Archive')
+    fireEvent.click(screen.getByRole('button', { name: 'Archive' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog.querySelector('[data-slot="dialog-header"]')).toHaveClass('pe-6')
+  })
+
   it('opens a slide-over from the start side and puts attributes on the backdrop', async () => {
     mockModals({
       filters: {

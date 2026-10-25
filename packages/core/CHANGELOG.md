@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.1.9
+
+### Patch Changes
+
+- Row actions' modal requests send the table state, so modals work on any list tab; `standalone.css` status colours pass WCAG AA; standalone components get their own action runner and form id prefix.
+
 ## 0.1.8
 
 ### Patch Changes

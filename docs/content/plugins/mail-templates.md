@@ -15,6 +15,8 @@ description: Let admins edit the subject and body of AlfaKit's, its plugins' and
 - **History**: every save is a version you can compare and restore (AlfaKit's record versions).
 - Bodies are sanitised when saved and when sent.
 
+Works on an [admin panel](../getting-started/installation) and on a [starter kit](../getting-started/starter-kits) panel (`->starterKit()`), where its pages are listed in your app's sidebar. The resource needs a panel; edited templates are used by every mail that opts in, wherever it is sent from (including apps that only use [standalone](../standalone/overview) components).
+
 ## Installation
 
 ```bash
@@ -30,6 +32,7 @@ The migration creates `alfakit_mail_templates` (`key`, `locale`, nullable `subje
 
 ```php
 use AlfaSix\AlfakitMailTemplates\MailTemplatesPlugin;
+use App\Models\User;
 
 $panel->plugin(
     MailTemplatesPlugin::make()
@@ -38,6 +41,8 @@ $panel->plugin(
         ->navigationGroup('Settings'),
 );
 ```
+
+`$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
 
 Without `authorize()`, only users the `manageAlfakitMailTemplates` gate allows see the resource:
 

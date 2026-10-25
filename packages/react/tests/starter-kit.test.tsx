@@ -104,6 +104,24 @@ describe('starter kit mode', () => {
     expect(document.querySelector('[data-sidebar="sidebar"]')).toBeNull()
   })
 
+  it('offers the debug panel on starter kit pages when the page has debug data', async () => {
+    setPageProps({
+      alfakit: { ...panel, starterKit: true },
+      page,
+      alfakitDebug: { queries: [] },
+    } as unknown as Partial<AlfakitPageProps>)
+    const Page = createStarterKitPage({ layout: null })
+
+    render(
+      <AlfakitStarterKitRoot>
+        <Page />
+      </AlfakitStarterKitRoot>,
+    )
+
+    // The debug panel's code loads on demand.
+    expect(await screen.findByRole('button', { name: 'Open debug panel' })).toBeInTheDocument()
+  })
+
   it('mirrors only its own content in a right-to-left language, never the host document', () => {
     document.documentElement.dir = 'ltr'
     document.documentElement.lang = 'en'

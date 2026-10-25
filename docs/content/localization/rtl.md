@@ -61,13 +61,30 @@ Keyboard navigation follows the direction too: in date pickers, tabs and reorder
 
 Many Latin fonts have no Arabic, Hebrew or Persian glyphs, so the browser falls back to a system font. For a consistent look, load a font that covers the scripts you support and list it in your panel's font stack. For example, use Noto Sans Arabic, IBM Plex Sans Arabic or Vazirmatn for Arabic and Persian, and Noto Sans Hebrew or Heebo for Hebrew:
 
+Load it at the very top of your stylesheet: an `@import url(…)` must precede every other rule, and below `@import 'tailwindcss'` the build warns and drops it. In a [starter kit](../getting-started/starter-kits) or [outside panels](../standalone/overview), AlfaKit uses your app's fonts, so add it to `resources/css/app.css` and extend `--font-sans`:
+
 ```css
-/* resources/css/alfakit.css */
+/* resources/css/app.css: first line */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600&display=swap');
 
+/* at the end */
 :root {
     --font-sans: 'Instrument Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
 }
 ```
+
+In an admin panel the font comes from the theme: every theme writes `--alfakit-font` (the `->font()` family) inline on `<html>`, and the panel's text uses that variable, so `--font-sans` has no effect there. Override the variable in `resources/css/alfakit.css`; `!important` is needed to win over the inline value:
+
+```css
+/* resources/css/alfakit.css: first line */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600&display=swap');
+
+/* at the end */
+:root {
+    --alfakit-font: 'Instrument Sans', 'Noto Sans Arabic' !important;
+}
+```
+
+Use the family your theme or `->font()` sets in place of `'Instrument Sans'` (neutral's font; alfakit and filament use Inter, soft Nunito, corporate IBM Plex Sans, minimal `system-ui`): the override replaces the theme's font.
 
 The browser picks the Arabic font only for Arabic characters, so Latin text keeps your main font.

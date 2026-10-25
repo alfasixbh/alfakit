@@ -21,6 +21,8 @@ description: Automatic, secure JSON REST APIs for your resources, with tokens, O
 
 Everything in the panel is built from AlfaKit components (tables, action modals, infolists), so it renders in React, Vue and Svelte; there is no frontend package.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where **API tokens** and **API reference** are listed in the app sidebar. The API exposes a panel's resources, so an app with only [standalone](../standalone/overview) components has nothing to expose.
+
 ## Installation
 
 ```bash

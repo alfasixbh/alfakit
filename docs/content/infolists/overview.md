@@ -7,13 +7,18 @@ description: Read-only presentation of records.
 
 An infolist is a schema of **entries** — read-only components whose value comes from the record. Resources use it on the view page; actions use it in `modalContent()`; custom pages can render one with `infolist(Schema $schema)`.
 
+This works the same in admin panels and starter kit panels. Outside panels, generate one with `php artisan make:alfakit-infolist UserDetails --model=User` and render it in your own page, see [Actions and infolists](../standalone/actions-and-infolists).
+
 ```php
+use AlfaSix\Alfakit\Infolists\Components\{ColorEntry, IconEntry, ImageEntry, KeyValueEntry, RepeatableEntry, TextEntry};
+use AlfaSix\Alfakit\Schemas\Components\Section;
+
 public static function infolist(Schema $schema): Schema
 {
     return $schema->components([
         Section::make('Post')->schema([
             TextEntry::make('title')->size('lg')->weight('semibold')->columnSpanFull(),
-            TextEntry::make('status')->badge()->color(fn (string $state) => $state === 'published' ? 'success' : 'gray'),
+            TextEntry::make('status')->badge()->color(fn (?string $state) => $state === 'published' ? 'success' : 'gray'),
             TextEntry::make('author.name')->label('Author')->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->author])),
             TextEntry::make('tags.name')->badge()->color('info'),
             IconEntry::make('is_featured')->boolean(),

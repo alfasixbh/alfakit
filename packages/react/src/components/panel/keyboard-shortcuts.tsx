@@ -47,7 +47,7 @@ export function KeyboardShortcuts() {
   const overrides = JSON.stringify(config ? (config.overrides ?? {}) : {})
   const token = page?.token ?? ''
   const commands = panel.commandPalette?.commands
-  const home = panel.url
+  const home = panel.dashboardUrl ?? panel.url
   // Strings, so the effect below doesn't re-run on every render (`t` is a new function each time).
   const overlayLabel = t('shortcuts.show_overlay', {}, 'Show keyboard shortcuts')
   const searchLabel = t('shortcuts.focus_search', {}, 'Search the table')

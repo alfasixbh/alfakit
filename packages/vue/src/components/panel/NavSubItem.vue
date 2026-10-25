@@ -65,7 +65,11 @@ const badgeClass = computed(() =>
       </CollapsibleTrigger>
       <CollapsibleContent>
         <SidebarMenuSub>
-          <NavSubItem v-for="child in props.item.children" :key="child.label" :item="child" />
+          <NavSubItem
+            v-for="child in props.item.children"
+            :key="child.url ?? child.label"
+            :item="child"
+          />
         </SidebarMenuSub>
       </CollapsibleContent>
     </Collapsible>

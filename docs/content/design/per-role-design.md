@@ -5,6 +5,8 @@ description: Switch the layout, theme, density or stylesheet of one panel per us
 
 # Per-role and per-page design
 
+These settings belong to admin panels: a [starter kit](../getting-started/starter-kits#styles-and-theme) panel and [components outside panels](../standalone/customizing) use your app's own styles, so the closures below have nothing to switch there.
+
 Every design setting of a panel accepts a closure instead of a value: `theme()`, `design()` (and its `layout()` shorthand), `sidebarVariant()`, `density()`, `radius()`, `font()`, `headingFont()` and `viteTheme()`. The closure runs once per request, with the request's context injectable by parameter name:
 
 | Parameter  | Value                                                                                                                         |
@@ -20,7 +22,7 @@ Type-hinted dependencies resolve from the container as usual, so `fn (Request $r
 
 ## Per role
 
-A sidebar for administrators, a top bar for everyone else:
+A sidebar for administrators, a top bar for everyone else. `hasRole()` comes from a roles package such as spatie/laravel-permission (the [Shield plugin](../plugins/shield) installs it) and `prefersCompactUi()` stands for your own preference column; a fresh `User` model has neither, so swap in your own checks:
 
 ```php
 use App\Models\User;

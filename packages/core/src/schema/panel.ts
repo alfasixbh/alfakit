@@ -345,6 +345,8 @@ export interface PanelSchema {
   schemaContract?: string
   path: string
   url?: string
+  /** Where "G then D" goes when it isn't `url`: the app's `/dashboard` for a starter kit panel without a dashboard page. */
+  dashboardUrl?: string
   brandName: string
   brandLogo?: string
   darkModeBrandLogo?: string

@@ -7,6 +7,8 @@ description: Dashboard filters shared by widgets, and several dashboards per pan
 
 `AlfaSix\Alfakit\Pages\Dashboard` is a page that shows the panel's [widgets](overview) in a grid. Register it with `->pages([Dashboard::class])`; it lives at the panel root.
 
+In a [starter kit](../getting-started/starter-kits#widgets-on-your-dashboard), widgets show on your app's own `/dashboard`, which has no filters form. A `Dashboard` page you add to a `starterKit()` panel (such as the filtered one below) is a separate page at the panel root (`/admin`) and appears in your sidebar as a second **Dashboard** item; give it its own `$navigationLabel` (for example "Reports"). [Outside panels](../standalone/widgets-and-notifications) there are no dashboard pages; widgets go in a `Widgets` component.
+
 ## Filters
 
 Add `HasFiltersForm` to your own dashboard class and define the fields in `filtersForm()`. The form appears above the widgets with **Apply filters** and **Reset** buttons. A class in `app/Alfakit/Pages` is discovered, and a subclass of `Dashboard` on the same route replaces the `Dashboard::class` the generated provider registers, so there is nothing else to change:

@@ -17,6 +17,8 @@ composer require alfasix/alfakit-calendar
 
 The FullCalendar packages ship as dependencies of `@alfakit/react`, `@alfakit/vue` and `@alfakit/svelte`; there is nothing to install on the frontend.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel, where a calendar discovered in `app/Alfakit/Widgets` shows on the app's own `/dashboard`, and [outside panels](../standalone/component-kit#kanban-boards-and-calendars): put the widget in a `Standalone\Widgets` component and list `CalendarPlugin::class` in `alfakit.standalone.plugins`.
+
 Register the plugin on the panel. It shares the calendar's translations with the frontend and holds panel-wide defaults:
 
 ```php
@@ -43,6 +45,10 @@ use App\Models\Meeting;
 class MeetingsCalendar extends CalendarWidget
 {
     protected static ?string $model = Meeting::class;
+
+    // Names the record in the event modals ("View Standup"); without it a model with no
+    // `title` or `name` column shows its key ("View 1").
+    protected static ?string $recordTitleAttribute = 'subject';
 
     protected ?string $heading = 'Meetings';
 

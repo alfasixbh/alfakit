@@ -23,6 +23,8 @@ The palette is on whenever the panel has global search or commands. Turn its ext
 $panel->commandPalette(false);
 ```
 
+In a [starter kit](../getting-started/starter-kits#search-notifications-and-tenants-in-the-header) the palette opens from `<AlfakitSearch />` in your app header with recent records, "New …" links and the panel navigation; panel commands, page actions, theme switching and the shortcuts overlay need an AlfaKit page around them and are left out there.
+
 ## Panel commands
 
 A command is an action, so everything an action can do works: `url()` links, `action()` runs on the server through the action endpoint with the action's authorisation (`visible()`, `authorize()`, `requiresConfirmation()`, `schema()` for a form in the modal, rate limiting, password confirmation).

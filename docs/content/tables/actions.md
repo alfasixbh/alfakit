@@ -34,6 +34,8 @@ $table
 
 Record actions receive the row's `$record`; bulk actions receive the selected `$records` (a Collection). "Select all" across pages sends the filtered query's records.
 
+`ReplicateAction` saves a copy of every attribute, so a table with a unique column (a `slug`, an `email`) fails with a unique constraint error. Leave such columns out or change them before the copy is saved: `ReplicateAction::make()->excludeAttributes(['slug'])` (when the column may be null) or `->beforeReplicaSaved(fn (Post $replica) => $replica->slug = $replica->slug.'-copy')`. See [Prebuilt actions](../actions/prebuilt).
+
 Record actions with a modal form, a confirmation and a visibility rule:
 
 ```alfakit-example name="table-row-actions"

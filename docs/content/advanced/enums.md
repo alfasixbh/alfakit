@@ -49,6 +49,20 @@ enum OrderStatus: string implements HasLabel, HasColor, HasIcon, HasDescription
 }
 ```
 
+The labels above come from your own translations, so add them to `lang/en/orders.php` (a new app has no `lang` directory: `php artisan lang:publish` creates it), or the options show the keys (`orders.status.pending`):
+
+```php
+// lang/en/orders.php
+return [
+    'status' => [
+        'pending' => 'Pending',
+        'shipped' => 'Shipped',
+        'cancelled' => 'Cancelled',
+        'cancelled_hint' => 'The order was cancelled and nothing will ship.',
+    ],
+];
+```
+
 | Contract         | Method                                          | Used by                                                                                                              |
 | ---------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `HasLabel`       | `getLabel(): string\|Htmlable\|null`            | Options of every choice field, select columns and filters; text columns and entries; group titles; navigation groups |

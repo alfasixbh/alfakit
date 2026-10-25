@@ -9,6 +9,8 @@ description: Drag-and-drop, keyboard-accessible trees of hierarchical records as
 
 The tree renders in React, Vue and Svelte (registry key `tree`) with no extra JavaScript dependencies: native drag and drop, move buttons on every node and WAI-ARIA tree roles. It works right to left.
 
+**Works in** an [admin panel](../getting-started/installation) and a [starter kit](../getting-started/starter-kits) panel (the resource's sidebar link opens the tree). `TreeWidget` is a widget, so it also shows on a starter kit's `/dashboard`, and works [outside panels](../standalone/component-kit#kanban-boards-and-calendars) in a `Standalone\Widgets` component with `TreePlugin::class` listed in `alfakit.standalone.plugins`, like the calendar and Kanban widgets.
+
 ## Installation
 
 ```bash
@@ -58,7 +60,7 @@ class Category extends Model
 | `scopeIsRoot()`                    | `Category::query()->isRoot()`: records without a parent (`isRoot()` alone is the record's check)  |
 | `scopeOrdered($direction = 'asc')` | `Category::ordered()`: by the order column (`Category::query()->isRoot()->ordered()` chains both) |
 
-New records are appended after their siblings (the order column is filled when it is empty). Roots have a null parent. Change the columns with properties or by overriding the methods:
+New records are appended after their siblings (the order column is filled when it is empty). Leave the parent and order columns out of the resource's form: the tree sets them. A form generated with `make:alfakit-resource --generate` has an `order` field with a default of `0`, which puts every new record first, and a numeric `parent_id` field; remove both. Roots have a null parent. Change the columns with properties or by overriding the methods:
 
 | Property            | Method                        | Default     |
 | ------------------- | ----------------------------- | ----------- |
