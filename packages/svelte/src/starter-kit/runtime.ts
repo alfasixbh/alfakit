@@ -13,6 +13,7 @@ import { preloadIcons } from '../lib/icons'
 import AlfakitPage from '../pages/AlfakitPage.svelte'
 import { createDefaultRegistry } from '../registry'
 import StarterKitContentLayout from './StarterKitContentLayout.svelte'
+import StarterKitFullscreenLayout from './StarterKitFullscreenLayout.svelte'
 
 export interface StarterKitPageOptions extends Pick<
   AlfakitOptions<AnyComponent>,
@@ -45,6 +46,7 @@ function createStarterKitContext(options: StarterKitPageOptions): AlfakitContext
     .registerMany(lazyPanelLayouts)
     .register('layout:auth', AuthLayout as AnyComponent)
     .register('layout:app', StarterKitContentLayout as AnyComponent)
+    .register('layout:fullscreen', StarterKitFullscreenLayout as AnyComponent)
     .registerMany(discovered.components)
     .registerMany(options.components ?? {})
   const translator = new Translator()

@@ -2,8 +2,10 @@
   import {
     applyDocumentLocale,
     applyPanelTheme,
+    setIconAliases,
     PANEL_TOAST_OFFSET,
     resolveToastPosition,
+    overlayPlacementDirection,
     type AlfakitPageProps,
   } from '@alfakit/core'
   import { page } from '@inertiajs/svelte'
@@ -42,6 +44,9 @@
     if (panel) {
       translator.setTranslations(panel.translations ?? {})
       translator.setLocale(localization?.tag ?? 'en')
+      // Chrome icons replaced with `Icons::register()`, also in a server render, so the server
+      // and the browser draw the same glyph (W-V3-28).
+      setIconAliases(panel.theme?.icons)
     }
 
     return localization?.tag ?? 'en'
@@ -78,7 +83,10 @@
   <PwaManager />
   <Toaster
     id={toasterId}
-    position={resolveToastPosition(panel?.toastPosition, direction)}
+    position={resolveToastPosition(
+      panel?.toastPosition,
+      overlayPlacementDirection(direction, panel?.starterKit),
+    )}
     offset={PANEL_TOAST_OFFSET}
     mobileOffset={PANEL_TOAST_OFFSET}
     dir={direction}

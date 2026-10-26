@@ -20,6 +20,7 @@ import {
   type CalendarRootProps,
 } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
+import { useT } from '../../context'
 import { cn } from '../../lib/utils'
 import { buttonVariants } from './button'
 
@@ -32,6 +33,7 @@ const props = defineProps<
 >()
 const emits = defineEmits<CalendarRootEmits>()
 const forwarded = useForwardPropsEmits(reactiveOmit(props, 'class', 'today'), emits)
+const t = useT()
 </script>
 
 <template>
@@ -43,6 +45,7 @@ const forwarded = useForwardPropsEmits(reactiveOmit(props, 'class', 'today'), em
   >
     <CalendarHeader class="relative flex w-full items-center justify-center pt-1">
       <CalendarPrev
+        :aria-label="t('form.previous_month', {}, 'Previous month')"
         :class="
           cn(
             buttonVariants({ variant: 'outline' }),
@@ -54,6 +57,7 @@ const forwarded = useForwardPropsEmits(reactiveOmit(props, 'class', 'today'), em
       </CalendarPrev>
       <CalendarHeading class="text-sm font-medium" />
       <CalendarNext
+        :aria-label="t('form.next_month', {}, 'Next month')"
         :class="
           cn(
             buttonVariants({ variant: 'outline' }),

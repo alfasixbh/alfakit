@@ -144,6 +144,7 @@ return [
             'deleted' => '已删除',
             'restored' => '已恢复',
             'reverted' => '已恢复较早的版本',
+            'baseline' => '历史记录开始之前',
         ],
         'restore' => [
             'label' => '恢复此版本',

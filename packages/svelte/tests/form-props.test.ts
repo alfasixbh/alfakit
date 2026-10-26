@@ -56,7 +56,7 @@ describe('form settings from PHP', () => {
     expect(input.value).toBe('(555) 123-4567')
   })
 
-  it('keeps MoneyInput amounts inside min and max', async () => {
+  it('keeps out-of-range MoneyInput amounts so the server reports them (W-V3-11)', async () => {
     const { store } = renderForm(
       [
         {
@@ -79,7 +79,13 @@ describe('form settings from PHP', () => {
     await fireEvent.input(input, { target: { value: '250' } })
     await fireEvent.blur(input)
 
-    expect(store.getValue('price')).toBe('100.00')
+    expect(store.getValue('price')).toBe('250.00')
+
+    await fireEvent.focus(input)
+    await fireEvent.input(input, { target: { value: '-5' } })
+    await fireEvent.blur(input)
+
+    expect(store.getValue('price')).toBe('-5.00')
   })
 
   it('renders a non-native TimePicker as a time input, not a calendar', () => {

@@ -167,7 +167,9 @@ const ariaLabel = computed(() => {
 
   const name = props.action.label ?? props.action.tooltip ?? props.action.name
 
-  return isPlainLink.value && props.action.openUrlInNewTab ? `${name} ${newTabHint.value}` : name
+  return isPlainLink.value && props.action.openUrlInNewTab && !props.action.download
+    ? `${name} ${newTabHint.value}`
+    : name
 })
 const tooltip = computed(
   () => props.action.tooltip ?? (isIconOnly.value ? props.action.label : undefined),
@@ -188,7 +190,7 @@ const disabledTooltip = computed(() => Boolean(props.action.disabled && tooltip.
       :data-disabled-tooltip="disabledTooltip ? '' : undefined"
     >
       <Button
-        v-if="isPlainLink && props.action.openUrlInNewTab"
+        v-if="isPlainLink && (props.action.download || props.action.openUrlInNewTab)"
         as-child
         variant="plain"
         :size="sizeProp"
@@ -197,14 +199,21 @@ const disabledTooltip = computed(() => Boolean(props.action.disabled && tooltip.
         :aria-label="ariaLabel"
         v-bind="props.action.extraAttributes"
       >
-        <a :href="props.action.url" target="_blank" rel="noopener noreferrer">
+        <a
+          :href="props.action.url"
+          :target="props.action.download ? undefined : '_blank'"
+          :rel="props.action.download ? undefined : 'noopener noreferrer'"
+          :download="props.action.download ? '' : undefined"
+        >
           <Spinner v-if="busy" />
           <Icon
             v-else-if="props.action.icon && props.action.iconPosition !== 'after'"
             :name="props.action.icon"
           />
           <span v-if="!isIconOnly" :class="labelClass">{{ props.action.label }}</span>
-          <span v-if="!isIconOnly" class="sr-only"> {{ newTabHint }}</span>
+          <span v-if="!isIconOnly && !props.action.download" class="sr-only">
+            {{ newTabHint }}</span
+          >
           <Icon
             v-if="props.action.icon && props.action.iconPosition === 'after' && !busy"
             :name="props.action.icon"
@@ -293,7 +302,7 @@ const disabledTooltip = computed(() => Boolean(props.action.disabled && tooltip.
   </Tooltip>
   <template v-else>
     <Button
-      v-if="isPlainLink && props.action.openUrlInNewTab"
+      v-if="isPlainLink && (props.action.download || props.action.openUrlInNewTab)"
       as-child
       variant="plain"
       :size="sizeProp"
@@ -302,14 +311,19 @@ const disabledTooltip = computed(() => Boolean(props.action.disabled && tooltip.
       :aria-label="ariaLabel"
       v-bind="props.action.extraAttributes"
     >
-      <a :href="props.action.url" target="_blank" rel="noopener noreferrer">
+      <a
+        :href="props.action.url"
+        :target="props.action.download ? undefined : '_blank'"
+        :rel="props.action.download ? undefined : 'noopener noreferrer'"
+        :download="props.action.download ? '' : undefined"
+      >
         <Spinner v-if="busy" />
         <Icon
           v-else-if="props.action.icon && props.action.iconPosition !== 'after'"
           :name="props.action.icon"
         />
         <span v-if="!isIconOnly" :class="labelClass">{{ props.action.label }}</span>
-        <span v-if="!isIconOnly" class="sr-only"> {{ newTabHint }}</span>
+        <span v-if="!isIconOnly && !props.action.download" class="sr-only"> {{ newTabHint }}</span>
         <Icon
           v-if="props.action.icon && props.action.iconPosition === 'after' && !busy"
           :name="props.action.icon"

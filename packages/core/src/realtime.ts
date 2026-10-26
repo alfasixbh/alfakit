@@ -445,6 +445,23 @@ export type SonnerPosition =
   'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
 
 /**
+ * The direction overlays anchored to a screen edge (the toaster, the schema inspector's
+ * sheet) are placed by: the panel's reading direction, except in starter kit mode, where
+ * the host app owns `<html dir>` and its layout (the kit's sidebar stays on the left in a
+ * right-to-left panel language). There they take the document's side, so "top end" never
+ * lands on the kit's sidebar, while their content keeps the panel's direction (W-D-03).
+ */
+export function overlayPlacementDirection(
+  direction: 'ltr' | 'rtl',
+  starterKit: boolean | undefined,
+): 'ltr' | 'rtl' {
+  if (starterKit !== true) return direction
+  if (typeof document === 'undefined') return 'ltr'
+
+  return document.documentElement.dir.toLowerCase() === 'rtl' ? 'rtl' : 'ltr'
+}
+
+/**
  * The toaster position for the panel's `toastPosition()` (logical: `start`/`end`) in the
  * current reading direction. Defaults to the top end.
  */

@@ -21,6 +21,10 @@ use AlfaSix\Alfakit\Schemas\Schema;
 
 class Login extends \AlfaSix\Alfakit\Auth\Pages\Login
 {
+    // app/Alfakit/Pages is discovered: keep the sign-in page out of the panel's pages
+    // (registered there too, it sends guests from /login back to /login forever).
+    protected static bool $isDiscovered = false;
+
     public function form(Schema $schema): Schema
     {
         return parent::form($schema)->components([

@@ -10,7 +10,7 @@ import { createElement, type ComponentProps } from 'react'
 import { useRegistry, useT } from '../../context'
 import { lazyComponent } from '../../lib/lazy'
 import { cn } from '../../lib/utils'
-import { LazyPlaceholder } from '../panel/lazy-placeholder'
+import { LazyWidgetPlaceholder } from '../panel/lazy-placeholder'
 import { Slot } from '../panel/slot'
 import { DataTable } from '../table/table-block'
 import { ChartWidget } from './chart-lazy'
@@ -49,7 +49,7 @@ function StaticWidgetGrid({ block }: { block: WidgetsBlockSchema }) {
       {block.widgets.map((widget) => (
         <div key={widget.key} className={cn('min-w-0', columnSpanClasses(widget.columnSpan))}>
           {isLazyPlaceholder(widget) ? (
-            <LazyPlaceholder variant={widget.type === 'TableWidget' ? 'table' : 'widget'} />
+            <LazyWidgetPlaceholder widget={widget} />
           ) : (
             <WidgetRenderer widget={widget} />
           )}

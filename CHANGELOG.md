@@ -6,6 +6,36 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.11] - 2026-10-25
+
+### Upgrading from 0.1.10
+
+- Update the packages: `composer update "alfasix/*"`, `npm install @alfakit/react@latest` (or `@alfakit/vue`, `@alfakit/svelte`), `php artisan alfakit:upgrade`, `npm run build`. Nothing to re-run in starter kits.
+- Starter kits with `customizableDashboards()`: register the `Dashboard` page in the panel to edit the layout on the app's `/dashboard` (see Panels › Dashboard); set `$shouldRegisterNavigation = false` on it to keep its sidebar link out.
+
+### Fixed
+
+- Back after a save on an edit page (one with a second history entry, such as a wizard step or tab in the URL) reloaded the page but the form kept its old values; the restored page is now loaded fresh, so the inputs show the saved data.
+- Svelte apps: `npm run dev` crashed with "Error during dependency optimization: PARSE_ERROR … @alfakit/svelte/dist/standalone.css" in every starter kit and standalone app. The package entry imported `./standalone` without naming the file, and Vite's optimizer picked `standalone.css` next to the folder; the entry now imports `./standalone/index.js`.
+- Global search answered 500 and showed nothing when one result had no URL (a nested record whose parent record is gone); such results are now skipped.
+- Date picker calendars: new `ui.form.previous_month` / `ui.form.next_month` strings in every language pack for the previous and next month buttons, which were announced in English ("Previous page" / "Next page") whatever the language.
+- An `EditAction` with nothing to edit (no form or other modal content, no resource page to link to, no `using()` or `action()`, e.g. in a table outside a resource) showed a button that toasted "Saved" and changed nothing; it is now hidden.
+- `make:alfakit-form`, `-table`, `-infolist` and `-component` wrote React's `<AlfakitComponent component={…} />` into the generated class's docblock in Vue and Svelte apps; it now uses the app's renderer syntax (`:component="…"` in Vue).
+- Outside panels, `make:alfakit-field`, `-column`, `-entry` and `-schema-component` told you to register the component with `createAlfakit()`, which a standalone app doesn't have; they now print the `configureAlfakit({ components })` lines for the app's entry.
+- Record history: for a record that existed before `HasRecordVersions` was added, the first change showed every field as "Before: Empty". Its first tracked update now stores a **Before the history started** version with the earlier values first (new `RecordVersion::EVENT_BASELINE`, translated in every language pack), so the change shows old → new.
+- An action handler that returned a file (`response()->streamDownload()`, `response()->download()`, `Storage::download()`, Laravel Excel) opened Inertia's error dialog with the file's bytes instead of downloading it, in panels, starter kits and standalone components. The file is now kept for a moment and the browser saves it from a signed, one-time link (binary files arrive intact); the modal closes and notifications show as usual. Field actions too. New `Action::download()` for URL actions that point at a file: a plain link with the `download` attribute instead of an Inertia visit that fetched the file and discarded it; the backup plugin's Download button uses it.
+- `alfakit:install --ssr` with `--starter-kit` or `--standalone` was ignored without a word; it now says that it changes nothing there and that the app's own SSR setup renders those pages.
+- Standalone components: a heading beside many header actions was squeezed to zero width and its text ran under the buttons; the heading now keeps its width (up to half the row) and the actions wrap beside it, in all three renderers.
+- `MoneyInput` silently changed an amount outside `minValue()`/`maxValue()` on blur (−5 became 0.00 under `minValue(0)`); the amount is now kept and the form shows the validation error, in all three renderers.
+- Tables: a record link around an image column without `alt()` (e.g. a cover image as the first column) had no accessible name; the first image of the cell is now named after the column (further stacked images stay decorative), in all three renderers.
+- Starter kits: a `fullscreen` app page drew AlfaKit's fullscreen header (brand, top bar slots, user menu, Exit) inside the app's own layout; it now fills the layout's content area without it (new `StarterKitFullscreenLayout`, registry key `layout:fullscreen`), in all three renderers.
+- Server rendering: a chrome icon replaced with `Icons::register()` was drawn as the bundled glyph on the server and as the replacement in the browser, so hydration mismatched; the replacements now apply during the server render too.
+- `@alfakit/vue` ships its source maps without `sourcesContent`: an app's Tailwind (which scans `node_modules/@alfakit/vue/dist`) read JSON-escaped classes from them and printed "Found 2 warnings while optimizing generated CSS" on every build.
+- Starter kits and standalone components in dark mode: danger text (row actions such as Delete, links, messages) used the kit's dark button red, about 2:1 on the dark page; it now uses a lighter red (override with `--alfakit-danger-text`), solid danger buttons unchanged.
+- Starter kits: a lazy dashboard widget whose request failed or was refused (an auth middleware such as Billing's subscription check, an expired session) stayed a loading skeleton forever; it now says "This widget could not be loaded." with a **Retry** button (new `ui.widget_failed` string in every language pack), in all three renderers.
+- Starter kits in a right-to-left panel language: AlfaKit's toasts appeared top-left, over the app's sidebar, and the schema inspector opened on the left, away from its button; both now take the host document's side (new `overlayPlacementDirection()` in `@alfakit/core`), while their content stays right to left.
+- Starter kits: customizable dashboards could not be edited on the app's `/dashboard`. With a registered `Dashboard` page and `customizableDashboards()`, `<AlfakitWidgets>` now shows the user's layout and **Edit dashboard** (reorder, resize, hide, add from the library), saving the same layout as the panel's dashboard page.
+
 ## [0.1.10] - 2026-10-25
 
 ### Upgrading from 0.1.9
@@ -1270,7 +1300,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.10...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.11...HEAD
+[0.1.11]: https://github.com/alfasixbh/alfakit/compare/v0.1.10...v0.1.11
 [0.1.10]: https://github.com/alfasixbh/alfakit/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/alfasixbh/alfakit/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/alfasixbh/alfakit/compare/v0.1.7...v0.1.8

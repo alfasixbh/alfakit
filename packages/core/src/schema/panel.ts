@@ -626,6 +626,8 @@ export interface AlfakitPageProps {
       status: 'success' | 'halted' | 'cancelled'
       closeModal?: boolean
       deselectRecords?: boolean | null
+      /** A file the handler returned: a signed, one-time link to save it from. */
+      download?: string
     }
     [key: string]: unknown
   }

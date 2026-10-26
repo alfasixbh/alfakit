@@ -37,7 +37,7 @@ class PostResource extends Resource
 
 Hide an item with `protected static bool $shouldRegisterNavigation = false;` or override `shouldRegisterNavigation()`.
 
-In a [starter kit panel](../getting-started/starter-kits) the same items, groups, parent items, badges (deferred ones too) and custom items are listed in your app's sidebar by `<AlfakitNav />`. The [user menu](#user-menu)'s link entries show in your app's user menu through [`<AlfakitUserMenuItems />`](../getting-started/starter-kits#the-user-menu); the sidebar width, breadcrumbs and avatars on this page belong to AlfaKit's own layout, which a starter kit replaces with yours.
+In a [starter kit panel](../getting-started/starter-kits) the same items, groups, parent items, badges (deferred ones too) and custom items are listed in your app's sidebar by `<AlfakitNav />`; HTML attributes (`extraAttributes()`, `extraSidebarAttributes()`) are not shared with it, so style the generated `alfakit-nav` component instead. The [user menu](#user-menu)'s link entries show in your app's user menu through [`<AlfakitUserMenuItems />`](../getting-started/starter-kits#the-user-menu); the sidebar width, breadcrumbs and avatars on this page belong to AlfaKit's own layout, which a starter kit replaces with yours.
 
 ### Setting navigation options from outside the class
 
@@ -130,7 +130,7 @@ $panel->navigationItems([
         ->group('Reports')
         ->sort(3)
         ->badge('Beta', color: 'info')
-        ->visible(fn () => auth()->user()->isAdmin()),
+        ->visible(fn () => auth()->user()?->isAdmin() ?? false),
     NavigationItem::make('Orders')
         ->url('/orders')
         ->badge(fn (): int => Order::query()->where('status', 'new')->count())
@@ -177,7 +177,7 @@ $panel->userMenuItems([
             ->label('Send feedback')
             ->schema([Textarea::make('message')->required()])
             ->action(fn (array $data) => Feedback::create($data))
-            ->visible(fn (): bool => auth()->user()->can('sendFeedback')),
+            ->visible(fn (): bool => auth()->user()?->can('sendFeedback') ?? false),
     ],
 ]);
 ```

@@ -1,10 +1,17 @@
 import { requestJson } from './http'
-import { lazyComponentCache, resolveLazyComponents } from './lazy'
+import { isLazyPlaceholder, lazyComponentCache, resolveLazyComponents } from './lazy'
 import { currentPageQuery } from './page-query'
-import { mergePolledComponents, PollScheduler } from './poll'
-import type { LocalizationSchema, PageSchema, PanelSchema, PolledComponents } from './schema/panel'
+import { mergePolledComponents, PollScheduler, widgetPollTarget } from './poll'
+import type {
+  ContentBlock,
+  LocalizationSchema,
+  PageSchema,
+  PanelSchema,
+  PolledComponents,
+} from './schema/panel'
 import type { StandaloneComponentSchema } from './schema/standalone'
 import { isStandaloneComponent } from './schema/standalone'
+import type { WidgetsBlock } from './schema/widgets'
 
 export { registerStandaloneProp, resolvePartialProps } from './partial-props'
 
@@ -121,6 +128,34 @@ export function fetchStandaloneComponents(
 }
 
 /**
+ * Mark the lazy widget placeholders whose request failed (`failed: true`); a page without
+ * failures (or whose failed widgets have loaded since) keeps its identity.
+ */
+export function markFailedLazyWidgets(page: PageSchema, failed: ReadonlySet<string>): PageSchema {
+  if (failed.size === 0) return page
+
+  let changed = false
+  const content = page.content.map((block) => {
+    if (block.type !== 'Widgets') return block
+
+    const widgets = (block as WidgetsBlock).widgets
+    const next = widgets.map((widget) =>
+      isLazyPlaceholder(widget) && !widget.failed && failed.has(widgetPollTarget(widget))
+        ? { ...widget, failed: true as const }
+        : widget,
+    )
+
+    if (!next.some((widget, index) => widget !== widgets[index])) return block
+
+    changed = true
+
+    return { ...block, widgets: next }
+  }) as ContentBlock[]
+
+  return changed ? { ...page, content } : page
+}
+
+/**
  * Lazy and polled component state of one `<AlfakitComponent>`: a poll scheduler bound to
  * its token and the schemas fetched so far, merged into the page it renders.
  */
@@ -128,6 +163,9 @@ export class StandaloneComponentState {
   public readonly scheduler: PollScheduler
 
   private fresh: PolledComponents = {}
+
+  /** Targets whose last request failed (lazy widgets then show an error, not a skeleton). */
+  private failed = new Set<string>()
 
   constructor(
     private component: StandaloneComponentSchema,
@@ -140,6 +178,7 @@ export class StandaloneComponentState {
   setComponent(component: StandaloneComponentSchema): void {
     if (component.token !== this.component.token) {
       this.fresh = {}
+      this.failed = new Set()
     }
 
     this.component = component
@@ -149,7 +188,7 @@ export class StandaloneComponentState {
     const base = standalonePageSchema(this.component)
     const resolved = resolveLazyComponents(base, this.fresh, lazyComponentCache, this.scope())
 
-    return mergePolledComponents(resolved, this.fresh)
+    return markFailedLazyWidgets(mergePolledComponents(resolved, this.fresh), this.failed)
   }
 
   /**
@@ -190,9 +229,16 @@ export class StandaloneComponentState {
       if (token !== this.component.token) return
 
       this.fresh = { ...this.fresh, ...polled }
+      targets.forEach((target) => this.failed.delete(target))
       this.onChange()
     } catch {
-      // A failed poll keeps what the page has; the next tick tries again.
+      // A failed poll keeps what the page has; the next tick tries again. Lazy widgets
+      // still waiting for their schema show an error with a retry instead of a skeleton
+      // that never ends (a refused request: W-F-12).
+      if (token !== this.component.token) return
+
+      targets.forEach((target) => this.failed.add(target))
+      this.onChange()
     }
   }
 

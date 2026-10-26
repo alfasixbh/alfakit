@@ -320,7 +320,7 @@ $panel->pages([
 
 - A configuration lives at `{page-slug}/{key}`, or at its `slug()`. Keys may contain letters, numbers, dashes and underscores.
 - The configuration is active while it serves a request, including the page's actions and live updates. `SettingsPage::withConfiguration('advanced', fn () => SettingsPage::getUrl())` links to another one.
-- `make()` on a page class always returns a configuration; register the plain class too (`SettingsPage::class`) when it should also be reachable without one.
+- `make()` on a page class always returns a configuration; register the plain class too (`SettingsPage::class`) when it should also be reachable without one. A page in a `discoverPages()` folder is registered plainly by discovery as well (a **Settings:** item without a configuration); give it `protected static bool $isDiscovered = false;` when only its configurations should exist.
 
 ## Languages, currency and timezone
 

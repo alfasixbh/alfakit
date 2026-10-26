@@ -24,7 +24,7 @@ import { useEffect, useId, useMemo, type ReactNode } from 'react'
 import { useDirection, useT } from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { cn } from '../../lib/utils'
-import { LazyPlaceholder } from '../panel/lazy-placeholder'
+import { LazyWidgetPlaceholder } from '../panel/lazy-placeholder'
 import { Button } from '../ui/button'
 
 /**
@@ -150,7 +150,7 @@ export function CustomizableWidgetGrid({
 
             const content = widget ? (
               isLazyPlaceholder(widget) ? (
-                <LazyPlaceholder variant={widget.type === 'TableWidget' ? 'table' : 'widget'} />
+                <LazyWidgetPlaceholder widget={widget} />
               ) : (
                 renderWidget(widget)
               )

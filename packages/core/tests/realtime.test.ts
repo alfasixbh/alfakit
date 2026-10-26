@@ -4,6 +4,7 @@ import {
   announceDatabaseNotificationsSent,
   getEcho,
   onDatabaseNotificationsSent,
+  overlayPlacementDirection,
   resolveToastPosition,
   subscribeToNotifications,
   type EchoLike,
@@ -109,5 +110,20 @@ describe('resolveToastPosition', () => {
     expect(resolveToastPosition('bottom-start', 'rtl')).toBe('bottom-right')
     expect(resolveToastPosition('top-center', 'rtl')).toBe('top-center')
     expect(resolveToastPosition('bottom-end', 'ltr')).toBe('bottom-right')
+  })
+})
+
+describe('overlayPlacementDirection', () => {
+  it('follows the panel, or the host document in starter kit mode (W-D-03)', () => {
+    document.documentElement.dir = 'ltr'
+    expect(overlayPlacementDirection('rtl', undefined)).toBe('rtl')
+    expect(overlayPlacementDirection('rtl', true)).toBe('ltr')
+    expect(resolveToastPosition('top-end', overlayPlacementDirection('rtl', true))).toBe(
+      'top-right',
+    )
+
+    document.documentElement.dir = 'rtl'
+    expect(overlayPlacementDirection('rtl', true)).toBe('rtl')
+    document.documentElement.dir = ''
   })
 })

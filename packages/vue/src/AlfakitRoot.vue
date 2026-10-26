@@ -4,6 +4,7 @@ import {
   applyPanelTheme,
   PANEL_TOAST_OFFSET,
   resolveToastPosition,
+  overlayPlacementDirection,
   type AlfakitPageProps,
 } from '@alfakit/core'
 import { usePage } from '@inertiajs/vue3'
@@ -84,7 +85,12 @@ watch(panel, (value) => applyPanelTheme(value), { immediate: true })
       />
       <Toaster
         :id="toasterId"
-        :position="resolveToastPosition(panel?.toastPosition, direction)"
+        :position="
+          resolveToastPosition(
+            panel?.toastPosition,
+            overlayPlacementDirection(direction, panel?.starterKit),
+          )
+        "
         :offset="PANEL_TOAST_OFFSET"
         :mobile-offset="PANEL_TOAST_OFFSET"
         :dir="direction"

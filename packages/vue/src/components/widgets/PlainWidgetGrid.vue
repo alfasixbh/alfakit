@@ -2,7 +2,7 @@
 import type { DashboardCustomizeSchema, WidgetsBlock } from '@alfakit/core'
 import { columnSpanClasses, gridColumnsClasses, isLazyPlaceholder } from '@alfakit/core'
 import { cn } from '../../lib/utils'
-import LazyPlaceholder from '../panel/LazyPlaceholder.vue'
+import LazyWidgetPlaceholder from '../panel/LazyWidgetPlaceholder.vue'
 import WidgetRenderer from './WidgetRenderer.vue'
 
 /** The widgets of a dashboard (or a customizable one until its editor has loaded). */
@@ -17,10 +17,7 @@ const props = defineProps<{ block: WidgetsBlock; customize?: DashboardCustomizeS
       :key="widget.key"
       :class="cn('min-w-0', columnSpanClasses(widget.columnSpan))"
     >
-      <LazyPlaceholder
-        v-if="isLazyPlaceholder(widget)"
-        :variant="widget.type === 'TableWidget' ? 'table' : 'widget'"
-      />
+      <LazyWidgetPlaceholder v-if="isLazyPlaceholder(widget)" :widget="widget" />
       <WidgetRenderer v-else :widget="widget" />
     </div>
   </div>

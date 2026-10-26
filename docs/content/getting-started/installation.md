@@ -135,7 +135,7 @@ Route::get('/contact', fn () => Inertia::render('contact', ['form' => \App\Alfak
 
 Use a closure as shown, not `Route::inertia('/contact', 'contact', [...ContactForm::make()])`: `Route::inertia()` stores its props in the route itself, so `php artisan optimize` (or `route:cache`) can't cache it and every request then fails.
 
-In an app made from a Laravel starter kit, the kit's `resources/js/app.tsx` / `app.ts` wraps every page that is not `Welcome`, `auth/*` or `settings/*` in `AppLayout`, whose user menu needs a signed-in user: open `/contact` signed in, or put the route inside the `auth` middleware group. For a public page, return `null` for it in the `layout` callback of `createInertiaApp()` (as the kit does for `Welcome`); otherwise a guest sees an empty user menu and a `Cannot read properties of null (reading 'name')` error in the console.
+In an app made from a Laravel starter kit, the kit's `resources/js/app.tsx` / `app.ts` wraps every page that is not `Welcome`, `auth/*` or `settings/*` in `AppLayout`, whose user menu needs a signed-in user: open `/contact` signed in, or put the route inside the `auth` middleware group. For a public page, return `null` for it in the `layout` callback of `createInertiaApp()` (as the kit does for `Welcome`); otherwise a guest sees an empty user menu and a `Cannot read properties of null (reading 'name')` error in the console (the Svelte kit hides its user menu for guests instead, but still shows the app sidebar).
 
 In an app that already has a panel, only the stylesheet import is needed. See [Outside panels](../standalone/overview).
 

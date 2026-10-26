@@ -135,6 +135,59 @@ describe('StandaloneComponentState', () => {
     vi.unstubAllGlobals()
   })
 
+  it('marks a lazy widget whose request was refused, and clears it once a retry loads (W-F-12)', async () => {
+    const refused = { ...lazyWidget, class: 'App\\RefusedStats', token: 'refused-token' }
+    let allow = false
+    const schema = {
+      type: 'StatsOverviewWidget',
+      key: 'stats',
+      id: 'stats',
+      columnSpan: {},
+      stats: [],
+    }
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(async () =>
+        allow
+          ? {
+              ok: true,
+              status: 200,
+              headers: new Headers({ 'content-type': 'application/json' }),
+              json: async () => ({ 'widget:stats': schema }),
+              text: async () => JSON.stringify({ 'widget:stats': schema }),
+            }
+          : {
+              ok: false,
+              status: 403,
+              headers: new Headers({ 'content-type': 'application/json' }),
+              json: async () => ({ message: 'Forbidden' }),
+              text: async () => '{"message":"Forbidden"}',
+            },
+      ),
+    )
+
+    let changes = 0
+    const state = new StandaloneComponentState(refused, () => changes++)
+    const widget = () =>
+      (state.page.content[0] as { widgets: Array<{ lazy?: boolean; failed?: boolean }> })
+        .widgets[0]!
+
+    expect(widget().failed).toBeUndefined()
+
+    await state.loadLazy()
+
+    expect(changes).toBe(1)
+    expect(widget()).toMatchObject({ lazy: true, failed: true })
+
+    allow = true
+    await state.refresh(['widget:stats'])
+
+    expect(widget().lazy).toBeUndefined()
+    expect(widget().failed).toBeUndefined()
+
+    vi.unstubAllGlobals()
+  })
+
   it('loads the lazy schemas of a new payload passed before the page rendered it', async () => {
     const fresh = {
       'widget:stats': {

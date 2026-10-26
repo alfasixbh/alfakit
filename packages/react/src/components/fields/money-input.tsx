@@ -13,13 +13,6 @@ import { Input } from '../ui/input'
  * it, accepts the locale's separators and digits ("1.234,50", "١٢٫٥"), and rounds to
  * the currency's precision on blur. The form value is a plain decimal string ("1234.50").
  */
-export function clampAmount(amount: number, min?: number | null, max?: number | null): number {
-  const lower = min ?? Number.NEGATIVE_INFINITY
-  const upper = max ?? Number.POSITIVE_INFINITY
-
-  return Math.min(upper, Math.max(lower, amount))
-}
-
 export function MoneyInputField({ component }: { component: MoneyInputSchema }) {
   const { value, setValue, blur, error, id, disabled, aria } = useField<string | number | null>(
     component,
@@ -46,13 +39,9 @@ export function MoneyInputField({ component }: { component: MoneyInputSchema }) 
 
     const parsed = format.parseNumber(text)
 
-    // Unparseable input is kept as typed so server validation can explain the problem;
-    // amounts are brought inside `minValue()` / `maxValue()`.
-    setValue(
-      parsed === null
-        ? text
-        : clampAmount(parsed, component.min, component.max).toFixed(component.decimals),
-    )
+    // Unparseable input is kept as typed and out-of-range amounts are kept as well, so the
+    // server's `minValue()` / `maxValue()` rules report them (W-V3-11).
+    setValue(parsed === null ? text : parsed.toFixed(component.decimals))
   }
 
   const affix = (text: string, icon: string | undefined, side: 'start' | 'end') =>

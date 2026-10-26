@@ -175,7 +175,7 @@ const descriptionPosition = computed(
         v-for="(url, index) in imageUrls.slice(0, imageLimit)"
         :key="index"
         :src="url"
-        :alt="props.cell.alt ?? ''"
+        :alt="props.cell.alt ?? (index === 0 ? (props.column.label ?? '') : '')"
         :style="[imageStyle, stackedImageStyle(index, imageSchema)]"
         :class="
           cn(

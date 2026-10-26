@@ -144,6 +144,7 @@ return [
             'deleted' => 'Gelöscht',
             'restored' => 'Wiederhergestellt',
             'reverted' => 'Frühere Version wiederhergestellt',
+            'baseline' => 'Vor Beginn des Verlaufs',
         ],
         'restore' => [
             'label' => 'Diese Version wiederherstellen',

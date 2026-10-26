@@ -63,7 +63,7 @@ class SpatieTag extends Tag
 }
 ```
 
-Set it as `'tag_model' => App\Models\SpatieTag::class` in `config/tags.php` (`php artisan vendor:publish --tag=tags-config`), publish the migration (`php artisan vendor:publish --tag=tags-migrations`), change `tags` to `spatie_tags` in it (`Schema::create`, `constrained('spatie_tags')`, `dropIfExists`) and migrate. `SpatieTagsInput` uses the configured model. A model that already has a `tags()` relationship can't use `HasTags` as well.
+Set it as `'tag_model' => App\Models\SpatieTag::class` in `config/tags.php` (`php artisan vendor:publish --tag=tags-config`), publish the migration (`php artisan vendor:publish --tag=tags-migrations`), change `tags` to `spatie_tags` in it (`Schema::create`, `constrained('spatie_tags')`, `dropIfExists`) and migrate. `SpatieTagsInput` uses the configured model. A model that already has a `tags()` relationship can't use `HasTags` as well: the class's own method replaces the trait's, and `syncTagsWithType()` then writes to the wrong table. The [Quick start](../getting-started/quick-start)'s `Post` is such a model (its `tags` table and `tags()` relation are what this section is about), so put `HasTags` and the components on a model without a `tags()` method, or remove your relationship (and its `Select::make('tags')->relationship()` field) before you move that model to Spatie tags.
 
 ## Tag types
 

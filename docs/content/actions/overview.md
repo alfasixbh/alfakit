@@ -75,6 +75,12 @@ An action with a URL and no handler renders as a plain link.
 Action::make('lockSession')->url(fn () => route('lock-session'))->postToUrl();
 ```
 
+`download()` marks a URL that serves a file (a signed download route, a file on a public disk): it renders as a plain link with the `download` attribute, so the browser saves the file instead of making an Inertia visit:
+
+```php
+Action::make('download')->url(fn (Backup $record) => URL::temporarySignedRoute('backups.download', now()->addHour(), $record))->download();
+```
+
 ## Authorisation
 
 `authorize()` takes a Gate ability (checked against the record, or the model class without one), a boolean or a closure. The closure may return a policy `Response` with a message. An unauthorised action is hidden and refused by the action endpoint.
@@ -193,7 +199,16 @@ Pass extra data from the frontend (`arguments: { reason: 'spam' }`) or set them 
 
 ## Responses
 
-Return a `Response` or `Responsable` from the handler (e.g. `response()->streamDownload(...)`) to send it directly. For downloads prefer `->url()` to a route, which plays best with Inertia.
+Return a `Response` or `Responsable` from the handler to send it. A file (`response()->streamDownload(...)`, `response()->download(...)`, `Storage::download(...)`, Laravel Excel's `Excel::download(...)`, or any response with `Content-Disposition: attachment`) downloads in the browser, in panels, starter kits and standalone components alike; the modal closes and notifications show as after any other run:
+
+```php
+Action::make('exportCsv')->action(fn (Order $record) => response()->streamDownload(
+    fn () => print ("number,total\n{$record->number},{$record->total}\n"),
+    "order-{$record->number}.csv",
+));
+```
+
+The action endpoint answers an Inertia visit, which cannot carry a file, so AlfaKit keeps the file in `storage/framework/alfakit-downloads` and the browser fetches it once from a signed link that expires after five minutes and only works for the user who ran the action. On several servers without shared storage, prefer `->url(...)->download()` to a route. Other responses (a redirect, an Inertia page) are sent as they are.
 
 ## Prebuilt actions
 

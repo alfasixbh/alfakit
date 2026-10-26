@@ -144,6 +144,7 @@ return [
             'deleted' => '削除',
             'restored' => '復元',
             'reverted' => '以前のバージョンを復元',
+            'baseline' => '履歴の開始前',
         ],
         'restore' => [
             'label' => 'このバージョンを復元',

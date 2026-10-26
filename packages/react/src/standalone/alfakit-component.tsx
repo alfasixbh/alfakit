@@ -193,7 +193,7 @@ export function AlfakitComponent({
             data-slot="page-header"
             className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
           >
-            <div className="min-w-0">
+            <div className="min-w-0 sm:max-w-[50%] sm:shrink-0">
               {page.heading && (
                 <h2 className="text-xl font-semibold tracking-tight">{page.heading}</h2>
               )}
@@ -206,7 +206,7 @@ export function AlfakitComponent({
                 actions={page.headerActions}
                 context={actionContext}
                 align="end"
-                className="max-w-full shrink-0"
+                className="max-w-full min-w-0"
               />
             )}
           </header>

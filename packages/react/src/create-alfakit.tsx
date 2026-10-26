@@ -13,10 +13,12 @@ import {
   installErrorNotifications,
   installPrefetchInvalidation,
   installSpaUrlExceptions,
+  overlayPlacementDirection,
   registerRichEditorExtensions,
   reloadOnExpiredPage,
   resolveRequestErrorNotification,
   resolveToastPosition,
+  setIconAliases,
   setRequestErrorReporter,
   whenIdle,
   type AlfakitOptions,
@@ -72,6 +74,9 @@ export function AlfakitRoot({
   if (panel) {
     translator.setTranslations(panel.translations ?? {})
     translator.setLocale(localization?.tag ?? 'en')
+    // Chrome icons replaced with `Icons::register()`, also in a server render, so the server
+    // and the browser draw the same glyph (W-V3-28).
+    setIconAliases(panel.theme?.icons)
   }
 
   // Starter kit mode: the host app owns `<html lang dir>` (its own pages and layout are not
@@ -104,7 +109,10 @@ export function AlfakitRoot({
           })}
         <Toaster
           id={toasterId}
-          position={resolveToastPosition(panel?.toastPosition, direction)}
+          position={resolveToastPosition(
+            panel?.toastPosition,
+            overlayPlacementDirection(direction, panel?.starterKit),
+          )}
           offset={PANEL_TOAST_OFFSET}
           mobileOffset={PANEL_TOAST_OFFSET}
           dir={direction}

@@ -129,6 +129,35 @@ describe('AlfakitComponent (outside panels)', () => {
     wrapper.unmount()
   })
 
+  it('keeps the heading beside many header actions instead of squeezing it to nothing (W-V5-03)', async () => {
+    const toolbar = {
+      ...form,
+      heading: 'Toolbar',
+      headerActions: Array.from({ length: 25 }, (_, index) => ({
+        type: 'Action' as const,
+        name: `action${index}`,
+        label: `Action ${index}`,
+        hasAction: true,
+      })),
+    } as StandaloneComponentSchema
+    const wrapper = mount(AlfakitComponent, {
+      props: { component: toolbar },
+      attachTo: document.body,
+    })
+    await flush()
+
+    const header = wrapper.find('[data-slot="page-header"]').element as HTMLElement
+    const heading = wrapper.find('h2').element.parentElement as HTMLElement
+
+    // The heading keeps its width (up to half the row); the actions wrap in the rest.
+    expect(heading.classList).toContain('sm:shrink-0')
+    expect(heading.classList).toContain('sm:max-w-[50%]')
+    expect(header.lastElementChild?.classList).not.toContain('shrink-0')
+    expect(header.lastElementChild?.classList).toContain('min-w-0')
+
+    wrapper.unmount()
+  })
+
   it('renders a table with its records and search', async () => {
     const wrapper = mount(AlfakitComponent, {
       props: { component: table },

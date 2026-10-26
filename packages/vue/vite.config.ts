@@ -56,6 +56,10 @@ export default defineConfig({
     rolldownOptions: {
       external: EXTERNAL,
       output: {
+        // Maps without the sources: an app's Tailwind scans `dist` (`@source`), and the
+        // JSON-escaped classes in `sourcesContent` (`[&_svg:not([class*=\\'size-\\'])]`)
+        // made it emit invalid CSS and warnings on every build (W-V-01).
+        sourcemapExcludeSources: true,
         // One output file per source module (like `svelte-package`), so an application's
         // bundler splits the renderer by what each of its chunks uses: a starter kit host
         // that only renders the navigation and the header widgets must not pull the panel

@@ -96,7 +96,9 @@ export * from './pages'
 // `createAlfakit()` registers these; a registry built by hand for `AlfakitPage` needs them too.
 export { panelLayouts } from './layouts/panel-layouts'
 export { createDefaultRegistry } from './registry'
-export * from './standalone'
+// Explicit file: the published dist also has standalone.css, which Vite's dependency optimizer
+// picked for the extensionless import and failed to parse (`npm run dev` crashed).
+export * from './standalone/index.js'
 export * from './starter-kit'
 
 // shadcn-svelte primitives, so applications can build custom components in the same style.

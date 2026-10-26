@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { DayPicker } from 'react-day-picker'
+import { useT } from '../../context'
 import { cn } from '../../lib/utils'
 import { buttonVariants } from './button'
 
@@ -10,9 +11,16 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: ComponentProps<typeof DayPicker>) {
+  const t = useT()
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      labels={{
+        labelPrevious: () => t('form.previous_month', {}, 'Previous month'),
+        labelNext: () => t('form.next_month', {}, 'Next month'),
+        ...props.labels,
+      }}
       className={cn('p-3', className)}
       classNames={{
         months: 'flex flex-col sm:flex-row gap-2',

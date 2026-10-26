@@ -1,7 +1,7 @@
 import type { StandaloneComponentSchema } from '@alfakit/core'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { renderToString } from 'react-dom/server'
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import dashboard from '../../core/tests/fixtures/standalone/starter-kit-dashboard.json'
 import { AlfakitWidgets } from '../src/starter-kit'
 import { panel, setPageProps } from './mocks'
@@ -78,5 +78,82 @@ describe('<AlfakitWidgets /> (starter kit dashboard)', () => {
     expect(html).toContain('data-slot="starter-kit-widgets-placeholder"')
     expect(html).toContain('aria-busy="true"')
     expect(html).not.toContain('Posts')
+  })
+
+  it('shows an error with a retry when a lazy widget is refused, not a skeleton forever (W-F-12)', async () => {
+    const widget = (component.content[0] as unknown as { widgets: Array<Record<string, unknown>> })
+      .widgets[0]!
+    const lazy = {
+      ...component,
+      class: 'App\\RefusedDashboard',
+      token: 'refused',
+      lazy: [`widget:${String(widget.id)}`],
+      content: [{ ...component.content[0], widgets: [{ ...widget, lazy: true }] }],
+    } as unknown as StandaloneComponentSchema
+    let allow = false
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(async () => ({
+        ok: allow,
+        status: allow ? 200 : 403,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () =>
+          allow ? { [`widget:${String(widget.id)}`]: widget } : { message: 'Forbidden' },
+        text: async () =>
+          JSON.stringify(
+            allow ? { [`widget:${String(widget.id)}`]: widget } : { message: 'Forbidden' },
+          ),
+      })),
+    )
+    setPageProps({
+      alfakit: undefined,
+      page: undefined,
+      alfakitWidgets: [{ id: 'admin', component: lazy }],
+    })
+
+    render(<AlfakitWidgets />)
+
+    expect(await screen.findByText('This widget could not be loaded.')).toBeInTheDocument()
+    expect(document.querySelector('[data-slot="lazy-placeholder"][aria-busy="true"]')).toBeNull()
+
+    allow = true
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+
+    expect(await screen.findByText('Posts')).toBeInTheDocument()
+    expect(screen.queryByText('This widget could not be loaded.')).toBeNull()
+
+    vi.unstubAllGlobals()
+  })
+
+  it('offers "Edit dashboard" when the panel dashboard is customizable (W-38)', async () => {
+    const block = component.content[0] as unknown as { widgets: Array<{ id: string }> }
+    const id = block.widgets[0]!.id
+    const entry = { id, span: null, hidden: false }
+    const customizable = {
+      ...component,
+      content: [
+        {
+          ...block,
+          customize: {
+            endpoint: '/admin/_alfakit/dashboard/layout',
+            token: 'dashboard-token',
+            customized: false,
+            layout: [entry],
+            defaultLayout: [entry],
+            library: [{ id, label: 'Posts', default: true, span: 1, spans: [] }],
+          },
+        },
+      ],
+    } as unknown as StandaloneComponentSchema
+    setPageProps({
+      alfakit: undefined,
+      page: undefined,
+      alfakitWidgets: [{ id: 'admin', component: customizable }],
+    })
+
+    render(<AlfakitWidgets />)
+
+    expect(await screen.findByRole('button', { name: 'Edit dashboard' })).toBeInTheDocument()
+    expect(await screen.findByText('Posts')).toBeInTheDocument()
   })
 })

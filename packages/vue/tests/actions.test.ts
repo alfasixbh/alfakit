@@ -56,6 +56,31 @@ describe('actions', () => {
     wrapper.unmount()
   })
 
+  it('renders a download() action as a plain link that saves the file', () => {
+    const wrapper = mountWithAlfakit(() =>
+      h(ActionList, {
+        actions: [
+          {
+            type: 'Action',
+            name: 'backup',
+            label: 'Download backup',
+            url: '/backups/1/download?signature=x',
+            download: true,
+          },
+        ],
+        context: { token: 't', component: 'page' },
+      }),
+    )
+
+    const link = wrapper.findAll('a').find((node) => node.text().includes('Download backup'))
+
+    // Not an Inertia visit (which would fetch the file and discard it), not a new tab.
+    expect(link?.attributes('download')).toBe('')
+    expect(link?.attributes('href')).toBe('/backups/1/download?signature=x')
+    expect(link?.attributes('target')).toBeUndefined()
+    expect(link?.text()).not.toContain('new tab')
+  })
+
   it('positions the menu of a group with a tooltip at its trigger', async () => {
     const wrapper = mountWithAlfakit(
       () =>

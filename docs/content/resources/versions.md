@@ -30,7 +30,7 @@ class Post extends Model
 }
 ```
 
-Updates that only change untracked attributes write no version. `Post::withoutVersions(fn () => $post->update([...]))` skips versioning for a block. `$post->recordVersions()` (also `versions()`) is the morph-many relation to `AlfaSix\Alfakit\Versions\RecordVersion`, newest first.
+Updates that only change untracked attributes write no version. Records that existed before you added the trait start their history at their next change: that save first stores a **Before the history started** version with the values they had, so the change shows old → new. `Post::withoutVersions(fn () => $post->update([...]))` skips versioning for a block. `$post->recordVersions()` (also `versions()`) is the morph-many relation to `AlfaSix\Alfakit\Versions\RecordVersion`, newest first.
 
 It works without the activity log plugin: it only listens to Eloquent events.
 

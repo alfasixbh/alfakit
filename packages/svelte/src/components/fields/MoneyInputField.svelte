@@ -46,16 +46,9 @@
 
     const parsed = format.current.parseNumber(text)
 
-    // Unparseable input is kept as typed so server validation can explain the problem;
-    // amounts are brought inside `minValue()` / `maxValue()`.
-    field.setValue(
-      parsed === null
-        ? text
-        : Math.min(
-            component.max ?? Number.POSITIVE_INFINITY,
-            Math.max(component.min ?? Number.NEGATIVE_INFINITY, parsed),
-          ).toFixed(component.decimals),
-    )
+    // Unparseable input is kept as typed and out-of-range amounts are kept as well, so the
+    // server's `minValue()` / `maxValue()` rules report them (W-V3-11).
+    field.setValue(parsed === null ? text : parsed.toFixed(component.decimals))
   }
 
   const onfocus = () => {

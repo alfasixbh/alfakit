@@ -98,7 +98,16 @@ export function installPrefetchInvalidation(): () => void {
 
     // A URL never shown in this page load may come from before it: reload it too.
     if (restored && (shownAt.get(url) ?? -1) < mutationCount) {
-      router.reload()
+      // Without the restored state: forms fill their inputs when they mount, so a reload that
+      // kept it showed the saved page's old values (a restored page has no unsaved input).
+      // `router.reload()` always keeps the state, hence the visit.
+      router.visit(window.location.href, {
+        preserveScroll: true,
+        preserveState: false,
+        replace: true,
+        async: true,
+        headers: { 'Cache-Control': 'no-cache' },
+      })
       return
     }
 

@@ -16,7 +16,7 @@ composer require laravel/boost --dev
 php artisan boost:install
 ```
 
-Boost finds AlfaKit in `composer.json` and offers it under **third-party AI guidelines/skills** (`alfasix/alfakit (guidelines, skills)`). It is not ticked by default: press Space to tick it, then Enter (Boost also asks which agents to configure; tick at least one). Boost then installs two kinds of files. With `--no-interaction`, Boost only installs the third-party packages listed in `boost.json`, so add `"packages": ["alfasix/alfakit"]` there first.
+Boost finds AlfaKit in `composer.json` and offers it under **third-party AI guidelines/skills** (`alfasix/alfakit (guidelines, skills)`). It is not ticked by default: press Space to tick it, then Enter (Boost also asks which agents to configure; tick at least one). Boost then installs two kinds of files. With `--no-interaction`, Boost only installs the third-party packages and agents listed in `boost.json`, so add them there first, for example `"packages": ["alfasix/alfakit"], "agents": ["claude_code"]` (without `agents` it prints "No agents are selected" and writes nothing).
 
 **A guideline**, loaded upfront for every agent session. It covers what AlfaKit is, its namespaces and directories, the generators, a complete resource, actions and notifications, panel configuration, and how to test.
 

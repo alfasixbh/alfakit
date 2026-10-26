@@ -149,7 +149,7 @@ it('links each backup to its download', function (): void {
 
     expect($download['url'])->toContain('/backups-panel/backups/download?')->toContain('signature=')
         // A plain link the browser follows (and downloads), not an Inertia visit.
-        ->and($download['openUrlInNewTab'] ?? null)->toBeTrue();
+        ->and($download['download'] ?? null)->toBeTrue();
 });
 
 it('deletes a backup', function (): void {

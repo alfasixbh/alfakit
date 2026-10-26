@@ -1,5 +1,11 @@
 # @alfakit/svelte
 
+## 0.1.11
+
+### Patch Changes
+
+- `npm run dev` no longer crashes on `dist/standalone.css` (the entry names `./standalone/index.js`). File downloads from actions and `Action::download()` links; MoneyInput keeps out-of-range amounts for validation; translated calendar month buttons; image cells named for screen readers; `StarterKitFullscreenLayout`; failed lazy widgets show Retry; standalone headings keep their width.
+
 ## 0.1.10
 
 ### Patch Changes

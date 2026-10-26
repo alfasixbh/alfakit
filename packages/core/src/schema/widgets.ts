@@ -141,6 +141,11 @@ export type WidgetSchema =
  */
 export interface LazyWidgetSchema extends BaseWidgetSchema {
   lazy: true
+  /**
+   * Set in the browser, never by PHP: loading the widget's schema failed (a refused or
+   * failed request), so the renderer shows an error with a retry instead of a skeleton.
+   */
+  failed?: true
 }
 
 export interface WidgetsBlock {

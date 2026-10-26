@@ -48,7 +48,9 @@ Section::make('Pricing')
 ```php
 Section::make('Statistics')
     ->deferLoading()
-    ->schema(fn () => [/* components with slow queries */]);
+    ->schema([
+        Text::make(fn (): string => 'Orders this year: '.Order::whereYear('created_at', now()->year)->count()),
+    ]);
 
 Tabs::make()->tabs([
     Tab::make('Details')->schema([...]),
@@ -59,6 +61,7 @@ Tabs::make()->tabs([
 - It works on `Section`, `Fieldset`, `Group`, `Grid`, `Tabs` / `Tab` and `Wizard` / `Step`, in forms and infolists. On `Tabs` and `Wizard` it defers every tab or step; a tab or step can defer itself.
 - A collapsed section or an inactive tab loads when it is opened and scrolled into view; a deferred schema whose fields have validation errors loads right away.
 - The form state of the fields inside is sent with the page as usual, so saving, validation and `$get()` work before the schema has loaded. Live fields inside work once it has.
+- What is deferred is rendering the children: put the slow work in the children's own closures (`Text::make(fn () => …)`, `options(fn () => …)`, `content()`), as above. A `schema(fn () => [...])` closure itself still runs on the first response (the fields' state is sent with the page), and again whenever the form state changes.
 - Only the page's first render defers: live updates, partial reloads and action modals render the children in full. Server-side rendering renders the skeleton.
 - Give the component a `key()` (the request addresses it by key) when its siblings share a type and position might change. `deferLoading()` accepts a closure.
 

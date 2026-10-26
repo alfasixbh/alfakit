@@ -88,6 +88,8 @@ export interface FieldActionResponse {
   result?: unknown
   closeModal?: boolean
   redirect?: string | null
+  /** A file the handler returned: a signed, one-time link to save it from. */
+  download?: string | null
   /** The owning form after the action ran (partial when fingerprints were sent). */
   form?: SchemaRefreshResponse
   /** Notifications the action sent (field actions answer with JSON, not a page visit). */

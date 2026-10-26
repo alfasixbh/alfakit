@@ -205,11 +205,17 @@ export function applyPanelTheme(
         Partial<Pick<PanelSchema, 'favicon' | 'colorCss' | 'starterKit'>>)
     | undefined,
 ): void {
-  if (typeof document === 'undefined' || !panel?.theme) {
+  if (!panel?.theme) {
     return
   }
 
+  // Also during a server render: chrome icons replaced with `Icons::register()` must be drawn
+  // the same on the server as in the browser, or hydration mismatches (W-V3-28).
   setIconAliases(panel.theme.icons)
+
+  if (typeof document === 'undefined') {
+    return
+  }
 
   // `starterKit()`: the host application owns the document's theme (its shadcn tokens,
   // fonts, favicon and colour scheme). Only the `--alfakit-*` colours are set; the starter kit

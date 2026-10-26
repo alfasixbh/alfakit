@@ -220,7 +220,9 @@ function ImageCell({ column, cell }: CellProps) {
         <img
           key={index}
           src={url}
-          alt={cell.alt ?? ''}
+          // Without `alt()` the first image is named after the column, so a record link that
+          // wraps it has a name (W-V4-20).
+          alt={cell.alt ?? (index === 0 ? (column.label ?? '') : '')}
           style={{
             height: schema.height ?? size,
             width: schema.width ?? (schema.square || schema.circular ? size : undefined),

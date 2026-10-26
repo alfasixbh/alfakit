@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { ConfigProvider } from 'reka-ui'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { defineComponent, h, type PropType } from 'vue'
+import { showToast } from '../src/components/notifications/flash-toasts'
 import { Dialog, DialogContent, DialogTitle } from '../src/components/ui'
 import {
   AlfakitStarterKitRoot,
@@ -93,6 +94,40 @@ describe('starter kit mode', () => {
     wrapper.unmount()
   })
 
+  it('renders a fullscreen page in the host layout without the fullscreen header (W-V3-24)', async () => {
+    const fullscreen = {
+      ...page,
+      layout: 'fullscreen',
+      fullscreen: { exitUrl: '/admin' },
+    } as unknown as PageSchema
+    setPageProps({
+      alfakit: { ...panel, starterKit: true },
+      page: fullscreen,
+    } as Partial<AlfakitPageProps>)
+    const Page = createStarterKitPage({ layout: HostLayout })
+    const [[, layoutProps]] = Page.layout({ page: fullscreen }) as [
+      [unknown, Record<string, unknown>],
+    ]
+
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(HostLayout, layoutProps, () => h(AlfakitStarterKitRoot, null, () => h(Page))),
+      }),
+      { attachTo: document.body },
+    )
+    await flush()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flush()
+
+    expect(wrapper.find('[data-alfakit-embedded][data-layout="fullscreen"]').exists()).toBe(true)
+    // The host layout is the chrome: no AlfaKit brand, top bar slots, user menu or Exit.
+    expect(wrapper.find('[data-slot="topbar"]').exists()).toBe(false)
+    expect(wrapper.find('[data-slot="fullscreen-exit"]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
   it('mirrors only its own content in a right-to-left language, never the host document', async () => {
     document.documentElement.dir = 'ltr'
     document.documentElement.lang = 'en'
@@ -121,6 +156,40 @@ describe('starter kit mode', () => {
     expect(root.attributes('dir')).toBe('rtl')
     expect(root.attributes('lang')).toBe('ar')
     expect(root.find('[data-slot="content"]').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it("puts toasts in the host document's top-right corner in a right-to-left language, not over the kit's sidebar (W-D-03)", async () => {
+    document.documentElement.dir = 'ltr'
+    setPageProps({
+      alfakit: {
+        ...panel,
+        starterKit: true,
+        localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+      },
+      page,
+    } as unknown as Partial<AlfakitPageProps>)
+    const Page = createStarterKitPage({ layout: HostLayout })
+
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () => h(HostLayout, null, () => h(AlfakitStarterKitRoot, null, () => h(Page))),
+      }),
+      { attachTo: document.body },
+    )
+    await flush()
+
+    showToast({ id: 'kit-rtl', title: 'تم الحفظ', status: 'success' } as never)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flush()
+
+    const toast = Array.from(document.querySelectorAll('[data-sonner-toast]')).find((item) =>
+      item.textContent?.includes('تم الحفظ'),
+    )
+    const toaster = toast?.closest('[data-sonner-toaster]')
+    expect(toaster?.getAttribute('data-x-position')).toBe('right')
+    expect(toaster?.getAttribute('dir')).toBe('rtl')
 
     wrapper.unmount()
   })

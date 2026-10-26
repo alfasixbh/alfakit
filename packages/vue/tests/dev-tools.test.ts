@@ -99,4 +99,25 @@ describe('schema inspector', () => {
     expect(writeText).toHaveBeenCalledOnce()
     expect(document.body.textContent).toContain('Copied')
   })
+
+  it("opens on the host document's side in a right-to-left starter kit, next to its button (W-31)", async () => {
+    document.documentElement.dir = 'ltr'
+    setPageProps({
+      alfakitDevTools: tools,
+      alfakit: {
+        ...panel,
+        starterKit: true,
+        localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+      } as never,
+    })
+
+    const wrapper = mountWithAlfakit(() => h(DevToolsInspector))
+    await wrapper.get('[aria-label="Open schema inspector"]').trigger('click')
+    await flush()
+
+    const sheet = document.querySelector('[data-slot="sheet-content"]')
+    expect(sheet?.className).toContain('right-0')
+
+    wrapper.unmount()
+  })
 })

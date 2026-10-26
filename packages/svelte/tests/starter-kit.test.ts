@@ -1,5 +1,6 @@
 import type { AlfakitPageProps, PageSchema } from '@alfakit/core'
 import { render, screen } from '@testing-library/svelte'
+import { showToast } from '../src/components/notifications/toast'
 import {
   AlfakitStarterKitRoot,
   createStarterKitLayout,
@@ -56,6 +57,24 @@ describe('starter kit mode', () => {
     expect(document.querySelector('[data-sidebar="sidebar"]')).toBeNull()
   })
 
+  it('renders a fullscreen page in the host layout without the fullscreen header (W-V3-24)', async () => {
+    const fullscreen = { ...page, layout: 'fullscreen', fullscreen: { exitUrl: '/admin' } }
+    setPageProps({
+      alfakit: { ...panel, starterKit: true },
+      page: fullscreen,
+    } as unknown as Partial<AlfakitPageProps>)
+
+    render(StarterKitHarness, { props: { breadcrumbs: [] } })
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    expect(
+      document.querySelector('[data-alfakit-embedded][data-layout="fullscreen"]'),
+    ).not.toBeNull()
+    // The host layout is the chrome: no AlfaKit brand, top bar slots, user menu or Exit.
+    expect(document.querySelector('[data-slot="topbar"]')).toBeNull()
+    expect(document.querySelector('[data-slot="fullscreen-exit"]')).toBeNull()
+  })
+
   it('mirrors only its own content in a right-to-left language, never the host document', () => {
     document.documentElement.dir = 'ltr'
     document.documentElement.lang = 'en'
@@ -75,6 +94,28 @@ describe('starter kit mode', () => {
     expect(root).toHaveAttribute('dir', 'rtl')
     expect(root).toHaveAttribute('lang', 'ar')
     expect(root?.querySelector('[data-slot="content"]')).not.toBeNull()
+  })
+
+  it("puts toasts in the host document's top-right corner in a right-to-left language, not over the kit's sidebar (W-D-03)", async () => {
+    document.documentElement.dir = 'ltr'
+    const alfakit = {
+      ...panel,
+      starterKit: true,
+      localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+    }
+    setPageProps({ alfakit, page } as unknown as Partial<AlfakitPageProps>)
+
+    render(StarterKitHarness, { props: { breadcrumbs: [] } })
+
+    showToast({ id: 'kit-rtl', title: 'تم الحفظ', status: 'success' } as never)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    const toast = Array.from(document.querySelectorAll('[data-sonner-toast]')).find((item) =>
+      item.textContent?.includes('تم الحفظ'),
+    )
+    const toaster = toast?.closest('[data-sonner-toaster]')
+    expect(toaster?.getAttribute('data-x-position')).toBe('right')
+    expect(toaster?.getAttribute('dir')).toBe('rtl')
   })
 
   it('gives portaled modals and slide-overs the reading direction (they render outside its root)', () => {

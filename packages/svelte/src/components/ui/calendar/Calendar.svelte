@@ -4,6 +4,7 @@
   import ChevronRightIcon from '@lucide/svelte/icons/chevron-right'
   import { isSameDay, type DateValue } from '@internationalized/date'
   import { Calendar as CalendarPrimitive } from 'bits-ui'
+  import { useT } from '../../../context.svelte'
   import { cn } from '../../../lib/utils'
   import { buttonVariants } from '../button/button'
 
@@ -22,6 +23,8 @@
     today,
     ...rest
   }: Props = $props()
+
+  const t = useT()
 
   // Bits UI maps ArrowLeft/ArrowRight to previous/next day whatever the direction. In a
   // right-to-left grid we swap the keys and replay the event, so the arrows follow the layout.
@@ -71,7 +74,12 @@
             'size-7 bg-transparent p-0 opacity-50 hover:opacity-100',
           )}
         >
-          <ChevronLeftIcon class="size-4 rtl:rotate-180" />
+          <!-- Bits UI sets its own English label after the props, so the button is ours. -->
+          {#snippet child({ props })}
+            <button {...props} aria-label={t('form.previous_month', {}, 'Previous month')}>
+              <ChevronLeftIcon class="size-4 rtl:rotate-180" />
+            </button>
+          {/snippet}
         </CalendarPrimitive.PrevButton>
         <CalendarPrimitive.Heading class="text-sm font-medium" />
         <CalendarPrimitive.NextButton
@@ -80,7 +88,12 @@
             'size-7 bg-transparent p-0 opacity-50 hover:opacity-100',
           )}
         >
-          <ChevronRightIcon class="size-4 rtl:rotate-180" />
+          <!-- Bits UI sets its own English label after the props, so the button is ours. -->
+          {#snippet child({ props })}
+            <button {...props} aria-label={t('form.next_month', {}, 'Next month')}>
+              <ChevronRightIcon class="size-4 rtl:rotate-180" />
+            </button>
+          {/snippet}
         </CalendarPrimitive.NextButton>
       </CalendarPrimitive.Header>
       <div class="mt-4 flex flex-col gap-4 sm:flex-row">

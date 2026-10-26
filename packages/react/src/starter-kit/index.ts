@@ -3,6 +3,7 @@ export { useAlfakitNavigation, type AlfakitNavigation } from './navigation'
 export {
   AlfakitStarterKitRoot,
   StarterKitContentLayout,
+  StarterKitFullscreenLayout,
   createStarterKitPage,
   type StarterKitLayout,
   type StarterKitPageOptions,

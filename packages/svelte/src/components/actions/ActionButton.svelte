@@ -169,7 +169,7 @@
   const shortcut = $derived(bindsKeys ? action.keyBindings?.[0] : undefined)
   const t = useT()
   const newTabHint = $derived(t('opens_in_new_tab', {}, '(opens in a new tab)'))
-  const newTab = $derived(isPlainLink && Boolean(action.openUrlInNewTab))
+  const newTab = $derived(isPlainLink && Boolean(action.openUrlInNewTab) && !action.download)
   const ariaLabel = $derived.by(() => {
     if (!isIconOnly && !labeledFrom) return undefined
 
@@ -205,9 +205,10 @@
   {#if isPlainLink}
     <Button
       href={action.url}
-      external={action.openUrlInNewTab}
-      target={action.openUrlInNewTab ? '_blank' : undefined}
-      rel={action.openUrlInNewTab ? 'noopener noreferrer' : undefined}
+      external={action.download || action.openUrlInNewTab}
+      target={newTab ? '_blank' : undefined}
+      rel={newTab ? 'noopener noreferrer' : undefined}
+      download={action.download ? '' : undefined}
       variant="plain"
       size={sizeProp}
       disabled={action.disabled}

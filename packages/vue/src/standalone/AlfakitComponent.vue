@@ -189,7 +189,7 @@ onMounted(() => {
           data-slot="page-header"
           class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
         >
-          <div class="min-w-0">
+          <div class="min-w-0 sm:max-w-[50%] sm:shrink-0">
             <h2 v-if="page.heading" class="text-xl font-semibold tracking-tight">
               {{ page.heading }}
             </h2>
@@ -202,7 +202,7 @@ onMounted(() => {
             :actions="page.headerActions"
             :context="actionContext"
             align="end"
-            class="max-w-full shrink-0"
+            class="max-w-full min-w-0"
           />
         </header>
         <slot name="header" />

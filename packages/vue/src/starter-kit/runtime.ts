@@ -13,6 +13,7 @@ import { preloadIcons } from '../lib/icons'
 import AlfakitPage from '../pages/AlfakitPage.vue'
 import { createDefaultRegistry } from '../registry'
 import StarterKitContentLayout from './StarterKitContentLayout.vue'
+import StarterKitFullscreenLayout from './StarterKitFullscreenLayout.vue'
 
 export interface StarterKitPageOptions extends Pick<
   AlfakitOptions<AnyComponent>,
@@ -45,6 +46,7 @@ function createStarterKitContext(options: StarterKitPageOptions): AlfakitContext
     .registerMany(lazyPanelLayouts)
     .register('layout:auth', AuthLayout)
     .register('layout:app', StarterKitContentLayout)
+    .register('layout:fullscreen', StarterKitFullscreenLayout)
     .registerMany(discovered.components)
     .registerMany(options.components ?? {})
   const translator = new Translator()

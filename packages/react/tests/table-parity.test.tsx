@@ -370,4 +370,23 @@ describe('image column alt text', () => {
 
     expect(screen.getByRole('img', { name: 'Ada Lovelace' })).toHaveAttribute('src', '/a.png')
   })
+  it('names an image without alt() after its column, so a record link around it has a name (W-V4-20)', () => {
+    const { container } = render(
+      <Wrapper>
+        <a href="/posts/4/edit">
+          <TableCellContent
+            column={{ type: 'ImageColumn', name: 'cover', label: 'Cover' }}
+            cell={{ state: ['/a.png', '/b.png'] }}
+            recordKey={1}
+            token="t"
+            component="table"
+          />
+        </a>
+      </Wrapper>,
+    )
+
+    expect(screen.getByRole('link', { name: 'Cover' })).toBeInTheDocument()
+    // Further images of a stack stay decorative.
+    expect(container.querySelectorAll('img')[1]).toHaveAttribute('alt', '')
+  })
 })

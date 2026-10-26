@@ -101,7 +101,7 @@ The repository's test corpus, a Filament 5.10 shop back office written from Fila
 
 ## Manual steps after the migration
 
-1. `npm install && npm run build` and open the panel. Resources, relation managers, widgets and the panel configuration should work as before.
+1. `php artisan view:clear` (Blade views compiled while Filament was installed still reference Livewire, and Wayfinder's type generation in the starter kits' Vite build fails on them), then `npm install && npm run build` and open the panel. Resources, relation managers, widgets and the panel configuration should work as before.
 2. Replace Blade views. A custom page that rendered `filament.pages.settings` now needs either schema components (`form()`, `infolist()`, header widgets, `getHeaderActions()`) or a frontend component registered in `createAlfakit({ components })` and named in `protected static ?string $component`. Delete the Blade files afterwards.
 3. Port the scaffolded custom components (`app/Alfakit/Components`, `resources/js/alfakit/components`), or move Livewire forms and tables to [standalone components](../standalone/overview) rendered in your own Inertia pages.
 4. Recreate themes with `make:alfakit-theme` and render hooks with `->slot(Slot::…, …)`.

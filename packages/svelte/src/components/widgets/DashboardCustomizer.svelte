@@ -24,7 +24,7 @@
   import { useDirection, useT } from '../../context.svelte'
   import { useStore } from '../../hooks/store.svelte'
   import { cn } from '../../lib/utils'
-  import LazyPlaceholder from '../panel/LazyPlaceholder.svelte'
+  import LazyWidgetPlaceholder from '../panel/LazyWidgetPlaceholder.svelte'
   import { Button } from '../ui/button'
   import WidgetRenderer from './WidgetRenderer.svelte'
 
@@ -185,7 +185,7 @@
             {#if cell.widget}
               <WidgetRenderer widget={cell.widget} />
             {:else if cell.lazy}
-              <LazyPlaceholder variant={cell.lazy.type === 'TableWidget' ? 'table' : 'widget'} />
+              <LazyWidgetPlaceholder widget={cell.lazy} />
             {/if}
           </div>
         {:else}
@@ -262,7 +262,7 @@
               {#if cell.widget}
                 <WidgetRenderer widget={cell.widget} />
               {:else if cell.lazy}
-                <LazyPlaceholder variant={cell.lazy.type === 'TableWidget' ? 'table' : 'widget'} />
+                <LazyWidgetPlaceholder widget={cell.lazy} />
               {:else}
                 <div
                   class="bg-card text-muted-foreground flex min-h-24 items-center justify-center rounded-xl border border-dashed p-6 text-sm"

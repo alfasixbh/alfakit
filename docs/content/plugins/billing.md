@@ -39,6 +39,18 @@ class Team extends Model
 
 For a tenant billable, tell Cashier in a service provider: `Cashier::useCustomerModel(Team::class);`.
 
+Cashier's migration adds a `trial_ends_at` column to the billable, and generic trials count as subscribed (`allowGenericTrial()`, on by default), so cast it as Cashier asks; without the cast, every panel page fails with `Call to a member function isFuture() on string` once the column has a value:
+
+```php
+protected function casts(): array
+{
+    return [
+        // ...
+        'trial_ends_at' => 'datetime',
+    ];
+}
+```
+
 ## Registering the plugin
 
 ```php

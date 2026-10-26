@@ -6,6 +6,7 @@
     jsonEntries,
     jsonScalar,
     latestServerTiming,
+    overlayPlacementDirection,
     prettyJson,
     searchJson,
   } from '@alfakit/core'
@@ -108,7 +109,9 @@
       {/snippet}
     </SheetTrigger>
     <SheetContent
-      side={direction === 'rtl' ? 'left' : 'right'}
+      side={overlayPlacementDirection(direction, props.alfakit?.starterKit) === 'rtl'
+        ? 'left'
+        : 'right'}
       class="flex w-full flex-col gap-0 p-0 sm:max-w-xl"
     >
       <div data-slot="dev-tools" class="flex min-h-0 flex-1 flex-col">

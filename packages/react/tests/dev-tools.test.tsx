@@ -97,4 +97,26 @@ describe('schema inspector', () => {
     expect(writeText.mock.calls[0]).toBeDefined()
     expect(await screen.findByText('Copied')).toBeInTheDocument()
   })
+
+  it("opens on the host document's side in a right-to-left starter kit, next to its button (W-31)", () => {
+    document.documentElement.dir = 'ltr'
+    setPageProps({
+      alfakitDevTools: tools,
+      alfakit: {
+        ...panel,
+        starterKit: true,
+        localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+      } as never,
+    })
+
+    render(
+      <Wrapper>
+        <DevToolsInspector />
+      </Wrapper>,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Open schema inspector' }))
+
+    const sheet = document.querySelector('[data-slot="sheet-content"]')
+    expect(sheet?.className).toContain('right-0')
+  })
 })

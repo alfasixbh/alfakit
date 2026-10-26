@@ -26,7 +26,7 @@ import { computed, nextTick, useId, watch } from 'vue'
 import { useDirection, useT } from '../../context'
 import { useStore } from '../../composables/use-store'
 import { cn } from '../../lib/utils'
-import LazyPlaceholder from '../panel/LazyPlaceholder.vue'
+import LazyWidgetPlaceholder from '../panel/LazyWidgetPlaceholder.vue'
 import Button from '../ui/Button.vue'
 import WidgetRenderer from './WidgetRenderer.vue'
 
@@ -182,10 +182,7 @@ const cells = computed<Cell[]>(() =>
       <template v-for="entry in cells" :key="entry.id">
         <div v-if="!state.editing" :class="cn('min-w-0', columnSpanClasses(cellSpan(entry.id)))">
           <WidgetRenderer v-if="entry.widget" :widget="entry.widget" />
-          <LazyPlaceholder
-            v-else-if="entry.lazy"
-            :variant="entry.lazy.type === 'TableWidget' ? 'table' : 'widget'"
-          />
+          <LazyWidgetPlaceholder v-else-if="entry.lazy" :widget="entry.lazy" />
         </div>
         <div
           v-else
@@ -253,10 +250,7 @@ const cells = computed<Cell[]>(() =>
           <!-- The widget itself is inert while editing: focus stays on the controls. -->
           <div inert class="pointer-events-none pt-12 select-none" aria-hidden="true">
             <WidgetRenderer v-if="entry.widget" :widget="entry.widget" />
-            <LazyPlaceholder
-              v-else-if="entry.lazy"
-              :variant="entry.lazy.type === 'TableWidget' ? 'table' : 'widget'"
-            />
+            <LazyWidgetPlaceholder v-else-if="entry.lazy" :widget="entry.lazy" />
             <div
               v-else
               class="bg-card text-muted-foreground flex min-h-24 items-center justify-center rounded-xl border border-dashed p-6 text-sm"

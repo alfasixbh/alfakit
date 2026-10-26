@@ -3,6 +3,7 @@ export { default as AlfakitWidgets } from './AlfakitWidgets.svelte'
 export { useAlfakitNavigation, type AlfakitNavigation } from './navigation'
 export { createStarterKitLayout, type StarterKitPageOptions } from './starter-kit'
 export { default as StarterKitContentLayout } from './StarterKitContentLayout.svelte'
+export { default as StarterKitFullscreenLayout } from './StarterKitFullscreenLayout.svelte'
 export {
   AlfakitCopilot,
   AlfakitLanguageSwitcher,

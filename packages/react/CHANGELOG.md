@@ -1,5 +1,11 @@
 # @alfakit/react
 
+## 0.1.11
+
+### Patch Changes
+
+- File downloads from actions and `Action::download()` links; MoneyInput keeps out-of-range amounts for validation; translated calendar month buttons; image cells named for screen readers; `StarterKitFullscreenLayout`; customizable dashboards on the kit's `/dashboard`; failed lazy widgets show Retry; standalone headings keep their width.
+
 ## 0.1.10
 
 ### Patch Changes

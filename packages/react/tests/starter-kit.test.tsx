@@ -1,8 +1,9 @@
 import type { AlfakitPageProps, PageSchema, StarterKitBreadcrumb } from '@alfakit/core'
-import { render, renderHook, screen } from '@testing-library/react'
+import { act, render, renderHook, screen } from '@testing-library/react'
 import { Direction } from 'radix-ui'
 import type { ReactNode } from 'react'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { showToast } from '../src/components/notifications/flash-toasts'
 import { Dialog, DialogContent, DialogTitle } from '../src/components/ui/dialog'
 import { Popover, PopoverContent } from '../src/components/ui/popover'
 import {
@@ -104,6 +105,40 @@ describe('starter kit mode', () => {
     expect(document.querySelector('[data-sidebar="sidebar"]')).toBeNull()
   })
 
+  it('renders a fullscreen page in the host layout without the fullscreen header (W-V3-24)', async () => {
+    const fullscreen = {
+      ...page,
+      layout: 'fullscreen',
+      fullscreen: { exitUrl: '/admin' },
+    } as unknown as PageSchema
+    setPageProps({
+      alfakit: { ...panel, starterKit: true },
+      page: fullscreen,
+    } as Partial<AlfakitPageProps>)
+    const Page = createStarterKitPage({ layout: HostLayout })
+    const [[Layout, layoutProps]] = Page.layout({ page: fullscreen }) as unknown as [
+      [typeof HostLayout, { breadcrumbs: StarterKitBreadcrumb[] }],
+    ]
+
+    render(
+      <Layout {...layoutProps}>
+        <AlfakitStarterKitRoot>
+          <Page />
+        </AlfakitStarterKitRoot>
+      </Layout>,
+    )
+
+    expect(
+      await screen
+        .findByTestId('host-layout')
+        .then(() => document.querySelector('[data-alfakit-embedded][data-layout="fullscreen"]')),
+    ).not.toBeNull()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    // The host layout is the chrome: no AlfaKit brand, top bar slots, user menu or Exit.
+    expect(document.querySelector('[data-slot="topbar"]')).toBeNull()
+    expect(document.querySelector('[data-slot="fullscreen-exit"]')).toBeNull()
+  })
+
   it('offers the debug panel on starter kit pages when the page has debug data', async () => {
     setPageProps({
       alfakit: { ...panel, starterKit: true },
@@ -150,6 +185,36 @@ describe('starter kit mode', () => {
     expect(root).toHaveAttribute('dir', 'rtl')
     expect(root).toHaveAttribute('lang', 'ar')
     expect(root?.querySelector('[data-slot="content"]')).not.toBeNull()
+  })
+
+  it("puts toasts in the host document's top-right corner in a right-to-left language, not over the kit's sidebar (W-D-03)", async () => {
+    document.documentElement.dir = 'ltr'
+    setPageProps({
+      alfakit: {
+        ...panel,
+        starterKit: true,
+        localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+      },
+      page,
+    } as unknown as Partial<AlfakitPageProps>)
+    const Page = createStarterKitPage({ layout: HostLayout })
+
+    render(
+      <HostLayout>
+        <AlfakitStarterKitRoot>
+          <Page />
+        </AlfakitStarterKitRoot>
+      </HostLayout>,
+    )
+
+    await act(async () => {
+      showToast({ id: 'kit-rtl', title: 'تم الحفظ', status: 'success' } as never)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    })
+
+    const toaster = screen.getByText('تم الحفظ').closest('[data-sonner-toaster]')
+    expect(toaster?.getAttribute('data-x-position')).toBe('right')
+    expect(toaster?.getAttribute('dir')).toBe('rtl')
   })
 
   it('gives portaled modals and popovers the reading direction (they render outside its root)', () => {

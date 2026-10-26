@@ -15,7 +15,7 @@
   import type { WidgetsBlock } from '@alfakit/core'
   import { columnSpanClasses, gridColumnsClasses, isLazyPlaceholder } from '@alfakit/core'
   import { cn } from '../../lib/utils'
-  import LazyPlaceholder from '../panel/LazyPlaceholder.svelte'
+  import LazyWidgetPlaceholder from '../panel/LazyWidgetPlaceholder.svelte'
   import Lazy from '../../lib/Lazy.svelte'
   import WidgetRenderer from './WidgetRenderer.svelte'
 
@@ -27,7 +27,7 @@
     {#each block.widgets as widget, widgetIndex (uniqueKey(block.widgets, widgetIndex, (item) => item.key))}
       <div class={cn('min-w-0', columnSpanClasses(widget.columnSpan))}>
         {#if isLazyPlaceholder(widget)}
-          <LazyPlaceholder variant={widget.type === 'TableWidget' ? 'table' : 'widget'} />
+          <LazyWidgetPlaceholder {widget} />
         {:else}
           <WidgetRenderer {widget} />
         {/if}

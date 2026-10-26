@@ -180,7 +180,21 @@ export function ActionButton({
   const ariaLabel = isIconOnly || labeledFrom ? accessibleName : undefined
 
   const button = isPlainLink ? (
-    action.openUrlInNewTab ? (
+    action.download ? (
+      // `download()`: a plain link that saves the file (an Inertia visit would discard it).
+      <Button
+        asChild
+        variant="plain"
+        size={sizeProp}
+        disabled={action.disabled}
+        aria-label={ariaLabel}
+        {...extraProps(action.extraAttributes, classes)}
+      >
+        <a href={action.url} download="">
+          {content}
+        </a>
+      </Button>
+    ) : action.openUrlInNewTab ? (
       <Button
         asChild
         variant="plain"

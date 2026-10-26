@@ -234,7 +234,7 @@ MoneyInput::make('price')->currency('EUR')->minValue(0);
 MoneyInput::make('total')->currency(fn (Get $get) => $get('currency'))->minorUnits();
 ```
 
-Shows the currency symbol where the user's locale puts it, accepts the locale's separators and digits, and rounds to the currency's precision (BHD 3, JPY 0). `minorUnits()` stores integers of the smallest unit. On blur the amount is clamped to `minValue()`/`maxValue()`. The currency defaults to the panel's. See [Entering money](../localization/currencies-and-numbers#entering-money).
+Shows the currency symbol where the user's locale puts it, accepts the locale's separators and digits, and rounds to the currency's precision (BHD 3, JPY 0). `minorUnits()` stores integers of the smallest unit. An amount outside `minValue()`/`maxValue()` is kept as typed and reported by validation (never silently changed). The currency defaults to the panel's. See [Entering money](../localization/currencies-and-numbers#entering-money).
 
 ## DatePicker / DateTimePicker / TimePicker
 
@@ -465,7 +465,7 @@ Repeater::make('members')
 
 The customisers are `addAction()`, `deleteAction()`, `cloneAction()`, `reorderAction()` (the drag handle), `moveUpAction()`, `moveDownAction()`, `collapseAction()`, `expandAction()`, `collapseAllAction()` and `expandAllAction()`. `$arguments['item']` is the item key: its position (`'0'`, `'1'` …). A reorder gets `$arguments['items']`, the keys in their new order.
 
-Item actions you only restyle (label, icon, colour, tooltip) run in the browser. When one needs the server (`requiresConfirmation()`, a form, `action()`, `before()` / `after()`), it runs through the field action endpoint and its default handler changes the state there. Collapse and expand are visual and always run in the browser. Extra item actions always run on the server and can change the field with `$component->state()` or `$set()`; `getItemState($key)` / `getRawItemState($key)`, `addItem()`, `deleteItem()`, `cloneItem()`, `moveItem()` and `reorderItems()` help. Visibility closures are evaluated per item; for items added in the browser, `$arguments['item']` is null until the next server round trip. Hiding the add or delete action has the same effect as `addable(false)` / `deletable(false)`, including on the server.
+Item actions you only restyle (label, icon, colour, tooltip) run in the browser. When one needs the server (`requiresConfirmation()`, a form, `action()`, `before()` / `after()`), it runs through the field action endpoint and its default handler changes the state there. Collapse and expand are visual and always run in the browser. Extra item actions always run on the server and can change the field with `$component->state()` or `$set()`; `getItemState($key)` / `getRawItemState($key)`, `addItem()`, `deleteItem()`, `cloneItem()`, `moveItem()` and `reorderItems()` help. Visibility closures are evaluated per item; for items added in the browser, `$arguments['item']` is null until the next server round trip, and their extra item actions only appear after it (a `live()` field, another field action or saving the form): to have them right away, make the add action run on the server, for example `->addAction(fn (Action $action) => $action->action(fn (Repeater $component) => $component->addItem()))`. Hiding the add or delete action has the same effect as `addable(false)` / `deletable(false)`, including on the server.
 
 `Select::make('product_id')->disableOptionsWhenSelectedInSiblingRepeaterItems()` disables the options other items already picked (it adds `distinct()` and `live()`).
 

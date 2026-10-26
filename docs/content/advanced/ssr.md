@@ -17,7 +17,7 @@ New installs can do all of this with one flag:
 php artisan alfakit:install --ssr
 ```
 
-It writes `resources/js/alfakit/ssr.tsx` (`ssr.ts` for Vue and Svelte), points `vite.config` at it and adds a `build:ssr` script. To set it up by hand, follow the steps below. `--ssr` sets up the admin panel's entry only: combined with `--starter-kit` or `--standalone` it currently does nothing (those pages render through your app's own Inertia entry).
+It writes `resources/js/alfakit/ssr.tsx` (`ssr.ts` for Vue and Svelte), points `vite.config` at it and adds a `build:ssr` script. To set it up by hand, follow the steps below. `--ssr` sets up the admin panel's entry only: combined with `--starter-kit` or `--standalone` it changes nothing and prints a note, because those pages render through your app's own Inertia entry (see [Starter kits and standalone pages](#starter-kits-and-standalone-pages)).
 
 ### 1. The SSR entry
 
@@ -101,6 +101,61 @@ createServer(
     }),
 )
 ```
+
+The same for Vue (`resources/js/alfakit/ssr.ts`):
+
+```ts
+import { createInertiaApp } from '@inertiajs/vue3'
+import createServer from '@inertiajs/vue3/server'
+import { createSSRApp, h, type DefineComponent } from 'vue'
+import { renderToString } from 'vue/server-renderer'
+import { createAlfakitServer } from '@alfakit/vue/server'
+
+const appPages = import.meta.glob<{ default: DefineComponent }>('../pages/**/*.vue', {
+    eager: true,
+})
+
+createServer(
+    createAlfakitServer({
+        fallback: (page) =>
+            createInertiaApp({
+                page,
+                render: renderToString,
+                resolve: (name) => appPages[`../pages/${name}.vue`],
+                setup: ({ App, props, plugin }) =>
+                    createSSRApp({ render: () => h(App, props) }).use(plugin),
+            }),
+    }),
+)
+```
+
+And for Svelte:
+
+```ts
+import { createInertiaApp, type ResolvedComponent } from '@inertiajs/svelte'
+import createServer from '@inertiajs/svelte/server'
+import { render } from 'svelte/server'
+import { createAlfakitServer } from '@alfakit/svelte/server'
+
+const appPages = import.meta.glob<ResolvedComponent>('../pages/**/*.svelte', { eager: true })
+
+createServer(
+    createAlfakitServer({
+        fallback: (page) =>
+            createInertiaApp({
+                page,
+                resolve: (name) => appPages[`../pages/${name}.svelte`],
+                setup: ({ App, props }) => render(App, { props }),
+            }),
+    }),
+)
+```
+
+Give the fallback the same `title` and `layout` options as your app's browser entry, so the server renders the tree the browser hydrates.
+
+## Starter kits and standalone pages
+
+In a [starter kit app](../getting-started/starter-kits) and on pages that embed [`<AlfakitComponent>`](../standalone/overview), AlfaKit's pages are pages of your own Inertia app: your app's entry renders them in the browser, and your app's own SSR setup renders them on the server, for React, Vue and Svelte alike. `createAlfakitServer()` is not involved and the SSR setup needs no AlfaKit change: follow [Inertia's SSR guide](https://inertiajs.com/server-side-rendering) for your app (the Laravel starter kits come with a `build:ssr` script, then run `php artisan inertia:start-ssr`). The starter kit page and `<AlfakitComponent>` are SSR-safe ([Customizing standalone components](../standalone/customizing#server-side-rendering)); `config/inertia.php` switches SSR on and off as described above.
 
 ## What renders on the server
 

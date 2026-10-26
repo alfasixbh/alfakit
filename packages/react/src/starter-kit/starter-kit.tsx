@@ -85,6 +85,27 @@ export function StarterKitContentLayout({ children, maxContentWidth }: AppLayout
   )
 }
 
+/**
+ * A `$layout = 'fullscreen'` page inside the host layout: what `layout:fullscreen` renders in
+ * starter kit mode. The host layout is the chrome, so there is no AlfaKit header (brand, top
+ * bar slots, user menu, Exit); the screen gets the whole content area. Replace it with
+ * `{ components: { 'layout:fullscreen': MyScreen } }`.
+ */
+export function StarterKitFullscreenLayout({ children }: { children: ReactNode }) {
+  return (
+    <div
+      data-slot="content"
+      data-layout="fullscreen"
+      data-alfakit-embedded=""
+      className="flex min-h-0 w-full min-w-0 flex-1 flex-col"
+    >
+      <Slot name="content.start" />
+      {children}
+      <Slot name="content.end" />
+    </div>
+  )
+}
+
 // One context for the browser session (it survives navigations between host and Alfakit
 // pages); a server render builds one per request so concurrent renders never share a locale.
 let browserContext: AlfakitContextValue | null = null
@@ -98,6 +119,7 @@ function createStarterKitContext(options: StarterKitPageOptions): AlfakitContext
     .registerMany(lazyPanelLayouts)
     .register('layout:auth', AuthLayout)
     .register('layout:app', StarterKitContentLayout)
+    .register('layout:fullscreen', StarterKitFullscreenLayout)
     .registerMany(discovered.components)
     .registerMany(options.components ?? {})
   const translator = new Translator()

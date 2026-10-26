@@ -144,6 +144,7 @@ return [
             'deleted' => 'Verwijderd',
             'restored' => 'Hersteld',
             'reverted' => 'Eerdere versie hersteld',
+            'baseline' => 'Vóór het begin van de geschiedenis',
         ],
         'restore' => [
             'label' => 'Deze versie herstellen',

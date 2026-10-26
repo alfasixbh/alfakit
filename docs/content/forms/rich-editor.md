@@ -475,7 +475,7 @@ RichEditor::make('content')->plugins([HighlightPlugin::make()]);
 - `action()` opens the plugin's editor action named like the tool, as a [field action](field-actions) (hidden for disabled and read-only editors). It receives `$arguments['editorSelection']` (`from`, `to`) and `$arguments['attributes']` (the attributes of the `activeWhen()` mark or node). Return `$component->runCommands([...], editorSelection: ...)`, or a list of `EditorCommand`s, to change the content.
 - **Sanitiser**: content is sanitised strictly; `configureHtmlSanitizer()` allows exactly the elements and attributes the plugin stores. Never allow event handlers or `style`.
 
-Register the browser half once in your panel entry, keyed like `getTipTapJsExtensions()`:
+Register the browser half once, keyed like `getTipTapJsExtensions()`. In an admin panel, in the panel entry (`resources/js/alfakit/app.ts`, `.tsx` in React):
 
 ```ts
 createAlfakit({
@@ -485,13 +485,18 @@ createAlfakit({
 })
 ```
 
+In a [starter kit](../getting-started/starter-kits), pass the same `richEditorExtensions` to `createStarterKitPage()` (React, Vue) or `createStarterKitLayout()` (Svelte) in `resources/js/pages/Alfakit/Page.*`, with the path relative to that file (`() => import('../../alfakit/editor/highlight-color')`). Outside panels, register them in your app entry (`resources/js/app.ts`) with `registerRichEditorExtensions({ 'highlight-color': () => import('./alfakit/editor/highlight-color') })` from `@alfakit/core`.
+
 ```ts
 // editor/highlight-color.ts
 import { Mark } from '@tiptap/core'
 
 export default Mark.create({
     name: 'highlight',
-    addAttributes: () => ({ color: { default: null } }),
+    addAttributes: () => ({
+        // Read the stored data-color back, or the colour is lost when the content is loaded again.
+        color: { default: null, parseHTML: (element) => element.getAttribute('data-color') },
+    }),
     parseHTML: () => [{ tag: 'mark' }],
     renderHTML: ({ HTMLAttributes }) => ['mark', { 'data-color': HTMLAttributes.color }, 0],
 })

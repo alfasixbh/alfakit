@@ -144,6 +144,7 @@ return [
             'deleted' => 'Silindi',
             'restored' => 'Geri yüklendi',
             'reverted' => 'Önceki bir sürüm geri yüklendi',
+            'baseline' => 'Geçmiş başlamadan önce',
         ],
         'restore' => [
             'label' => 'Bu sürümü geri yükle',

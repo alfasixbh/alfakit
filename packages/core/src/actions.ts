@@ -132,6 +132,24 @@ export interface ActionRunnerOptions {
  * Drives action buttons: plain links navigate, actions without a modal post straight to
  * the server, and actions with a modal fetch the modal schema first.
  */
+/**
+ * Save a file an action handler returned. The action endpoint answers an Inertia visit (or
+ * JSON), which cannot carry a file, so the server keeps it behind a signed, one-time link
+ * served as an attachment: opening it saves the file and the page stays where it is.
+ */
+export function startDownload(url: string): void {
+  if (typeof document === 'undefined') return
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = ''
+  link.rel = 'noopener'
+  link.style.display = 'none'
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+}
+
 export class ActionRunner {
   public readonly store: Store<ActionRunnerState>
 
@@ -253,7 +271,9 @@ export class ActionRunner {
     }
 
     if (action.url && !action.hasAction && !action.hasModal) {
-      if (action.openUrlInNewTab) {
+      if (action.download) {
+        startDownload(action.url)
+      } else if (action.openUrlInNewTab) {
         window.open(action.url, '_blank', 'noopener')
       } else {
         const { router } = await import('@inertiajs/core')
@@ -610,6 +630,10 @@ export class ActionRunner {
             void this.resetModal(action.name, data)
           }
 
+          if (flash?.status === 'success' && flash.download) {
+            startDownload(flash.download)
+          }
+
           if (!flash || flash.status === 'success') {
             this.options.onSuccess?.(action, context)
           }
@@ -729,6 +753,10 @@ export class ActionRunner {
 
       if (response.status === 'success') {
         this.options.onSuccess?.(action, context)
+
+        if (response.download) {
+          startDownload(response.download)
+        }
 
         if (response.redirect) {
           const { router } = await import('@inertiajs/core')

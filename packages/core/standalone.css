@@ -96,6 +96,27 @@
   --color-destructive-foreground: var(--destructive-foreground);
 }
 
+/*
+ * Danger text in dark mode. The starter kits' dark `--destructive` is a dark red meant as a
+ * button background (about 2:1 as text on their near-black page), so danger text (row
+ * actions, links, messages) in AlfaKit's views and the dialogs and menus they open uses a
+ * lighter red (W-D-11). Solid danger buttons keep the kit's red. Override it with
+ * `--alfakit-danger-text`.
+ */
+.dark :where([data-alfakit-embedded], [data-alfakit-component]) .text-destructive,
+.dark
+  :where(body:has([data-alfakit-embedded], [data-alfakit-component]))
+  :where(
+    [data-slot='dialog-content'],
+    [data-slot='sheet-content'],
+    [data-slot='alert-dialog-content'],
+    [data-slot='dropdown-menu-content'],
+    [data-slot='popover-content']
+  )
+  .text-destructive {
+  color: var(--alfakit-danger-text, oklch(0.704 0.191 22.216));
+}
+
 /* Rich editor content and extensions (same rules as the panel stylesheet). */
 .alfakit-prose :where(h2) {
   @apply mt-4 mb-2 text-xl font-semibold;

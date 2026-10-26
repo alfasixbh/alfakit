@@ -50,6 +50,33 @@ describe('actions', () => {
     expect(screen.getByRole('button', { name: 'Actions' })).toBeInTheDocument()
   })
 
+  it('renders a download() action as a plain link that saves the file', () => {
+    render(Wrapper, {
+      props: {
+        component: ActionList,
+        props: {
+          actions: [
+            {
+              type: 'Action',
+              name: 'backup',
+              label: 'Download backup',
+              url: '/backups/1/download?signature=x',
+              download: true,
+            },
+          ],
+          context: { token: 't', component: 'page' },
+        },
+      },
+    })
+
+    const link = screen.getByRole('link', { name: 'Download backup' })
+
+    // Not an Inertia visit (which would fetch the file and discard it), not a new tab.
+    expect(link).toHaveAttribute('download', '')
+    expect(link).toHaveAttribute('href', '/backups/1/download?signature=x')
+    expect(link).not.toHaveAttribute('target')
+  })
+
   it('keeps link actions with an icon unpadded, so record action columns never grow', () => {
     render(Wrapper, {
       props: {

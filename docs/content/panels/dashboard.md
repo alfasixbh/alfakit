@@ -46,7 +46,7 @@ php artisan vendor:publish --tag=alfakit-dashboard-migrations
 php artisan migrate
 ```
 
-The dashboard shows an **Edit dashboard** button (on panel dashboards; `<AlfakitWidgets>` on a starter kit's `/dashboard` doesn't offer editing yet). In edit mode each widget gets a toolbar:
+The dashboard shows an **Edit dashboard** button. In a starter kit panel, register the `Dashboard` page (`->pages([Dashboard::class])`) and `<AlfakitWidgets>` on your app's `/dashboard` offers the same button and saves that page's layout ([Widgets on your dashboard](../getting-started/starter-kits#widgets-on-your-dashboard)). In edit mode each widget gets a toolbar:
 
 - a drag handle: drag it with the pointer, or focus it and use the arrow keys (left and right follow the reading direction, so they swap in right-to-left languages), Home and End. Each move is announced to screen readers.
 - a size picker with the spans the widget allows,

@@ -1,5 +1,11 @@
 # @alfakit/vue
 
+## 0.1.11
+
+### Patch Changes
+
+- File downloads from actions and `Action::download()` links; MoneyInput keeps out-of-range amounts for validation; translated calendar month buttons; image cells named for screen readers; `StarterKitFullscreenLayout`; failed lazy widgets show Retry; standalone headings keep their width; source maps without `sourcesContent` (no Tailwind warnings).
+
 ## 0.1.10
 
 ### Patch Changes

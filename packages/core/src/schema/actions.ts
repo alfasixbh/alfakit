@@ -33,6 +33,11 @@ export interface ActionSchema {
   openUrlInNewTab?: boolean
   /** `postToUrl()`: clicking sends a POST request to `url` instead of visiting it. */
   postToUrl?: boolean
+  /**
+   * `download()`: `url` serves a file to save, so it is a plain link with the `download`
+   * attribute, never an Inertia visit (which would fetch the file and discard it).
+   */
+  download?: boolean
   /** True when clicking opens a modal (confirmation and/or form) before executing. */
   hasModal?: boolean
   /** True when the action runs server-side logic (vs. a plain link). */
@@ -202,4 +207,9 @@ export interface ActionResultFlash {
     arguments?: Record<string, unknown> | null
     hasModal: boolean
   }
+  /**
+   * The handler returned a file (`response()->streamDownload()`, `Storage::download()` …): a
+   * signed, one-time link the browser opens to save it.
+   */
+  download?: string
 }

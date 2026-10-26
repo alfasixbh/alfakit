@@ -262,6 +262,8 @@ To use a form's values in a method, send it with the call (`forms: ['sale']`) an
 
 `protected static string $layout = 'fullscreen';` drops the sidebar and topbar and gives the component the whole viewport (`h-svh`, the component fills `main[data-slot="content"]`). A slim header keeps the brand, the page title, the `topbar.start`/`topbar.end` slots, notifications, the theme toggle, the debug panel toggle, the user menu and an exit link to the panel home (`getExitUrl()`). Set `protected static bool $hasFullscreenHeader = false;` for a kiosk: only the debug toggle remains, at the bottom end. Auth, tenancy, toasts and modals work as on other pages. Replace it with `createAlfakit({ components: { 'layout:fullscreen': MyLayout } })`.
 
+In a [starter kit](../getting-started/starter-kits) your app's layout is the chrome: a fullscreen page fills the content area of that layout, without AlfaKit's header (no brand, top bar slots, user menu or Exit). That is `StarterKitFullscreenLayout`, replaceable with `createStarterKitPage({ components: { 'layout:fullscreen': MyScreen } })`.
+
 `<AppPage>` renders the page's layout (any layout), heading, header actions and document title around your component. Without it you render the whole screen yourself.
 
 ## UI primitives and formatting

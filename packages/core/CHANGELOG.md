@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.1.11
+
+### Patch Changes
+
+- A page restored by Back after a save is loaded fresh, so forms show the saved values. Actions that return a file download it (`startDownload()`); pages restored by Back after a save reload; lazy widgets that fail show a retry; toasts and the inspector follow the host page's side in right-to-left starter kits (`overlayPlacementDirection()`); icon replacements apply during server rendering; dark-mode danger text in starter kits.
+
 ## 0.1.10
 
 ### Patch Changes

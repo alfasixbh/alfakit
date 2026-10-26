@@ -61,7 +61,7 @@ $panel->id('portal')->viteTheme('resources/css/portal.css');
 }
 ```
 
-The panel writes `--radius`, `--alfakit-font` and the `->colors()` variables inline on `<html>`, so a stylesheet can't override them without `!important`; set those with `->radius()`, `->font()` and `->colors()` on the panel instead. Use your renderer's package in both lines (`@alfakit/vue/styles.css` and `node_modules/@alfakit/vue/dist` in a Vue app): another renderer's path fails the build with "Can't resolve '@alfakit/react/styles.css'". Add the file to Vite's `input` list. You can also scope CSS in a shared stylesheet with the `data-panel` attribute: `:root[data-panel='portal'] { … }`.
+The plain `:root` rule works with the default `neutral` theme. Every other theme scopes its tokens to itself (`:root[data-alfakit-theme~='soft'] { --background: … }`), which wins over `:root`, so on a panel with `->theme('soft')` (or any theme but neutral) scope your overrides: `:root[data-panel='portal'] { --background: …; }`. The panel writes `--radius`, `--alfakit-font` and the `->colors()` variables inline on `<html>`, so a stylesheet can't override them without `!important`; set those with `->radius()`, `->font()` and `->colors()` on the panel instead. Use your renderer's package in both lines (`@alfakit/vue/styles.css` and `node_modules/@alfakit/vue/dist` in a Vue app): another renderer's path fails the build with "Can't resolve '@alfakit/react/styles.css'". Add the file to Vite's `input` list. You can also scope CSS in a shared stylesheet with the `data-panel` attribute: `:root[data-panel='portal'] { … }`.
 
 ## Hooks for CSS
 

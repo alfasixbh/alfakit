@@ -44,7 +44,7 @@
     {#each urls.slice(0, limit) as url, index (index)}
       <img
         src={url}
-        alt={cell.alt ?? ''}
+        alt={cell.alt ?? (index === 0 ? (column.label ?? '') : '')}
         style:height={px(schema.height ?? size)}
         style:width={px(schema.width ?? (schema.square || schema.circular ? size : undefined))}
         style:box-shadow={stackedImageStyle(index, schema)?.boxShadow}

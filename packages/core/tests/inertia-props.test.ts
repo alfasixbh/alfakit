@@ -18,10 +18,10 @@ import {
   withTableTotals,
 } from '../src/table-totals'
 
-const { prefetch, flushAll, reload, listeners } = vi.hoisted(() => ({
+const { prefetch, flushAll, visit, listeners } = vi.hoisted(() => ({
   prefetch: vi.fn(),
   flushAll: vi.fn(),
-  reload: vi.fn(),
+  visit: vi.fn(),
   listeners: new Map<string, (event: unknown) => void>(),
 }))
 
@@ -34,7 +34,7 @@ vi.mock('@inertiajs/core', async (importOriginal) => {
       ...original.router,
       prefetch,
       flushAll,
-      reload,
+      visit,
       on: (name: string, callback: (event: unknown) => void) => {
         listeners.set(name, callback)
         return () => listeners.delete(name)
@@ -253,7 +253,7 @@ describe('prefetching', () => {
     const uninstall = installPrefetchInvalidation()
     const navigate = (url: string): void =>
       listeners.get('navigate')?.({ detail: { page: { url } } })
-    reload.mockClear()
+    visit.mockClear()
 
     navigate('/admin/posts')
     navigate('/admin/posts/create')
@@ -262,20 +262,25 @@ describe('prefetching', () => {
 
     window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
     navigate('/admin/posts')
-    expect(reload).toHaveBeenCalledTimes(1)
+    expect(visit).toHaveBeenCalledTimes(1)
+    // A fresh page: a form keeping its restored state would show the old values.
+    expect(visit).toHaveBeenCalledWith(
+      window.location.href,
+      expect.objectContaining({ preserveState: false, preserveScroll: true, replace: true }),
+    )
 
     // Shown again after the reload: going Back to it later needs no request.
     navigate('/admin/posts')
     navigate('/admin/posts/1/edit')
     window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
     navigate('/admin/posts')
-    expect(reload).toHaveBeenCalledTimes(1)
+    expect(visit).toHaveBeenCalledTimes(1)
 
     // A normal visit after a popstate that restored nothing is not a restore.
     window.dispatchEvent(new PopStateEvent('popstate', { state: null }))
     listeners.get('start')?.({})
     navigate('/admin/tags')
-    expect(reload).toHaveBeenCalledTimes(1)
+    expect(visit).toHaveBeenCalledTimes(1)
 
     uninstall()
   })

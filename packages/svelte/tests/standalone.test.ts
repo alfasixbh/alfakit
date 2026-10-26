@@ -41,6 +41,29 @@ describe('AlfakitComponent (outside panels)', () => {
     expect(router.reload).toHaveBeenCalledWith({ only: ['posts'] })
   })
 
+  it('keeps the heading beside many header actions instead of squeezing it to nothing (W-V5-03)', () => {
+    const toolbar = {
+      ...form,
+      heading: 'Toolbar',
+      headerActions: Array.from({ length: 25 }, (_, index) => ({
+        type: 'Action' as const,
+        name: `action${index}`,
+        label: `Action ${index}`,
+        hasAction: true,
+      })),
+    } as StandaloneComponentSchema
+
+    render(StandaloneHarness, { props: { component: toolbar } })
+
+    const header = document.querySelector('[data-slot="page-header"]') as HTMLElement
+    const heading = screen.getByRole('heading', { name: 'Toolbar' }).parentElement as HTMLElement
+
+    // The heading keeps its width (up to half the row); the actions wrap in the rest.
+    expect(heading).toHaveClass('sm:shrink-0', 'sm:max-w-[50%]')
+    expect(header.lastElementChild).not.toHaveClass('shrink-0')
+    expect(header.lastElementChild).toHaveClass('min-w-0')
+  })
+
   it('renders a form from its payload without createAlfakit()', async () => {
     render(StandaloneHarness, { props: { component: form, class: 'max-w-xl' } })
 

@@ -396,4 +396,22 @@ describe('image column alt text', () => {
 
     wrapper.unmount()
   })
+  it('names an image without alt() after its column, so a record link around it has a name (W-V4-20)', () => {
+    const wrapper = mountWithAlfakit(() =>
+      h(TableCellContent, {
+        column: { type: 'ImageColumn', name: 'cover', label: 'Cover' },
+        cell: { state: ['/a.png', '/b.png'] },
+        recordKey: 1,
+        token: 't',
+        component: 'table',
+      }),
+    )
+
+    const images = wrapper.findAll('img')
+    expect(images[0]?.attributes('alt')).toBe('Cover')
+    // Further images of a stack stay decorative.
+    expect(images[1]?.attributes('alt')).toBe('')
+
+    wrapper.unmount()
+  })
 })
