@@ -281,7 +281,7 @@ export function ContentBlockRenderer({ block }: { block: ContentBlock }) {
         <div data-slot="infolist" className="contents">
           <SchemaRenderer
             components={(block as InfolistBlock).components}
-            columns={{ default: 1, lg: 2 }}
+            columns={(block as InfolistBlock).columns ?? { default: 1, lg: 2 }}
           />
         </div>
       )

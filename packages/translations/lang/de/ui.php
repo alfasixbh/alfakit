@@ -491,7 +491,7 @@ return [
         'turn_off' => 'Ausschalten',
         'turn_off_label' => 'Tastenkürzel für :label ausschalten',
         'reset' => 'Zurücksetzen',
-        'reset_label' => 'Standard-Tastenkürzel für :label wiederherstellen',
+        'reset_label' => 'Tastenkürzel für :label zurücksetzen',
     ],
     'versions' => [
         'list' => 'Versionen',

@@ -2,6 +2,7 @@ import { pwaStore, resetPwa, type PanelSchema } from '@alfakit/core'
 import { fireEvent, render, screen } from '@testing-library/svelte'
 import { flushSync, tick } from 'svelte'
 import { toast } from 'svelte-sonner'
+import { setToasterId } from '../src/components/notifications/toast'
 import PwaHarness from './PwaHarness.svelte'
 import { panel, setPageProps } from './mocks'
 
@@ -86,6 +87,24 @@ describe('pwa', () => {
 
     expect(toast.info).toHaveBeenCalledWith(expect.stringContaining('Add to Home Screen'), {
       duration: 10000,
+    })
+  })
+
+  it("sends the hint to the starter kit's toaster (W-S1-03)", async () => {
+    setToasterId('alfakit-kit')
+    withPanel({ pwa })
+    pwaStore.update({ iosHint: true })
+    render(PwaHarness, { props: { kind: 'user-menu' } })
+    await openMenu()
+
+    await fireEvent.click(screen.getByRole('menuitem', { name: 'Install app' }))
+    await tick()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    setToasterId(undefined)
+
+    expect(toast.info).toHaveBeenLastCalledWith(expect.stringContaining('Add to Home Screen'), {
+      duration: 10000,
+      toasterId: 'alfakit-kit',
     })
   })
 

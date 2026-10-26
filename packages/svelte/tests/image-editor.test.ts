@@ -1,4 +1,4 @@
-import { FormStore, type SchemaComponent } from '@alfakit/core'
+import { fieldMemory, FormStore, type FileUploadSchema, type SchemaComponent } from '@alfakit/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
 import FileUploadHarness from './FileUploadHarness.svelte'
 import FormHarness from './FormHarness.svelte'
@@ -216,5 +216,25 @@ describe('image editor', () => {
     renderUpload(upload({ files, imageEditor: null }), 'photos/a.png')
 
     expect(screen.queryByRole('button', { name: /^Edit a\.png$/ })).toBeNull()
+  })
+})
+
+describe('uploaded image previews', () => {
+  it('keeps the local preview of a temporary upload after a server round trip (W-S2-02)', () => {
+    const component = upload({
+      files: [{ path: 'tmp:a', name: 'a.png', size: 3, temporary: true }],
+    })
+    const store = new FormStore(
+      { components: [component], state: { files: 'tmp:a' } },
+      { token: 't', component: 'form' },
+    )
+    // This session's upload of `tmp:a` (its local preview) and the server's entry for the
+    // same temporary key after a round trip, without a url (W-S2-02).
+    fieldMemory<FileUploadSchema['files']>(store, 'files:uploaded', () => []).set([
+      { path: 'tmp:a', name: 'a.png', size: 3, temporary: true, url: 'blob:local-a' },
+    ])
+    const { container } = render(Wrapper, { props: { component: FormHarness, props: { store } } })
+
+    expect(container.querySelector('img')).toHaveAttribute('src', 'blob:local-a')
   })
 })

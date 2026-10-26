@@ -1,6 +1,7 @@
 import { pwaStore, resetPwa, type PanelSchema } from '@alfakit/core'
 import { h } from 'vue'
 import { toast } from 'vue-sonner'
+import { setToasterId } from '../src/components/notifications/flash-toasts'
 import PwaManager from '../src/components/panel/PwaManager.vue'
 import UserMenu from '../src/components/panel/UserMenu.vue'
 import { flush, mountWithAlfakit, panel, setPageProps } from './mocks'
@@ -88,6 +89,24 @@ describe('pwa', () => {
 
     expect(toast.info).toHaveBeenCalledWith(expect.stringContaining('Add to Home Screen'), {
       duration: 10000,
+    })
+  })
+
+  it("sends the hint to the starter kit's toaster (W-S1-03)", async () => {
+    setToasterId('alfakit-kit')
+    withPanel({ pwa })
+    pwaStore.update({ iosHint: true })
+    mountWithAlfakit(() => h(UserMenu, { variant: 'topbar' }))
+    await openMenu()
+
+    menuItem('Install app')?.click()
+    await flush()
+    await flush()
+    setToasterId(undefined)
+
+    expect(toast.info).toHaveBeenLastCalledWith(expect.stringContaining('Add to Home Screen'), {
+      duration: 10000,
+      toasterId: 'alfakit-kit',
     })
   })
 

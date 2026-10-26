@@ -491,7 +491,7 @@ return [
         'turn_off' => 'Desactivar',
         'turn_off_label' => 'Desactivar el atajo de :label',
         'reset' => 'Restablecer',
-        'reset_label' => 'Restablecer el atajo predeterminado de :label',
+        'reset_label' => 'Restablecer el atajo de :label',
     ],
     'versions' => [
         'list' => 'Versiones',

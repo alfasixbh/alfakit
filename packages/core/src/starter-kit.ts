@@ -177,8 +177,26 @@ function toNavItem(item: NavigationItemSchema, key: string): StarterKitNavItem {
     badge: item.badge ?? undefined,
     badgeColor: item.badgeColor ?? undefined,
     badgeTooltip: item.badgeTooltip ?? undefined,
-    children: (item.children ?? []).map((child, index) => toNavItem(child, `${key}.${index}`)),
+    children: toNavItems(item.children ?? [], key),
   }
+}
+
+/**
+ * Items keyed by their URL (positional only without one, or for a repeated URL), so a keyed
+ * list keeps each sidebar link with its own entry when the labels and their order change,
+ * e.g. after a language switch; a reused Inertia `<Link>` kept navigating to the URL of the
+ * entry it was created for (W-S4-08).
+ */
+function toNavItems(items: NavigationItemSchema[], parentKey: string): StarterKitNavItem[] {
+  const seen = new Set<string>()
+
+  return items.map((item, index) => {
+    const url = item.url ? `url:${item.url}` : null
+    const key = url && !seen.has(url) ? url : `${parentKey}.${index}`
+    seen.add(key)
+
+    return toNavItem(item, key)
+  })
 }
 
 /** A panel's navigation groups as plain items for the host's sidebar primitives. */
@@ -192,7 +210,7 @@ export function toStarterKitNavGroups(
       key,
       label: group.label ?? null,
       icon: group.icon ?? undefined,
-      items: group.items.map((item, itemIndex) => toNavItem(item, `${key}.${itemIndex}`)),
+      items: toNavItems(group.items, key),
     }
   })
 }

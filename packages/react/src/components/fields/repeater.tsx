@@ -1,6 +1,5 @@
 import type { RepeaterSchema, SchemaComponent } from '@alfakit/core'
 import {
-  VIRTUAL_ESTIMATES,
   appendRepeaterItem,
   cloneIndexedState,
   cloneRepeaterItem,
@@ -8,12 +7,14 @@ import {
   fieldIds,
   gridColumnsClasses,
   isDeferredPlaceholder,
+  itemExtraActions,
   moveIndexedState,
   moveRepeaterItem,
   removeIndexedState,
   removeRepeaterItem,
   reorderedItemKeys,
   templateForIndex,
+  VIRTUAL_ESTIMATES,
   virtualizeOptions,
 } from '@alfakit/core'
 import { useState } from 'react'
@@ -165,7 +166,7 @@ function RepeaterFieldContent({ component }: { component: RepeaterSchema }) {
             virtual={virtual}
             context={context}
             resolve={(name, index) => resolve(name, component.items[index])}
-            extraActionsFor={(index) => component.items[index]?.actions}
+            extraActionsFor={(index) => itemExtraActions(component, component.items[index])}
           />
         ) : (
           <>
@@ -245,7 +246,9 @@ function RepeaterFieldContent({ component }: { component: RepeaterSchema }) {
                             index={index}
                             count={items.length}
                             resolve={(name) => resolve(name, serverItem)}
-                            extraActions={locked ? undefined : serverItem?.actions}
+                            extraActions={
+                              locked ? undefined : itemExtraActions(component, serverItem)
+                            }
                             buttons={buttons}
                             canClone={Boolean(component.cloneable) && canAdd}
                             canDelete={canDelete}

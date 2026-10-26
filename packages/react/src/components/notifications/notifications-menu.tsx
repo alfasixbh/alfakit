@@ -19,7 +19,7 @@ import { Button } from '../ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { ScrollArea } from '../ui/scroll-area'
 import { Spinner } from '../ui/spinner'
-import { NotificationActionButton } from './flash-toasts'
+import { NotificationActionButton, toastOptions } from './flash-toasts'
 
 export interface NotificationsMenuProps {
   /**
@@ -104,8 +104,8 @@ export function NotificationsMenu({ variant = 'topbar' }: NotificationsMenuProps
     const { message } = await togglePushNotifications()
     const text = t(message.key, {}, message.fallback)
 
-    if (message.error) toast.error(text)
-    else toast.success(text)
+    if (message.error) toast.error(text, toastOptions())
+    else toast.success(text, toastOptions())
   }
 
   const pushLabel =

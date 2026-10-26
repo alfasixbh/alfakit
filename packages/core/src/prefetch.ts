@@ -51,8 +51,12 @@ export function invalidatePrefetchedPages(): void {
   invalidateTableTotals()
 }
 
-/** Internal endpoints that change records (actions, inline edits, reordering, undo, page methods). */
-const MUTATING_ENDPOINT = /\/(?:actions(?:\/undo)?|table\/(?:cell|cells|reorder)|pages\/call)\/?$/
+/**
+ * Internal endpoints that change records or what a page shows (actions, inline edits,
+ * reordering, undo, page methods, saved views and column order: W-S2-14).
+ */
+const MUTATING_ENDPOINT =
+  /\/(?:actions(?:\/undo)?|table\/(?:cell|cells|reorder|views|columns)|pages\/call)\/?$/
 
 /** Whether a successful request to `url` with `method` may have changed records. */
 export function isMutatingRequest(url: string, method: string): boolean {

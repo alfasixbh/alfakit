@@ -21,6 +21,7 @@ import { cn } from '../../lib/utils'
 import { ActionButton } from '../actions/action-button'
 import { usePageActionContext } from '../actions/action-context'
 import { useOptionalFormStore } from '../form/form-context'
+import { useFieldActionContext } from '../schema/field-actions'
 import { SchemaRenderer } from '../schema/schema-renderer'
 import { Button } from '../ui/button'
 import { DeferredSchema } from './deferred'
@@ -52,6 +53,9 @@ export function WizardComponent({ component }: { component: WizardSchema }) {
     if (stepQueryKey) persistWizardStep(current, stepQueryKey)
   }, [current, stepQueryKey])
   const store = useOptionalFormStore()
+  // Inside a form the submit action runs as a field action, so `$get` / `$set` work (W-S2-09).
+  const fieldContext = useFieldActionContext(component)
+  const submitContext = store ? fieldContext : actionContext
 
   // An action modal around this wizard shows its submit button on the last step only.
   useEffect(() => {
@@ -229,7 +233,7 @@ export function WizardComponent({ component }: { component: WizardSchema }) {
             </Button>
           )
         ) : component.submitAction ? (
-          <ActionButton action={component.submitAction} context={actionContext} />
+          <ActionButton action={component.submitAction} context={submitContext} />
         ) : component.submitActionHtml ? (
           <div
             data-slot="wizard-submit"

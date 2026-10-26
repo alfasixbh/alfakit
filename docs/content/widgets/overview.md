@@ -203,7 +203,7 @@ createAlfakit({
 })
 ```
 
-An unregistered name is left out of the options (Chart.js uses its default) and logged once in the console. Outside `createAlfakit()` (standalone components, and the widgets on a starter kit's own `/dashboard`) call `registerChartFormatters({...})` from `@alfakit/core`, for example at the top of `Dashboard.vue`; in a starter kit's AlfaKit pages, pass `chartFormatters` to `createStarterKitPage()`. For locale-aware numbers, format with `Intl.NumberFormat` in the callback.
+An unregistered name is left out of the options (Chart.js uses its default) and logged once in the console. Outside `createAlfakit()` (standalone components, and the widgets on a starter kit's own `/dashboard`) call `registerChartFormatters({...})`, imported from your renderer package (`@alfakit/react`, `@alfakit/vue` or `@alfakit/svelte` re-export it), for example at the top of `Dashboard.vue`; in a starter kit's AlfaKit pages, pass `chartFormatters` to `createStarterKitPage()` (`createStarterKitLayout()` in Svelte). Don't import it from `@alfakit/core` directly: under `npm run dev` Vite can load a second copy of the core package, and formatters registered there never reach the charts. For locale-aware numbers, format with `Intl.NumberFormat` in the callback.
 
 ### Chart.js plugins
 

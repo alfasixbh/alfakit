@@ -21,6 +21,7 @@ import {
   fieldMemory,
   fileUploadAccept,
   filesFromClipboard,
+  fileUploadEntries,
   fileUploadPaths,
   fileManagerSize,
   insertUploadedFile,
@@ -131,13 +132,7 @@ const releasePreview = (url: string | undefined) => {
 
 const paths = computed(() => fileUploadPaths(value.value))
 const files = computed<LocalFile[]>(() =>
-  paths.value.map(
-    (path) =>
-      [...props.component.files, ...uploaded.value].find((file) => file.path === path) ?? {
-        path,
-        name: path.replace(/^tmp:/, ''),
-      },
-  ),
+  fileUploadEntries(paths.value, props.component.files, uploaded.value),
 )
 const maxFiles = computed(() =>
   props.component.multiple ? (props.component.maxFiles ?? Infinity) : 1,

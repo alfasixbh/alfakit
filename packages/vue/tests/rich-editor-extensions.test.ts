@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
 import RichEditorField from '../src/components/fields/RichEditorField.vue'
 import { provideForm } from '../src/components/form/form-context'
-import { mountWithAlfakit } from './mocks'
+import { actions, mountWithAlfakit } from './mocks'
 
 const editorSchema = (extra: Partial<RichEditorSchema> = {}) =>
   ({
@@ -100,5 +100,51 @@ describe('RichEditor extensions', () => {
     await flushPromises()
     await vi.waitFor(() => expect(document.body.textContent).toContain('Hero preview'))
     expect(document.querySelector('[aria-label="Insert block"]')).not.toBeNull()
+  })
+
+  it('inserts a second block after the first instead of replacing it (W-S2-05)', async () => {
+    vi.spyOn(actions, 'runField').mockResolvedValue({
+      id: 'divider',
+      config: {},
+      preview: '<hr>',
+    } as never)
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ preview: '<hr>' }))),
+    )
+
+    const { store, editor } = renderEditor(
+      editorSchema({
+        activePanel: 'customBlocks',
+        customBlocks: [
+          {
+            id: 'divider',
+            label: 'Divider',
+            action: { type: 'Action', name: 'customBlock:divider', hasAction: true },
+          },
+        ],
+      }),
+      '<p>Intro</p>',
+    )
+    await vi.waitFor(() => expect(editor()).toBeDefined())
+    editor()!.commands.focus('end')
+
+    const divider = () =>
+      [...document.querySelectorAll('button')].find(
+        (button) => button.textContent?.trim() === 'Divider',
+      )!
+    divider().click()
+    await vi.waitFor(() =>
+      expect(
+        (String(store.getValue('content')).match(/data-type="customBlock"/g) ?? []).length,
+      ).toBe(1),
+    )
+    divider().click()
+    await vi.waitFor(() =>
+      expect(
+        (String(store.getValue('content')).match(/data-type="customBlock"/g) ?? []).length,
+      ).toBe(2),
+    )
+    vi.restoreAllMocks()
   })
 })

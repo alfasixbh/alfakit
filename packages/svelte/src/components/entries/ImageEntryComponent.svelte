@@ -49,6 +49,8 @@
             data-slot="image-remaining"
             class={cn(
               'text-muted-foreground',
+              // The last image keeps the stack's negative end margin (W-S3-03).
+              component.stacked && defaultStack && 'ms-3',
               remainingTextSizeClass(component.limitedRemainingTextSize),
             )}>+{urls.length - limit}</span
           >{/if}

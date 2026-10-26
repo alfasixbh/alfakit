@@ -161,7 +161,7 @@ php artisan migrate
 AlfaKit follows semantic versioning. Keep the PHP package and the npm renderer on the **same minor version**:
 
 ```bash
-composer update alfasix/alfakit
+composer update "alfasix/*"   # AlfaKit and its plugins together
 npm update @alfakit/react   # or @alfakit/vue, @alfakit/svelte
 ```
 

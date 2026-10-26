@@ -321,4 +321,25 @@ describe('KeyValue actions', () => {
       { key: '', value: '' },
     ])
   })
+
+  it('shows extra item actions on items added in the browser (W-S2-04)', async () => {
+    const { wrapper } = renderForm(
+      [
+        repeater({
+          items: [{ key: '0', schema: [input('members.0.name')] }],
+          extraItemActions: [action('shout', { label: 'Shout', hasAction: true })],
+        }),
+      ],
+      members,
+    )
+    const trigger = vi.spyOn(actions, 'trigger').mockResolvedValue()
+
+    // The server rendered item 0 without them (hidden for it); item 1 is new.
+    expect(wrapper.find('li[data-index="0"] button[aria-label="Shout"]').exists()).toBe(false)
+    await wrapper.find('li[data-index="1"] button[aria-label="Shout"]').trigger('click')
+    expect(trigger).toHaveBeenLastCalledWith(
+      expect.objectContaining({ name: 'shout' }),
+      expect.objectContaining({ arguments: { item: '1' } }),
+    )
+  })
 })

@@ -6,7 +6,60 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
-## [0.1.11] - 2026-10-25
+## [0.1.12] - 2026-10-26
+
+### Upgrading from 0.1.11
+
+- Update the packages: `composer update "alfasix/*"`, `npm install @alfakit/react@latest` (or `@alfakit/vue`, `@alfakit/svelte`), `php artisan alfakit:upgrade`, `npm run build`.
+- Apps set up with `alfakit:realtime`: run `php artisan alfakit:realtime` again, so Echo only connects while `realtime()` is on.
+
+### Fixed
+
+- Webhooks: the edit page of an endpoint that receives all events shows **All events** again, so it can be saved unchanged (it showed "Selected events" with nothing ticked and failed with "events required").
+- Analytics on SQLite: a page view arriving while another is being stored is retried instead of failing with "database is locked" and being lost.
+- Tenancy: records created with a `CreateAction` modal (simple resources, list page header actions) now belong to the current tenant like those of create pages, instead of failing on the tenant column or vanishing from the scoped list.
+- Tables: inline-editable cells of custom `records()` rows render disabled when the table model's `update` policy needs a record; before, they looked editable and every edit answered 403.
+- App auth kit: the verification prompt's **Resend** and the account page's forms answered 403 for a user whose email wasn't verified yet; their requests now need only sign-in, like the pages themselves.
+- Starter kits: the app sidebar lost AlfaKit's links on app pages that render a standalone component and on the auth kit's `/account`; the hidden standalone and auth-kit panels no longer count as "another panel".
+- Charts: `registerChartFormatters()` / `registerChartPlugins()` imported from `@alfakit/core` had no effect under `npm run dev`, where Vite serves a second copy of the package; the registrations are now shared by every copy.
+- Stacked `ImageEntry` / `ImageColumn`: the "+N" text overlapped the last image; it now starts after it, in all three renderers.
+- `make:alfakit-widget --type=custom` in a starter kit now says how to pass the component to `<AlfakitWidgets>` on the app's dashboard page, which doesn't load `resources/js/alfakit`.
+- `make:alfakit-page --standalone --model=Order` printed a route without the model; it now prints `Route::get('/orders/{order}', fn (Order $order) => Alfakit::render('Orders', ['orders' => [Orders::class, ['order' => $order]]]))`.
+- An action in a schema (a section, callout or empty state, such as the docs' `EmptyState` `Action::make('create')`) with the name of a page action replaced it, so the page's **Create** button ran the embedded action and saved nothing; the page's own actions now win.
+- Wizards: a `submitAction(Action)` inside a form ran as a page action without the form state; it now runs as a field action, so `$get` / `$set` work, in all three renderers.
+- File uploads: the preview of an image uploaded in this session (and the image editor's pencil) disappeared after any server round trip (a `live()` field, a field action); the local preview is kept until the file is saved, in all three renderers.
+- Rich editor: inserting a second custom block right after the first replaced it; it is now inserted after it, in all three renderers.
+- Repeaters and builders: `extraItemActions()` that run on the server now show on items added in the browser right away (evaluated with `$arguments['item']` null until the next round trip; URL actions and actions that need the item still wait for it), in all three renderers.
+- Back after deleting, renaming or sharing a saved table view (or reordering columns) showed the old view tabs; those requests now mark restored pages for a reload like other changes.
+- `$set('published_at', now())` (the Introduction's example) left the date picker empty: the date reached the browser as UTC ISO-8601. Dates set after the form is filled now arrive in the picker's format and the panel's timezone.
+- PWA in starter kits: the "Add to Home Screen" hint, the update prompt and the notifications on/off messages went to a toaster a starter kit doesn't have; they now use AlfaKit's starter kit toaster like other notifications, in all three renderers.
+- Starter kits with a registered `Dashboard` page (for customisable dashboards): **G then D** opened the panel's dashboard page; it now opens the app's dashboard (`starterKitDashboard()`).
+- A custom sign-in (or other auth) page in a discovered folder was also registered as a panel page, and `/admin/login` redirected to itself; the auth page classes now opt out of discovery.
+- `make:alfakit-user` with an email address that already exists stops with a message instead of a database exception.
+- `alfakit:add --list <plugin>` linked to a local demo host and always to the React demo; it now links to https://demo.alfakit.dev in the app's renderer (`ALFAKIT_DEMO_URL` still overrides it).
+- `alfakit:remove` then `alfakit:add` of the same plugin published its migrations a second time (and the migration failed); the reinstalled package's migrations are now recognised.
+- `alfakit:migrate-from-filament` now clears the compiled Blade views, so the first `npm run build` after removing Filament no longer fails on Livewire's Blade precompiler.
+- `make:alfakit-plugin` in a starter kit app now says to spread the plugin's components into `createStarterKitPage()` (`createStarterKitLayout()` in Svelte) in `resources/js/pages/Alfakit/Page.*`, not `createAlfakit()`.
+- Infolists on pages ignored their `columns()` (always two columns from `lg`), so the profile page's "Set up multi-factor authentication" notice was squeezed into half the card; page infolists now follow `columns()`, in all three renderers.
+- Starter kits: after switching the language (or the tenant), a sidebar link could open another page (**Pages** opened **Forms**; **Projects** kept the previous tenant, so records landed in its data). The sidebar items are now keyed by their URL, so the kit's `AlfakitNav` keeps each link with its entry; nothing to re-run.
+- Packaging: the Composer packages (`alfasix/alfakit`, `alfasix/alfakit-translations` and every plugin) no longer ship their `tests/` folders, whose fixture `vite.config` files made `svelte-check` fail in apps.
+- Local development: the floating debug-panel and schema-inspector buttons covered the helpdesk inbox's **Send** button; they move above the reply composer while the inbox is open.
+- Calendars: dates of the previous and next month were faded to 30% opacity, which failed WCAG AA contrast; they keep the muted colour at full opacity.
+- Realtime: Echo connected on every page although `realtime()` was off (starter kits through the entry's `import './alfakit/echo'`, panels because the bundler put a shared CommonJS helper in the Echo chunk, which ~100 chunks then imported). `alfakit:realtime` now writes an `echo.ts` that only connects when AlfaKit calls it, importing laravel-echo and pusher-js inside it, and starter kit and standalone entries hand it over with `configureRealtime(null, { echo })`. Run `php artisan alfakit:realtime` again to upgrade an app set up earlier (it drops the old file's `connectEcho()` call and the entry import).
+- Edit pages with combined relation manager tabs: the edit-conflict banner's **Review changes** listed fields nobody changed and **Reload** didn't refill the form; the form inside the tabs is now found.
+- Svelte: the second user to open a record often saw no presence avatars; the room is no longer re-joined on every page update, and a room joining a channel the page already joined takes its current members, in core for all renderers.
+- `unique()` in a `ReplicateAction` form ignored the record being copied, so a copy keeping the original's value passed validation and then failed on the database index; it now gets a validation error.
+- Keyboard shortcuts overlay: the **Reset** button's accessible name now contains "Reset" ("Reset the shortcut for …"), in every language pack.
+
+### Documentation
+
+- Getting started: Updating uses `composer update "alfasix/*"`, so the plugins update with the core package. SSR: `inertia:start-ssr` needs a production SSR bundle (`npm run build:ssr`); a development-mode bundle exits without a word. Actions: a `ReplicateAction` form no longer needs `ignoreRecord: false` on `unique()`. Realtime: starter kit entries hand `echo.ts` to `configureRealtime()`.
+- Panels: the database-per-tenant `Project` example has `$fillable` and the page explains the tenant's `database_name` column (with the Teams plugin, a migration on `teams`; absolute paths for SQLite).
+- Plugins: Billing casts `trial_ends_at` to `datetime` for generic trials; Tags explains an existing `tags()` relationship; Teams in a starter kit also removes the generated `->passwordReset()` and `->profile()`; CMS registers `CmsPage` in `createAlfakitServer()` for server-rendered public pages. Advanced: generated Svelte files keep AlfaKit's style; the schema contract lists the props sent once; Stability's upgrade steps update the plugins too (`composer update "alfasix/*"`).
+- Panels: navigation visibility closures in the examples are guest-safe (the login page kept failing); a configurable page in a discovered folder needs `$isDiscovered = false`; the custom Login example opts out of discovery; tenancy covers CreateAction modals; the starter kit header layout needs its own panel links and gets no item HTML attributes; Install app with `pwa(push: true)` on your own pages. Getting started: Boost's `--no-interaction` needs the agents in `boost.json`; clear compiled views after migrating from Filament.
+- Custom pages: Svelte example for a page with its own component. Outside panels: installing Pest in a PHPUnit starter kit (`-W`, `pest --init`, `RefreshDatabase`). Widgets: import `registerChartFormatters` from the renderer package under `npm run dev`.
+
+## [0.1.11] - 2026-10-26
 
 ### Upgrading from 0.1.10
 
@@ -15,6 +68,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Billing: with `requiresSubscription()` on a panel without tenancy, the header components (language switcher, notifications bell, a starter kit's header data) work for users without a subscription; their endpoints were redirected to the plans page.
+- Comments: the comment editor takes the full width of its modal, and comment bodies follow their own writing direction (an English comment in an Arabic panel keeps its punctuation in place).
+- Forms: a masked `numeric()`/`integer()` TextInput no longer turns `maxLength()`/`minLength()` into `max`/`min` rules, so a global `TextInput::configureUsing(fn ($input) => $input->maxLength(255))` no longer refuses amounts over 255.
+- Forms: a Repeater's or Builder's `default([...])` keeps its item values on create (each item field's own default used to overwrite them).
+- Forms: a layout component's `schema(fn () => …)` closure no longer runs again on every walk of the schema (an action request ran it up to 19 times).
 - Back after a save on an edit page (one with a second history entry, such as a wizard step or tab in the URL) reloaded the page but the form kept its old values; the restored page is now loaded fresh, so the inputs show the saved data.
 - Svelte apps: `npm run dev` crashed with "Error during dependency optimization: PARSE_ERROR … @alfakit/svelte/dist/standalone.css" in every starter kit and standalone app. The package entry imported `./standalone` without naming the file, and Vite's optimizer picked `standalone.css` next to the folder; the entry now imports `./standalone/index.js`.
 - Global search answered 500 and showed nothing when one result had no URL (a nested record whose parent record is gone); such results are now skipped.
@@ -35,6 +93,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Starter kits: a lazy dashboard widget whose request failed or was refused (an auth middleware such as Billing's subscription check, an expired session) stayed a loading skeleton forever; it now says "This widget could not be loaded." with a **Retry** button (new `ui.widget_failed` string in every language pack), in all three renderers.
 - Starter kits in a right-to-left panel language: AlfaKit's toasts appeared top-left, over the app's sidebar, and the schema inspector opened on the left, away from its button; both now take the host document's side (new `overlayPlacementDirection()` in `@alfakit/core`), while their content stays right to left.
 - Starter kits: customizable dashboards could not be edited on the app's `/dashboard`. With a registered `Dashboard` page and `customizableDashboards()`, `<AlfakitWidgets>` now shows the user's layout and **Edit dashboard** (reorder, resize, hide, add from the library), saving the same layout as the panel's dashboard page.
+
+### Documentation
+
+- Forms: extra item actions on items added in the browser appear after the next server round trip (and how to get them at once); where to register a rich editor plugin's browser half in a starter kit and outside panels; the plugin example's mark keeps its colour when content is reloaded; `deferLoading()`'s example puts the slow work in the children's closures.
+- Design: a per-panel stylesheet on a themed panel scopes its overrides with `:root[data-panel='…']`.
 
 ## [0.1.10] - 2026-10-25
 
@@ -1300,7 +1363,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.11...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.12...HEAD
+[0.1.12]: https://github.com/alfasixbh/alfakit/compare/v0.1.11...v0.1.12
 [0.1.11]: https://github.com/alfasixbh/alfakit/compare/v0.1.10...v0.1.11
 [0.1.10]: https://github.com/alfasixbh/alfakit/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/alfasixbh/alfakit/compare/v0.1.8...v0.1.9

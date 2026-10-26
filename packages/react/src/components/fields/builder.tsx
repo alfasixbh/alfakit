@@ -17,6 +17,7 @@ import {
   insertBuilderItem,
   isDeferredPlaceholder,
   itemActionContext,
+  itemExtraActions,
   moveIndexedState,
   moveRepeaterItem,
   removeIndexedState,
@@ -316,7 +317,9 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
                       index={index}
                       count={items.length}
                       resolve={(name) => resolve(name, serverItem)}
-                      extraActions={menu || locked ? undefined : serverItem?.actions}
+                      extraActions={
+                        menu || locked ? undefined : itemExtraActions(component, serverItem)
+                      }
                       buttons={buttons && !menu}
                       canClone={canClone && !menu}
                       canDelete={canDelete && !menu}
@@ -353,7 +356,9 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
                           canMoveDown={buttons && index < items.length - 1}
                           canClone={canClone}
                           canDelete={canDelete}
-                          extraActions={locked ? undefined : serverItem?.actions}
+                          extraActions={
+                            locked ? undefined : itemExtraActions(component, serverItem)
+                          }
                           onAction={(name, onClient) =>
                             runItemAction(
                               resolve(name, serverItem),

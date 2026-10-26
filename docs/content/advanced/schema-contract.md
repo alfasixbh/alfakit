@@ -26,6 +26,8 @@ Every AlfaKit object serialises to plain JSON. Renderers are thin: they trust th
 }
 ```
 
+`alfakit.navigation`, `endpoints`, `localization`, `translations`, `theme` and `commandPalette` are Inertia once props: the first page load carries them (listed in the page object's `onceProps`), and later visits leave them out while they are unchanged, so a renderer keeps the values it has.
+
 `token` is an encrypted `SchemaContext` (panel id, page class, route parameters, component) that every internal request sends back. The server rebuilds the page from it, so a client cannot target classes it was not given.
 
 ## Components

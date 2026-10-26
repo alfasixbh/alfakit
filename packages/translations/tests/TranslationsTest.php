@@ -68,3 +68,12 @@ it('has valid PHP files with strict types', function (string $locale) use ($pack
         expect(require $file)->toBeArray();
     }
 })->with($locales);
+
+it('names the shortcut buttons with their visible words (WCAG 2.5.3, W-S1-21)', function (string $locale) use ($english, $packs, $load): void {
+    $lines = $locale === 'en' ? $load($english) : $load($packs.'/'.$locale);
+
+    foreach (['change', 'turn_off', 'reset'] as $button) {
+        expect(mb_strtolower((string) $lines["ui.shortcuts.{$button}_label"]))
+            ->toContain(mb_strtolower((string) $lines["ui.shortcuts.{$button}"]));
+    }
+})->with([...$locales, 'en']);

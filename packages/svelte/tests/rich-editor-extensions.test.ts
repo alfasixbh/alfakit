@@ -4,6 +4,7 @@ import type { Editor } from '@tiptap/core'
 import { tick } from 'svelte'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import FormHarness from './FormHarness.svelte'
+import { actions } from './mocks'
 import Wrapper from './Wrapper.svelte'
 
 const editorSchema = (extra: Partial<RichEditorSchema> = {}) =>
@@ -88,5 +89,46 @@ describe('RichEditor extensions', () => {
 
     await waitFor(() => expect(container.textContent).toContain('Hero preview'))
     expect(container.querySelector('[aria-label="Insert block"]')).not.toBeNull()
+  })
+
+  it('inserts a second block after the first instead of replacing it (W-S2-05)', async () => {
+    vi.spyOn(actions, 'runField').mockResolvedValue({
+      id: 'divider',
+      config: {},
+      preview: '<hr>',
+    } as never)
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ preview: '<hr>' }))),
+    )
+
+    const { store, editor, getByRole } = await renderEditor(
+      editorSchema({
+        activePanel: 'customBlocks',
+        customBlocks: [
+          {
+            id: 'divider',
+            label: 'Divider',
+            action: { type: 'Action', name: 'customBlock:divider', hasAction: true },
+          },
+        ],
+      }),
+      '<p>Intro</p>',
+    )
+    editor().commands.focus('end')
+
+    getByRole('button', { name: 'Divider' }).click()
+    await waitFor(() =>
+      expect(
+        (String(store.getValue('content')).match(/data-type="customBlock"/g) ?? []).length,
+      ).toBe(1),
+    )
+    getByRole('button', { name: 'Divider' }).click()
+    await waitFor(() =>
+      expect(
+        (String(store.getValue('content')).match(/data-type="customBlock"/g) ?? []).length,
+      ).toBe(2),
+    )
+    vi.restoreAllMocks()
   })
 })

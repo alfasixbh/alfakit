@@ -9,6 +9,7 @@ import {
   fileManagerSize,
   filesFromClipboard,
   fileUploadAccept,
+  fileUploadEntries,
   fileUploadPaths,
   insertUploadedFile,
   moveRepeaterItem,
@@ -103,13 +104,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
   }
 
   const paths = fileUploadPaths(value)
-  const files: LocalFile[] = paths.map(
-    (path) =>
-      [...component.files, ...uploaded].find((file) => file.path === path) ?? {
-        path,
-        name: path.replace(/^tmp:/, ''),
-      },
-  )
+  const files: LocalFile[] = fileUploadEntries(paths, component.files, uploaded)
   const maxFiles = component.multiple ? (component.maxFiles ?? Infinity) : 1
   const canAddMore = files.length + uploading.length < maxFiles
 

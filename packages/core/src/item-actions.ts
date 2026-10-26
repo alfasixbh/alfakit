@@ -1,4 +1,5 @@
 import type { ActionContext } from './actions'
+import type { ActionSchema } from './schema/actions'
 import type { ActionVariant, Color } from './schema/common'
 import type { ItemActionName, ItemActionSchema, ItemActionsSchema } from './schema/components'
 
@@ -8,6 +9,17 @@ export interface ItemActionFallback {
   icon: string
   color?: Color
   variant?: ActionVariant
+}
+
+/**
+ * The `extraItemActions()` of an item: its own when the server rendered it, else the
+ * field's (evaluated without an item) for an item the browser added (W-S2-04).
+ */
+export function itemExtraActions(
+  field: { extraItemActions?: ActionSchema[] },
+  item: { actions?: ActionSchema[] } | undefined,
+): ActionSchema[] | undefined {
+  return item ? item.actions : field.extraItemActions
 }
 
 /**

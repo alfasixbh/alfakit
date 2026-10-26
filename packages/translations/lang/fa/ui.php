@@ -491,7 +491,7 @@ return [
         'turn_off' => 'خاموش کردن',
         'turn_off_label' => 'خاموش کردن میان‌بر :label',
         'reset' => 'بازنشانی',
-        'reset_label' => 'بازگرداندن میان‌بر پیش‌فرض :label',
+        'reset_label' => 'بازنشانی میان‌بر :label',
     ],
     'versions' => [
         'list' => 'نسخه‌ها',

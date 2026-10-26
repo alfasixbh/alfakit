@@ -191,7 +191,9 @@ const descriptionPosition = computed(
         data-slot="image-remaining"
         :class="
           cn(
-            'text-muted-foreground ms-1',
+            'text-muted-foreground',
+            // The last image keeps the stack's negative end margin (W-S3-03).
+            imageSchema.stacked && defaultImageStack ? 'ms-3' : 'ms-1',
             remainingTextSizeClass(imageSchema.limitedRemainingTextSize),
           )
         "

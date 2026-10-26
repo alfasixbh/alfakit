@@ -201,6 +201,33 @@ describe('Echo connection', () => {
 })
 
 describe('PresenceRoom', () => {
+  it('lists the members of a channel that was already joined before it started (W-S5-05)', () => {
+    const echo = {
+      private: () => ({ listen: () => undefined, stopListening: () => undefined }),
+      join: () => ({
+        here: () => undefined,
+        joining: () => undefined,
+        leaving: () => undefined,
+        // The Pusher protocol's subscription after `pusher:subscription_succeeded`.
+        subscription: {
+          subscribed: true,
+          members: { members: { 1: { id: 1, name: 'Me' }, 2: { id: 2, name: 'Dana Scully' } } },
+        },
+      }),
+      leave: () => undefined,
+    } as unknown as EchoLike
+    const room = new PresenceRoom({
+      channel: 'alfakit.admin._.Post.9',
+      state: 'viewing',
+      self: 1,
+      echo,
+    })
+    const stop = room.start()
+
+    expect(room.members).toMatchObject([{ id: 2, name: 'Dana Scully', state: 'viewing' }])
+    stop()
+  })
+
   it('lists the other users on the record with their editing state', () => {
     const { echo, presence, emit, whispers } = fakeEcho()
     const room = new PresenceRoom({
@@ -406,6 +433,16 @@ describe('ConflictMonitor', () => {
       block,
     )
     expect(findPageFormBlock({ content: [] })).toBeNull()
+
+    // The edit form inside combined relation manager tabs (W-S5-03).
+    const nested = { type: 'Form', component: 'form', key: 'form', state: { title: 'A' } }
+    expect(
+      findPageFormBlock({
+        content: [
+          { type: 'RelationManagers', managers: [], content: { label: 'Post', block: nested } },
+        ] as never,
+      }),
+    ).toBe(nested)
   })
 })
 

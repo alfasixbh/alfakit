@@ -13,9 +13,9 @@ $panel->realtime();
 
 Everything runs on [Laravel broadcasting](https://laravel.com/docs/broadcasting) (Reverb, Pusher or Ably) and Laravel Echo in the browser. Only keys travel over the WebSocket: the browser fetches the data again through the same authorised endpoints it always uses.
 
-Real-time features are **off by default**. While they are off, AlfaKit registers no channel, route or model observer and loads nothing in the browser.
+Real-time features are **off by default**. While they are off, AlfaKit registers no channel, route or model observer and doesn't start Echo itself; an Echo that your own entry sets up (as `alfakit:realtime` does in a starter kit, see below) still connects.
 
-It works the same on a [starter kit panel](../getting-started/starter-kits): `alfakit:realtime` imports Echo in your app's own entry (`resources/js/app.*`), presence, edit conflicts and live tables work on AlfaKit's pages, and the bell in your app header updates live.
+It works the same on a [starter kit panel](../getting-started/starter-kits): `alfakit:realtime` hands the `echo.ts` factory to AlfaKit in your app's own entry (`resources/js/app.*`: `configureRealtime(null, { echo: () => import('./alfakit/echo').then((module) => module.default()) })`, imported from your renderer package), presence, edit conflicts and live tables work on AlfaKit's pages, and the bell in your app header updates live. Echo connects only on pages whose panel has `realtime()` on. An app set up with 0.1.11 or earlier imported `./alfakit/echo` in that entry and connected on every page: run `php artisan alfakit:realtime` again to switch it over (it also removes the old file's `connectEcho()` call).
 
 ## Setup
 
@@ -23,7 +23,7 @@ It works the same on a [starter kit panel](../getting-started/starter-kits): `al
 php artisan alfakit:realtime
 ```
 
-The [setup command](../getting-started/setup-wizard#realtime) installs Laravel Reverb, runs Laravel's `install:broadcasting`, writes the `REVERB_*` keys, creates `resources/js/alfakit/echo.ts` (Laravel Echo as `window.Echo`, browser only, which the panel entry loads when AlfaKit first needs Echo: `createAlfakit({ echo: () => import('./echo').then((module) => module.default()) })`) and turns on `->realtime()`. Then run the WebSocket server and a queue worker (broadcasts are queued):
+The [setup command](../getting-started/setup-wizard#realtime) installs Laravel Reverb, runs Laravel's `install:broadcasting`, writes the `REVERB_*` keys, creates `resources/js/alfakit/echo.ts` (a factory that sets up Laravel Echo as `window.Echo` when called, browser only, loading `laravel-echo` and `pusher-js` only then; the panel entry calls it when AlfaKit first needs Echo: `createAlfakit({ echo: () => import('./echo').then((module) => module.default()) })`) and turns on `->realtime()`. Then run the WebSocket server and a queue worker (broadcasts are queued):
 
 ```bash
 php artisan reverb:start

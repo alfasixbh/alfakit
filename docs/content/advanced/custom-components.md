@@ -93,7 +93,7 @@ php artisan make:alfakit-page Reports --component
 
 The adapter comes from `package.json`. Use `--adapter=react|vue|svelte` to choose it yourself, or `--no-frontend` to write only the PHP class. If your entry doesn't use `discover`, the generators still register the component in `createAlfakit({ components })` and print the line that turns on auto-registration.
 
-The written files (and an entry they edit) are formatted with your app's own formatter when it has one: `vp fmt` in apps whose `vite.config` has a `fmt` section (the Laravel starter kits), else Oxfmt (`.oxfmtrc.json`) or Prettier (a Prettier config), run from `node_modules/.bin` on just those files. Without one, or if it fails, they keep AlfaKit's style (2 spaces, no semicolons); turn it off with `'file_generation' => ['format_frontend' => false]` in `config/alfakit.php`.
+The written files (and an entry they edit) are formatted with your app's own formatter when it has one: `vp fmt` in apps whose `vite.config` has a `fmt` section (the Laravel starter kits), else Oxfmt (`.oxfmtrc.json`) or Prettier (a Prettier config), run from `node_modules/.bin` on just those files. Without one, or if it fails, they keep AlfaKit's style (2 spaces, no semicolons). `vp fmt` and Oxfmt don't format `.svelte` files, so in the Svelte starter kit the generated components keep that style (format them with Prettier and `prettier-plugin-svelte` if you add them). Turn it off with `'file_generation' => ['format_frontend' => false]` in `config/alfakit.php`.
 
 ## 4. Write the component
 

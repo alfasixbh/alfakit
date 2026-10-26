@@ -74,20 +74,14 @@ export function findPageFormBlock(
       if (candidate.type === 'Form' && candidate.component === 'form')
         return candidate as unknown as FormBlock
 
-      for (const value of Object.values(candidate)) {
-        if (Array.isArray(value)) {
-          const found = search(value)
+      // Any wrapper, e.g. the edit form inside combined relation manager tabs
+      // (`RelationManagers.content.block`, W-S5-03). Form state is data, never blocks.
+      for (const [key, value] of Object.entries(candidate)) {
+        if (key === 'state' || !value || typeof value !== 'object') continue
 
-          if (found) return found
-        } else if (
-          value &&
-          typeof value === 'object' &&
-          (value as { type?: unknown }).type === 'Form'
-        ) {
-          const found = search([value])
+        const found = search(Array.isArray(value) ? value : [value])
 
-          if (found) return found
-        }
+        if (found) return found
       }
     }
 

@@ -135,6 +135,20 @@ const page = usePageSchema()
 </template>
 ```
 
+```svelte
+<!-- Svelte: resources/js/alfakit/pages/Reports.svelte -->
+<script lang="ts">
+    import { PageShell, usePageSchema } from '@alfakit/svelte'
+
+    let { sales }: { sales: unknown } = $props()
+    const page = usePageSchema()
+</script>
+
+<PageShell page={page!}>
+    <SalesChart data={sales} />
+</PageShell>
+```
+
 Instead of listing it in `createAlfakit({ pages })`, a file in `resources/js/alfakit/pages/` registers itself (`pages/Reports.tsx` is `Pages/Reports`). Since 0.1.9 these pages also open in a starter kit, through `Alfakit/Page`; the generated page file's `discover` picks the component up from the same folder.
 
 `PageShell` gives you the app layout, breadcrumbs and header actions; drop it to render a completely custom screen. Use `usePageActionContext()` and `ActionList` to render the page's actions anywhere.

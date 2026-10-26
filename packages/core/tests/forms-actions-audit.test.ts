@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { RichEditorSchema, SchemaComponent, TextInputSchema } from '../src'
 import {
   actionFormParams,
+  fileUploadEntries,
   fileUploadPaths,
   FormStore,
   pickerFilterFormOptions,
@@ -35,6 +36,37 @@ describe('fileUploadPaths', () => {
     expect(fileUploadPaths(null)).toEqual([])
     expect(fileUploadPaths(undefined)).toEqual([])
     expect(fileUploadPaths(42)).toEqual([])
+  })
+})
+
+describe('fileUploadEntries', () => {
+  it("prefers this session's entry for a temporary upload the server sends back without a url", () => {
+    const uploaded = [{ path: 'tmp:a', name: 'a.png', url: 'blob:a', temporary: true }]
+
+    expect(
+      fileUploadEntries(
+        ['tmp:a', 'files/b.png', 'tmp:c'],
+        [
+          { path: 'tmp:a', name: 'a.png', size: 3 },
+          { path: 'files/b.png', name: 'b.png', url: '/storage/b.png' },
+        ],
+        uploaded,
+      ),
+    ).toEqual([
+      { path: 'tmp:a', name: 'a.png', size: 3, url: 'blob:a', temporary: true },
+      { path: 'files/b.png', name: 'b.png', url: '/storage/b.png' },
+      { path: 'tmp:c', name: 'c' },
+    ])
+  })
+
+  it('keeps the server entry when it has a url', () => {
+    expect(
+      fileUploadEntries(
+        ['tmp:a'],
+        [{ path: 'tmp:a', name: 'a', url: '/u' }],
+        [{ path: 'tmp:a', name: 'a', url: 'blob:a' }],
+      ),
+    ).toEqual([{ path: 'tmp:a', name: 'a', url: '/u' }])
   })
 })
 

@@ -491,7 +491,7 @@ return [
         'turn_off' => 'Kapat',
         'turn_off_label' => ':label kısayolunu kapat',
         'reset' => 'Sıfırla',
-        'reset_label' => ':label için varsayılan kısayolu geri yükle',
+        'reset_label' => ':label kısayolunu sıfırla',
     ],
     'versions' => [
         'list' => 'Sürümler',

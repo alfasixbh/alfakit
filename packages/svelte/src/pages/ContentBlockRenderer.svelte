@@ -38,7 +38,7 @@
   <div data-slot="infolist" class="contents">
     <SchemaRenderer
       components={(block as InfolistBlock).components}
-      columns={{ default: 1, lg: 2 }}
+      columns={(block as InfolistBlock).columns ?? { default: 1, lg: 2 }}
     />
   </div>
 {:else if block.type === 'Schema'}

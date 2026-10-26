@@ -216,7 +216,7 @@ const update = (next: boolean) => {
                       t(
                         'shortcuts.reset_label',
                         { label: item.label },
-                        `Restore the default shortcut for ${item.label}`,
+                        `Reset the shortcut for ${item.label}`,
                       )
                     "
                     @click="save(item.id, null)"

@@ -47,6 +47,23 @@ export interface PresenceRoomOptions extends PresenceSchema {
  * Who else is on a record page: joins the record's presence channel and tracks its members
  * and their editing/viewing state (shared with whispers). Renderers show `store` as avatars.
  */
+/**
+ * The members of a presence channel whose subscription already succeeded (Pusher protocol:
+ * Reverb, Pusher), as `here` would list them; null before that or with another connector.
+ */
+function subscribedMembers(channel: unknown): unknown[] | null {
+  const subscription = (
+    channel as {
+      subscription?: { subscribed?: boolean; members?: { members?: Record<string, unknown> } }
+    }
+  ).subscription
+  const members = subscription?.members?.members
+
+  if (!subscription?.subscribed || !members || typeof members !== 'object') return null
+
+  return Object.values(members)
+}
+
 export class PresenceRoom {
   readonly store: Store<PresenceRoomState> = createStore<PresenceRoomState>({
     members: [],
@@ -98,7 +115,7 @@ export class PresenceRoom {
           }
         }
 
-        channel.here((members) => {
+        const here = (members: unknown[]) => {
           if (!active) return
 
           this.store.set({
@@ -110,7 +127,16 @@ export class PresenceRoom {
               .filter((member) => !this.isSelf(member.id)),
           })
           this.announce()
-        })
+        }
+
+        channel.here(here)
+
+        // A channel another part of the page already joined (the conflict monitor, a room
+        // re-created by a re-render) fired `here` before this listener existed: take the
+        // members it already has (W-S5-05).
+        const joined = subscribedMembers(channel)
+
+        if (joined) here(joined)
 
         channel.joining((value) => {
           const member = asMember(value)

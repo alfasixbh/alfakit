@@ -5,7 +5,7 @@ import type { Editor } from '@tiptap/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { RichEditorField } from '../src/components/fields/rich-editor'
 import { FormProvider } from '../src/components/form/form-context'
-import { Wrapper } from './mocks'
+import { actions, Wrapper } from './mocks'
 
 const editorSchema = (extra: Partial<RichEditorSchema> = {}) =>
   ({
@@ -130,5 +130,47 @@ describe('RichEditor extensions', () => {
     expect(String(store.getValue('content'))).toContain('{{ name }}')
     expect(screen.getByRole('button', { name: 'Insert merge tag' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Insert block' })).toBeInTheDocument()
+  })
+
+  it('inserts a second block after the first instead of replacing it (W-S2-05)', async () => {
+    vi.spyOn(actions, 'runField').mockResolvedValue({
+      id: 'divider',
+      config: {},
+      preview: '<hr>',
+    } as never)
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ preview: '<hr>' }))),
+    )
+
+    const { store, editor } = renderEditor(
+      editorSchema({
+        activePanel: 'customBlocks',
+        customBlocks: [
+          {
+            id: 'divider',
+            label: 'Divider',
+            action: { type: 'Action', name: 'customBlock:divider', hasAction: true },
+          },
+        ],
+      }),
+      '<p>Intro</p>',
+    )
+    await waitFor(() => expect(editor()).toBeDefined())
+    act(() => void editor()!.commands.focus('end'))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Divider' }))
+    await waitFor(() =>
+      expect(
+        (String(store.getValue('content')).match(/data-type="customBlock"/g) ?? []).length,
+      ).toBe(1),
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Divider' }))
+    await waitFor(() =>
+      expect(
+        (String(store.getValue('content')).match(/data-type="customBlock"/g) ?? []).length,
+      ).toBe(2),
+    )
+    vi.restoreAllMocks()
   })
 })

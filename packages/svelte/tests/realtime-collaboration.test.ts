@@ -101,6 +101,27 @@ describe('RecordPresence', () => {
   })
 })
 
+describe('RecordPresence updates', () => {
+  it('keeps the room when the page sends a new presence object for the same channel (W-S5-05)', async () => {
+    const { presence } = installEcho()
+    const view = render(Wrapper, {
+      props: { component: RecordPresence, props: { presence: { channel, state: 'viewing' } } },
+    })
+
+    presence.get(channel)!.here!([{ id: 2, name: 'Dana Scully', avatar: null }])
+    flushSync()
+    await view.rerender({
+      component: RecordPresence,
+      props: { presence: { channel, state: 'editing' } },
+    })
+    flushSync()
+
+    expect(screen.getByRole('list', { name: 'Also on this record' })).toHaveTextContent(
+      'Dana Scully',
+    )
+  })
+})
+
 describe('ConflictBanner', () => {
   const page: PageSchema = {
     class: 'EditPost',

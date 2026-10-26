@@ -815,6 +815,26 @@ export function fileUploadPaths(value: unknown): string[] {
   return typeof value === 'string' && value !== '' ? [value] : []
 }
 
+/**
+ * The file entry of each path: the server's (`component.files`), or the one this session
+ * uploaded. A temporary upload comes back from the server without a `url` after a round trip,
+ * so the session's entry (with its local image preview) wins over it then (W-S2-02).
+ */
+export function fileUploadEntries<T extends UploadedFile>(
+  paths: readonly string[],
+  serverFiles: readonly UploadedFile[],
+  uploaded: readonly T[],
+): Array<T | UploadedFile> {
+  return paths.map((path) => {
+    const server = serverFiles.find((file) => file.path === path)
+    const local = uploaded.find((file) => file.path === path)
+
+    if (local && !server?.url) return { ...server, ...local }
+
+    return server ?? local ?? { path, name: path.replace(/^tmp:/, '') }
+  })
+}
+
 /** The picker's `accept`: the accepted types plus the extensions of `mimeTypeMap()`. */
 export function fileUploadAccept(
   schema: Pick<FileUploadSchema, 'acceptedFileTypes' | 'mimeTypeMap'>,

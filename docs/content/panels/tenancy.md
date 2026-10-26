@@ -85,7 +85,7 @@ protected static bool $isScopedToTenant = false; // opt out
 protected static ?string $tenantRelationshipName = 'blogPosts'; // Team::blogPosts(), see below
 ```
 
-New records are associated with the current tenant on creation (`CreateRecord::associateRecordWithTenant()`) through the ownership relationship. With `$tenantRelationshipName` they are saved through that relationship on the tenant model instead (`$team->blogPosts()->save($post)`), for a `HasMany`, `MorphMany` or `BelongsToMany`; a `HasManyThrough` saves the record as it is. `getTenantRelationship($tenant)` returns it.
+New records are associated with the current tenant on creation, on create pages and by `CreateAction` modals (simple resources) alike (`Resource::associateRecordWithTenant()`), through the ownership relationship. With `$tenantRelationshipName` they are saved through that relationship on the tenant model instead (`$team->blogPosts()->save($post)`), for a `HasMany`, `MorphMany` or `BelongsToMany`; a `HasManyThrough` saves the record as it is. `getTenantRelationship($tenant)` returns it.
 
 To turn tenant scoping off for every resource at once, call `Resource::scopeToTenant(false)` in a service provider's `boot()`. Resources that declare their own `$isScopedToTenant` keep it; `PostResource::scopeToTenant(false)` changes one resource that does:
 

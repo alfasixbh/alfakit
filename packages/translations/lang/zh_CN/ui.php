@@ -491,7 +491,7 @@ return [
         'turn_off' => '关闭',
         'turn_off_label' => '关闭“:label”的快捷键',
         'reset' => '重置',
-        'reset_label' => '恢复“:label”的默认快捷键',
+        'reset_label' => '重置“:label”的快捷键',
     ],
     'versions' => [
         'list' => '版本',

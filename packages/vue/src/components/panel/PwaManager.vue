@@ -2,6 +2,7 @@
 import { applyPwaUpdate, pwaStore, startPwa } from '@alfakit/core'
 import { onMounted, watch } from 'vue'
 import { toast } from 'vue-sonner'
+import { toastOptions } from '../notifications/flash-toasts'
 import { useStore } from '../../composables/use-store'
 import { usePanel, useT } from '../../context'
 
@@ -26,11 +27,14 @@ watch(
   (available) => {
     if (!available) return
 
-    toast(t('pwa.update_available', {}, 'A new version is available'), {
-      id: 'alfakit-pwa-update',
-      duration: Infinity,
-      action: { label: t('pwa.reload', {}, 'Reload'), onClick: () => applyPwaUpdate() },
-    })
+    toast(
+      t('pwa.update_available', {}, 'A new version is available'),
+      toastOptions({
+        id: 'alfakit-pwa-update',
+        duration: Infinity,
+        action: { label: t('pwa.reload', {}, 'Reload'), onClick: () => applyPwaUpdate() },
+      }),
+    )
   },
   { immediate: true },
 )

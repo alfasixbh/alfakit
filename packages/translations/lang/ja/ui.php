@@ -491,7 +491,7 @@ return [
         'turn_off' => 'オフにする',
         'turn_off_label' => ':label のショートカットをオフにする',
         'reset' => 'リセット',
-        'reset_label' => ':label のショートカットを既定に戻す',
+        'reset_label' => ':label のショートカットをリセット',
     ],
     'versions' => [
         'list' => 'バージョン',

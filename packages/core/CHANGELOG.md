@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.1.12
+
+### Patch Changes
+
+- Starter kit sidebar items keyed by URL (language and tenant switches no longer leave links pointing at the old page or tenant); upload previews kept after a round trip; chart registries shared by a second copy of core under `npm run dev`; conflict banner finds forms inside relation-manager tabs; presence joins an already-subscribed channel; saved views and column changes count as mutations for Back; starter kit toasts reach the kit's toaster.
+
 ## 0.1.11
 
 ### Patch Changes

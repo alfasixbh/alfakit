@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { RepeaterSchema, SchemaComponent } from '@alfakit/core'
 import {
+  itemExtraActions,
   isDeferredPlaceholder,
   VIRTUAL_ESTIMATES,
   appendRepeaterItem,
@@ -194,7 +195,9 @@ const add = () =>
         :virtual="virtual"
         :context="context"
         :resolve="resolve"
-        :extra-actions-for="(index: number) => props.component.items[index]?.actions"
+        :extra-actions-for="
+          (index: number) => itemExtraActions(props.component, props.component.items[index])
+        "
         @move="moveItem"
         @clone="cloneItem"
         @remove="removeItem"
@@ -272,7 +275,11 @@ const add = () =>
                 :index="index"
                 :count="items.length"
                 :resolve="(name: ItemActionName) => resolve(name, index)"
-                :extra-actions="disabled ? undefined : props.component.items[index]?.actions"
+                :extra-actions="
+                  disabled
+                    ? undefined
+                    : itemExtraActions(props.component, props.component.items[index])
+                "
                 :buttons="buttons"
                 :can-clone="Boolean(props.component.cloneable) && canAdd"
                 :can-delete="canDelete"

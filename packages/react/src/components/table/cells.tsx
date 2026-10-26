@@ -242,7 +242,9 @@ function ImageCell({ column, cell }: CellProps) {
         <span
           data-slot="image-remaining"
           className={cn(
-            'text-muted-foreground ms-1',
+            'text-muted-foreground',
+            // The last image keeps the stack's negative end margin (W-S3-03).
+            schema.stacked && usesDefaultImageStack(schema) ? 'ms-3' : 'ms-1',
             remainingTextSizeClass(schema.limitedRemainingTextSize),
           )}
         >

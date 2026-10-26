@@ -1,5 +1,11 @@
 # @alfakit/vue
 
+## 0.1.12
+
+### Patch Changes
+
+- Wizard submit actions run with the form's state; a second custom rich-editor block no longer replaces the first; extra item actions on browser-added repeater items; "+N" no longer overlaps stacked images; PWA and notification toasts in starter kits; infolist blocks follow their `columns()`.
+
 ## 0.1.11
 
 ### Patch Changes

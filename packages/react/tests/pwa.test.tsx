@@ -1,6 +1,7 @@
 import { pwaStore, resetPwa, type PanelSchema } from '@alfakit/core'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { toast } from 'sonner'
+import { setToasterId } from '../src/components/notifications/flash-toasts'
 import { PwaManager } from '../src/components/panel/pwa'
 import { UserMenu } from '../src/components/panel/user-menu'
 import { Toaster } from '../src/components/ui/sonner'
@@ -79,6 +80,25 @@ describe('pwa', () => {
 
     expect(info).toHaveBeenCalledWith(expect.stringContaining('Add to Home Screen'), {
       duration: 10000,
+    })
+  })
+
+  it("sends the hint to the starter kit's toaster (W-S1-03)", async () => {
+    const info = vi.spyOn(toast, 'info')
+    setToasterId('alfakit-kit')
+    withPanel({ pwa: { serviceWorker: '/admin/sw.js', scope: '/admin' } })
+    act(() => pwaStore.update({ iosHint: true }))
+    renderMenu()
+    openMenu()
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('menuitem', { name: 'Install app' }))
+    })
+    setToasterId(undefined)
+
+    expect(info).toHaveBeenLastCalledWith(expect.stringContaining('Add to Home Screen'), {
+      duration: 10000,
+      toasterId: 'alfakit-kit',
     })
   })
 

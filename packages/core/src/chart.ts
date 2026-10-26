@@ -243,7 +243,7 @@ export function buildChartConfig(input: ChartConfigInput): ChartConfigOutput {
     data: themeDatasets(input.data, input.type, resolve, input.color),
     options: mergeChartOptions(
       defaults,
-      resolveChartCallbacks(input.options ?? {}, input.formatters ?? chartFormatters) as Record<
+      resolveChartCallbacks(input.options ?? {}, input.formatters ?? registry.formatters) as Record<
         string,
         unknown
       >,
@@ -271,9 +271,25 @@ export type ChartFormatter = (...args: never[]) => unknown
 /** `'js:name'`: a reference to a registered chart formatter, never code. */
 const FORMATTER_REFERENCE = /^js:([A-Za-z_$][\w$-]*(?:\.[A-Za-z_$][\w$-]*)*)$/
 
-let chartFormatters: Record<string, ChartFormatter> = {}
-let chartPlugins: unknown[] = []
-const warnedFormatters = new Set<string>()
+interface ChartRegistry {
+  formatters: Record<string, ChartFormatter>
+  plugins: unknown[]
+  warned: Set<string>
+}
+
+/**
+ * The registrations live on `globalThis`, so two copies of `@alfakit/core` share them: under
+ * `npm run dev` Vite serves `@alfakit/core` pre-bundled on its own while the renderer package
+ * carries another copy, and formatters registered through one must reach charts drawn by the
+ * other (W-S3-09).
+ */
+const registry: ChartRegistry = ((
+  globalThis as { __alfakitCharts?: ChartRegistry }
+).__alfakitCharts ??= {
+  formatters: {},
+  plugins: [],
+  warned: new Set<string>(),
+})
 
 /**
  * Register named callbacks for chart options: `ChartWidget::getOptions()` refers to them
@@ -281,11 +297,11 @@ const warnedFormatters = new Set<string>()
  * Strings are only ever looked up here, never evaluated.
  */
 export function registerChartFormatters(formatters: Record<string, ChartFormatter>): void {
-  chartFormatters = { ...chartFormatters, ...formatters }
+  registry.formatters = { ...registry.formatters, ...formatters }
 }
 
 export function getChartFormatters(): Readonly<Record<string, ChartFormatter>> {
-  return chartFormatters
+  return registry.formatters
 }
 
 /**
@@ -294,12 +310,12 @@ export function getChartFormatters(): Readonly<Record<string, ChartFormatter>> {
  */
 export function registerChartPlugins(plugins: readonly unknown[]): void {
   for (const plugin of plugins) {
-    if (plugin && !chartPlugins.includes(plugin)) chartPlugins.push(plugin)
+    if (plugin && !registry.plugins.includes(plugin)) registry.plugins.push(plugin)
   }
 }
 
 export function getChartPlugins(): readonly unknown[] {
-  return chartPlugins
+  return registry.plugins
 }
 
 /** `createAlfakit({ chartFormatters, chartPlugins })`. */
@@ -313,9 +329,9 @@ export function configureCharts(options: {
 
 /** Forget registered formatters and plugins (tests). */
 export function resetChartRegistrations(): void {
-  chartFormatters = {}
-  chartPlugins = []
-  warnedFormatters.clear()
+  registry.formatters = {}
+  registry.plugins.length = 0
+  registry.warned.clear()
 }
 
 const MISSING = Symbol('missing')
@@ -327,7 +343,7 @@ const MISSING = Symbol('missing')
  */
 export function resolveChartCallbacks(
   value: unknown,
-  formatters: Record<string, ChartFormatter> = chartFormatters,
+  formatters: Record<string, ChartFormatter> = registry.formatters,
 ): unknown {
   const resolved = resolveCallback(value, formatters)
 
@@ -347,8 +363,8 @@ function resolveCallback(value: unknown, formatters: Record<string, ChartFormatt
 
     if (typeof formatter === 'function') return formatter
 
-    if (!warnedFormatters.has(name)) {
-      warnedFormatters.add(name)
+    if (!registry.warned.has(name)) {
+      registry.warned.add(name)
       console.warn(
         `Alfakit: chart formatter "${name}" is not registered; pass it to createAlfakit({ chartFormatters }).`,
       )

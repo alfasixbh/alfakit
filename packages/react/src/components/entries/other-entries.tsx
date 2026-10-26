@@ -115,6 +115,8 @@ export function ImageEntryComponent({ component }: { component: ImageEntrySchema
                 data-slot="image-remaining"
                 className={cn(
                   'text-muted-foreground',
+                  // The last image keeps the stack's negative end margin (W-S3-03).
+                  component.stacked && usesDefaultImageStack(component) && 'ms-3',
                   remainingTextSizeClass(component.limitedRemainingTextSize),
                 )}
               >

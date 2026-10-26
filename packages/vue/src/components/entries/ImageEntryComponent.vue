@@ -56,6 +56,8 @@ const defaultImageStack = computed(() => usesDefaultImageStack(props.component))
           :class="
             cn(
               'text-muted-foreground',
+              // The last image keeps the stack's negative end margin (W-S3-03).
+              props.component.stacked && defaultImageStack && 'ms-3',
               remainingTextSizeClass(props.component.limitedRemainingTextSize),
             )
           "

@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     protected $connection = 'tenant';
+
+    protected $fillable = ['name'];
 }
 ```
 
@@ -48,6 +50,8 @@ Event::listen(function (TenantSet $event): void {
     DB::reconnect('tenant');
 });
 ```
+
+The tenant record needs a column holding its database name (`database_name` here); with the [Teams plugin](../plugins/teams), add it to the `teams` table with a migration of your own (`$table->string('database_name')->nullable();`). For SQLite, store the absolute path to the file.
 
 Read the database name from the tenant record, never from the request. Because the tenant has already been checked against the signed-in user when the event fires, a user can't reach another tenant's database by changing the URL or the context token.
 

@@ -21,6 +21,7 @@ import { cn } from '../../lib/utils'
 import ActionButton from '../actions/ActionButton.vue'
 import { usePageActionContext } from '../actions/action-context'
 import { useOptionalFormStore } from '../form/form-context'
+import { useFieldActionContext } from '../schema/field-actions'
 import SchemaRenderer from '../schema/SchemaRenderer.vue'
 import Button from '../ui/Button.vue'
 import DeferredSchema from './DeferredSchema.vue'
@@ -52,6 +53,9 @@ watch(
   { immediate: true },
 )
 const store = useOptionalFormStore()
+// Inside a form the submit action runs as a field action, so `$get` / `$set` work (W-S2-09).
+const fieldContext = useFieldActionContext(() => props.component)
+const submitContext = computed(() => (store ? fieldContext.value : actionContext))
 
 // An action modal around this wizard shows its submit button on the last step only.
 watch(
@@ -234,7 +238,7 @@ const next = async () => {
       <ActionButton
         v-else-if="props.component.submitAction"
         :action="props.component.submitAction"
-        :context="actionContext"
+        :context="submitContext"
       />
       <div
         v-else-if="props.component.submitActionHtml"

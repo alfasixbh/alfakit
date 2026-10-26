@@ -21,7 +21,7 @@
   import ActionButton from '../actions/ActionButton.svelte'
   import { usePageActionContext } from '../actions/action-context'
   import { useOptionalFormStore } from '../form/form-context.svelte'
-  import { schemaGapClass } from '@alfakit/core'
+  import { fieldActionContext, schemaGapClass } from '@alfakit/core'
   import SchemaRenderer from '../schema/SchemaRenderer.svelte'
   import DeferredSchema from './DeferredSchema.svelte'
   import { Button } from '../ui/button'
@@ -56,6 +56,12 @@
     if (key) untrack(() => persistWizardStep(step, key))
   })
   const store = useOptionalFormStore()
+  // Inside a form the submit action runs as a field action, so `$get` / `$set` work (W-S2-09).
+  const submitContext = $derived(
+    store
+      ? fieldActionContext({ token: actionContext.token, form: store, key: component.key })
+      : actionContext,
+  )
 
   // An action modal around this wizard shows its submit button on the last step only.
   $effect(() => {
@@ -229,7 +235,7 @@
         >
       {/if}
     {:else if component.submitAction}
-      <ActionButton action={component.submitAction} context={actionContext} />
+      <ActionButton action={component.submitAction} context={submitContext} />
     {:else if component.submitActionHtml}
       <div data-slot="wizard-submit">{@html component.submitActionHtml}</div>
     {:else}

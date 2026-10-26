@@ -148,6 +148,39 @@ describe('column parity', () => {
     wrapper.unmount()
   })
 
+  it('keeps the remaining text clear of the last stacked image (W-S3-03)', () => {
+    const column = cell(
+      {
+        type: 'ImageColumn',
+        name: 'a',
+        label: 'A',
+        limit: 1,
+        limitedRemainingText: true,
+        stacked: true,
+        circular: true,
+      } as ColumnSchema,
+      { state: ['/1.png', '/2.png'] },
+    )
+    expect(column.find('[data-slot="image-remaining"]').classes()).toContain('ms-3')
+    column.unmount()
+
+    const entry = mountWithAlfakit(() =>
+      h(ImageEntryComponent, {
+        component: {
+          type: 'ImageEntry',
+          key: 'a',
+          name: 'a',
+          state: ['/1.png', '/2.png'],
+          limit: 1,
+          stacked: true,
+          circular: true,
+        },
+      }),
+    )
+    expect(entry.find('[data-slot="image-remaining"]').classes()).toContain('ms-3')
+    entry.unmount()
+  })
+
   it('hides the image entry remaining text with limitedRemainingText(false)', () => {
     const shown = mountWithAlfakit(() =>
       h(ImageEntryComponent, {

@@ -38,7 +38,7 @@ const mainTable = computed(() => props.block.type === 'Table' && props.block.key
   <div v-else-if="props.block.type === 'Infolist'" data-slot="infolist" class="contents">
     <SchemaRenderer
       :components="(props.block as InfolistBlock).components"
-      :columns="{ default: 1, lg: 2 }"
+      :columns="(props.block as InfolistBlock).columns ?? { default: 1, lg: 2 }"
     />
   </div>
   <SchemaRenderer

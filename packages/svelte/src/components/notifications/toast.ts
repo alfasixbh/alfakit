@@ -16,6 +16,14 @@ export function setToasterId(id: string | undefined): void {
   toasterId = id
 }
 
+/**
+ * Options for a direct `toast.*()` call: the starter kit toaster's id merged in, so PWA and
+ * notification messages reach AlfaKit's toaster in a starter kit too (W-S1-03).
+ */
+export function toastOptions<T extends object>(options?: T): T & { toasterId?: string } {
+  return { ...(options ?? ({} as T)), toasterId }
+}
+
 /** `closeNotification(id)` (or a `close-notification` event) dismisses that toast. */
 export function listenForClosedNotifications(): void {
   if (closeListening || typeof window === 'undefined') return

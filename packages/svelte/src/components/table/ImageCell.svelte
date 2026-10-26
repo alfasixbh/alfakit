@@ -62,7 +62,9 @@
     {#if schema.limitedRemainingText && urls.length > limit}<span
         data-slot="image-remaining"
         class={cn(
-          'text-muted-foreground ms-1',
+          'text-muted-foreground',
+          // The last image keeps the stack's negative end margin (W-S3-03).
+          schema.stacked && defaultStack ? 'ms-3' : 'ms-1',
           remainingTextSizeClass(schema.limitedRemainingTextSize),
         )}>+{urls.length - limit}</span
       >{/if}

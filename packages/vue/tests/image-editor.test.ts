@@ -1,5 +1,5 @@
 import type { FileUploadSchema } from '@alfakit/core'
-import { FormStore, type SchemaComponent } from '@alfakit/core'
+import { fieldMemory, FormStore, type SchemaComponent } from '@alfakit/core'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, shallowRef } from 'vue'
@@ -248,5 +248,32 @@ describe('image editor', () => {
     await flushPromises()
 
     expect(button('Edit a.png')).toBeNull()
+  })
+})
+
+describe('uploaded image previews', () => {
+  it('keeps the local preview of a temporary upload after a server round trip (W-S2-02)', () => {
+    const component = upload({
+      files: [{ path: 'tmp:a', name: 'a.png', size: 3, temporary: true }],
+    })
+    const store = new FormStore(
+      { components: [component as SchemaComponent], state: { files: 'tmp:a' } },
+      { token: 't', component: 'form' },
+    )
+    // This session's upload of `tmp:a` (its local preview) and the server's entry for the
+    // same temporary key after a round trip, without a url (W-S2-02).
+    fieldMemory<FileUploadSchema['files']>(store, 'files:uploaded', () => []).set([
+      { path: 'tmp:a', name: 'a.png', size: 3, temporary: true, url: 'blob:local-a' },
+    ])
+    const Form = defineComponent({
+      setup() {
+        provideForm(store)
+
+        return () => h(FileUploadField, { component })
+      },
+    })
+    mountWithAlfakit(() => h(Form), { attachTo: document.body })
+
+    expect(document.body.querySelector('img')?.getAttribute('src')).toBe('blob:local-a')
   })
 })

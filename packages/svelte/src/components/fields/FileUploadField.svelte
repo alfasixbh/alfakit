@@ -23,6 +23,7 @@
     fileUploadAccept,
     filesFromClipboard,
     fileManagerSize,
+    fileUploadEntries,
     fileUploadPaths,
     insertUploadedFile,
     moveRepeaterItem,
@@ -120,15 +121,7 @@
   }
 
   const paths = $derived(fileUploadPaths(field.value))
-  const files = $derived<LocalFile[]>(
-    paths.map(
-      (path) =>
-        [...component.files, ...uploaded].find((file) => file.path === path) ?? {
-          path,
-          name: path.replace(/^tmp:/, ''),
-        },
-    ),
-  )
+  const files = $derived<LocalFile[]>(fileUploadEntries(paths, component.files, uploaded))
   const maxFiles = $derived(component.multiple ? (component.maxFiles ?? Infinity) : 1)
   const listed = $derived([...files, ...uploading])
   const canAddMore = $derived(files.length + uploading.length < maxFiles)

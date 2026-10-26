@@ -6,6 +6,7 @@
     type PresenceMember,
     type PresenceSchema,
   } from '@alfakit/core'
+  import { untrack } from 'svelte'
   import { useChoice, usePanel, useT } from '../../context.svelte'
   import { cn } from '../../lib/utils'
   import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -27,7 +28,9 @@
 
   // Effects only run in the browser: a server render never joins.
   $effect(() => {
-    const next = new PresenceRoom({ channel, state: presence.state, self })
+    // Only the channel and the user re-create the room; a new `presence` prop object (every
+    // page update) would leave and re-join it (W-S5-05). The state follows below.
+    const next = new PresenceRoom({ channel, state: untrack(() => presence.state), self })
     room = next
     members = next.members
 

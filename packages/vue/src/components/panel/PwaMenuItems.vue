@@ -3,6 +3,7 @@ import { canInstallPwa, pwaStore, subscribeToPush, unsubscribeFromPush } from '@
 import { BellIcon, BellOffIcon, DownloadIcon } from '@lucide/vue'
 import { computed } from 'vue'
 import { toast } from 'vue-sonner'
+import { toastOptions } from '../notifications/flash-toasts'
 import { useStore } from '../../composables/use-store'
 import { usePanel, useT } from '../../context'
 import { Icon } from '../../lib/icons'
@@ -23,15 +24,25 @@ async function togglePush() {
     state.value.push === 'subscribed' ? await unsubscribeFromPush() : await subscribeToPush()
 
   if (outcome === 'subscribed') {
-    toast.success(t('pwa.notifications.enabled', {}, 'Notifications are on for this device'))
+    toast.success(
+      t('pwa.notifications.enabled', {}, 'Notifications are on for this device'),
+      toastOptions(),
+    )
   } else if (outcome === 'unsubscribed') {
-    toast.success(t('pwa.notifications.disabled', {}, 'Notifications are off for this device'))
+    toast.success(
+      t('pwa.notifications.disabled', {}, 'Notifications are off for this device'),
+      toastOptions(),
+    )
   } else if (outcome === 'denied') {
     toast.error(
       t('pwa.notifications.blocked', {}, 'Notifications are blocked in your browser settings'),
+      toastOptions(),
     )
   } else {
-    toast.error(t('pwa.notifications.failed', {}, 'Couldn’t change notifications. Try again.'))
+    toast.error(
+      t('pwa.notifications.failed', {}, 'Couldn’t change notifications. Try again.'),
+      toastOptions(),
+    )
   }
 }
 </script>

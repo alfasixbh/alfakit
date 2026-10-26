@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { usePanel, useT } from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { Icon } from '../../lib/icons'
+import { toastOptions } from '../notifications/flash-toasts'
 import { DropdownMenuItem } from '../ui/dropdown-menu'
 
 const UPDATE_TOAST_ID = 'alfakit-pwa-update'
@@ -27,7 +28,7 @@ export async function installPwa(t: Translator['t']): Promise<void> {
         {},
         'To install this app, tap the Share button and then “Add to Home Screen”.',
       ),
-      { duration: 10000 },
+      toastOptions({ duration: 10000 }),
     )
   }
 }
@@ -49,11 +50,14 @@ export function PwaManager() {
   useEffect(() => {
     if (!updateAvailable) return
 
-    toast(t('pwa.update_available', {}, 'A new version is available'), {
-      id: UPDATE_TOAST_ID,
-      duration: Infinity,
-      action: { label: t('pwa.reload', {}, 'Reload'), onClick: () => applyPwaUpdate() },
-    })
+    toast(
+      t('pwa.update_available', {}, 'A new version is available'),
+      toastOptions({
+        id: UPDATE_TOAST_ID,
+        duration: Infinity,
+        action: { label: t('pwa.reload', {}, 'Reload'), onClick: () => applyPwaUpdate() },
+      }),
+    )
   }, [updateAvailable, t])
 
   return null
@@ -74,15 +78,25 @@ export function PwaMenuItems() {
       state.push === 'subscribed' ? await unsubscribeFromPush() : await subscribeToPush()
 
     if (outcome === 'subscribed') {
-      toast.success(t('pwa.notifications.enabled', {}, 'Notifications are on for this device'))
+      toast.success(
+        t('pwa.notifications.enabled', {}, 'Notifications are on for this device'),
+        toastOptions(),
+      )
     } else if (outcome === 'unsubscribed') {
-      toast.success(t('pwa.notifications.disabled', {}, 'Notifications are off for this device'))
+      toast.success(
+        t('pwa.notifications.disabled', {}, 'Notifications are off for this device'),
+        toastOptions(),
+      )
     } else if (outcome === 'denied') {
       toast.error(
         t('pwa.notifications.blocked', {}, 'Notifications are blocked in your browser settings'),
+        toastOptions(),
       )
     } else {
-      toast.error(t('pwa.notifications.failed', {}, 'Couldn’t change notifications. Try again.'))
+      toast.error(
+        t('pwa.notifications.failed', {}, 'Couldn’t change notifications. Try again.'),
+        toastOptions(),
+      )
     }
   }
 

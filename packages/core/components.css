@@ -182,6 +182,13 @@
 .fc[data-slot='calendar'] .fc-day-other .fc-daygrid-day-number {
   color: var(--muted-foreground);
 }
+/*
+ * FullCalendar fades other months' dates to 30% opacity, which fails WCAG AA contrast
+ * (W-V4-20); the muted colour alone sets them apart.
+ */
+.fc[data-slot='calendar'] .fc-day-other .fc-daygrid-day-top {
+  opacity: 1;
+}
 /* Today: a tinted cell (`--fc-today-bg-color`) and the date in a primary pill. */
 .fc[data-slot='calendar'] .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
   display: inline-flex;
@@ -344,4 +351,16 @@
   :where([data-slot='kanban-card'] > [data-slot='kanban-card-body']) {
     transition: none;
   }
+}
+
+/* ------------------------------------------------------------------ Dev tools */
+
+/*
+ * The floating debug-panel and schema-inspector buttons (local development) sit at the
+ * bottom end, over the helpdesk inbox's reply composer and its Send button: lift them
+ * above the composer while the inbox is on the page (W-S4-09).
+ */
+body:has([data-slot='helpdesk-inbox']) [data-slot='dev-tools-toggle'],
+body:has([data-slot='helpdesk-inbox']) [data-slot='starter-kit-debug-panel'] {
+  bottom: 14rem;
 }

@@ -491,7 +491,7 @@ return [
         'turn_off' => 'إيقاف',
         'turn_off_label' => 'إيقاف اختصار :label',
         'reset' => 'إعادة تعيين',
-        'reset_label' => 'استعادة الاختصار الافتراضي لـ :label',
+        'reset_label' => 'إعادة تعيين اختصار :label',
     ],
     'versions' => [
         'list' => 'الإصدارات',

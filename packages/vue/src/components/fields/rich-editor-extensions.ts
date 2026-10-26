@@ -102,11 +102,15 @@ export function useRichEditorExtensions(
 
     if (!result || !instance || instance.isDestroyed) return
 
-    instance
-      .chain()
-      .focus()
-      .insertContent({ type: 'customBlock', attrs: { id: result.id, config: result.config } })
-      .run()
+    const block = { type: 'customBlock', attrs: { id: result.id, config: result.config } }
+    // A block inserted just before is still selected (a node selection): insert after it
+    // instead of replacing it (W-S2-05).
+    const { selection } = instance.state
+    const chain = instance.chain().focus()
+    ;('node' in selection && selection.node
+      ? chain.insertContentAt(selection.to, block)
+      : chain.insertContent(block)
+    ).run()
   }
 
   return { extensions, suggestions, insertBlock, context }

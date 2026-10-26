@@ -491,7 +491,7 @@ return [
         'turn_off' => 'Désactiver',
         'turn_off_label' => 'Désactiver le raccourci de :label',
         'reset' => 'Réinitialiser',
-        'reset_label' => 'Rétablir le raccourci par défaut de :label',
+        'reset_label' => 'Réinitialiser le raccourci de :label',
     ],
     'versions' => [
         'list' => 'Versions',

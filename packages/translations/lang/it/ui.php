@@ -491,7 +491,7 @@ return [
         'turn_off' => 'Disattiva',
         'turn_off_label' => 'Disattiva la scorciatoia di :label',
         'reset' => 'Ripristina',
-        'reset_label' => 'Ripristina la scorciatoia predefinita di :label',
+        'reset_label' => 'Ripristina la scorciatoia di :label',
     ],
     'versions' => [
         'list' => 'Versioni',

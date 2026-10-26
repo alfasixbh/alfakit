@@ -200,7 +200,7 @@
                           aria-label={t(
                             'shortcuts.reset_label',
                             { label: item.label },
-                            `Restore the default shortcut for ${item.label}`,
+                            `Reset the shortcut for ${item.label}`,
                           )}
                           onclick={() => void save(item.id, null)}
                           >{t('shortcuts.reset', {}, 'Reset')}</Button

@@ -512,7 +512,7 @@ Import a stylesheet that loads Tailwind first: `resources/css/alfakit.css` in pa
 </html>
 ```
 
-Then render public pages with it: `CmsPlugin::make()->publicRoutes()->rootView('site')`. A Laravel starter kit's own root view (`app.blade.php`) loads `resources/js/pages/{component}`, which has no `Alfakit/CmsPage`.
+Then render public pages with it: `CmsPlugin::make()->publicRoutes()->rootView('site')`. A Laravel starter kit's own root view (`app.blade.php`) loads `resources/js/pages/{component}`, which has no `Alfakit/CmsPage`. With [server-side rendering](../advanced/ssr) in panel mode, register the page in `createAlfakitServer()` as well (`pages: { 'Alfakit/CmsPage': CmsPage }` in `resources/js/alfakit/ssr.*`, `CmsPage` imported from your renderer package), or public pages render in the browser only.
 
 If your public pages use your own Inertia setup instead, add `CmsPage` to its `resolve()`: the component brings its own translations and works without a panel. Set the Blade root view of public pages with `->rootView('site')` when it isn't your Inertia middleware's, and the component name with `->inertiaComponent('Site/Page')` to render your own page:
 

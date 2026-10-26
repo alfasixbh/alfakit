@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { BuilderBlockSchema, BuilderItemState, BuilderSchema } from '@alfakit/core'
 import {
+  itemExtraActions,
   isDeferredPlaceholder,
   VIRTUAL_ESTIMATES,
   builderItemLabel,
@@ -360,7 +361,11 @@ const previewIsButton = computed(() => !props.component.interactivePreviews && !
                 :index="index"
                 :count="items.length"
                 :resolve="(name: ItemActionName) => resolve(name, index)"
-                :extra-actions="menu || locked ? undefined : serverItemOf(index)?.actions"
+                :extra-actions="
+                  menu || locked
+                    ? undefined
+                    : itemExtraActions(props.component, serverItemOf(index))
+                "
                 :buttons="buttons && !menu"
                 :can-clone="canClone(item) && !menu"
                 :can-delete="canDelete && !menu"
@@ -391,7 +396,7 @@ const previewIsButton = computed(() => !props.component.interactivePreviews && !
                   :can-move-down="buttons && index < items.length - 1"
                   :can-clone="canClone(item)"
                   :can-delete="canDelete"
-                  :extra-actions="serverItemOf(index)?.actions"
+                  :extra-actions="itemExtraActions(props.component, serverItemOf(index))"
                   @action="(name: ItemActionName) => onMenuAction(name, index)"
                   @extra="(action: ActionSchema) => onMenuExtra(action, index)"
                 />

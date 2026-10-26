@@ -607,6 +607,11 @@ export type ItemActionsSchema = Partial<Record<ItemActionName, ItemActionSchema 
 export interface ItemActionsProps {
   /** Field-level built-in actions (item actions evaluated without an item). */
   itemActions?: ItemActionsSchema
+  /**
+   * `extraItemActions()` evaluated without an item (`$arguments['item']` null), for items
+   * the browser added since the last response; server-rendered items carry their own.
+   */
+  extraItemActions?: ActionSchema[]
   /** `reorderableWithButtons(false)`: no move up / down buttons. */
   reorderableWithButtons?: boolean
   /** `reorderableWithDragAndDrop(false)`: no drag handle. */

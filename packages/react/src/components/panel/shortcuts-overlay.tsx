@@ -221,7 +221,7 @@ export function ShortcutsOverlay({
                               aria-label={t(
                                 'shortcuts.reset_label',
                                 { label: item.label },
-                                `Restore the default shortcut for ${item.label}`,
+                                `Reset the shortcut for ${item.label}`,
                               )}
                               onClick={() => void save(item.id, null)}
                             >

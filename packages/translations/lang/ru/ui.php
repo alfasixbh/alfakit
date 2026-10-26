@@ -491,7 +491,7 @@ return [
         'turn_off' => 'Отключить',
         'turn_off_label' => 'Отключить сочетание для «:label»',
         'reset' => 'Сбросить',
-        'reset_label' => 'Вернуть стандартное сочетание для «:label»',
+        'reset_label' => 'Сбросить сочетание для «:label»',
     ],
     'versions' => [
         'list' => 'Версии',

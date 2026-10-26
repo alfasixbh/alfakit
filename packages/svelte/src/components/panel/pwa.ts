@@ -1,5 +1,6 @@
 import { promptPwaInstall, type Translator } from '@alfakit/core'
 import { toast } from 'svelte-sonner'
+import { toastOptions } from '../notifications/toast'
 
 /** Show the browser's install prompt, or the "Add to Home Screen" hint on iOS Safari. */
 export async function installPwa(t: Translator['t']): Promise<void> {
@@ -10,7 +11,7 @@ export async function installPwa(t: Translator['t']): Promise<void> {
         {},
         'To install this app, tap the Share button and then “Add to Home Screen”.',
       ),
-      { duration: 10000 },
+      toastOptions({ duration: 10000 }),
     )
   }
 }

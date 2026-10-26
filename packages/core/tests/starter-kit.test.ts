@@ -110,6 +110,39 @@ describe('starter kit mode', () => {
     expect(starterKitWidgets({ ...props, alfakit: { id: 'app' } })?.navigation.id).toBe('app')
   })
 
+  it('keys sidebar items by URL, so a reordered list keeps each link with its entry (W-S4-08)', () => {
+    const item = (label: string, url: string) => ({ label, url, icon: null, active: false })
+    const english = toStarterKitNavGroups([
+      { label: null, items: [item('Forms', '/admin/forms'), item('Pages', '/admin/cms/pages')] },
+    ] as never)
+    const arabic = toStarterKitNavGroups([
+      {
+        label: null,
+        items: [item('الصفحات', '/admin/cms/pages'), item('النماذج', '/admin/forms')],
+      },
+    ] as never)
+    const keyOf = (groups: typeof english, href: string) =>
+      groups[0]!.items.find((entry) => entry.href === href)!.key
+
+    expect(keyOf(english, '/admin/cms/pages')).toBe(keyOf(arabic, '/admin/cms/pages'))
+    expect(keyOf(english, '/admin/forms')).toBe(keyOf(arabic, '/admin/forms'))
+
+    // Same labels, another tenant's URLs: new keys, so no link keeps the old tenant (W-S5-02).
+    const acme = toStarterKitNavGroups([
+      { label: null, items: [item('Projects', '/app/acme/projects')] },
+    ] as never)
+    const beta = toStarterKitNavGroups([
+      { label: null, items: [item('Projects', '/app/beta/projects')] },
+    ] as never)
+    expect(acme[0]!.items[0]!.key).not.toBe(beta[0]!.items[0]!.key)
+
+    // A repeated URL still gets a unique key.
+    const twice = toStarterKitNavGroups([
+      { label: null, items: [item('A', '/x'), item('B', '/x')] },
+    ] as never)
+    expect(new Set(twice[0]!.items.map((entry) => entry.key)).size).toBe(2)
+  })
+
   it('flattens groups into host sidebar items', () => {
     const groups = toStarterKitNavGroups(navigation.groups)
 

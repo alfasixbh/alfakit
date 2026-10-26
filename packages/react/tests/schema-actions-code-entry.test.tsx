@@ -30,6 +30,14 @@ const embeddedComponents = () =>
       heading: 'Nothing',
       actions: [{ type: 'Action', name: 'create', label: 'Create', hasAction: true }],
     },
+    {
+      // A wizard's submitAction(Action) on its last step (W-S2-09).
+      type: 'Wizard',
+      key: 'checkout',
+      startStep: 1,
+      schema: [{ type: 'Step', key: 'pay-step', label: 'Pay', schema: [] }],
+      submitAction: { type: 'Action', name: 'placeOrder', label: 'Place order', hasAction: true },
+    },
   ] as unknown as SchemaComponent[]
 
 const embeddedCases = [
@@ -37,6 +45,7 @@ const embeddedCases = [
   ['Dismiss', 'tip', 'dismiss'],
   ['Later', 'tip', 'later'],
   ['Create', 'nothing', 'create'],
+  ['Place order', 'checkout', 'placeOrder'],
 ] as const
 
 afterEach(() => vi.unstubAllGlobals())

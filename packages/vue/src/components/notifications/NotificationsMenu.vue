@@ -11,6 +11,7 @@ import {
 import { BellIcon, BellOffIcon, BellRingIcon, CheckCheckIcon, Trash2Icon } from '@lucide/vue'
 import { computed, onMounted, onScopeDispose, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
+import { toastOptions } from './flash-toasts'
 import { useStore } from '../../composables/use-store'
 import { useDirection, useFormatter, usePanel, useT } from '../../context'
 import { cssColor, textColorClasses } from '../../lib/colors'
@@ -113,8 +114,8 @@ async function togglePush() {
   const { message } = await togglePushNotifications()
   const text = t(message.key, {}, message.fallback)
 
-  if (message.error) toast.error(text)
-  else toast.success(text)
+  if (message.error) toast.error(text, toastOptions())
+  else toast.success(text, toastOptions())
 }
 </script>
 

@@ -59,6 +59,8 @@ export interface InfolistBlock {
   type: 'Infolist'
   key: string
   components: SchemaComponent[]
+  /** The infolist's `columns()` (one column on the profile page's security part). */
+  columns?: Breakpoints
 }
 
 export interface SchemaBlock {

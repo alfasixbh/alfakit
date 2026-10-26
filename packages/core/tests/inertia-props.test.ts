@@ -244,6 +244,9 @@ describe('prefetching', () => {
 
     expect(isMutatingRequest('/admin/_alfakit/actions', 'POST')).toBe(true)
     expect(isMutatingRequest('/admin/_alfakit/table/cell', 'POST')).toBe(true)
+    // Saved views and column order change what a restored page shows (W-S2-14).
+    expect(isMutatingRequest('/admin/_alfakit/table/views', 'POST')).toBe(true)
+    expect(isMutatingRequest('/_alfakit/table/columns', 'POST')).toBe(true)
     expect(isMutatingRequest('/admin/_alfakit/schema/refresh', 'POST')).toBe(false)
     expect(isMutatingRequest('/admin/_alfakit/actions', 'GET')).toBe(false)
     uninstall()

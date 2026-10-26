@@ -92,3 +92,28 @@ describe('observeThemeChanges', () => {
     stop()
   })
 })
+
+describe('chart registrations', () => {
+  it('are shared by two copies of the module, as under the Vite dev server (W-S3-09)', async () => {
+    vi.resetModules()
+    const first = await import('../src/chart')
+    vi.resetModules()
+    const second = await import('../src/chart')
+    expect(first.registerChartFormatters).not.toBe(second.registerChartFormatters)
+
+    const money = (value: unknown) => `$${String(value)}`
+    const plugin = { id: 'labels' }
+    first.registerChartFormatters({ money })
+    first.registerChartPlugins([plugin])
+
+    try {
+      expect(second.getChartFormatters().money).toBe(money)
+      expect(second.getChartPlugins()).toContain(plugin)
+    } finally {
+      second.resetChartRegistrations()
+    }
+
+    expect(first.getChartFormatters()).toEqual({})
+    expect(first.getChartPlugins()).toEqual([])
+  })
+})

@@ -5,7 +5,7 @@ description: Pest tests for forms, tables and actions used outside panels.
 
 # Testing standalone components
 
-A standalone component is a prop of your page and its internal requests go to `/_alfakit/*`, so ordinary HTTP tests cover everything. The examples are Pest (`composer require pestphp/pest pestphp/pest-plugin-laravel --dev`); in a PHPUnit test class the same calls are `$this->get()`, `$this->postJson()` and `$this->actingAs()`. Read the token from the page, then post to the endpoints exactly as the renderer does. The example tests the `ContactForm` of [Forms](forms) on the `/contact` route of the [overview](overview).
+A standalone component is a prop of your page and its internal requests go to `/_alfakit/*`, so ordinary HTTP tests cover everything. The examples are Pest. In an app made with PHPUnit (the starter kits' default) add it with `composer require pestphp/pest pestphp/pest-plugin-laravel --dev -W` (`-W` lets Composer update the locked `phpunit/phpunit` and `laravel/pao`, which otherwise refuse Pest), then run `./vendor/bin/pest --init` and turn on `->use(RefreshDatabase::class)` in the `tests/Pest.php` it writes, so tests run against a migrated database. In a PHPUnit test class the same calls are `$this->get()`, `$this->postJson()` and `$this->actingAs()`. Read the token from the page, then post to the endpoints exactly as the renderer does. The example tests the `ContactForm` of [Forms](forms) on the `/contact` route of the [overview](overview).
 
 ```php
 use AlfaSix\Alfakit\Testing\PageTester;

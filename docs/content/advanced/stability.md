@@ -58,11 +58,13 @@ To find deprecations in your application, search your logs for `[Alfakit]`, open
 Within a major version:
 
 ```bash
-composer update alfasix/alfakit
+composer update "alfasix/*"
 npm update @alfakit/core @alfakit/react   # or @alfakit/vue, @alfakit/svelte
 php artisan alfakit:upgrade
 npm run build
 ```
+
+`"alfasix/*"` updates the first-party plugins with the core package: they are released with it, and `composer update alfasix/alfakit` alone leaves them on their old version.
 
 Add `@php artisan alfakit:upgrade` to the `post-autoload-dump` scripts of `composer.json` so it runs after every update. The command clears AlfaKit's caches and compiled views, republishes plugin assets, and prints a compatibility report:
 

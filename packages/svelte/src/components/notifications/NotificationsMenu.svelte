@@ -16,6 +16,7 @@
   import Trash2Icon from '@lucide/svelte/icons/trash'
   import { onDestroy, onMount, untrack } from 'svelte'
   import { toast } from 'svelte-sonner'
+  import { toastOptions } from './toast'
   import { useDirection, useFormatter, usePanel, useT } from '../../context.svelte'
   import { useStore } from '../../hooks/store.svelte'
   import { cssColor, textColorClasses } from '../../lib/colors'
@@ -76,8 +77,8 @@
     const { message } = await togglePushNotifications()
     const text = t(message.key, {}, message.fallback)
 
-    if (message.error) toast.error(text)
-    else toast.success(text)
+    if (message.error) toast.error(text, toastOptions())
+    else toast.success(text, toastOptions())
   }
 
   let open = $state(false)

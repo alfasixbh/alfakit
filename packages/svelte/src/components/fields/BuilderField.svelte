@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { BuilderBlockSchema, BuilderItemState, BuilderSchema } from '@alfakit/core'
   import {
+    itemExtraActions,
     isDeferredPlaceholder,
     VIRTUAL_ESTIMATES,
     builderItemLabel,
@@ -316,7 +317,9 @@
                   {index}
                   count={items.length}
                   resolve={(name) => resolve(name, index)}
-                  extraActions={menu || locked ? undefined : serverItemOf(index)?.actions}
+                  extraActions={menu || locked
+                    ? undefined
+                    : itemExtraActions(component, serverItemOf(index))}
                   buttons={buttons && !menu}
                   canClone={canCloneItem(item) && !menu}
                   canDelete={canDelete && !menu}
@@ -354,7 +357,7 @@
                       canMoveDown={buttons && index < items.length - 1}
                       canClone={canCloneItem(item)}
                       {canDelete}
-                      extraActions={serverItemOf(index)?.actions}
+                      extraActions={itemExtraActions(component, serverItemOf(index))}
                       onAction={(name) => onMenuAction(name, index)}
                       onExtra={(action) => onMenuExtra(action, index)}
                     />

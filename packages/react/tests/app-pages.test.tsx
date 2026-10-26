@@ -34,6 +34,7 @@ const page: PageSchema = {
       type: 'Infolist',
       key: 'infolist:summary',
       components: [{ type: 'TextEntry', key: 'total', name: 'total', label: 'Total', state: '42' }],
+      columns: { default: 1, lg: 1 },
     },
   ] as PageSchema['content'],
 }
@@ -68,6 +69,18 @@ describe('app page components', () => {
     expect(screen.getByText('42')).toBeInTheDocument()
     expect(screen.getByText('No products table')).toBeInTheDocument()
     expect(document.querySelector('[data-block="form:customer"]')).not.toBeNull()
+  })
+
+  it("follows the infolist's columns() (W-S1-16)", () => {
+    render(
+      <Wrapper>
+        <PageInfolist name="summary" />
+      </Wrapper>,
+    )
+    const grid = document.querySelector('[data-slot="infolist"] > *')!
+
+    expect(grid.className).toContain('lg:grid-cols-1')
+    expect(grid.className).not.toContain('lg:grid-cols-2')
   })
 
   it('calls a page method with the named form state, loading state and validation errors', async () => {

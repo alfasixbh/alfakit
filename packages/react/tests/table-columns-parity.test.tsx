@@ -111,6 +111,38 @@ describe('column parity', () => {
     expect(container.querySelector('img')?.parentElement).toHaveClass('flex-wrap')
   })
 
+  it('keeps the remaining text clear of the last stacked image (W-S3-03)', () => {
+    const column = cell(
+      {
+        type: 'ImageColumn',
+        name: 'a',
+        label: 'A',
+        limit: 1,
+        limitedRemainingText: true,
+        stacked: true,
+        circular: true,
+      } as ColumnSchema,
+      { state: ['/1.png', '/2.png'] },
+    )
+    expect(column.container.querySelector('[data-slot="image-remaining"]')).toHaveClass('ms-3')
+
+    const entry = render(
+      <Wrapper>
+        <ImageEntryComponent
+          component={{
+            type: 'ImageEntry',
+            key: 'a',
+            state: ['/1.png', '/2.png'],
+            limit: 1,
+            stacked: true,
+            circular: true,
+          }}
+        />
+      </Wrapper>,
+    )
+    expect(entry.container.querySelector('[data-slot="image-remaining"]')).toHaveClass('ms-3')
+  })
+
   it('hides the image entry remaining text with limitedRemainingText(false)', () => {
     const shown = render(
       <Wrapper>

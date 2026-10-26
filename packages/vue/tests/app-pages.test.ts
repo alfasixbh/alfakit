@@ -33,6 +33,7 @@ const page: PageSchema = {
       type: 'Infolist',
       key: 'infolist:summary',
       components: [{ type: 'TextEntry', key: 'total', name: 'total', label: 'Total', state: '42' }],
+      columns: { default: 1, lg: 1 },
     },
   ] as PageSchema['content'],
 }
@@ -74,6 +75,15 @@ describe('app page components', () => {
     expect(wrapper.text()).toContain('42')
     expect(wrapper.text()).toContain('No products table')
     expect(wrapper.find('[data-block="form:customer"]').exists()).toBe(true)
+    wrapper.unmount()
+  })
+
+  it("follows the infolist's columns() (W-S1-16)", () => {
+    const wrapper = mountWithAlfakit(() => [h(PageInfolist, { name: 'summary' })])
+    const grid = wrapper.find('[data-slot="infolist"] > *')
+
+    expect(grid.classes()).toContain('lg:grid-cols-1')
+    expect(grid.classes()).not.toContain('lg:grid-cols-2')
     wrapper.unmount()
   })
 

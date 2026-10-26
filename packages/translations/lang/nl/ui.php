@@ -491,7 +491,7 @@ return [
         'turn_off' => 'Uitzetten',
         'turn_off_label' => 'Sneltoets voor :label uitzetten',
         'reset' => 'Herstellen',
-        'reset_label' => 'Standaardsneltoets voor :label herstellen',
+        'reset_label' => 'Sneltoets voor :label herstellen',
     ],
     'versions' => [
         'list' => 'Versies',

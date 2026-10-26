@@ -4,6 +4,7 @@
   import BellOffIcon from '@lucide/svelte/icons/bell-off'
   import DownloadIcon from '@lucide/svelte/icons/download'
   import { toast } from 'svelte-sonner'
+  import { toastOptions } from '../notifications/toast'
   import { usePanel, useT } from '../../context.svelte'
   import { useStore } from '../../hooks/store.svelte'
   import Icon from '../../lib/Icon.svelte'
@@ -23,15 +24,25 @@
       state.current.push === 'subscribed' ? await unsubscribeFromPush() : await subscribeToPush()
 
     if (outcome === 'subscribed') {
-      toast.success(t('pwa.notifications.enabled', {}, 'Notifications are on for this device'))
+      toast.success(
+        t('pwa.notifications.enabled', {}, 'Notifications are on for this device'),
+        toastOptions(),
+      )
     } else if (outcome === 'unsubscribed') {
-      toast.success(t('pwa.notifications.disabled', {}, 'Notifications are off for this device'))
+      toast.success(
+        t('pwa.notifications.disabled', {}, 'Notifications are off for this device'),
+        toastOptions(),
+      )
     } else if (outcome === 'denied') {
       toast.error(
         t('pwa.notifications.blocked', {}, 'Notifications are blocked in your browser settings'),
+        toastOptions(),
       )
     } else {
-      toast.error(t('pwa.notifications.failed', {}, 'Couldn’t change notifications. Try again.'))
+      toast.error(
+        t('pwa.notifications.failed', {}, 'Couldn’t change notifications. Try again.'),
+        toastOptions(),
+      )
     }
   }
 </script>
