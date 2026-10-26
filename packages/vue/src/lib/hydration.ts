@@ -12,12 +12,17 @@ const mountedApps = new WeakMap<AppContext, Ref<boolean>>()
  * the server render and hydration), then `true` for every component in that app, so
  * content rendered later draws at once (reactive). Lazily loaded parts (named icons, heavy
  * fields) render their server markup until then, whatever has loaded already.
+ *
+ * A component that hydrates server markup after the app mounted (inside an async
+ * component whose code arrived later, such as a lazily split built-in) waits for its own
+ * mount: its server markup is the fallback too (W-V3-28).
  */
 export function useAppMounted(): Ref<boolean> {
-  const context = getCurrentInstance()?.appContext
+  const instance = getCurrentInstance()
+  const context = instance?.appContext
 
   // Outside a component there is no hydration to wait for.
-  if (!context) return ref(true)
+  if (!instance || !context) return ref(true)
 
   let mounted = mountedApps.get(context)
 
@@ -27,9 +32,40 @@ export function useAppMounted(): Ref<boolean> {
   }
 
   const flag = mounted
+
+  // Hydration hands each component its server element before setup runs.
+  if (instance.vnode.el && flag.value) {
+    const own = ref(false)
+
+    onMounted(() => {
+      own.value = true
+    })
+
+    return own
+  }
+
   onMounted(() => {
     flag.value = true
   })
 
   return flag
+}
+
+/**
+ * Start a new `useId()` scope at the current component, as Vue does at an async component
+ * (its internal `markAsyncBoundary()`): ids below it are numbered from zero under a prefix
+ * that counts scopes, not the ids generated before it. So
+ * - AlfaKit's ids don't follow the host layout's (a starter kit's sidebar renders a sheet on
+ *   phones in the browser but the desktop sidebar on the server), and
+ * - a lazily split component renders the same ids whether its code was loaded before
+ *   rendering (the server after its first request) or arrives during hydration (an async
+ *   component, which starts a scope itself).
+ */
+export function startIdScope(): void {
+  const instance = getCurrentInstance() as { ids?: [string, number, number] } | null
+  const ids = instance?.ids
+
+  if (!instance || !Array.isArray(ids) || ids.length !== 3) return
+
+  instance.ids = [`${ids[0]}${ids[2]++}-`, 0, 0]
 }

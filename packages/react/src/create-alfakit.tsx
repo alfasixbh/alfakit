@@ -32,6 +32,7 @@ import { Direction } from 'radix-ui'
 import {
   StrictMode,
   createElement,
+  useEffect,
   useLayoutEffect,
   type ReactElement,
   type ReactNode,
@@ -51,6 +52,7 @@ import { discoverComponents } from './lib/discovery'
 import { preloadIcons } from './lib/icons'
 import { AlfakitPage } from './pages/page'
 import { builtInComponents, createDefaultRegistry } from './registry'
+import { claimToaster } from './standalone/toaster-claims'
 
 /**
  * Rendered inside Inertia's page tree, so it follows the current page: the reading
@@ -90,6 +92,10 @@ export function AlfakitRoot({
   useLayoutEffect(() => {
     applyPanelTheme(panel)
   }, [panel])
+
+  // This root renders the toaster: starter kit header components and standalone components
+  // on the same page don't mount a second one.
+  useEffect(() => claimToaster(), [])
 
   return (
     <Direction.Provider dir={direction}>

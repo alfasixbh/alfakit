@@ -9,7 +9,7 @@
     type AlfakitPageProps,
   } from '@alfakit/core'
   import { page } from '@inertiajs/svelte'
-  import type { Snippet } from 'svelte'
+  import { onMount, type Snippet } from 'svelte'
   import ActionModals from './components/actions/ActionModals.svelte'
   import DevToolsSlot from './components/dev-tools/DevToolsSlot.svelte'
   import FlashToasts from './components/notifications/FlashToasts.svelte'
@@ -21,6 +21,7 @@
   import { TooltipProvider } from './components/ui/tooltip'
   import { useAlfakit } from './context.svelte'
   import { markAppMounted } from './lib/hydration.svelte'
+  import { claimToaster } from './standalone/toaster-claims'
 
   // Starter kit mode: Alfakit's toaster gets an id so the host's id-less one never doubles its toasts.
   let { children, toasterId }: { children?: Snippet; toasterId?: string } = $props()
@@ -61,6 +62,10 @@
   $effect.pre(() => {
     if (panel) applyPanelTheme(panel)
   })
+
+  // This root renders the toaster: starter kit header components and standalone components
+  // on the same page don't mount a second one.
+  onMount(() => claimToaster())
 </script>
 
 <!-- Rendered as the Inertia layout so modals and toasts live inside the page tree and can read page props. -->

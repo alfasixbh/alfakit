@@ -6,6 +6,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-10-26
+
+### Upgrading from 0.1.12
+
+- Update the packages: `composer update "alfasix/*"`, `npm install @alfakit/react@latest` (or `@alfakit/vue`, `@alfakit/svelte`), `php artisan alfakit:upgrade`, `npm run build`.
+
+### Fixed
+
+- Starter kits: on the app's own pages (settings, or any page without AlfaKit widgets) the header components now mount AlfaKit's toaster, so the bell's **Turn on notifications** result ("Notifications are on for this device"), the **Install app** hint and flashed notifications show there; in the Svelte kit they were lost. There is one toaster per page: AlfaKit pages, `<AlfakitToaster />` and standalone components keep theirs, in all three renderers.
+- Vue starter kits with SSR: AlfaKit pages no longer log "Hydration ... mismatch" for Reka ids (tabs, collapsible sections, filter popovers) or for a rich editor inside tabs. Split built-ins number their ids the same way whether their code was loaded before rendering (a warm SSR server) or during hydration, AlfaKit's ids no longer depend on the host layout's (the kit's sidebar renders a sheet on phones), and lazy parts that hydrate late keep their server markup until mounted.
+
 ## [0.1.12] - 2026-10-26
 
 ### Upgrading from 0.1.11
@@ -1363,7 +1374,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.12...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.13...HEAD
+[0.1.13]: https://github.com/alfasixbh/alfakit/compare/v0.1.12...v0.1.13
 [0.1.12]: https://github.com/alfasixbh/alfakit/compare/v0.1.11...v0.1.12
 [0.1.11]: https://github.com/alfasixbh/alfakit/compare/v0.1.10...v0.1.11
 [0.1.10]: https://github.com/alfasixbh/alfakit/compare/v0.1.9...v0.1.10

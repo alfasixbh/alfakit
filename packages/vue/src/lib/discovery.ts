@@ -6,6 +6,7 @@ import {
 } from '@alfakit/core'
 import { defineAsyncComponent, defineComponent, h } from 'vue'
 import type { AnyComponent } from '../context'
+import { startIdScope } from './hydration'
 
 /**
  * A discovered component: rendered straight away once its code has loaded (the pages that
@@ -20,6 +21,11 @@ export function discoveredComponent(entry: DiscoveredEntry<AnyComponent>): AnyCo
     setup(_, { attrs, slots }) {
       // Chosen once per mount, so loading never remounts a field.
       const Loaded = entry.current ?? Async
+
+      // The async component starts an id scope; a loaded one starts the same, so the server
+      // (which keeps loaded code between requests) and a hydrating browser that still loads
+      // it number Reka's ids alike (W-V2-13, W-V3-28).
+      if (Loaded !== Async) startIdScope()
 
       return () => h(Loaded, attrs, slots)
     },

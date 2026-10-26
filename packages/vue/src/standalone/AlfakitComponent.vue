@@ -21,6 +21,7 @@ import {
   type AlfakitContextValue,
   type AnyComponent,
 } from '../context'
+import { startIdScope } from '../lib/hydration'
 import { cn } from '../lib/utils'
 import ContentBlockRenderer from '../pages/ContentBlockRenderer.vue'
 import AlfakitToaster from './AlfakitToaster.vue'
@@ -58,6 +59,9 @@ defineSlots<{
   footer?: () => unknown
   default?: (props: { blocks: ContentBlock[]; page: StandaloneComponentSchema }) => unknown
 }>()
+
+// Reka's ids inside the component don't depend on the host page's (W-V2-13).
+startIdScope()
 
 const parent = useOptionalAlfakit()
 const inertiaPage = usePage()

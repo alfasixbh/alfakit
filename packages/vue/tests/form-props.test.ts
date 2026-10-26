@@ -142,11 +142,17 @@ describe('form settings from PHP', () => {
     )
 
     await wrapper.find('button').trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 20))
 
-    const grid = document.body.querySelector('[data-slot="calendar"], [role="application"]')
+    // The calendar is a lazily loaded chunk: wait for it instead of a fixed delay, which
+    // failed under parallel load.
+    await vi.waitFor(
+      () => {
+        const grid = document.body.querySelector('[data-slot="calendar"], [role="application"]')
 
-    expect(grid?.getAttribute('aria-label')).toMatch(/^Starts on/)
+        expect(grid?.getAttribute('aria-label')).toMatch(/^Starts on/)
+      },
+      { timeout: 5000 },
+    )
   })
 
   it('jumps to the errored wizard step once, then lets the user move', async () => {

@@ -95,20 +95,8 @@ export function createStandaloneContext(
 
 // ---------------------------------------------------------------- Toaster ownership
 
-let toasters = 0
-
-/** An `<AlfakitToaster>` (or the component that took the role) is mounted; returns a release. */
-export function claimToaster(): () => void {
-  toasters++
-
-  return () => {
-    toasters--
-  }
-}
-
-export function hasToaster(): boolean {
-  return toasters > 0
-}
+// In a module of its own: the starter kit header components check it without loading this one.
+export { claimToaster, hasToaster } from './toaster-claims'
 
 // ---------------------------------------------------------------- Flashed notifications
 

@@ -9,7 +9,7 @@ import {
 } from '@alfakit/core'
 import { usePage } from '@inertiajs/vue3'
 import { ConfigProvider } from 'reka-ui'
-import { computed, watch } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 import ActionModals from './components/actions/ActionModals.vue'
 import DevToolsSlot from './components/dev-tools/DevToolsSlot.vue'
 import FlashToasts from './components/notifications/FlashToasts.vue'
@@ -20,6 +20,8 @@ import SchemaContractGuard from './components/panel/SchemaContractGuard.vue'
 import Toaster from './components/ui/Toaster.vue'
 import TooltipProvider from './components/ui/TooltipProvider.vue'
 import { useAlfakit } from './context'
+import { startIdScope } from './lib/hydration'
+import { claimToaster } from './standalone/toaster-claims'
 
 /**
  * Persistent layout rendered inside Inertia's page tree, so modals and toasts can read page
@@ -28,6 +30,9 @@ import { useAlfakit } from './context'
  */
 /** Starter kit mode: Alfakit's toaster gets an id so the host's id-less one never doubles its toasts. */
 defineProps<{ toasterId?: string }>()
+
+// Reka's ids inside AlfaKit don't depend on the host layout's (W-V2-13).
+startIdScope()
 
 const page = usePage<AlfakitPageProps>()
 const { translator, registry } = useAlfakit()
@@ -63,6 +68,16 @@ watch(
   { immediate: true },
 )
 watch(panel, (value) => applyPanelTheme(value), { immediate: true })
+
+// This root renders the toaster: starter kit header components and standalone components
+// on the same page don't mount a second one.
+let releaseToaster: (() => void) | null = null
+
+onMounted(() => {
+  releaseToaster = claimToaster()
+})
+
+onUnmounted(() => releaseToaster?.())
 </script>
 
 <template>

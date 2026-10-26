@@ -6,8 +6,12 @@ import {
 } from '@alfakit/core'
 import { router as inertiaCore } from '@inertiajs/core'
 import { router } from '@inertiajs/react'
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { toast } from 'sonner'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { toastOptions } from '../src/components/notifications/flash-toasts'
+import { AlfakitRoot } from '../src/create-alfakit'
+import { AlfakitToaster } from '../src/standalone/alfakit-toaster'
 import {
   AlfakitCopilot,
   AlfakitLanguageSwitcher,
@@ -15,7 +19,7 @@ import {
   AlfakitSearch,
   AlfakitTenantSwitcher,
 } from '../src/starter-kit'
-import { panel, setPageProps } from './mocks'
+import { Wrapper, panel, setPageProps } from './mocks'
 
 const navigation: StarterKitNavigationSchema = {
   id: 'admin',
@@ -55,6 +59,15 @@ beforeAll(() => {
     disconnect() {}
   } as unknown as typeof ResizeObserver
   Element.prototype.scrollIntoView ??= () => {}
+  // Sonner's toaster reads the colour scheme.
+  window.matchMedia ??= ((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+    addListener() {},
+    removeListener() {},
+  })) as unknown as typeof window.matchMedia
 })
 
 beforeEach(() => {
@@ -88,7 +101,86 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+// Sonner renders its toaster as a `<section aria-label="Notifications alt+T">`.
+const toasters = () => document.querySelectorAll('section[aria-label^="Notifications"]')
+
+const bellLoaded = () =>
+  waitFor(() =>
+    expect(
+      screen.getByRole('button', { name: 'Notifications' }).getAttribute('aria-haspopup'),
+    ).toBe('dialog'),
+  )
+
 describe('starter kit header components', () => {
+  describe('toasts on host pages (W-S1-03)', () => {
+    afterEach(() => {
+      act(() => {
+        toast.dismiss()
+      })
+    })
+
+    it('mount one toaster for the push toggle and PWA messages', async () => {
+      render(
+        <>
+          <AlfakitSearch />
+          <AlfakitNotifications />
+        </>,
+      )
+
+      await bellLoaded()
+      await waitFor(() => expect(toasters()).toHaveLength(1))
+
+      act(() => {
+        toast.success('Notifications are on for this device', toastOptions())
+      })
+
+      expect(await screen.findAllByText('Notifications are on for this device')).toHaveLength(1)
+    })
+
+    it('use the toaster the page already has', async () => {
+      render(
+        <>
+          <AlfakitNotifications />
+          <AlfakitToaster />
+        </>,
+      )
+
+      await bellLoaded()
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(toasters()).toHaveLength(1)
+    })
+
+    it("use AlfakitRoot's toaster when one is mounted", async () => {
+      render(
+        <>
+          <AlfakitNotifications />
+          <Wrapper>
+            <AlfakitRoot>
+              <div />
+            </AlfakitRoot>
+          </Wrapper>
+        </>,
+      )
+
+      await bellLoaded()
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(toasters()).toHaveLength(1)
+    })
+
+    it('mount none on AlfaKit pages, which have their own', async () => {
+      setPageProps({ alfakit: panel, page: undefined, alfakitNavigation: [navigation] })
+
+      render(<AlfakitNotifications />)
+
+      await bellLoaded()
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(toasters()).toHaveLength(0)
+    })
+  })
+
   it('shows the impersonation banner once on host pages, with Leave', async () => {
     const post = vi.spyOn(router, 'post').mockImplementation(() => {})
     const impersonation = {

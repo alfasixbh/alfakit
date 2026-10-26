@@ -7,6 +7,9 @@ import {
 import { router as inertiaCore } from '@inertiajs/core'
 import { router } from '@inertiajs/svelte'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/svelte'
+import { flushSync } from 'svelte'
+import { toast } from 'svelte-sonner'
+import { toastOptions } from '../src/components/notifications/toast'
 import {
   AlfakitCopilot,
   AlfakitLanguageSwitcher,
@@ -14,6 +17,7 @@ import {
   AlfakitSearch,
   AlfakitTenantSwitcher,
 } from '../src/starter-kit'
+import HostToasterHarness from './HostToasterHarness.svelte'
 import { panel, setPageProps } from './mocks'
 
 const navigation: StarterKitNavigationSchema = {
@@ -78,7 +82,64 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+// svelte-sonner renders its toaster as a `<section aria-label="Notifications alt+T">`.
+const toasters = () => document.querySelectorAll('section[aria-label^="Notifications"]')
+
+const bellLoaded = () =>
+  waitFor(() =>
+    expect(screen.getByRole('button', { name: 'Notifications' })).toHaveAttribute(
+      'aria-haspopup',
+      'dialog',
+    ),
+  )
+
+const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
+
 describe('starter kit header components', () => {
+  describe('toasts on host pages (W-S1-03)', () => {
+    it('mount one toaster for the push toggle and PWA messages', async () => {
+      render(HostToasterHarness, { next: 'search' })
+
+      await bellLoaded()
+      await waitFor(() => expect(toasters()).toHaveLength(1))
+
+      toast.success('Notifications are on for this device', toastOptions())
+      flushSync()
+
+      expect(await screen.findAllByText('Notifications are on for this device')).toHaveLength(1)
+      toast.dismiss()
+    })
+
+    it('use the toaster the page already has', async () => {
+      render(HostToasterHarness, { next: 'toaster' })
+
+      await bellLoaded()
+      await settle()
+
+      expect(toasters()).toHaveLength(1)
+    })
+
+    it("use AlfakitRoot's toaster when one is mounted", async () => {
+      render(HostToasterHarness, { next: 'root' })
+
+      await bellLoaded()
+      await settle()
+
+      expect(toasters()).toHaveLength(1)
+    })
+
+    it('mount none on AlfaKit pages, which have their own', async () => {
+      setPageProps({ alfakit: panel, page: undefined, alfakitNavigation: [navigation] })
+
+      render(AlfakitNotifications)
+
+      await bellLoaded()
+      await settle()
+
+      expect(toasters()).toHaveLength(0)
+    })
+  })
+
   it('shows the impersonation banner once on host pages, with Leave', async () => {
     const post = vi.spyOn(router, 'post').mockImplementation(() => {})
     const impersonation = {

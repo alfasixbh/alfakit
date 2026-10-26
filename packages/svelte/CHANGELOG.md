@@ -1,5 +1,11 @@
 # @alfakit/svelte
 
+## 0.1.13
+
+### Patch Changes
+
+- Starter kit header components bring a toaster to the app's own pages, so push and PWA messages show there; AlfaKit pages keep a single toaster.
+
 ## 0.1.12
 
 ### Patch Changes

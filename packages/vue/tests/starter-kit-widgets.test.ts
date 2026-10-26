@@ -8,7 +8,11 @@ import { router as inertiaCore } from '@inertiajs/core'
 import { router } from '@inertiajs/vue3'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { h } from 'vue'
+import { h, nextTick } from 'vue'
+import { toast } from 'vue-sonner'
+import AlfakitRoot from '../src/AlfakitRoot.vue'
+import { toastOptions } from '../src/components/notifications/flash-toasts'
+import AlfakitToaster from '../src/standalone/AlfakitToaster.vue'
 import {
   AlfakitCopilot,
   AlfakitLanguageSwitcher,
@@ -16,7 +20,7 @@ import {
   AlfakitSearch,
   AlfakitTenantSwitcher,
 } from '../src/starter-kit'
-import { flush, panel, setPageProps } from './mocks'
+import { flush, mountWithAlfakit, panel, setPageProps } from './mocks'
 
 const navigation: StarterKitNavigationSchema = {
   id: 'admin',
@@ -63,6 +67,15 @@ beforeAll(() => {
     disconnect() {}
   } as unknown as typeof ResizeObserver
   Element.prototype.scrollIntoView ??= () => {}
+  // vue-sonner's toaster reads the colour scheme.
+  window.matchMedia ??= ((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+    addListener() {},
+    removeListener() {},
+  })) as unknown as typeof window.matchMedia
 })
 
 beforeEach(() => {
@@ -97,7 +110,85 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+// vue-sonner renders its toaster as a `<section aria-label="Notifications alt+T">`.
+const toasters = () => document.querySelectorAll('section[aria-label^="Notifications"]')
+
+const bellLoaded = () =>
+  until(
+    () =>
+      document
+        .querySelector('button[aria-label="Notifications"]')
+        ?.getAttribute('aria-haspopup') === 'dialog',
+  )
+
+const settle = async () => {
+  await flush()
+  await nextTick()
+  await flush()
+}
+
 describe('starter kit header components', () => {
+  describe('toasts on host pages (W-S1-03)', () => {
+    it('mount one toaster for the push toggle and PWA messages', async () => {
+      const wrapper = mount(() => [h(AlfakitSearch), h(AlfakitNotifications)], {
+        attachTo: document.body,
+      })
+
+      await bellLoaded()
+      await settle()
+      expect(toasters()).toHaveLength(1)
+
+      toast.success('Notifications are on for this device', toastOptions())
+      await until(
+        () => document.body.textContent?.includes('Notifications are on for this device') ?? false,
+      )
+
+      expect(document.body.textContent?.split('Notifications are on for this device').length).toBe(
+        2,
+      )
+
+      toast.dismiss()
+      wrapper.unmount()
+    })
+
+    it('use the toaster the page already has', async () => {
+      const wrapper = mount(() => [h(AlfakitNotifications), h(AlfakitToaster)], {
+        attachTo: document.body,
+      })
+
+      await bellLoaded()
+      await settle()
+
+      expect(toasters()).toHaveLength(1)
+      wrapper.unmount()
+    })
+
+    it("use AlfakitRoot's toaster when one is mounted", async () => {
+      const wrapper = mountWithAlfakit(() => [
+        h(AlfakitNotifications),
+        h(AlfakitRoot, null, () => h('div')),
+      ])
+
+      await bellLoaded()
+      await settle()
+
+      expect(toasters()).toHaveLength(1)
+      wrapper.unmount()
+    })
+
+    it('mount none on AlfaKit pages, which have their own', async () => {
+      setPageProps({ alfakit: panel, page: undefined, alfakitNavigation: [navigation] })
+
+      const wrapper = mount(AlfakitNotifications, { attachTo: document.body })
+
+      await bellLoaded()
+      await settle()
+
+      expect(toasters()).toHaveLength(0)
+      wrapper.unmount()
+    })
+  })
+
   it('shows the impersonation banner once on host pages, with Leave', async () => {
     const post = vi.spyOn(router, 'post').mockImplementation(() => {})
     const impersonation = {

@@ -1,12 +1,15 @@
 import {
   ActionRunner,
   ComponentRegistry,
+  STARTER_KIT_TOASTER_ID,
   Translator,
   initials,
   isAlfakitPage,
   loadStarterKitPanel,
   loadedStarterKitPanel,
   openRequestedStarterKitSearch,
+  overlayPlacementDirection,
+  resolveToastPosition,
   showsLanguageSwitcher,
   starterKitCopilot,
   starterKitPanelLocale,
@@ -17,12 +20,15 @@ import {
   tenantNameText,
   type PanelSchema,
   type StarterKitWidgets,
+  type ToastPosition,
 } from '@alfakit/core'
 import { router, usePage } from '@inertiajs/react'
 import { ChevronsUpDownIcon, LanguagesIcon, PlusIcon } from 'lucide-react'
 import { Direction } from 'radix-ui'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { AiCopilot } from '../components/ai/copilot'
+import { setToasterId } from '../components/notifications/flash-toasts'
 import { NotificationsMenu } from '../components/notifications/notifications-menu'
 import { RealtimeNotifications } from '../components/notifications/realtime-notifications'
 import { GlobalSearch } from '../components/panel/global-search'
@@ -38,16 +44,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu'
+import { Toaster } from '../components/ui/sonner'
 import { TooltipProvider } from '../components/ui/tooltip'
 import {
   AlfakitProvider,
   StandaloneProvider,
   useLocalization,
+  useRegistry,
   useT,
   type AlfakitContextValue,
   type AnyComponent,
 } from '../context'
 import { Icon } from '../lib/icons'
+import { ensureFlashToasts } from '../standalone/runtime'
+import { claimToaster, hasToaster } from '../standalone/toaster-claims'
 import {
   CopilotTrigger,
   LanguageSwitcherTrigger,
@@ -117,16 +127,89 @@ function useWidgetsPanel(source: StarterKitWidgets): PanelSchema | null {
   )
 }
 
+/**
+ * AlfaKit's toaster on a host page (as `<AlfakitToaster>`, without its standalone context):
+ * Alfakit's toasts go to it, and so do flashed notifications.
+ */
+function HostToaster({ position, dir }: { position?: ToastPosition; dir: 'ltr' | 'rtl' }) {
+  const registry = useRegistry()
+
+  useEffect(() => {
+    ensureFlashToasts(registry)
+  }, [registry])
+
+  useEffect(() => {
+    setToasterId(STARTER_KIT_TOASTER_ID)
+
+    return () => setToasterId(undefined)
+  }, [])
+
+  return (
+    <Toaster
+      id={STARTER_KIT_TOASTER_ID}
+      position={resolveToastPosition(position, dir)}
+      dir={dir}
+      richColors
+      closeButton
+    />
+  )
+}
+
+/**
+ * On the host's own pages no AlfaKit toaster is mounted, so the first loaded header
+ * component renders one: the push toggle's and the PWA's messages show there too (W-S1-03).
+ * AlfaKit pages (`AlfakitRoot`) and standalone components claim it themselves; the check
+ * runs after every component's effects, and again after each visit.
+ */
+function useOwnsHostToaster(): boolean {
+  const alfakitPage = isAlfakitPage(usePage().props)
+  const [owns, setOwns] = useState(false)
+
+  useEffect(() => {
+    if (alfakitPage) return undefined
+
+    let release: (() => void) | null = null
+    let cancelled = false
+
+    queueMicrotask(() => {
+      if (cancelled || hasToaster()) return
+
+      release = claimToaster()
+      setOwns(true)
+    })
+
+    return () => {
+      cancelled = true
+      release?.()
+      setOwns(false)
+    }
+  }, [alfakitPage])
+
+  return owns && !alfakitPage
+}
+
 function WidgetShell({ panel, children }: { panel: PanelSchema; children: ReactNode }) {
   const context = useWidgetsContext(panel)
   const page = useMemo(() => starterKitWidgetsPage(), [])
+  const ownsToaster = useOwnsHostToaster()
+  const direction = panel.localization?.direction ?? 'ltr'
 
   return (
     <AlfakitProvider value={context}>
       <StandaloneProvider value={{ panel, page }}>
-        <Direction.Provider dir={panel.localization?.direction ?? 'ltr'}>
+        <Direction.Provider dir={direction}>
           <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
         </Direction.Provider>
+        {/* In the body, not in the header (a header with a backdrop filter would hold its
+            fixed position), placed in the document's direction as on AlfaKit pages. */}
+        {ownsToaster &&
+          createPortal(
+            <HostToaster
+              position={panel.toastPosition}
+              dir={overlayPlacementDirection(direction, true)}
+            />,
+            document.body,
+          )}
       </StandaloneProvider>
     </AlfakitProvider>
   )

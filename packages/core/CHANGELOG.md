@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.1.13
+
+### Patch Changes
+
+- Released with AlfaKit 0.1.13 to keep the npm and PHP versions the same (no core changes).
+
 ## 0.1.12
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @alfakit/vue
 
+## 0.1.13
+
+### Patch Changes
+
+- Server rendering: AlfaKit components keep the same generated ids on the server and in the browser (no hydration mismatches on tabs, collapsible sections, filters and the rich editor). Starter kit header components bring a toaster to the app's own pages.
+
 ## 0.1.12
 
 ### Patch Changes
