@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed
+
+- Card grids (`contentGrid()`) choose their column count from the table's own width instead of the browser window, and only use a column count once each card can be at least 15rem wide. A table beside the sidebar shows fewer, wider cards instead of narrow ones with broken words. Container keys (`'@lg' => 2`) are used as given. Record text keeps at least 15rem before the record actions wrap onto their own line.
+
 ### Fixed
 
 - Card and grid table layouts: row actions no longer cover the record's text; they sit beside it, or move under it when the card is too narrow.
