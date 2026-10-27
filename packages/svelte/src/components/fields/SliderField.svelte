@@ -126,7 +126,7 @@
         : `left: ${percent}%`
 </script>
 
-<FieldWrapper field={component} htmlFor={`${field.id}-thumb-0`} error={field.error}>
+<FieldWrapper field={component} htmlFor={field.id} error={field.error}>
   <div
     data-slot="slider"
     class={cn(

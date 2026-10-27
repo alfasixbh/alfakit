@@ -237,6 +237,21 @@ function renderSlider(component: SliderSchema, value: unknown) {
 }
 
 describe('Slider options', () => {
+  it('names a single thumb by the label and describes it by the hint and helper text', () => {
+    renderSlider(slider({ hint: 'Per day', helperText: 'Rounded to 5' }), 50)
+
+    const thumb = screen.getByRole('slider', { name: 'Range' })
+
+    expect(thumb).toHaveAccessibleDescription('Per day Rounded to 5')
+  })
+
+  it('keeps the minimum and maximum names on a range', () => {
+    renderSlider(slider({ multiple: true }), [20, 50])
+
+    expect(screen.getByRole('slider', { name: 'Minimum' })).toBeInTheDocument()
+    expect(screen.getByRole('slider', { name: 'Maximum' })).toBeInTheDocument()
+  })
+
   it('keeps the thumb inside rangePadding', () => {
     const { store } = renderSlider(slider({ rangePadding: [10, 20] }), 80)
 

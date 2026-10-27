@@ -103,6 +103,19 @@ describe('saved views', () => {
     expect(visited()).toEqual(['/admin/posts?view=mine-1', '/admin/posts?view='])
   })
 
+  it('draws inactive view tabs in dimmed foreground, not muted text on the muted tab bar', () => {
+    render(
+      <Wrapper>
+        <DataTable table={{ ...base, views }} />
+      </Wrapper>,
+    )
+
+    const [inactive] = within(screen.getByRole('tablist', { name: 'Views' })).getAllByRole('tab')
+
+    // `text-muted-foreground` on `bg-muted` is 4.34:1 in the starter kits' neutral palette.
+    expect(inactive).toHaveClass('text-foreground/70')
+  })
+
   it('moves between view tabs with the arrow keys', () => {
     render(
       <Wrapper>

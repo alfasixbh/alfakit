@@ -6,11 +6,12 @@
     type AlfakitPageProps,
   } from '@alfakit/core'
   import { page } from '@inertiajs/svelte'
-  import { onDestroy, onMount, type Snippet } from 'svelte'
+  import { onDestroy, onMount, setContext, type Snippet } from 'svelte'
   import AlfakitRoot from '../AlfakitRoot.svelte'
   import DebugPanelSlot from '../components/panel/DebugPanelSlot.svelte'
   import { setToasterId, showToast } from '../components/notifications/toast'
   import { provideAlfakit, setGlobalAlfakitContext } from '../context.svelte'
+  import { APP_MOUNTED, createAppMounted } from '../lib/hydration.svelte'
   import { starterKitContext, type StarterKitPageOptions } from './runtime'
 
   /**
@@ -22,6 +23,9 @@
 
   // svelte-ignore state_referenced_locally
   const context = provideAlfakit(starterKitContext(options ?? {}))
+  // Lazily loaded parts (split built-ins, icons) render their server markup until this root
+  // has hydrated (`AlfakitRoot` marks it mounted), as in a panel app.
+  setContext(APP_MOUNTED, createAppMounted())
   const pageProps = $derived(page.props as unknown as Partial<AlfakitPageProps>)
 
   // Endpoints follow the open page (before children run actions).

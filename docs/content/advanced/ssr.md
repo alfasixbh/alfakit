@@ -159,6 +159,8 @@ Give the fallback the same `title` and `layout` options as your app's browser en
 
 In a [starter kit app](../getting-started/starter-kits) and on pages that embed [`<AlfakitComponent>`](../standalone/overview), AlfaKit's pages are pages of your own Inertia app: your app's entry renders them in the browser, and your app's own SSR setup renders them on the server, for React, Vue and Svelte alike. `createAlfakitServer()` is not involved and the SSR setup needs no AlfaKit change: follow [Inertia's SSR guide](https://inertiajs.com/server-side-rendering) for your app (the Laravel starter kits come with a `build:ssr` script, then run `php artisan inertia:start-ssr`). The starter kit page and `<AlfakitComponent>` are SSR-safe ([Customizing standalone components](../standalone/customizing#server-side-rendering)); `config/inertia.php` switches SSR on and off as described above.
 
+One difference from a panel: a panel's entry loads the code of the components a page uses before rendering it, your app's entry does not. In React and Svelte, the components whose code is split out of the main bundle (Html, Text, Tabs, Wizard, Fieldset, Textarea, the date pickers, Repeater, Builder, most infolist entries, …) and your auto-registered components therefore render after hydration on starter kit and standalone pages, the same on every request, however long the SSR server has been running. Vue's server render waits for them, so they arrive in the HTML.
+
 ## What renders on the server
 
 The whole page renders on the server: the layout, navigation, breadcrumbs, forms, tables, infolists and stats widgets. These parts wait for the browser:

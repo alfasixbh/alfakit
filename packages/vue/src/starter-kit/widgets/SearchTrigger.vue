@@ -51,7 +51,7 @@ function request() {
     <kbd
       v-if="hydrated && binding"
       dir="ltr"
-      class="bg-muted hidden rounded px-1 font-mono text-[10px] sm:inline"
+      class="bg-muted text-foreground/70 hidden rounded px-1 font-mono text-[10px] sm:inline"
       >{{ formatKeyBinding(binding) }}</kbd
     >
   </button>

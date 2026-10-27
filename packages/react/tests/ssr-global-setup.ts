@@ -15,6 +15,8 @@ const FIXTURES = [
 declare module 'vitest' {
   export interface ProvidedContext {
     ssrPages: Record<string, { page: unknown; body: string }>
+    /** The kitchen sink as a starter kit page, before and after the panel pages warmed the server. */
+    starterKitPage: { page: unknown; cold: string; warm: string }
   }
 }
 
@@ -43,8 +45,17 @@ export default async function setup(project: TestProject): Promise<void> {
     const { createAlfakitServer } = (await vite.ssrLoadModule('/src/server.tsx')) as {
       createAlfakitServer: () => (page: unknown) => Promise<{ body: string } | null>
     }
+    const { renderStarterKit } = (await vite.ssrLoadModule('/tests/starter-kit-ssr-entry.tsx')) as {
+      renderStarterKit: (page: unknown) => Promise<string>
+    }
     const render = createAlfakitServer()
     const pages: Record<string, { page: unknown; body: string }> = {}
+    const { default: starterKitPage } = (await vite.ssrLoadModule(
+      '/../core/tests/fixtures/ssr/kitchen-sink.json',
+    )) as { default: unknown }
+    // A long-lived SSR server: the starter kit page first, then panel pages (which load the
+    // split built-ins they use), then the starter kit page again (OM-B06).
+    const cold = await renderStarterKit(starterKitPage)
 
     for (const name of FIXTURES) {
       const { default: page } = (await vite.ssrLoadModule(
@@ -55,6 +66,11 @@ export default async function setup(project: TestProject): Promise<void> {
     }
 
     project.provide('ssrPages', pages)
+    project.provide('starterKitPage', {
+      page: starterKitPage,
+      cold,
+      warm: await renderStarterKit(starterKitPage),
+    })
   } finally {
     await vite.close()
   }

@@ -33,6 +33,14 @@ export interface AlfakitContextValue {
    * change). Panels leave it out (a partial reload); components outside panels fetch theirs.
    */
   refresh?: (targets: string[]) => Promise<void>
+  /**
+   * Whether every page is rendered only after the split built-ins and discovered components
+   * it names have loaded, on the server and before hydration (`createAlfakit()` resolves
+   * pages that way). Without it (starter kits, standalone components) those components show
+   * after hydration: a long-lived SSR server keeps code earlier requests loaded, a fresh
+   * browser has none of it, so rendering them early would make the markups differ.
+   */
+  preloadsPageComponents?: boolean
 }
 
 const AlfakitContext = createContext<AlfakitContextValue | null>(null)

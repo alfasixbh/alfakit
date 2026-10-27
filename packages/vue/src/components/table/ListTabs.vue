@@ -81,7 +81,7 @@ const select = (tab: ListTabSchema) => {
           'focus-visible:border-ring focus-visible:ring-ring/50',
           tab.key === props.activeTab
             ? 'bg-background text-foreground shadow-sm'
-            : 'hover:text-foreground',
+            : 'text-foreground/70 hover:text-foreground',
         )
       "
       @click="select(tab)"

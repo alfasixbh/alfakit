@@ -257,7 +257,7 @@ const sharedId = computed(() => `${props.component}-view-shared`)
             'focus-visible:border-ring focus-visible:ring-ring/50',
             (item?.key ?? null) === activeKey
               ? 'bg-background text-foreground shadow-sm'
-              : 'hover:text-foreground',
+              : 'text-foreground/70 hover:text-foreground',
           )
         "
         @click="(item?.key ?? null) !== activeKey && open(item?.key ?? null)"
