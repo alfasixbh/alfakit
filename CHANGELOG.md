@@ -20,6 +20,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- React and Svelte starter kits and standalone components with SSR: pages no longer hydrate with a mismatch (React #418) once the SSR server has rendered a panel page. Components split out of the main bundle (Html, Tabs, date pickers, Repeater, …) and auto-registered components appear right after hydration on those pages, the same on every request; panel pages still render them on the server. Svelte's on-demand icons and lazy parts there keep their server markup until hydration, as on panel pages.
+- Sliders: a single-thumb slider is named by its label again, and screen readers read its hint, helper text and error, in all three renderers.
+- Accessibility: the search shortcut hint (⌘K), keyboard-shortcut keys and inactive view and list tabs reach 4.5:1 contrast in the Laravel starter kits' neutral palette (they were 4.34:1), in all three renderers and every theme.
+- Docs: the ColorWheel custom field example compiles under strict TypeScript.
 - Forms: saving while a file is still uploading now waits for the upload instead of saving without the file (FileUpload and rich editor attachments, React, Vue and Svelte). Custom fields can register their uploads with `form.trackUpload()`.
 - Standalone forms, tables and infolists on your own pages no longer require the signed-in user to pass `canAccessPanel()`: a customer without panel access can use them, and the component's own `requiresAuthentication()` and `authorize()` decide.
 - Plugin `authorize(fn (User $user) => …)` callbacks are no longer called for guests, which crashed a panel's login page when global search was on; guests are simply not authorized (Forms, Activity log, Analytics, API, Backup, File manager, Health, Teams, Webhooks).
