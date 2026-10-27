@@ -55,7 +55,7 @@ Closures get `$plugin`, `$panel` and `$user` injected. Read the plugin of the cu
 
 ## Creating backups
 
-**Create backup** asks what to back up and dispatches `AlfaSix\AlfakitBackup\Jobs\CreateBackupJob`, which runs `backup:run` (with `--only-db` or `--only-files`, and `--timeout` when set) on the configured queue. The backup appears in the list once the job finished; the page polls for it.
+**Create backup** asks what to back up and dispatches `AlfaSix\AlfakitBackup\Jobs\CreateBackupJob`, which runs `backup:run` (with `--only-db` or `--only-files`, and `--timeout` when set) on the configured queue. The backup appears in the list once the job finished; the page polls for it. When `backup:run` fails (a nonzero exit code), the job fails too, so the queue retries it or records it in `failed_jobs`; the exception names the command and exit code only, and spatie/laravel-backup logs the reason and sends its failure notification.
 
 ## Downloads
 

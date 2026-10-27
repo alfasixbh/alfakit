@@ -260,6 +260,10 @@ List it in the resource's `getRelations()`. Create, edit and view actions open `
 
 The demo's **Catalog › Suppliers** is an `ApiResource` over a fake JSON API the demo serves at `/demo-api/suppliers` (bearer token, the store in an `X-Store` header, its own validation including unique names per store). Try creating a supplier named "Grasse Absolutes" to see the API's validation error land on the field.
 
+## Realtime
+
+With [`realtime()`](../panels/realtime), View and Edit pages of API resources show who else is on the record. Joining is authorised with the resource's `canView()` / `canEdit()` (or `$policy`) on the record the data source returns for the channel's key, in the channel's tenant. Changes made in the API aren't pushed, so live tables over an API resource use their fallback polling.
+
 ## Not supported
 
 - `ManageRecords`-style simple (modal-only) API resources, singular API resources and nested API resources.

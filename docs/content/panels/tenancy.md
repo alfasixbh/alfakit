@@ -110,7 +110,7 @@ php artisan alfakit:tenancy:check --panel=app --strict
 The command audits each tenancy panel and prints one row per check with `OK`, `WARN` or `FAIL`:
 
 - **Resources**: the model behind every resource, whether the resource is scoped and whether the model has the ownership relationship. A scoped resource whose model lacks the relationship is a `FAIL` (its queries cannot be scoped); an unscoped resource is a `WARN` unless its model is marked as shared.
-- **Relationship fields**: every `Select` and `CheckboxList` with `relationship()` in the resource form, every `SelectFilter` with `relationship()` in its table, and every `AttachAction`/`AssociateAction` in its relation managers, with the related model and whether that model is the tenant, tenant-scoped, or shared on purpose. Anything else is a `WARN`: every tenant could pick any record.
+- **Relationship fields**: every `Select` and `CheckboxList` with `relationship()` in the resource form (inside a relationship repeater or a relationship group, against that relationship's model, listed by state path such as `lines.product_id`), every `SelectFilter` with `relationship()` in its table, and every `AttachAction`/`AssociateAction` in its relation managers, with the related model and whether that model is the tenant, tenant-scoped, or shared on purpose. Anything else is a `WARN`: every tenant could pick any record.
 - **Raw queries**: a static scan of the resource, page and relation-manager files for `DB::` and `withoutGlobalScopes()` (dropping only `SoftDeletingScope::class` is fine), reported as `WARN` with the file and line.
 
 Reference data that every tenant shares (countries, currencies, plans) is never scoped; tell the command so it stops warning:

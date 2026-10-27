@@ -75,6 +75,7 @@ AlfaKit registers its channels on the panel's broadcasting connection, for the p
 
 - `{tenant}` is the current tenant's key on [tenancy panels](tenancy) for tenant-owned models, `_` otherwise. Joining a tenant's channel needs membership (`HasTenants::canAccessTenant()`, fails closed); another tenant's records are never found through your tenant's channel.
 - `{model}` is the model class with `-` for `\` (`App-Models-Post`).
+- Records of [API resources](../resources/api-resources) are all `ApiRecord`s, so their presence channel names the resource instead (`presence-alfakit.admin._.App-Alfakit-Resources-SupplierResource.{key}`), carries the tenant on every tenancy panel and finds the record through the resource's data source; a record the data source can't find, or a failing data source, is refused. Their changes are not broadcast (they don't go through Eloquent), so live tables over an API resource fall back to polling.
 - Users must be able to access the panel (`CanAccessPanel`), as on every page.
 - The user's notification channel is registered for you when the application doesn't define it in `routes/channels.php`.
 
