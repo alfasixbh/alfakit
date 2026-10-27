@@ -66,6 +66,8 @@ describe('a starter kit page on a long-lived SSR server (OM-B06)', () => {
     // The split built-ins load after hydration and then show.
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 200))
+      // Let every split built-in finish loading, so none is imported after teardown.
+      await vi.dynamicImportSettled()
     })
 
     spies.forEach((spy) => spy.mockRestore())

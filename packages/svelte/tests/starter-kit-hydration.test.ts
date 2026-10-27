@@ -71,6 +71,10 @@ describe('a starter kit page on a long-lived SSR server (OM-B06)', () => {
       { timeout: 10_000, interval: 50 },
     )
 
+    // Other split built-ins (the rich editor's parts…) keep loading after the Html block
+    // shows: let them finish, so none is imported after the test environment is torn down.
+    await vi.dynamicImportSettled()
+
     spies.forEach((spy) => spy.mockRestore())
 
     expect(messages.filter((message) => /hydrat|mismatch/i.test(message))).toEqual([])
