@@ -83,8 +83,13 @@ export function installPrefetchInvalidation(): () => void {
 
   installed = true
   let restoring = false
+  // The reload of a restored page still in flight. Another Back or Forward cancels it: its
+  // response would replace the history entry the browser has moved on to.
+  let pendingReload: { cancel(): void } | null = null
   const onPopstate = (): void => {
     restoring = true
+    pendingReload?.cancel()
+    pendingReload = null
   }
   window.addEventListener('popstate', onPopstate)
 
@@ -111,6 +116,12 @@ export function installPrefetchInvalidation(): () => void {
         replace: true,
         async: true,
         headers: { 'Cache-Control': 'no-cache' },
+        onCancelToken: (token) => {
+          pendingReload = token
+        },
+        onFinish: () => {
+          pendingReload = null
+        },
       })
       return
     }
@@ -120,6 +131,8 @@ export function installPrefetchInvalidation(): () => void {
 
   return () => {
     installed = false
+    pendingReload?.cancel()
+    pendingReload = null
     window.removeEventListener('popstate', onPopstate)
     removeStart()
     removeFinish()

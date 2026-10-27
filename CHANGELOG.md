@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Fixed
+
+- Pressing Back again while a page restored by Back was still reloading could leave the browser showing a different page than the address bar. The reload is now cancelled on the next Back or Forward.
+
 ## [0.2.1] - 2026-10-27
 
 ### Upgrading from 0.2.0

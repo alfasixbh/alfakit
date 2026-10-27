@@ -279,11 +279,27 @@ describe('prefetching', () => {
     navigate('/admin/posts')
     expect(visit).toHaveBeenCalledTimes(1)
 
+    // Back again while that reload is in flight: it is cancelled, so its response can't
+    // replace the history entry the browser has moved on to.
+    const cancel = vi.fn()
+    visit.mockImplementationOnce(
+      (_url: string, options: { onCancelToken?: (token: { cancel(): void }) => void }) => {
+        options.onCancelToken?.({ cancel })
+      },
+    )
+    listeners.get('finish')?.({ detail: { visit: { method: 'post' } } })
+    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
+    navigate('/admin/posts/1/edit')
+    expect(visit).toHaveBeenCalledTimes(2)
+    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
+    expect(cancel).toHaveBeenCalledTimes(1)
+    navigate('/admin/posts')
+
     // A normal visit after a popstate that restored nothing is not a restore.
     window.dispatchEvent(new PopStateEvent('popstate', { state: null }))
     listeners.get('start')?.({})
     navigate('/admin/tags')
-    expect(visit).toHaveBeenCalledTimes(1)
+    expect(visit).toHaveBeenCalledTimes(3)
 
     uninstall()
   })
