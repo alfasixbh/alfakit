@@ -307,7 +307,9 @@ The size limit is the component's: `maxSize()` may be larger than `alfakit.uploa
 FileUpload::make('video')->acceptedFileTypes(['video/mp4'])->maxSize(512000); // 500 MB, sent in 5 MB chunks
 ```
 
-Custom frontends can use the same upload with `uploadTemporaryFile(endpoint, file, { ...panelUploadOptions(panel, component.uploadPolicy), onProgress })` from `@alfakit/core`. The web server's `upload_max_filesize` / `post_max_size` only need to fit one chunk.
+Saving a form while a file (or a rich editor attachment) is still uploading waits for the upload to finish, with the submit button busy, and then saves the form with the file. A failed upload doesn't hold the form back: its error stays on the field.
+
+Custom frontends can use the same upload with `uploadTemporaryFile(endpoint, file, { ...panelUploadOptions(panel, component.uploadPolicy), onProgress })` from `@alfakit/core`; wrap it in `form.trackUpload(...)` (the field's `FormStore`) so submits wait for it. The web server's `upload_max_filesize` / `post_max_size` only need to fit one chunk.
 
 ### Original file names
 

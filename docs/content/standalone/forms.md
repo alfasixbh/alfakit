@@ -178,7 +178,7 @@ public function authorize(): bool
 }
 ```
 
-`authorize()` runs when the payload is built (403 on the page) and again on every internal request, so a token cannot outlive a permission. `requiresAuthentication()` is checked on the internal requests (a guest's submit, live update or upload answers 401); the page itself still renders for a guest, so put its route in the `auth` middleware group as well.
+`authorize()` runs when the payload is built (403 on the page) and again on every internal request, so a token cannot outlive a permission. `requiresAuthentication()` is checked on the internal requests (a guest's submit, live update or upload answers 401); the page itself still renders for a guest, so put its route in the `auth` middleware group as well. Your panel access rules (`CanAccessPanel::canAccessPanel()`) don't apply: the hidden `standalone` panel never calls them, so a customer with no panel access can still use the components on your own pages, and these methods decide.
 
 ## After submit
 

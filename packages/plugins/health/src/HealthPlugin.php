@@ -208,7 +208,7 @@ class HealthPlugin implements Plugin
 
     public function isAuthorized(): bool
     {
-        return $this->authorizeUsing === null || (bool) $this->evaluate($this->authorizeUsing);
+        return $this->authorizeUsing === null || $this->evaluateUserAuthorization($this->authorizeUsing);
     }
 
     // ---------------------------------------------------------------- Navigation

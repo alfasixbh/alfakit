@@ -147,7 +147,8 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
       const local = pendingFile(file, position)
       setUploading((state) => [...state, local])
 
-      queued.push(limit(() => send(endpoint, file, local)))
+      // Submits wait for queued and running uploads, so saving now doesn't drop the file.
+      queued.push(store.trackUpload(limit(() => send(endpoint, file, local))))
     }
 
     await Promise.all(queued)
@@ -254,7 +255,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
 
     const local = pendingFile(file, `edit:${existing.path}`)
     setUploading((state) => [...state, local])
-    await send(endpoint, file, local, existing.path)
+    await store.trackUpload(send(endpoint, file, local, existing.path))
   }
 
   const send = async (endpoint: string, file: File, local: LocalFile, replacing?: string) => {

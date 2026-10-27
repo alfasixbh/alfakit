@@ -88,6 +88,7 @@
   const tableToolbarKeyboard = toolbarKeyboard('table')
   const floatingToolbarKeyboard = toolbarKeyboard('floating')
   const panel = usePanel()
+  const formStore = useOptionalFormStore()
   const field = useField<unknown>(() => component)
   const isMarkdown = $derived(component.type === 'MarkdownEditor')
 
@@ -123,7 +124,7 @@
   const rich = createRichEditorExtensions({
     component: () => component,
     editor: () => editor,
-    form: useOptionalFormStore(),
+    form: formStore,
     token: () => page.token,
     runner,
     t,
@@ -300,7 +301,11 @@
 
   const pickImage = () => fileInput?.click()
 
-  const uploadImage = async (file: File) => {
+  // Submits wait for the attachment's upload, so saving now doesn't drop the image.
+  const uploadImage = (file: File) =>
+    formStore ? formStore.trackUpload(sendImage(file)) : sendImage(file)
+
+  const sendImage = async (file: File) => {
     if (!panel.endpoints.upload || !editor) return
 
     // The server checks again when the form is saved.

@@ -350,6 +350,8 @@ Without `authorize()`, the resource follows the policies of your form model (`vi
 FormsPlugin::make()->authorize(fn (User $user): bool => $user->hasRole('marketing'));
 ```
 
+The callback only runs for a signed-in user: a guest (on the panel's login page, which asks every resource whether it can be searched) is never authorised, so `User $user` doesn't need to be nullable.
+
 ```php
 Gate::policy(\AlfaSix\AlfakitForms\Models\Form::class, FormPolicy::class);
 ```

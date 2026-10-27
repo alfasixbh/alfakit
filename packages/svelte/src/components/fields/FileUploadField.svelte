@@ -170,7 +170,8 @@
       const local = pendingFile(file)
       uploadingStore.set([...uploadingStore.get(), local])
 
-      queued.push(limit(() => send(endpoint, file, local)))
+      // Submits wait for queued and running uploads, so saving now doesn't drop the file.
+      queued.push(store.trackUpload(limit(() => send(endpoint, file, local))))
     }
 
     await Promise.all(queued)
@@ -285,7 +286,7 @@
 
     const local = pendingFile(file)
     uploadingStore.set([...uploadingStore.get(), local])
-    await send(endpoint, file, local, existing.path)
+    await store.trackUpload(send(endpoint, file, local, existing.path))
   }
 
   // Reads the stores, not the derived values: several uploads may finish in one tick.
