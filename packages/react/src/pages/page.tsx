@@ -1,4 +1,5 @@
 import type {
+  AlfakitPageProps,
   ContentBlock,
   FormBlock as FormBlockSchema,
   InfolistBlock,
@@ -24,8 +25,10 @@ import {
 } from '@alfakit/core'
 import { Head, Link, usePage } from '@inertiajs/react'
 import {
+  createContext,
   createElement,
   Fragment,
+  useContext,
   useEffect,
   useId,
   useMemo,
@@ -155,13 +158,24 @@ function layout(registry: { resolve(key: string): AnyComponent | undefined }, ke
   return registry.resolve(key) ?? BlankLayout
 }
 
-export function PageShell({ page, children }: { page: PageSchema; children: ReactNode }) {
-  const { registry } = useAlfakit()
+type LayoutKind = 'app' | 'auth' | 'blank' | 'fullscreen'
 
-  useBodyAttributes(page.extraBodyAttributes)
+function layoutKind(page: PageSchema): LayoutKind {
+  return page.layout === 'auth' || page.layout === 'blank' || page.layout === 'fullscreen'
+    ? page.layout
+    : 'app'
+}
+
+/** The layout `PanelLayoutHost` already renders around the page, if any. */
+const HostedLayoutContext = createContext<LayoutKind | null>(null)
+
+/** The page's registered layout (`layout:app`, `layout:auth`…) around `children`. */
+function PanelLayout({ page, children }: { page: PageSchema; children: ReactNode }) {
+  const { registry } = useAlfakit()
+  const kind = layoutKind(page)
 
   // Each layout can be replaced: createAlfakit({ components: { 'layout:app': MyLayout } }).
-  if (page.layout === 'auth') {
+  if (kind === 'auth') {
     return createElement(
       layout(registry, 'layout:auth'),
       { heading: page.heading ?? page.title, subheading: page.subheading, page },
@@ -169,33 +183,77 @@ export function PageShell({ page, children }: { page: PageSchema; children: Reac
     )
   }
 
-  if (page.layout === 'blank') {
-    return createElement(layout(registry, 'layout:blank'), { page }, children)
+  if (kind === 'app') {
+    return createElement(
+      layout(registry, 'layout:app'),
+      { breadcrumbs: page.breadcrumbs, maxContentWidth: page.maxContentWidth, page },
+      children,
+    )
   }
 
-  if (page.layout === 'fullscreen') {
-    return createElement(layout(registry, 'layout:fullscreen'), { page }, children)
-  }
+  return createElement(layout(registry, `layout:${kind}`), { page }, children)
+}
 
-  return createElement(
-    layout(registry, 'layout:app'),
-    { breadcrumbs: page.breadcrumbs, maxContentWidth: page.maxContentWidth, page },
-    <>
-      {/* `?` overlay, `/`, `g d` and panel command shortcuts (`keyboardShortcuts()`). */}
-      <KeyboardShortcuts />
-      <Slot name="page.start" />
-      <PageHeader page={page} />
-      {/* Edit pages: somebody else saved the record (`detectConflicts()`, `Panel::realtime()`). */}
-      {page.conflicts &&
-        createElement(registry.resolve('page:conflict-banner') ?? ConflictBanner, { page })}
-      {page.subNavigation ? (
-        <SubNavigationLayout navigation={page.subNavigation}>{children}</SubNavigationLayout>
-      ) : (
-        children
-      )}
-      <Slot name="page.end" />
-    </>,
+/**
+ * Keeps the panel layout (sidebar, top bar) mounted while the user moves between Alfakit
+ * pages. Inertia remounts the page component on every visit; this sits in the persistent
+ * Inertia layout (`AlfakitRoot`) and renders the open page's layout from its props, so only
+ * the page part below it (heading, actions, content) is replaced. The `PageShell` inside
+ * the page then renders just that part. Custom page components (their own Inertia page or
+ * `page.view`) and starter kit pages render their layout through `PageShell` as before.
+ */
+export function PanelLayoutHost({ children }: { children: ReactNode }) {
+  const { component, props } = usePage<AlfakitPageProps>()
+  const page = useMemo(
+    () => (props.page ? resolveLazyComponents(props.page, props.alfakitLazy) : undefined),
+    [props.page, props.alfakitLazy],
   )
+  const hosted =
+    component === 'Alfakit/Page' && page && !page.view && props.alfakit?.starterKit !== true
+      ? page
+      : undefined
+
+  return (
+    <HostedLayoutContext.Provider value={hosted ? layoutKind(hosted) : null}>
+      {hosted ? <PanelLayout page={hosted}>{children}</PanelLayout> : children}
+    </HostedLayoutContext.Provider>
+  )
+}
+
+export function PageShell({ page, children }: { page: PageSchema; children: ReactNode }) {
+  const { registry } = useAlfakit()
+  const hosted = useContext(HostedLayoutContext)
+  const kind = layoutKind(page)
+
+  useBodyAttributes(page.extraBodyAttributes)
+
+  const content =
+    kind === 'app' ? (
+      <>
+        {/* `?` overlay, `/`, `g d` and panel command shortcuts (`keyboardShortcuts()`). */}
+        <KeyboardShortcuts />
+        <Slot name="page.start" />
+        <PageHeader page={page} />
+        {/* Edit pages: somebody else saved the record (`detectConflicts()`, `Panel::realtime()`). */}
+        {page.conflicts &&
+          createElement(registry.resolve('page:conflict-banner') ?? ConflictBanner, { page })}
+        {page.subNavigation ? (
+          <SubNavigationLayout navigation={page.subNavigation}>{children}</SubNavigationLayout>
+        ) : (
+          children
+        )}
+        <Slot name="page.end" />
+      </>
+    ) : (
+      children
+    )
+
+  // The persistent layout around the page already draws this layout.
+  if (hosted === kind) {
+    return content
+  }
+
+  return <PanelLayout page={page}>{content}</PanelLayout>
 }
 
 export function PageHeader({ page }: { page: PageSchema }) {

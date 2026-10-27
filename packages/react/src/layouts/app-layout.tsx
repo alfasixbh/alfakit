@@ -6,14 +6,14 @@ import {
   type BreadcrumbSchema,
   type Width,
 } from '@alfakit/core'
-import { createElement, type CSSProperties, type ReactNode } from 'react'
+import { createElement, useCallback, type CSSProperties, type ReactNode } from 'react'
 import { AppSidebar } from '../components/panel/app-sidebar'
 import { BottomNav } from '../components/panel/bottom-nav'
 import { TopbarLocaleSwitcher } from '../components/panel/locale-switcher'
 import { Slot } from '../components/panel/slot'
 import { Topbar } from '../components/panel/topbar'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '../components/ui/sidebar'
-import { useAlfakitProps, useRegistry } from '../context'
+import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from '../components/ui/sidebar'
+import { useAlfakitProps, useCloseOnVisit, useRegistry } from '../context'
 import { cn } from '../lib/utils'
 import { MAX_WIDTHS } from './max-widths'
 import { TopNavLayout } from './top-nav-layout'
@@ -48,6 +48,18 @@ export function MobileTopbar() {
   )
 }
 
+/**
+ * The layout stays mounted across visits: the phone sidebar sheet closes when the user
+ * moves to another page.
+ */
+function CloseMobileSidebarOnVisit() {
+  const { setOpenMobile } = useSidebar()
+
+  useCloseOnVisit(useCallback(() => setOpenMobile(false), [setOpenMobile]))
+
+  return null
+}
+
 export function AppLayout({ children, breadcrumbs, maxContentWidth }: AppLayoutProps) {
   const props = useAlfakitProps()
   const registry = useRegistry()
@@ -73,6 +85,7 @@ export function AppLayout({ children, breadcrumbs, maxContentWidth }: AppLayoutP
       defaultOpen={sidebarDefaultOpen(props.alfakitSidebarOpen, layout)}
       style={sidebarWidthStyle(props.alfakit) as CSSProperties | undefined}
     >
+      <CloseMobileSidebarOnVisit />
       <Slot name="body.start" />
       <Slot name="layout.start" />
       {createElement(Sidebar)}

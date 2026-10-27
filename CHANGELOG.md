@@ -20,6 +20,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Panels: clicking a sidebar item no longer rebuilds the sidebar and top bar. The panel layout stays mounted between pages, so it keeps its scroll position and open groups and doesn't flicker; on phones the sidebar sheet closes when you move to another page. Custom `layout:*` components now stay mounted too and receive new props on each visit (close your own menus when the URL changes).
+- React: icons that have loaded once appear immediately on later pages instead of flashing empty.
 - Kanban: a card dropped on a column it may not enter now stays in its own column with a message, instead of being saved to the last allowed column the pointer crossed on the way (dragging Draft straight to Shipped used to save it as Confirmed). While you drag over a column it may not enter, the card shows back in its own column.
 - React and Svelte starter kits and standalone components with SSR: pages no longer hydrate with a mismatch (React #418) once the SSR server has rendered a panel page. Components split out of the main bundle (Html, Tabs, date pickers, Repeater, …) and auto-registered components appear right after hydration on those pages, the same on every request; panel pages still render them on the server. Svelte's on-demand icons and lazy parts there keep their server markup until hydration, as on panel pages.
 - Sliders: a single-thumb slider is named by its label again, and screen readers read its hint, helper text and error, in all three renderers.

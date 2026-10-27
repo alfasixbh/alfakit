@@ -8,7 +8,7 @@ import {
 } from '@alfakit/core'
 import { Link } from '@inertiajs/react'
 import { ChevronRightIcon } from 'lucide-react'
-import type { ComponentProps, ReactNode } from 'react'
+import { useState, type ComponentProps, type ReactNode } from 'react'
 import { useDirection, usePanel, useT } from '../../context'
 import { extraProps } from '../../lib/attributes'
 import { badgeColorClasses, colorClass } from '../../lib/colors'
@@ -114,12 +114,32 @@ function NavLink({
   )
 }
 
+/**
+ * Open state of a collapsible menu entry: `defaultOpen` at first, and opened again when the
+ * entry becomes active. The sidebar stays mounted across visits, so it keeps what the user
+ * opened or closed, while a page reached from elsewhere still shows its menu entry.
+ */
+function useOpenWhenActive(defaultOpen: boolean, active: boolean) {
+  const [open, setOpen] = useState(defaultOpen)
+  const [wasActive, setWasActive] = useState(active)
+
+  if (active !== wasActive) {
+    setWasActive(active)
+
+    if (active) setOpen(true)
+  }
+
+  return { open, onOpenChange: setOpen }
+}
+
 /** Child items (any depth) with their own badges, new-tab links and nested children. */
 function NavSubItem({ item }: { item: NavigationItemSchema }) {
+  const collapsible = useOpenWhenActive(!!item.active, !!item.active)
+
   if (item.children && item.children.length > 0) {
     return (
       <SidebarMenuSubItem>
-        <Collapsible defaultOpen={item.active} className="group/nav-sub">
+        <Collapsible {...collapsible} className="group/nav-sub">
           <CollapsibleTrigger asChild>
             <SidebarMenuSubButton asChild isActive={item.active}>
               <button type="button" {...extraProps(item.extraAttributes, 'w-full')}>
@@ -156,9 +176,11 @@ function NavSubItem({ item }: { item: NavigationItemSchema }) {
 }
 
 function NavItem({ item }: { item: NavigationItemSchema }) {
+  const collapsible = useOpenWhenActive(!!item.active, !!item.active)
+
   if (item.children && item.children.length > 0) {
     return (
-      <Collapsible asChild defaultOpen={item.active} className="group/collapsible">
+      <Collapsible asChild {...collapsible} className="group/collapsible">
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>
             <SidebarMenuButton
@@ -259,6 +281,8 @@ function NavGroup({ group }: { group: NavigationGroupSchema }) {
   const attributes = extraProps(group.extraSidebarAttributes)
   // A labelled group with an icon collapses into a flyout in the icon-only sidebar.
   const flyout = Boolean(group.label && group.icon)
+  const active = group.items.some((item) => item.active)
+  const collapsible = useOpenWhenActive(!group.collapsed || active, active)
   const content = (
     <SidebarGroupContent className={cn(flyout && 'group-data-[collapsible=icon]:hidden')}>
       <SidebarMenu>
@@ -288,10 +312,7 @@ function NavGroup({ group }: { group: NavigationGroupSchema }) {
   }
 
   return (
-    <Collapsible
-      defaultOpen={!group.collapsed || group.items.some((item) => item.active)}
-      className="group/nav-group"
-    >
+    <Collapsible {...collapsible} className="group/nav-group">
       <SidebarGroup {...attributes}>
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel

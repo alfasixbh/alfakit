@@ -20,6 +20,16 @@
   const flyout = $derived(Boolean(group.label && group.icon))
 
   let open = $state(untrack(() => !group.collapsed || group.items.some((item) => item.active)))
+
+  // The sidebar stays mounted across visits: it keeps what the user opened or closed, and
+  // opens again when one of its items becomes active.
+  let wasActive = untrack(() => group.items.some((item) => item.active))
+  $effect.pre(() => {
+    const active = group.items.some((item) => item.active)
+
+    if (active && !wasActive) open = true
+    wasActive = active
+  })
 </script>
 
 {#snippet content()}

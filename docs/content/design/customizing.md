@@ -111,4 +111,6 @@ void createAlfakit({
 })
 ```
 
+The panel layout stays mounted while the user moves between AlfaKit pages: only the page part (heading, actions, content) is replaced on a visit, so the sidebar keeps its scroll position and what the user opened or collapsed, and icons don't redraw. Your `layout:app` (and `layout:auth`, `layout:blank`, `layout:fullscreen`) gets new `page`, `breadcrumbs` and `maxContentWidth` props on every visit instead of being mounted again, so derive anything page-specific from those props rather than from state set once on mount, and close your own menus or phone sheets when the page URL changes. `PageShell` inside such a page renders only the page part. Custom page components (`Page::$component`) and starter kit pages still render their layout through `PageShell`, which mounts it with the page.
+
 The built-in parts are exported (`AppSidebar`, `Topbar`, `Brand`, `UserMenu`, `GlobalSearch`, `NotificationsMenu`, `ThemeToggle`, `LocaleSwitcher`, `Breadcrumbs`, `Slot`, `AppLayout`, `TopNavLayout`, `AuthLayout`). Your replacement can compose them and add only what's different. The same keys work in `@alfakit/vue` and `@alfakit/svelte`.

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useOpenWhenActive } from '../../composables/use-persistent-layout'
 import { navigationItemText, PREFETCH_CACHE_FOR, type NavigationItemSchema } from '@alfakit/core'
 import { Link } from '@inertiajs/vue3'
 import { ChevronRightIcon } from '@lucide/vue'
@@ -18,14 +19,19 @@ import NavLabel from './NavLabel.vue'
 import { useT } from '../../context'
 
 const props = defineProps<{ item: NavigationItemSchema }>()
+// Keeps what the user opened across visits; opens again when the item becomes active.
+const open = useOpenWhenActive(
+  () => !!props.item.active,
+  () => !!props.item.active,
+)
 const t = useT()
 </script>
 
 <template>
   <Collapsible
     v-if="props.item.children && props.item.children.length > 0"
+    v-model:open="open"
     as-child
-    :default-open="props.item.active"
     class="group/collapsible"
   >
     <SidebarMenuItem>
