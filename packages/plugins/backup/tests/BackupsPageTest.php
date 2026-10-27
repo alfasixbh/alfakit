@@ -118,6 +118,25 @@ it('runs backup:run from the job', function (): void {
     expect($received)->toBe(['only-db' => true]);
 });
 
+it('fails the job when backup:run fails', function (): void {
+    // spatie's command reports a failed backup with exit code 1 instead of throwing.
+    Artisan::command('backup:run {--only-db} {--only-files} {--timeout=}', function (): int {
+        $this->error('Backup failed because: mysqldump: Got error: 1045 password=secret');
+
+        return 1;
+    });
+
+    expect(fn () => app()->call([new CreateBackupJob(BackupOption::OnlyFiles), 'handle']))
+        ->toThrow(RuntimeException::class, 'backup:run --only-files failed with exit code 1');
+
+    try {
+        app()->call([new CreateBackupJob(BackupOption::OnlyFiles), 'handle']);
+    } catch (RuntimeException $exception) {
+        // The command's output (which can name hosts or credentials) stays out of failed_jobs.
+        expect($exception->getMessage())->not->toContain('secret');
+    }
+});
+
 it('downloads a backup through a signed link', function (): void {
     actingAs(backupUser());
     $path = fakeBackup('2026-10-01 10:00:00', 'archive-contents');

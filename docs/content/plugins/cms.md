@@ -450,7 +450,7 @@ CmsPlugin::make()->robots(using: fn (): array => [
 
 When a published page moves (a new slug or parent), a 301 redirect from its old path is added, redirects that pointed at the old path are updated, and a redirect away from the new path is removed so it can't hide the page. Turn that off with `->redirectOnPathChange(false)`.
 
-Active redirects are cached per tenant (cleared whenever one changes) and applied by middleware that the plugin adds to the `web` group. Add it yourself instead with `->redirectMiddleware(false)` and `AlfaSix\AlfakitCms\Http\Middleware\HandleRedirects` (alias `alfakit-cms.redirects`); the public page route applies redirects either way. `->redirects(false)` removes the manager.
+Active redirects are cached per tenant (cleared whenever one changes) and applied by middleware that the plugin adds to the `web` group. An old path that matches no route at all, such as `/old-catalog/*` on a site served with `publicRoutes(prefix: 'site')`, is redirected too: the plugin turns the router's 404 into the redirect, so this costs nothing on requests that match a route. Add the middleware yourself instead with `->redirectMiddleware(false)` (this also turns off redirects for unmatched paths) and `AlfaSix\AlfakitCms\Http\Middleware\HandleRedirects` (alias `alfakit-cms.redirects`); the public page route applies redirects either way. `->redirects(false)` removes the manager.
 
 ## Menus
 
