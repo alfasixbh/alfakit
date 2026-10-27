@@ -215,6 +215,21 @@ describe('FileUpload options', () => {
 })
 
 describe('Slider options', () => {
+  it('names a single thumb by the label and describes it by the hint and helper text', () => {
+    renderForm([slider({ hint: 'Per day', helperText: 'Rounded to 5' })], { range: 50 })
+
+    expect(screen.getByRole('slider', { name: 'Range' })).toHaveAccessibleDescription(
+      'Per day Rounded to 5',
+    )
+  })
+
+  it('keeps the minimum and maximum names on a range', () => {
+    renderForm([slider({ multiple: true })], { range: [20, 50] })
+
+    expect(screen.getByRole('slider', { name: 'Minimum' })).toBeInTheDocument()
+    expect(screen.getByRole('slider', { name: 'Maximum' })).toBeInTheDocument()
+  })
+
   it('keeps the thumb inside rangePadding', async () => {
     const { store } = renderForm([slider({ rangePadding: [10, 20] })], { range: 80 })
 

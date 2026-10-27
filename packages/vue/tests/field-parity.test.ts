@@ -252,7 +252,30 @@ const press = async (element: HTMLElement, key: string) => {
   await nextTick()
 }
 
+const referencedText = (element: HTMLElement, attribute: string) =>
+  (element.getAttribute(attribute) ?? '')
+    .split(' ')
+    .filter(Boolean)
+    .map((id) => document.getElementById(id)?.textContent?.trim() ?? `missing #${id}`)
+    .join(' ')
+
 describe('Slider options', () => {
+  it('names a single thumb by the label and describes it by the hint and helper text', async () => {
+    const { thumbs } = await renderSlider(
+      slider({ hint: 'Per day', helperText: 'Rounded to 5' }),
+      50,
+    )
+
+    expect(referencedText(thumbs[0]!, 'aria-labelledby')).toBe('Range')
+    expect(referencedText(thumbs[0]!, 'aria-describedby')).toBe('Per day Rounded to 5')
+  })
+
+  it('keeps the minimum and maximum names on a range', async () => {
+    const { thumbs } = await renderSlider(slider({ multiple: true }), [20, 50])
+
+    expect(thumbs.map((thumb) => thumb.getAttribute('aria-label'))).toEqual(['Minimum', 'Maximum'])
+  })
+
   it('keeps the thumb inside rangePadding', async () => {
     const { store, thumbs } = await renderSlider(slider({ rangePadding: [10, 20] }), 80)
 

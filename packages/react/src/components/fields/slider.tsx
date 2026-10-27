@@ -101,7 +101,9 @@ export function SliderField({ component }: { component: SliderSchema }) {
   }
 
   return (
-    <FieldWrapper field={component} htmlFor={`${id}-thumb-0`} error={error}>
+    // The wrapper's label, hint and error ids derive from `id`, as `aria` does: a thumb is not
+    // labelable, so one thumb names itself through `aria-labelledby`.
+    <FieldWrapper field={component} htmlFor={id} error={error}>
       <div
         data-slot="slider"
         className={cn(

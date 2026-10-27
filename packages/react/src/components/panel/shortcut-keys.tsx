@@ -26,7 +26,7 @@ export function ShortcutKeys({ binding, className }: { binding: string; classNam
           )}
           <kbd
             dir="ltr"
-            className="bg-muted text-muted-foreground rounded border px-1.5 font-mono text-[10px] leading-5"
+            className="bg-muted text-foreground/70 rounded border px-1.5 font-mono text-[10px] leading-5"
           >
             {step}
           </kbd>

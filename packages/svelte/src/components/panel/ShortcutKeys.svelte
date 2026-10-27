@@ -24,7 +24,7 @@
           >{/if}
         <kbd
           dir="ltr"
-          class="bg-muted text-muted-foreground rounded border px-1.5 font-mono text-[10px] leading-5"
+          class="bg-muted text-foreground/70 rounded border px-1.5 font-mono text-[10px] leading-5"
           >{step}</kbd
         >
       </span>

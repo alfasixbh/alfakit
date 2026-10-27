@@ -8,7 +8,7 @@
     type StandaloneComponentSchema,
   } from '@alfakit/core'
   import { page as inertiaPage } from '@inertiajs/svelte'
-  import { onMount, untrack, type Snippet } from 'svelte'
+  import { hasContext, onMount, setContext, untrack, type Snippet } from 'svelte'
   import { providePageActionContext } from '../components/actions/action-context'
   import ActionList from '../components/actions/ActionList.svelte'
   import ActionModals from '../components/actions/ActionModals.svelte'
@@ -20,6 +20,7 @@
     type AlfakitContextValue,
     type AnyComponent,
   } from '../context.svelte'
+  import { APP_MOUNTED, createAppMounted } from '../lib/hydration.svelte'
   import { uniqueKey } from '../lib/keys'
   import { cn } from '../lib/utils'
   import ContentBlockRenderer from '../pages/ContentBlockRenderer.svelte'
@@ -64,6 +65,17 @@
   } = $props()
 
   const parent = useOptionalAlfakit()
+
+  // On a page of the app (no panel or starter kit root above it), lazily loaded parts (split
+  // built-ins, icons) render their server markup until this component has hydrated.
+  if (!hasContext(APP_MOUNTED)) {
+    const mounted = createAppMounted()
+
+    setContext(APP_MOUNTED, mounted)
+    onMount(() => {
+      mounted.current = true
+    })
+  }
 
   // Lazy and polled schemas of this component, merged into the page it renders.
   let version = $state(0)

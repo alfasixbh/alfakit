@@ -134,7 +134,7 @@ const pipStyle = (percent: number) =>
 </script>
 
 <template>
-  <FieldWrapper :field="props.component" :html-for="`${id}-thumb-0`" :error="error">
+  <FieldWrapper :field="props.component" :html-for="id" :error="error">
     <div
       data-slot="slider"
       :class="

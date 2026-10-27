@@ -138,7 +138,7 @@ export default function ColorWheel({ component }: ColorWheelProps) {
 
     return (
         <FieldWrapper field={component} htmlFor={id} error={error}>
-            <div id={id} role="radiogroup" aria-label={component.label} {...aria}>
+            <div id={id} role="radiogroup" aria-label={component.label ?? undefined} {...aria}>
                 {component.swatches.map((swatch) => (
                     <button
                         key={swatch}
@@ -210,7 +210,7 @@ const { value, setValue, error, id, disabled, aria } = useField<string | null>(
 </script>
 
 <FieldWrapper field={component} htmlFor={field.id} error={field.error}>
-    <div id={field.id} role="radiogroup" aria-label={component.label} {...field.aria}>
+    <div id={field.id} role="radiogroup" aria-label={component.label ?? undefined} {...field.aria}>
         {#each component.swatches as swatch (swatch)}
             <button
                 type="button"

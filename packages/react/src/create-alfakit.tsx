@@ -187,6 +187,8 @@ export function bootAlfakit(
       registry,
       pages,
       translator,
+      // `resolve` below loads the page's split built-ins and discovered files first.
+      preloadsPageComponents: true,
       // The runner's endpoints are refreshed on every navigation from the shared props.
       actions: new ActionRunner({
         endpoints: { action: '', modal: '' },
