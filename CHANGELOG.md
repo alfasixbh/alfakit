@@ -20,6 +20,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Forms: saving while a file is still uploading now waits for the upload instead of saving without the file (FileUpload and rich editor attachments, React, Vue and Svelte). Custom fields can register their uploads with `form.trackUpload()`.
+- Standalone forms, tables and infolists on your own pages no longer require the signed-in user to pass `canAccessPanel()`: a customer without panel access can use them, and the component's own `requiresAuthentication()` and `authorize()` decide.
+- Plugin `authorize(fn (User $user) => …)` callbacks are no longer called for guests, which crashed a panel's login page when global search was on; guests are simply not authorized (Forms, Activity log, Analytics, API, Backup, File manager, Health, Teams, Webhooks).
+- Backups: the queued backup job now fails (so it is retried or recorded as failed) when `backup:run` exits with an error.
+- Realtime presence works on API resource records: the channel names the resource, and joining is authorised through its data source and policy (tenant checked on tenancy panels) instead of failing.
+- CMS redirects now apply to old paths that match no route, such as paths outside a site served with `publicRoutes(prefix: 'site')`, keeping the query string.
+- File manager: a newly created public link shows "0 downloads" instead of "undefined downloads".
+- `alfakit:tenancy:check` checks relationship fields inside a relationship repeater (or relationship group) against that relationship's model, so `--strict` no longer fails on valid order-line forms. Rows are labelled by state path (`OrderResource → lines.product_id`).
+- Testing: `callTableBulkAction()` with form data works; the bulk selection is sent with the modal form's refresh and wizard-step validation (it failed with 404).
+- Builder and Repeater items keep the path of a `Group::statePath()` inside them when saving (it was dropped, so `style.background` was saved as `background`).
 - FileUpload: the drop zone lists the accepted types by short name instead of raw MIME types: `['image/png', 'image/jpeg', 'image/webp', 'image/x-icon', 'image/vnd.microsoft.icon']` shows "PNG, JPG, WebP, ICO", and `image/*` (also from `image()`) shows "Images", translated. Other types show their `mimeTypeMap()` extension or their subtype (`application/vnd.sketchup.skp` is "SKP", `.csv` is "CSV"). The label is sent as `acceptedFileTypesLabel` in the field's schema.
 
 ## [0.1.13] - 2026-10-26
