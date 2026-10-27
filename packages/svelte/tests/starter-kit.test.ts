@@ -1,5 +1,6 @@
 import type { AlfakitPageProps, PageSchema } from '@alfakit/core'
 import { render, screen } from '@testing-library/svelte'
+import { tick } from 'svelte'
 import { showToast } from '../src/components/notifications/toast'
 import {
   AlfakitStarterKitRoot,
@@ -8,6 +9,7 @@ import {
 } from '../src/starter-kit'
 import DirectionDialogHarness from './DirectionDialogHarness.svelte'
 import { panel, setPageProps } from './mocks'
+import StarterKitDirectionHarness from './StarterKitDirectionHarness.svelte'
 import StarterKitHarness from './StarterKitHarness.svelte'
 import StarterKitHostLayout from './StarterKitHostLayout.svelte'
 
@@ -18,7 +20,14 @@ const page = {
   breadcrumbs: [{ label: 'Posts', url: '/admin/posts' }, { label: 'List' }],
 } as unknown as PageSchema
 
-afterEach(() => setPageProps({ alfakit: panel, page: undefined, alfakitNavigation: undefined }))
+afterEach(() =>
+  setPageProps({
+    alfakit: panel,
+    page: undefined,
+    alfakitNavigation: undefined,
+    alfakitDocument: undefined,
+  }),
+)
 
 describe('starter kit mode', () => {
   it('puts the page in the host layout, then the Alfakit root', () => {
@@ -75,7 +84,7 @@ describe('starter kit mode', () => {
     expect(document.querySelector('[data-slot="fullscreen-exit"]')).toBeNull()
   })
 
-  it('mirrors only its own content in a right-to-left language, never the host document', () => {
+  it('flips the whole document in a right-to-left panel language, and back after a switch', async () => {
     document.documentElement.dir = 'ltr'
     document.documentElement.lang = 'en'
     const alfakit = {
@@ -83,11 +92,64 @@ describe('starter kit mode', () => {
       starterKit: true,
       localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
     }
-    setPageProps({ alfakit, page } as unknown as Partial<AlfakitPageProps>)
+    setPageProps({
+      alfakit,
+      alfakitDocument: { tag: 'ar', direction: 'rtl' },
+      page,
+    } as unknown as Partial<AlfakitPageProps>)
+
+    render(StarterKitHarness, { props: { breadcrumbs: [] } })
+    await tick()
+
+    // The kit's sidebar and header mirror too: <html> follows the shared `alfakitDocument`.
+    expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+    expect(document.documentElement).toHaveAttribute('lang', 'ar')
+    expect(document.querySelector('[data-slot="starter-kit-root"]')).toHaveAttribute('dir', 'rtl')
+
+    // Switching back to English redirects back: a visit with the new props.
+    document.dispatchEvent(
+      new CustomEvent('inertia:navigate', {
+        detail: { page: { props: { alfakitDocument: { tag: 'en', direction: 'ltr' } } } },
+      }),
+    )
+
+    expect(document.documentElement).toHaveAttribute('dir', 'ltr')
+    expect(document.documentElement).toHaveAttribute('lang', 'en')
+  })
+
+  it("keeps the kit's own pages in the app's language, right to left, and docks the sidebar on the right", async () => {
+    document.documentElement.dir = 'ltr'
+    document.documentElement.lang = 'en'
+    setPageProps({
+      alfakit: undefined,
+      alfakitDocument: { tag: 'en', direction: 'rtl' },
+    } as unknown as Partial<AlfakitPageProps>)
+
+    render(StarterKitDirectionHarness)
+    await tick()
+
+    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-side', 'right')
+    expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+    expect(document.documentElement).toHaveAttribute('lang', 'en')
+  })
+
+  it('leaves the document alone without the shared prop', () => {
+    document.documentElement.dir = 'ltr'
+    document.documentElement.lang = 'en'
+    const alfakit = {
+      ...panel,
+      starterKit: true,
+      localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+    }
+    setPageProps({
+      alfakit,
+      alfakitDocument: undefined,
+      page,
+    } as unknown as Partial<AlfakitPageProps>)
 
     render(StarterKitHarness, { props: { breadcrumbs: [] } })
 
-    // The host's sidebar and its own pages are not right to left: <html> stays the host's.
+    // An app whose server does not share it yet: <html> stays the host's.
     expect(document.documentElement).toHaveAttribute('dir', 'ltr')
     expect(document.documentElement).toHaveAttribute('lang', 'en')
     const root = document.querySelector('[data-slot="starter-kit-root"]')

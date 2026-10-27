@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { StatSchema } from '@alfakit/core'
+  import { isolationDirection, type StatSchema } from '@alfakit/core'
   import { Link } from '@inertiajs/svelte'
   import {
     colorClass,
@@ -40,7 +40,7 @@
             class={cn(
               'text-2xl font-semibold tracking-tight',
               stat.color && textColorClasses[stat.color],
-            )}><bdi>{stat.value}</bdi></span
+            )}><bdi dir={isolationDirection(stat.value)}>{stat.value}</bdi></span
           >
         {/if}
         {#if stat.description}
@@ -57,7 +57,7 @@
                 class="size-3.5"
               />{/if}
             <!-- Mixed-direction text (a Latin "-3% this month" in Arabic) keeps its order. -->
-            <bdi>{stat.description}</bdi>
+            <bdi dir={isolationDirection(stat.description)}>{stat.description}</bdi>
             {#if stat.descriptionIcon && stat.descriptionIconPosition === 'after'}<Icon
                 name={stat.descriptionIcon}
                 class="size-3.5"

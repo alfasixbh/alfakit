@@ -7,6 +7,7 @@ import { usePage } from '@inertiajs/vue3'
 import { computed, defineComponent, h, type PropType } from 'vue'
 import type { AnyComponent } from '../context'
 import { lazyComponent } from '../lib/lazy'
+import { useStarterKitDocument } from './navigation'
 
 /** Widget-sized boxes until the widgets' code has loaded (also during SSR). */
 const WidgetsPlaceholder = defineComponent({
@@ -78,6 +79,8 @@ export const AlfakitWidgets = defineComponent({
   setup(props, { attrs, slots }) {
     const page = usePage()
     const component = computed(() => starterKitDashboardWidgets(page.props, props.panel))
+
+    useStarterKitDocument(page)
 
     return () =>
       component.value

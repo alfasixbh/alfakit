@@ -34,6 +34,7 @@ import { preloadIcons } from '../lib/icons'
 import { cn } from '../lib/utils'
 import { AlfakitPage } from '../pages/page'
 import { createDefaultRegistry } from '../registry'
+import { useStarterKitDocument } from './navigation'
 
 /** The host's layout, as the starter kits' `AppLayout` takes its props. */
 export type StarterKitLayout = ComponentType<{
@@ -180,6 +181,9 @@ export function AlfakitStarterKitRoot({
     syncStarterKitPage(props)
   }, [props])
 
+  // `<html lang dir>` of the whole page (the host layout around AlfaKit's content too).
+  useStarterKitDocument(props)
+
   useEffect(() => {
     installStarterKitRuntime(
       (notification) => showToast(notification),
@@ -196,8 +200,8 @@ export function AlfakitStarterKitRoot({
 
   return (
     <AlfakitProvider value={context}>
-      {/* The reading direction and language of Alfakit's content only: the host layout around
-          it (sidebar, header) and the app's own pages keep the document's. */}
+      {/* The reading direction and language of Alfakit's content. The document has the same
+          direction (`alfakitDocument`), so the host layout around it mirrors too. */}
       <div
         data-slot="starter-kit-root"
         dir={panel?.localization?.direction ?? 'ltr'}
@@ -207,9 +211,8 @@ export function AlfakitStarterKitRoot({
         <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>
           {children}
           {/* The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
-              render: float it in the corner instead (nothing without `alfakitDebug`). The corner is the
-              document's right: the kit's sidebar stays on the left in a right-to-left panel language. */}
-          <div data-slot="starter-kit-debug-panel" className="fixed right-16 bottom-16 z-40">
+              render: float it in the end corner instead (nothing without `alfakitDebug`). */}
+          <div data-slot="starter-kit-debug-panel" className="fixed end-16 bottom-16 z-40">
             <DebugPanelSlot />
           </div>
         </AlfakitRoot>

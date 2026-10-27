@@ -1,5 +1,5 @@
 import type { StatSchema, StatsOverviewWidgetSchema } from '@alfakit/core'
-import { gridColumnsClasses, widgetPollTarget } from '@alfakit/core'
+import { gridColumnsClasses, isolationDirection, widgetPollTarget } from '@alfakit/core'
 import { Link } from '@inertiajs/react'
 import { useEffect } from 'react'
 import { usePollComponent } from '../../context'
@@ -88,7 +88,7 @@ function StatCard({ stat }: { stat: StatSchema }) {
                 stat.color && textColorClasses[stat.color],
               )}
             >
-              <bdi>{stat.value}</bdi>
+              <bdi dir={isolationDirection(stat.value)}>{stat.value}</bdi>
             </span>
           )}
           {stat.description && (
@@ -104,7 +104,7 @@ function StatCard({ stat }: { stat: StatSchema }) {
                 <Icon name={stat.descriptionIcon} className="size-3.5" />
               )}
               {/* Mixed-direction text (a Latin "-3% this month" in Arabic) keeps its order. */}
-              <bdi>{stat.description}</bdi>
+              <bdi dir={isolationDirection(stat.description)}>{stat.description}</bdi>
               {stat.descriptionIcon && stat.descriptionIconPosition === 'after' && (
                 <Icon name={stat.descriptionIcon} className="size-3.5" />
               )}

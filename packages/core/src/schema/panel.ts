@@ -78,6 +78,14 @@ export interface StarterKitDashboardWidgetsSchema {
   component: StandaloneComponentSchema
 }
 
+/** `<html lang dir>` of a page in a starter kit app (`alfakitDocument`). */
+export interface StarterKitDocumentSchema {
+  /** BCP 47 tag of the page's language (`ar`, `en-GB`). */
+  tag: string
+  /** The direction of the language picked for the `starterKit()` panel. */
+  direction: 'ltr' | 'rtl'
+}
+
 export interface StarterKitNavigationSchema {
   /** The panel id. */
   id: string
@@ -602,6 +610,13 @@ export interface AlfakitPageProps {
    * page (the host's own pages too) for the host sidebar. Null for guests.
    */
   alfakitNavigation?: StarterKitNavigationSchema[] | null
+  /**
+   * `<html lang dir>` while the app has a `starterKit()` panel, shared with every Inertia page
+   * (the host's own pages and guests too): the app's current language and the direction of
+   * the language picked for the panel, so the whole page flips in a right-to-left language.
+   * Null on pages of other panels, which set the document themselves.
+   */
+  alfakitDocument?: StarterKitDocumentSchema | null
   /**
    * `starterKit()` panels: their dashboard widgets on the host's dashboard
    * (`starterKitDashboard()`), for `<AlfakitWidgets />`. Null on other pages, for guests

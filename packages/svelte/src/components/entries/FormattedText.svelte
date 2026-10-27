@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { BaseEntry, TextEntrySchema } from '@alfakit/core'
-  import { limitedListItems } from '@alfakit/core'
+  import { isolationDirection, limitedListItems } from '@alfakit/core'
   import CheckIcon from '@lucide/svelte/icons/check'
   import CopyIcon from '@lucide/svelte/icons/copy'
   import { badgeColorClasses, colorClass, textColorClasses } from '../../lib/colors'
@@ -104,6 +104,7 @@
     {:else}
       <!-- <bdi> isolates each value's direction (an English email inside an Arabic page). -->
       <bdi
+        dir={isolationDirection(text)}
         class={cn(
           schema.lineClamp && `line-clamp-${schema.lineClamp}`,
           !schema.wrap && !schema.lineClamp && 'whitespace-pre-line',

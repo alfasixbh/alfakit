@@ -370,4 +370,23 @@ describe('cells and entries', () => {
 
     wrapper.unmount()
   })
+
+  it('lays out Arabic-locale money as written, Arabic text in its own direction', () => {
+    // "‏0.00 US$" starts with a right-to-left mark: `dir="auto"` showed it as "$US 0.00".
+    const usd = '‏0.00 US$'
+    const component: TextEntrySchema = {
+      type: 'TextEntry',
+      key: 'totals',
+      name: 'totals',
+      state: [usd, 'مرحبا'],
+    }
+    const wrapper = mountWithAlfakit(() => h(TextEntryComponent, { component }))
+    const values = wrapper.findAll('bdi')
+
+    expect(values[0]!.attributes('dir')).toBe('ltr')
+    expect(values[0]!.text()).toBe(usd.trim())
+    expect(values[1]!.attributes('dir')).toBe('auto')
+
+    wrapper.unmount()
+  })
 })

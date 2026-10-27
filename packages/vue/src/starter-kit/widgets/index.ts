@@ -14,6 +14,7 @@ import {
   type PropType,
 } from 'vue'
 import { lazyComponent } from '../../lib/lazy'
+import { useStarterKitDocument } from '../navigation'
 import CopilotTrigger from './CopilotTrigger.vue'
 import LanguageSwitcherTrigger from './LanguageSwitcherTrigger.vue'
 import NotificationsTrigger from './NotificationsTrigger.vue'
@@ -46,6 +47,9 @@ function useStarterKitWidgets(
   part: keyof StarterKitWidgetsSchema,
 ): ComputedRef<StarterKitWidgets | null> {
   const page = usePage()
+
+  // The header is on every page of the app: it keeps `<html lang dir>` in step too.
+  useStarterKitDocument(page)
 
   return computed(() => starterKitWidgets(page.props, panelId(), part))
 }

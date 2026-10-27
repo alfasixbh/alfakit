@@ -117,6 +117,48 @@
   color: var(--alfakit-danger-text, oklch(0.704 0.191 22.216));
 }
 
+/*
+ * The starter kits' shadcn sidebar in a right-to-left language. `alfakit:install
+ * --starter-kit` docks it on the right (`side` follows `useAlfakitDirection()`), and the
+ * primitives below position themselves with physical classes: the inset content keeps its
+ * gap on the outer edge, badges and actions sit at the end of their row, sub-menus draw
+ * their line on the start side. Everything else (rail, border, mobile sheet) follows `side`.
+ */
+@media (width >= 48rem) {
+  [dir='rtl'] .peer[data-side='right'][data-variant='inset'] ~ [data-slot='sidebar-inset'] {
+    margin-right: 0;
+    margin-left: 0.5rem;
+  }
+}
+
+[dir='rtl'] [data-sidebar='menu-badge'],
+[dir='rtl'] [data-sidebar='menu-action'] {
+  right: auto;
+  left: 0.25rem;
+}
+
+[dir='rtl'] [data-sidebar='group-action'] {
+  right: auto;
+  left: 0.75rem;
+}
+
+[dir='rtl'] [data-sidebar='menu-sub'] {
+  border-left-width: 0;
+  border-right-width: 1px;
+  translate: -1px 0;
+}
+
+[dir='rtl'] [data-sidebar='menu-button'] {
+  text-align: right;
+}
+
+[dir='rtl']
+  [data-sidebar='menu-item']:has([data-sidebar='menu-action'])
+  > [data-sidebar='menu-button'] {
+  padding-right: 0.5rem;
+  padding-left: 2rem;
+}
+
 /* Rich editor content and extensions (same rules as the panel stylesheet). */
 .alfakit-prose :where(h2) {
   @apply mt-4 mb-2 text-xl font-semibold;

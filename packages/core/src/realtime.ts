@@ -447,9 +447,9 @@ export type SonnerPosition =
 /**
  * The direction overlays anchored to a screen edge (the toaster, the schema inspector's
  * sheet) are placed by: the panel's reading direction, except in starter kit mode, where
- * the host app owns `<html dir>` and its layout (the kit's sidebar stays on the left in a
- * right-to-left panel language). There they take the document's side, so "top end" never
- * lands on the kit's sidebar, while their content keeps the panel's direction (W-D-03).
+ * they take the document's side (`<html dir>`, from the shared `alfakitDocument`; an app
+ * whose root view or sidebar was not updated may still be left to right), so "top end"
+ * never lands on the kit's sidebar, while their content keeps the panel's direction (W-D-03).
  */
 export function overlayPlacementDirection(
   direction: 'ltr' | 'rtl',
