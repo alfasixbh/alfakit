@@ -305,7 +305,7 @@ Users move a card by:
 - dragging it with a mouse or pen, or after a short press with a finger (a quick swipe scrolls the board); the board scrolls near its edges and Escape cancels;
 - focusing it, pressing Space to pick it up, the arrow keys to move it and Space (or Enter) to drop it, or Escape to put it back.
 
-The board never offers a move the server would refuse: locked cards don't pick up, refused columns are skipped by the keyboard and outlined while dragging. Each drop sends one request with the target column, lane and the neighbouring card; the server re-checks everything, writes the status (and lane) and renumbers the column's order, in one transaction.
+The board never offers a move the server would refuse: locked cards don't pick up, refused columns are skipped by the keyboard and outlined while dragging. A card dragged over a column it may not enter (a transition `getTransitions()` doesn't list, a full strict column, another row) shows back in its own column, and releasing it there saves nothing: the card stays where it was and a toast says it cannot be moved to that column. A drag to a refused column that crosses an allowed one is refused, not saved in the allowed one. Each drop sends one request with the target column, lane and the neighbouring card; the server re-checks everything, writes the status (and lane) and renumbers the column's order, in one transaction.
 
 | Property or method                                    | Default                 | Does                                                                                             |
 | ----------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------ |

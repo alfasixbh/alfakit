@@ -197,6 +197,75 @@ describe('kanban', () => {
     executeJson.mockRestore()
   })
 
+  describe('dragging past a column the card may not enter (UR-02)', () => {
+    const transitions = { todo: ['todo', 'doing'], doing: ['doing', 'done'], done: ['done'] }
+    const zone = (key: string) =>
+      document.querySelector<HTMLElement>(`[data-slot="kanban-dropzone"][data-column="${key}"]`)!
+    const pointer = (type: string, target: EventTarget, x: number) => {
+      const event = new MouseEvent(type, { bubbles: true, cancelable: true, button: 0, clientX: x })
+      Object.defineProperties(event, { pointerId: { value: 1 }, pointerType: { value: 'mouse' } })
+      target.dispatchEvent(event)
+    }
+    let over: HTMLElement | null = null
+    const drag = (title: string, ...columns: string[]) => {
+      pointer('pointerdown', card(title), 0)
+      columns.forEach((key, index) => {
+        over = zone(key)
+        pointer('pointermove', document, 20 + index * 20)
+      })
+      pointer('pointerup', document, 100)
+    }
+
+    beforeEach(() => {
+      over = null
+      document.elementFromPoint = () => over
+    })
+
+    it('returns the card to its column, says why and saves nothing', async () => {
+      const executeJson = vi.spyOn(actions, 'executeJson').mockResolvedValue({ ok: true })
+      renderWith(<RenderComponent component={board({ transitions }) as never} />)
+
+      await screen.findByText('Write docs')
+      drag('Write docs', 'doing', 'done')
+
+      await waitFor(() =>
+        expect(screen.getByRole('status')).toHaveTextContent('Write docs cannot be moved to Done.'),
+      )
+      expect(titles('todo')).toEqual(['Write docs', 'Review PR'])
+      expect(titles('doing')).toEqual([])
+      expect(titles('done')).toEqual([])
+      expect(document.body.textContent).toContain('2 cards')
+      expect(executeJson).not.toHaveBeenCalled()
+      executeJson.mockRestore()
+    })
+
+    it('saves an allowed column and keeps the card there', async () => {
+      const executeJson = vi.spyOn(actions, 'executeJson').mockResolvedValue({
+        ok: true,
+        card: { key: '2', title: 'Review PR' },
+        counts: { todo: 1, doing: 1 },
+      })
+      renderWith(<RenderComponent component={board({ transitions }) as never} />)
+
+      await screen.findByText('Review PR')
+      drag('Review PR', 'doing', 'done', 'doing')
+
+      await waitFor(() => expect(executeJson).toHaveBeenCalledTimes(1))
+      expect(executeJson.mock.calls[0]![1]).toMatchObject({
+        record: '2',
+        arguments: { kanban: { column: 'doing' } },
+      })
+      await waitFor(() =>
+        expect(
+          screen.getByText('Review PR').closest('[data-slot="kanban-card"]'),
+        ).not.toHaveAttribute('data-saving'),
+      )
+      expect(titles('doing')).toEqual(['Review PR'])
+      expect(titles('todo')).toEqual(['Write docs'])
+      executeJson.mockRestore()
+    })
+  })
+
   it('cancels a keyboard move with Escape', async () => {
     renderWith(<RenderComponent component={board() as never} />)
 

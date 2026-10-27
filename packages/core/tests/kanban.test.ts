@@ -305,6 +305,21 @@ describe('KanbanController', () => {
     expect(keys(controller.state.columns).todo).toEqual(['1', '2'])
   })
 
+  it('rolls back when the server fails (500) or cannot be reached', async () => {
+    const env = environment(vi.fn().mockRejectedValue(new HttpError(500, {})))
+    const controller = new KanbanController(board(), env)
+
+    expect(await controller.moveTo('1', { column: 'done', lane: null, index: 0 })).toBe(false)
+    expect(keys(controller.state.columns)).toEqual({ todo: ['1', '2'], doing: ['3'], done: [] })
+    expect(controller.state.columns.map((c) => c.count)).toEqual([2, 1, 0])
+    expect(env.error).toHaveBeenLastCalledWith('The card could not be moved.')
+
+    env.runner.executeJson.mockRejectedValue(new TypeError('Failed to fetch'))
+    expect(await controller.moveTo('1', { column: 'done', lane: null, index: 0 })).toBe(false)
+    expect(keys(controller.state.columns).todo).toEqual(['1', '2'])
+    expect(controller.state.saving.size).toBe(0)
+  })
+
   it('does not pick up cards the user may not move', () => {
     const controller = new KanbanController(
       board({ columns: [column('todo', [card('1', { movable: false })])] }),
@@ -424,6 +439,121 @@ describe('attachKanbanPointer', () => {
     await vi.waitFor(() => expect(env.runner.executeJson).toHaveBeenCalledTimes(1))
 
     expect(document.querySelector('[data-slot="kanban-ghost"]')).toBeNull()
+    detach()
+  })
+
+  // UR-02: draft → shipped is not allowed; the pointer crosses "confirmed" on its way.
+  function orders() {
+    document.body.innerHTML = `
+      <div id="root">
+        <div data-slot="kanban-scroller">
+          <ul data-slot="kanban-dropzone" data-column="draft">
+            <li data-slot="kanban-card" data-key="1"><span>One</span></li>
+            <li data-slot="kanban-card" data-key="2">Two</li>
+          </ul>
+          <ul data-slot="kanban-dropzone" data-column="confirmed"></ul>
+          <ul data-slot="kanban-dropzone" data-column="shipped"></ul>
+        </div>
+      </div>`
+
+    const root = document.getElementById('root')!
+    const zone = (key: string) => root.querySelector<HTMLElement>(`[data-column="${key}"]`)!
+    const env = environment(
+      vi.fn().mockResolvedValue({ ok: true, card: null, counts: { draft: 1, confirmed: 1 } }),
+    )
+    const controller = new KanbanController(
+      board({
+        orderable: false,
+        columns: [
+          column('draft', [card('1'), card('2')], { label: 'Draft' }),
+          column('confirmed', [], { label: 'Confirmed' }),
+          column('shipped', [], { label: 'Shipped' }),
+        ],
+        transitions: { draft: ['draft', 'confirmed'], confirmed: ['confirmed', 'shipped'] },
+      }),
+      env,
+    )
+    let over = zone('draft')
+    const detach = attachKanbanPointer(root, controller, { elementFromPoint: () => over })
+    const drag = (...columns: string[]) => {
+      pointer('pointerdown', root.querySelector('[data-key="1"] span')!, {
+        clientX: 0,
+        clientY: 0,
+      })
+      columns.forEach((key, index) => {
+        over = zone(key)
+        pointer('pointermove', document, { clientX: 20 + index * 20, clientY: 0 })
+      })
+      pointer('pointerup', document, { clientX: 100, clientY: 0 })
+    }
+
+    return { controller, env, drag, detach }
+  }
+
+  it('returns a card released over a column it may not enter, with a message (UR-02)', async () => {
+    const { controller, env, drag, detach } = orders()
+
+    drag('confirmed', 'shipped')
+    await Promise.resolve()
+
+    expect(env.runner.executeJson).not.toHaveBeenCalled()
+    expect(keys(controller.state.columns)).toEqual({
+      draft: ['1', '2'],
+      confirmed: [],
+      shipped: [],
+    })
+    expect(controller.state.columns.map((c) => c.count)).toEqual([2, 0, 0])
+    expect(controller.state.picked).toBeNull()
+    expect(controller.state.refused).toBeNull()
+    expect(env.error).toHaveBeenCalledWith('Card 1 cannot be moved to Shipped.')
+
+    // A drag straight from draft to shipped is refused out loud too.
+    drag('shipped')
+    await Promise.resolve()
+
+    expect(env.runner.executeJson).not.toHaveBeenCalled()
+    expect(env.error).toHaveBeenCalledTimes(2)
+    expect(keys(controller.state.columns).draft).toEqual(['1', '2'])
+    detach()
+  })
+
+  it('shows the card back at its origin while it hovers a refused column', () => {
+    const { controller, detach } = orders()
+
+    controller.pick('1', 'pointer')
+    controller.hover({ column: 'confirmed', lane: null, index: 0 })
+    expect(keys(controller.state.columns).confirmed).toEqual(['1'])
+
+    controller.hover({ column: 'shipped', lane: null, index: 0 })
+    expect(keys(controller.state.columns)).toEqual({
+      draft: ['1', '2'],
+      confirmed: [],
+      shipped: [],
+    })
+    expect(controller.state.refused).toEqual({ column: 'shipped', reason: 'transition' })
+
+    // Back over its own place: nothing is refused any more.
+    controller.hover({ column: 'draft', lane: null, index: 0 })
+    expect(controller.state.refused).toBeNull()
+    expect(keys(controller.state.columns).draft).toEqual(['1', '2'])
+
+    controller.cancel()
+    detach()
+  })
+
+  it('saves an allowed column after the pointer passed over a refused one', async () => {
+    const { controller, env, drag, detach } = orders()
+
+    drag('confirmed', 'shipped', 'confirmed')
+    await vi.waitFor(() => expect(env.runner.executeJson).toHaveBeenCalledTimes(1))
+
+    expect(env.runner.executeJson.mock.calls[0]![1]).toMatchObject({
+      record: '1',
+      arguments: { kanban: { column: 'confirmed' } },
+    })
+    expect(env.error).not.toHaveBeenCalled()
+    expect(keys(controller.state.columns)).toEqual({ draft: ['2'], confirmed: ['1'], shipped: [] })
+    expect(controller.state.columns.map((c) => c.count)).toEqual([1, 1, 0])
     detach()
   })
 
