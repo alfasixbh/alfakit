@@ -18,7 +18,16 @@
       href={cms.site.url}
       class="focus-visible:ring-ring/50 rounded-md text-lg font-semibold tracking-tight outline-none focus-visible:ring-[3px]"
     >
-      {cms.site.name}
+      {#if cms.site.design?.logo}
+        <img
+          src={cms.site.design.logo.url}
+          alt={cms.site.design.logo.alt}
+          data-slot="cms-logo"
+          class="h-9 w-auto max-w-48 object-contain"
+        />
+      {:else}
+        {cms.site.name}
+      {/if}
     </a>
     <div class="flex items-center gap-2">
       <CmsNav menu={cms.menus.main}>

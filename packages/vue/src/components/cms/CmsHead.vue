@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { cmsHeadTags, type CmsSeoSchema } from '@alfakit/core'
+import { cmsDesignLinks, cmsHeadTags, type CmsSeoSchema, type CmsSiteDesign } from '@alfakit/core'
 import { Head } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 /**
- * The page's `<title>`, meta, canonical, `hreflang` and JSON-LD tags, through Inertia's
- * `<Head>` (server-rendered with SSR, updated on every visit).
+ * The page's `<title>`, meta, canonical, `hreflang` and JSON-LD tags, plus the site
+ * design's favicon and fonts, through Inertia's `<Head>` (server-rendered with SSR,
+ * updated on every visit).
  */
-const props = defineProps<{ seo: CmsSeoSchema | null | undefined }>()
+const props = defineProps<{
+  seo: CmsSeoSchema | null | undefined
+  design?: CmsSiteDesign | null
+}>()
 
 const tags = computed(() => cmsHeadTags(props.seo))
+const designLinks = computed(() => cmsDesignLinks(props.design))
 </script>
 
 <template>
@@ -30,6 +35,13 @@ const tags = computed(() => cmsHeadTags(props.seo))
       :rel="link.rel"
       :href="link.href"
       :hreflang="link.hreflang"
+    />
+    <link
+      v-for="link in designLinks"
+      :key="`design:${link.rel}`"
+      :head-key="`cms:design:${link.rel}`"
+      :rel="link.rel"
+      :href="link.href"
     />
     <!-- Encoded on the server with `<` escaped, so it can't close the element. -->
     <component :is="'script'" v-if="tags.jsonLd" head-key="cms:jsonld" type="application/ld+json">{{

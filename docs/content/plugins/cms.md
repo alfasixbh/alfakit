@@ -57,6 +57,18 @@ Turn on **Show advanced settings** to see **Search and sharing**. It shows how t
 
 **Content → Menus** holds the links at the top and bottom of the site. Add items, pick a page (start typing to search) or type a web address, drag items to reorder them, and add sub-items under an item. Links to pages that aren't published are left out automatically.
 
+### Changing how the site looks
+
+**Content → Site design** sets the look of the whole website:
+
+- **Logo and icon**: your logo replaces the site name in the header; the browser icon shows in the tab.
+- **Colors**: the main color (buttons, links), a second color, the page background and the text color. Leave one empty to keep the default. If the text and background are hard to read together, the page warns you before you save.
+- **Fonts and corners**: a font for headings and one for text (including Arabic fonts such as Cairo and Tajawal), and how rounded buttons and cards are.
+
+Click **Save design**; every page follows it right away. Open **Live preview** on any page to see it.
+
+Each block also has a **Style** section (closed until you open it): a background (soft, main color, second color or dark), the space above and below, whether it shows on all screens, only on computers or only on phones, and a **Link name** so a menu item or button can jump to it (`#pricing`).
+
 ### Editing from the website
 
 If your site shows the **editing bar**, you'll see it at the bottom of every page while you're signed in: **Edit this page** takes you straight to the editor, **View draft** shows unpublished changes, **Back to dashboard** returns to the admin. The arrow button tucks the bar away.
@@ -462,6 +474,49 @@ $menu = Cms::menu('main');            // ['handle' => 'main', 'name' => 'Main', 
 $url = Cms::url($page);               // the page's public URL
 ```
 
+## Site design
+
+**Site design** (`ManageSiteDesign`, in the CMS navigation group) stores the public site's design in `alfakit_cms_site_settings`, one row per tenant. Public pages get it as `cms.site.design`:
+
+- **Colors** are mapped onto the theme variables every block already uses (`--primary`, `--secondary`, `--background`, `--foreground`, plus soft surfaces, quiet text and borders mixed from the background and text colors), so built-in and custom blocks follow without changes. The text color on the main and second colors is picked on the server for contrast. The variables are set on the document root, so menus and dialogs outside the page follow them too, and they win over panel themes.
+- **Fonts** come from [fonts.bunny.net](https://fonts.bunny.net) (no visitor data goes to Google) and are applied as `--cms-font-body` / `--cms-font-heading`.
+- **Corners** set `--radius`. The **logo** replaces the site name in `CmsHeader`; the **favicon** and the fonts' stylesheet are added to the head by `CmsHead` (pass `design={cms.site.design}` when you build your own page) and to `$alfakitCmsHead`.
+
+Every block gets a collapsed **Style** section stored under `cms_style` in its data. The rendered block carries only the options that differ from the default (`block.style`: `background`, `spacing`, `visibility`, `anchor`); `CmsBlocks` puts them on the block's wrapper as `id` and `data-cms-background`, `data-cms-spacing`, `data-cms-visibility`, styled by the shared theme CSS. Use `cmsBlockAttributes(block)` from `@alfakit/core` on your own wrappers.
+
+```php
+CmsPlugin::make()->siteDesign(false); // no Site design page and no Style section
+```
+
+Editing needs the `update` ability on `AlfaSix\AlfakitCms\Models\SiteSettings` (through `authorize()` or a `SiteSettingsPolicy`).
+
+### Custom CSS and code
+
+`customCode()` adds **Custom CSS and code** to Site design: CSS for every public page, and HTML snippets before `</head>` and before `</body>` (an analytics tag, a chat widget). It is **off by default**, because code added there runs on every public page: allow it only for people you trust with the site.
+
+```php
+CmsPlugin::make()->customCode(fn (User $user): bool => $user->is_admin); // per user
+CmsPlugin::make()->customCode();                                         // everyone who may edit Site design
+```
+
+- Each save keeps the previous code, with who saved it and when; **Code history** puts an earlier version back. The last 20 versions are kept.
+- Custom CSS is refused when it uses `@import`, script features (`expression()`, `javascript:`, behaviours) or files from other websites (which could track visitors), also when written with CSS escapes. It is sent inside `cms.site.design.css` with `<` written as its CSS escape, so it can never close its `<style>` element.
+- The snippets are never part of the Inertia props or the JSON API. They reach the page through the Blade root view, so they run on full page loads (as analytics tags expect) and never on preview links. AlfaKit's own root view prints them; in your own root view (`->rootView('site')`), add:
+
+```blade
+<head>
+    {{-- … --}}
+    {{ $alfakitCmsCode ?? '' }}
+</head>
+<body>
+    @inertia
+    {{ $alfakitCmsBodyCode ?? '' }}
+</body>
+```
+
+- Turning `customCode()` off stops saved CSS and code from reaching pages, without deleting them.
+- With a Content Security Policy, allow what your snippets load; the design's `<style>` element has no nonce.
+
 ## The public site
 
 ```php
@@ -505,9 +560,11 @@ Import a stylesheet that loads Tailwind first: `resources/css/alfakit.css` in pa
         @viteReactRefresh {{-- React only: your own block components under npm run dev --}}
         @vite(['resources/js/site.tsx'])
         <x-inertia::head />
+        {{ $alfakitCmsCode ?? '' }} {{-- Site design code snippets (customCode()) --}}
     </head>
     <body>
         <x-inertia::app />
+        {{ $alfakitCmsBodyCode ?? '' }}
     </body>
 </html>
 ```
@@ -582,7 +639,7 @@ The page payload is the same `cms.page` the Inertia route sends, typed as `CmsPa
 
 ## Authorisation
 
-Every ability goes through the plugin's `authorize()` closure when you set one, else the model's policy (`Page`, `Menu`, `Redirect`):
+Every ability goes through the plugin's `authorize()` closure when you set one, else the model's policy (`Page`, `Menu`, `Redirect`, `SiteSettings`):
 
 ```php
 use AlfaSix\AlfakitCms\Models\Page;
@@ -638,6 +695,8 @@ Without a policy everything is allowed unless the panel uses `strictAuthorizatio
 | `livePreview()`                                                   | on, 1500 ms                           | Autosave and the live preview pane                            |
 | `review()`                                                        | on                                    | The review workflow and who is notified                       |
 | `adminBar()`                                                      | off                                   | The editing bar on public pages                               |
+| `siteDesign()`                                                    | on                                    | The Site design page and each block's Style section           |
+| `customCode()`                                                    | off                                   | Custom CSS and head/body code (who may edit)                  |
 | `templates()` / `templateLibrary()`                               | none / on                             | Page templates in code and in the panel                       |
 | `sections()`                                                      | on                                    | Reusable sections                                             |
 | `blockPreviews()`                                                 | off                                   | Compact block previews in the editor                          |
@@ -656,6 +715,7 @@ Without a policy everything is allowed unless the panel uses `strictAuthorizatio
 - JSON-LD is encoded so it can't close its script element, and renderers refuse JSON-LD that contains `<`.
 - Public queries, the sitemap, menus, redirects and the API only return live content of the request's tenant. Previews require a valid, unexpired signature and are never indexed or cached.
 - Publishing is authorised separately (`publish`), and the server ignores status changes from users without it.
+- Site design colors, fonts and radii are checked against fixed formats and lists on the server before they become CSS. Custom CSS and code are off unless `customCode()` allows them; custom CSS can't import, run scripts or load other sites' files, and code snippets never reach previews, Inertia props or the API.
 
 ## Translations
 

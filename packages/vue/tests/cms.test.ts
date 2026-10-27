@@ -97,6 +97,39 @@ describe('CMS page', () => {
     document.documentElement.dir = 'ltr'
   })
 
+  it('applies the site design and block style hooks', () => {
+    const payload = cmsPayloadFixture()
+    const [first, ...rest] = payload.page.blocks
+    const wrapper = mount(CmsPage, {
+      props: {
+        cms: {
+          ...payload,
+          page: {
+            ...payload.page,
+            blocks: [{ ...first!, style: { background: 'primary', anchor: 'pricing' } }, ...rest],
+          },
+          site: {
+            ...payload.site,
+            design: {
+              css: 'html{--primary:#ff0000}',
+              fonts: null,
+              logo: { url: '/logo.png', alt: 'Acme' },
+              favicon: null,
+            },
+          },
+        },
+      },
+    })
+
+    const block = wrapper.find('[data-cms-block="hero"]')
+    expect(block.attributes('id')).toBe('pricing')
+    expect(block.attributes('data-cms-background')).toBe('primary')
+    expect(wrapper.find('style[data-slot="cms-design"]').element.textContent).toBe(
+      'html{--primary:#ff0000}',
+    )
+    expect(wrapper.find('img[data-slot="cms-logo"]').attributes('src')).toBe('/logo.png')
+  })
+
   it('server-renders blocks without a registry', async () => {
     const app = createSSRApp({
       render: () => h(CmsBlocks, { blocks: cmsPayloadFixture().page.blocks }),
@@ -106,6 +139,20 @@ describe('CMS page', () => {
     expect(html).toContain('We build things')
     expect(html).toContain('<details')
     expect(html).not.toContain('unknown')
+  })
+
+  it('server-renders the site design', async () => {
+    const payload = cmsPayloadFixture()
+    const cms = {
+      ...payload,
+      site: {
+        ...payload.site,
+        design: { css: 'html{--primary:#ff0000}', fonts: null, logo: null, favicon: null },
+      },
+    }
+    const html = await renderToString(createSSRApp({ render: () => h(CmsPage, { cms }) }))
+
+    expect(html).toContain('<style data-slot="cms-design">html{--primary:#ff0000}</style>')
   })
 })
 

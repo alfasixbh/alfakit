@@ -1,11 +1,18 @@
-import { cmsHeadTags, type CmsSeoSchema } from '@alfakit/core'
+import { cmsDesignLinks, cmsHeadTags, type CmsSeoSchema, type CmsSiteDesign } from '@alfakit/core'
 import { Head } from '@inertiajs/react'
 
 /**
- * The page's `<title>`, meta, canonical, `hreflang` and JSON-LD tags, through Inertia's
- * `<Head>` (server-rendered with SSR, updated on every visit).
+ * The page's `<title>`, meta, canonical, `hreflang` and JSON-LD tags, plus the site
+ * design's favicon and fonts, through Inertia's `<Head>` (server-rendered with SSR,
+ * updated on every visit).
  */
-export function CmsHead({ seo }: { seo: CmsSeoSchema | null | undefined }) {
+export function CmsHead({
+  seo,
+  design,
+}: {
+  seo: CmsSeoSchema | null | undefined
+  design?: CmsSiteDesign | null
+}) {
   const tags = cmsHeadTags(seo)
 
   return (
@@ -34,6 +41,14 @@ export function CmsHead({ seo }: { seo: CmsSeoSchema | null | undefined }) {
           rel={link.rel}
           href={link.href}
           hrefLang={link.hreflang}
+        />
+      ))}
+      {cmsDesignLinks(design).map((link) => (
+        <link
+          key={`design:${link.rel}`}
+          head-key={`cms:design:${link.rel}`}
+          rel={link.rel}
+          href={link.href}
         />
       ))}
       {/* Encoded on the server with `<` escaped, so it can't close the element. */}

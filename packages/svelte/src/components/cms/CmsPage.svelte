@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { CMS_FOOTER_KEY, CMS_HEADER_KEY, cmsPayload, type CmsPayload } from '@alfakit/core'
+  import {
+    CMS_FOOTER_KEY,
+    CMS_HEADER_KEY,
+    cmsDesignCss,
+    cmsPayload,
+    type CmsPayload,
+  } from '@alfakit/core'
   import { page as inertiaPage } from '@inertiajs/svelte'
   import EyeIcon from '@lucide/svelte/icons/eye'
   import type { Snippet } from 'svelte'
@@ -58,6 +64,7 @@
   const registry = useOptionalRegistry()
   const Header = $derived<AnyComponent>(registry?.resolve(CMS_HEADER_KEY) ?? CmsHeader)
   const Footer = $derived<AnyComponent>(registry?.resolve(CMS_FOOTER_KEY) ?? CmsFooter)
+  const designCss = $derived(cmsDesignCss(cms?.site.design))
 
   $effect(() => {
     if (!cms) return
@@ -68,7 +75,7 @@
 </script>
 
 {#if cms}
-  <CmsHead seo={cms.page.seo} />
+  <CmsHead seo={cms.page.seo} design={cms.site.design} />
   <div
     dir={cms.site.direction}
     lang={cms.site.tag}
@@ -82,6 +89,11 @@
     >
       {context.t('cms.skip_to_content', {}, 'Skip to content')}
     </a>
+    {#if designCss}
+      <!-- Site design: built on the server and checked by `cmsDesignCss()`: it contains no `<`. -->
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -- checked by cmsDesignCss() -->
+      {@html `<style data-slot="cms-design">${designCss}</` + 'style>'}
+    {/if}
     {#if cms.preview}
       <div
         role="status"

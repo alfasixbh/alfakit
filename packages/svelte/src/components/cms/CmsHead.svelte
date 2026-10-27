@@ -1,10 +1,15 @@
 <script lang="ts">
-  import { cmsHeadTags, type CmsSeoSchema } from '@alfakit/core'
+  import { cmsDesignLinks, cmsHeadTags, type CmsSeoSchema, type CmsSiteDesign } from '@alfakit/core'
 
-  /** The page's `<title>`, meta, canonical, `hreflang` and JSON-LD tags (`<svelte:head>`). */
-  let { seo }: { seo: CmsSeoSchema | null | undefined } = $props()
+  /**
+   * The page's `<title>`, meta, canonical, `hreflang` and JSON-LD tags, plus the site
+   * design's favicon and fonts (`<svelte:head>`).
+   */
+  let { seo, design }: { seo: CmsSeoSchema | null | undefined; design?: CmsSiteDesign | null } =
+    $props()
 
   const tags = $derived(cmsHeadTags(seo))
+  const designLinks = $derived(cmsDesignLinks(design))
 </script>
 
 <svelte:head>
@@ -18,6 +23,9 @@
   {/each}
   {#each tags.links as link (`${link.rel}:${link.hreflang ?? ''}:${link.href}`)}
     <link rel={link.rel} href={link.href} hreflang={link.hreflang} />
+  {/each}
+  {#each designLinks as link (`design:${link.rel}`)}
+    <link rel={link.rel} href={link.href} />
   {/each}
   {#if tags.jsonLd}
     <!-- Encoded on the server and checked by `cmsHeadTags()`: it contains no `<`. -->

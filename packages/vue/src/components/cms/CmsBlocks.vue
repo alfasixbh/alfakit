@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cmsBlockKey, cmsBlocks, type CmsBlockSchema } from '@alfakit/core'
+import { cmsBlockAttributes, cmsBlockKey, cmsBlocks, type CmsBlockSchema } from '@alfakit/core'
 import { computed, inject, provide } from 'vue'
 import { useOptionalRegistry, type AnyComponent } from '../../context'
 import { CMS_BLOCK_COMPONENTS } from './blocks'
@@ -43,8 +43,8 @@ const rendered = computed(() =>
 <template>
   <div
     v-for="entry in rendered"
-    :id="entry.block.id"
     :key="entry.block.id"
+    v-bind="cmsBlockAttributes(entry.block)"
     data-slot="cms-block"
     :data-cms-block="entry.block.type"
   >

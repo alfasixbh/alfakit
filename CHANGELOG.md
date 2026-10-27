@@ -6,6 +6,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Upgrading
+
+- CMS: publish and run the new migration for Site design with `php artisan alfakit:upgrade --migrations`, then `php artisan migrate` (adds `alfakit_cms_site_settings`). Don't use `vendor:publish --tag=alfakit-cms-migrations` for this: it copies the migration you already ran again. Public pages keep working before you migrate; they just have no design.
+- CMS with your own Blade root view (`->rootView('site')`): to use `customCode()`, print `{{ $alfakitCmsCode ?? '' }}` before `</head>` and `{{ $alfakitCmsBodyCode ?? '' }}` before `</body>`. AlfaKit's own root view already does.
+
+### Added
+
+- `php artisan alfakit:upgrade` lists the new migrations of AlfaKit packages you set up before, and `alfakit:upgrade --migrations` publishes only those (with fresh dates), so upgrades never copy migrations you already ran.
+- CMS **Site design** (`CmsPlugin::siteDesign()`, on by default): editors set the public site's logo, browser icon, main and second colors, background and text colors, heading and text fonts (fonts.bunny.net, Arabic fonts included) and corner radius in the panel. Colors become the theme variables every block already uses, so built-in and custom blocks follow them; the text on colored buttons is picked for contrast, and the page warns when text and background are hard to read. Sent to renderers as `cms.site.design`; the logo replaces the site name in the header, and the favicon and fonts go into the head.
+- CMS block **Style** section on every block: background (soft, main color, second color, dark), space above and below, show on all screens / computers only / phones only, and a link name (`#pricing`) for in-page links. Sent as `block.style` and applied on the block wrapper by `CmsBlocks` in React, Vue and Svelte (`cmsBlockAttributes()` in `@alfakit/core`).
+- CMS custom CSS and code (`CmsPlugin::customCode()`, **off by default**; `true` or `fn (User $user): bool` for who may edit): CSS for every public page and HTML snippets before `</head>` / `</body>` (analytics, chat widgets), with **Code history** to restore any of the last 20 versions. Custom CSS can't `@import`, run scripts or load files from other websites (escaped forms included) and can never close its `<style>` element; snippets reach pages only through the root view, never previews, Inertia props or the JSON API.
+
 ## [0.1.13] - 2026-10-26
 
 ### Upgrading from 0.1.12

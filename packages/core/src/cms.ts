@@ -1,5 +1,11 @@
 import { Translator } from './i18n'
-import type { CmsAspectRatio, CmsBlockSchema, CmsPayload, CmsSeoSchema } from './schema/cms'
+import type {
+  CmsAspectRatio,
+  CmsBlockSchema,
+  CmsPayload,
+  CmsSeoSchema,
+  CmsSiteDesign,
+} from './schema/cms'
 
 /**
  * The framework-agnostic half of the CMS renderers (alfasix/alfakit-cms): registry keys,
@@ -117,6 +123,37 @@ export interface CmsLinkTag {
   rel: string
   href: string
   hreflang?: string
+}
+
+/** The favicon and font stylesheet of the site design, for `<head>`. */
+export function cmsDesignLinks(design: CmsSiteDesign | null | undefined): CmsLinkTag[] {
+  const links: CmsLinkTag[] = []
+
+  if (design?.favicon) links.push({ rel: 'icon', href: design.favicon })
+  if (design?.fonts) links.push({ rel: 'stylesheet', href: design.fonts })
+
+  return links
+}
+
+/** The design's CSS for a `<style>` element; checked again so it can never close the element. */
+export function cmsDesignCss(design: CmsSiteDesign | null | undefined): string | null {
+  const css = design?.css
+
+  return typeof css === 'string' && css !== '' && !css.includes('<') ? css : null
+}
+
+/**
+ * The attributes of a block's wrapper (`data-slot="cms-block"`): its `id` (the anchor
+ * from **Style**, else the block id) and the `data-cms-*` hooks `themes.css` styles.
+ */
+export function cmsBlockAttributes(block: CmsBlockSchema): Record<string, string> {
+  const attributes: Record<string, string> = { id: block.style?.anchor ?? block.id }
+
+  if (block.style?.background) attributes['data-cms-background'] = block.style.background
+  if (block.style?.spacing) attributes['data-cms-spacing'] = block.style.spacing
+  if (block.style?.visibility) attributes['data-cms-visibility'] = block.style.visibility
+
+  return attributes
 }
 
 export interface CmsHeadTags {

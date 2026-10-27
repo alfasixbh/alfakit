@@ -1015,3 +1015,95 @@
   box-shadow: none;
   outline: none;
 }
+
+/* ------------------------------------------------------------------ CMS site design */
+
+/*
+ * Public CMS pages (alfasix/alfakit-cms). **Site design** sets the theme variables on the
+ * document root; these rules apply its fonts and each block's **Style** section
+ * (`data-cms-background`, `data-cms-spacing`, `data-cms-visibility` on
+ * `data-slot="cms-block"`). The page keeps copies of its colours so a coloured block can
+ * swap them for its content.
+ */
+[data-slot='cms-page'] {
+  --cms-primary: var(--primary);
+  --cms-on-primary: var(--primary-foreground);
+  --cms-secondary: var(--secondary);
+  --cms-on-secondary: var(--secondary-foreground);
+  font-family: var(--cms-font-body);
+}
+
+/* In-page links (`#pricing`) stop below the sticky site header. */
+[data-slot='cms-page'] [data-slot='cms-block'][id] {
+  scroll-margin-top: 5rem;
+}
+
+[data-slot='cms-page'] :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--cms-font-heading, var(--cms-font-body));
+}
+
+[data-slot='cms-block'][data-cms-background] {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+[data-slot='cms-block'][data-cms-background='muted'] {
+  --background: var(--muted);
+}
+
+[data-slot='cms-block'][data-cms-background='primary'],
+[data-slot='cms-block'][data-cms-background='secondary'],
+[data-slot='cms-block'][data-cms-background='dark'] {
+  --muted: color-mix(in oklab, var(--foreground) 10%, var(--background));
+  --muted-foreground: color-mix(in oklab, var(--foreground) 80%, var(--background));
+  --border: color-mix(in oklab, var(--foreground) 22%, var(--background));
+  --card: color-mix(in oklab, var(--foreground) 7%, var(--background));
+  --card-foreground: var(--foreground);
+}
+
+[data-slot='cms-block'][data-cms-background='primary'] {
+  --background: var(--cms-primary);
+  --foreground: var(--cms-on-primary);
+  --primary: var(--cms-on-primary);
+  --primary-foreground: var(--cms-primary);
+}
+
+[data-slot='cms-block'][data-cms-background='secondary'] {
+  --background: var(--cms-secondary);
+  --foreground: var(--cms-on-secondary);
+}
+
+[data-slot='cms-block'][data-cms-background='dark'] {
+  --background: oklch(0.205 0 0);
+  --foreground: oklch(0.985 0 0);
+}
+
+[data-slot='cms-block'][data-cms-spacing='none'] > * {
+  padding-block: 0;
+}
+
+[data-slot='cms-block'][data-cms-spacing='small'] > * {
+  padding-block: 1.5rem;
+}
+
+[data-slot='cms-block'][data-cms-spacing='large'] > * {
+  padding-block: 6rem;
+}
+
+@media (min-width: 640px) {
+  [data-slot='cms-block'][data-cms-spacing='large'] > * {
+    padding-block: 8rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  [data-slot='cms-block'][data-cms-visibility='desktop'] {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  [data-slot='cms-block'][data-cms-visibility='mobile'] {
+    display: none;
+  }
+}

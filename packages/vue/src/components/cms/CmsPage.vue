@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { CMS_FOOTER_KEY, CMS_HEADER_KEY, cmsPayload, type CmsPayload } from '@alfakit/core'
+import {
+  CMS_FOOTER_KEY,
+  CMS_HEADER_KEY,
+  cmsDesignCss,
+  cmsPayload,
+  type CmsPayload,
+} from '@alfakit/core'
 import { usePage } from '@inertiajs/vue3'
 import { EyeIcon } from '@lucide/vue'
 import { computed, defineAsyncComponent, watchEffect } from 'vue'
@@ -44,6 +50,7 @@ const context = provideCms(
 const registry = useOptionalRegistry()
 const header = computed<AnyComponent>(() => registry?.resolve(CMS_HEADER_KEY) ?? CmsHeader)
 const footer = computed<AnyComponent>(() => registry?.resolve(CMS_FOOTER_KEY) ?? CmsFooter)
+const designCss = computed(() => cmsDesignCss(cms.value?.site.design))
 
 const t = (key: string, fallback: string) => context.value.t(key, {}, fallback)
 
@@ -60,7 +67,7 @@ watchEffect(() => {
 
 <template>
   <template v-if="cms">
-    <CmsHead :seo="cms.page.seo" />
+    <CmsHead :seo="cms.page.seo" :design="cms.site.design" />
     <div
       :dir="cms.site.direction"
       :lang="cms.site.tag"
@@ -74,6 +81,9 @@ watchEffect(() => {
       >
         {{ t('cms.skip_to_content', 'Skip to content') }}
       </a>
+      <!-- Site design: built on the server from checked values, never contains `<`. -->
+      <!-- eslint-disable-next-line vue/no-v-html, vue/no-v-text-v-html-on-component -- a native <style>; checked by cmsDesignCss() -->
+      <component :is="'style'" v-if="designCss" data-slot="cms-design" v-html="designCss" />
       <div
         v-if="cms.preview"
         role="status"

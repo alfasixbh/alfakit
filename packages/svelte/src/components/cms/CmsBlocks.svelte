@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cmsBlockKey, cmsBlocks, type CmsBlockSchema } from '@alfakit/core'
+  import { cmsBlockAttributes, cmsBlockKey, cmsBlocks, type CmsBlockSchema } from '@alfakit/core'
   import { getContext, hasContext, setContext } from 'svelte'
   import { useOptionalRegistry, type AnyComponent } from '../../context.svelte'
   import { CMS_BLOCK_COMPONENTS } from './blocks'
@@ -50,7 +50,7 @@
 </script>
 
 {#each rendered as { block, Component } (block.id)}
-  <div id={block.id} data-slot="cms-block" data-cms-block={block.type}>
+  <div {...cmsBlockAttributes(block)} data-slot="cms-block" data-cms-block={block.type}>
     <Component {block} data={block.data} />
   </div>
 {/each}

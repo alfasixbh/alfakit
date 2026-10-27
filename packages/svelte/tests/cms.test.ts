@@ -91,6 +91,39 @@ describe('CMS page', () => {
     expect(document.documentElement).toHaveAttribute('dir', 'rtl')
     document.documentElement.dir = 'ltr'
   })
+
+  it('applies the site design and block style hooks', () => {
+    const payload = cmsPayloadFixture()
+    const [first, ...rest] = payload.page.blocks
+    const { container } = render(CmsPage, {
+      props: {
+        cms: {
+          ...payload,
+          page: {
+            ...payload.page,
+            blocks: [{ ...first!, style: { background: 'primary', anchor: 'pricing' } }, ...rest],
+          },
+          site: {
+            ...payload.site,
+            design: {
+              css: 'html{--primary:#ff0000}',
+              fonts: null,
+              logo: { url: '/logo.png', alt: 'Acme' },
+              favicon: null,
+            },
+          },
+        },
+      },
+    })
+
+    const block = container.querySelector('[data-cms-block="hero"]')!
+    expect(block).toHaveAttribute('id', 'pricing')
+    expect(block).toHaveAttribute('data-cms-background', 'primary')
+    expect(container.querySelector('style[data-slot="cms-design"]')!.textContent).toBe(
+      'html{--primary:#ff0000}',
+    )
+    expect(container.querySelector('img[data-slot="cms-logo"]')).toHaveAttribute('src', '/logo.png')
+  })
 })
 
 describe('CMS live preview and admin bar', () => {

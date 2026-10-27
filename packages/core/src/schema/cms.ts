@@ -21,10 +21,20 @@ export interface CmsLinkSchema {
 }
 
 /** One rendered block: its type, a stable id (an anchor and a key) and its data. */
+/** The **Style** section of a block; only options that differ from the default are sent. */
+export interface CmsBlockStyle {
+  background?: 'muted' | 'primary' | 'secondary' | 'dark'
+  spacing?: 'none' | 'small' | 'large'
+  visibility?: 'desktop' | 'mobile'
+  /** The block's `id`, for in-page links (`#pricing`). */
+  anchor?: string
+}
+
 export interface CmsBlockSchema<TData = Record<string, unknown>> {
   type: string
   id: string
   data: TData
+  style?: CmsBlockStyle
 }
 
 export interface CmsHeroBlockData {
@@ -210,6 +220,18 @@ export interface CmsSiteSchema {
   tag: string
   direction: 'ltr' | 'rtl'
   locales: { code: string; label: string; url: string; current: boolean }[]
+  /** **Site design** (`CmsPlugin::siteDesign()`); null when nothing is set. */
+  design?: CmsSiteDesign | null
+}
+
+/** The site's colors, fonts, logo and favicon, built and checked on the server. */
+export interface CmsSiteDesign {
+  /** Theme variables and custom CSS, for a `<style>` element (never contains `<`). */
+  css: string | null
+  /** The fonts' stylesheet URL. */
+  fonts: string | null
+  logo: { url: string; alt: string } | null
+  favicon: string | null
 }
 
 /** The `cms` prop of the `Alfakit/CmsPage` Inertia page. */

@@ -1,6 +1,7 @@
 import {
   CMS_FOOTER_KEY,
   CMS_HEADER_KEY,
+  cmsDesignCss,
   cmsPayload,
   type CmsPageProps,
   type CmsPayload,
@@ -42,7 +43,16 @@ export function CmsHeader({ cms }: { cms: CmsPayload }) {
           href={cms.site.url}
           className="focus-visible:ring-ring/50 rounded-md text-lg font-semibold tracking-tight outline-none focus-visible:ring-[3px]"
         >
-          {cms.site.name}
+          {cms.site.design?.logo ? (
+            <img
+              src={cms.site.design.logo.url}
+              alt={cms.site.design.logo.alt}
+              data-slot="cms-logo"
+              className="h-9 w-auto max-w-48 object-contain"
+            />
+          ) : (
+            cms.site.name
+          )}
         </a>
         <div className="flex items-center gap-2">
           <CmsNav menu={cms.menus.main}>
@@ -130,6 +140,7 @@ function CmsPageLayout({ cms, children }: { cms: CmsPayload; children?: ReactNod
   const { t } = useCms()
   const header: AnyComponent = registry?.resolve(CMS_HEADER_KEY) ?? CmsHeader
   const footer: AnyComponent = registry?.resolve(CMS_FOOTER_KEY) ?? CmsFooter
+  const designCss = cmsDesignCss(cms.site.design)
 
   return (
     <div
@@ -145,6 +156,10 @@ function CmsPageLayout({ cms, children }: { cms: CmsPayload; children?: ReactNod
       >
         {t('cms.skip_to_content', {}, 'Skip to content')}
       </a>
+      {/* Site design: built on the server from checked values, never contains `<`. */}
+      {designCss && (
+        <style data-slot="cms-design" dangerouslySetInnerHTML={{ __html: designCss }} />
+      )}
       {cms.preview && <PreviewBanner />}
       {createElement(header, { cms })}
       <main
@@ -204,7 +219,7 @@ export function CmsPage({
 
   return (
     <CmsProvider payload={cms} components={components}>
-      <CmsHead seo={cms.page.seo} />
+      <CmsHead seo={cms.page.seo} design={cms.site.design} />
       <CmsPageLayout cms={cms} />
     </CmsProvider>
   )

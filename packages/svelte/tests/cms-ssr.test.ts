@@ -22,4 +22,28 @@ describe('CMS server rendering', () => {
     expect(head).toContain('<script type="application/ld+json">')
     expect(body).toContain('data-slot="cms-page"')
   })
+
+  it('server-renders the site design', () => {
+    const payload = cmsPayloadFixture()
+    const { head, body } = render(CmsPage, {
+      props: {
+        cms: {
+          ...payload,
+          site: {
+            ...payload.site,
+            design: {
+              css: 'html{--primary:#ff0000}',
+              fonts: 'https://fonts.example.com/css',
+              logo: null,
+              favicon: '/favicon.ico',
+            },
+          },
+        },
+      },
+    })
+
+    expect(head).toContain('rel="icon"')
+    expect(head).toContain('href="https://fonts.example.com/css"')
+    expect(body).toContain('<style data-slot="cms-design">html{--primary:#ff0000}</style>')
+  })
 })

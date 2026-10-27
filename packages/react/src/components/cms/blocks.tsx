@@ -1,6 +1,7 @@
 import {
   CMS_FORM_KEY,
   cmsAspectClass,
+  cmsBlockAttributes,
   cmsBlockKey,
   cmsBlocks,
   cmsColumnsClass,
@@ -464,7 +465,12 @@ export function CmsBlocks({
         if (!Component) return null
 
         return (
-          <div key={block.id} id={block.id} data-slot="cms-block" data-cms-block={block.type}>
+          <div
+            key={block.id}
+            {...cmsBlockAttributes(block)}
+            data-slot="cms-block"
+            data-cms-block={block.type}
+          >
             <Component block={block} data={block.data} />
           </div>
         )

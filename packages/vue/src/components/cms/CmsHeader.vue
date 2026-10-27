@@ -19,7 +19,14 @@ const props = defineProps<{ cms: CmsPayload }>()
         :href="props.cms.site.url"
         class="focus-visible:ring-ring/50 rounded-md text-lg font-semibold tracking-tight outline-none focus-visible:ring-[3px]"
       >
-        {{ props.cms.site.name }}
+        <img
+          v-if="props.cms.site.design?.logo"
+          :src="props.cms.site.design.logo.url"
+          :alt="props.cms.site.design.logo.alt"
+          data-slot="cms-logo"
+          class="h-9 w-auto max-w-48 object-contain"
+        />
+        <template v-else>{{ props.cms.site.name }}</template>
       </a>
       <div class="flex items-center gap-2">
         <CmsNav :menu="props.cms.menus.main">
