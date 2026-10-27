@@ -53,6 +53,12 @@ return [
         'invalid_dimensions' => 'Le dimensioni dell’immagine non sono consentite.',
         'invalid_aspect_ratio' => 'Le proporzioni dell’immagine non sono consentite.',
         'chunk_failed' => 'Il caricamento è incompleto. Carica di nuovo il file.',
+        'types' => [
+            'images' => 'Immagini',
+            'videos' => 'Video',
+            'audio' => 'File audio',
+            'text' => 'File di testo',
+        ],
     ],
     'tags_input' => [
         'placeholder' => 'Aggiungi un tag…',

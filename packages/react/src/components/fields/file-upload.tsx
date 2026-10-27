@@ -596,10 +596,10 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
               </span>
             )}
             {!circle &&
-              (component.acceptedFileTypes || component.maxSize || component.minFiles) && (
+              (component.acceptedFileTypesLabel || component.maxSize || component.minFiles) && (
                 <span className="text-muted-foreground text-xs">
                   {[
-                    component.acceptedFileTypes?.join(', '),
+                    component.acceptedFileTypesLabel,
                     component.maxSize
                       ? `≤ ${fileManagerSize(component.maxSize * 1024, formatter)}`
                       : null,

@@ -53,6 +53,12 @@ return [
         'invalid_dimensions' => '画像のサイズが許可されていません。',
         'invalid_aspect_ratio' => '画像のアスペクト比が許可されていません。',
         'chunk_failed' => 'アップロードが完了していません。もう一度ファイルをアップロードしてください。',
+        'types' => [
+            'images' => '画像',
+            'videos' => '動画',
+            'audio' => '音声',
+            'text' => 'テキストファイル',
+        ],
     ],
     'tags_input' => [
         'placeholder' => 'タグを追加…',

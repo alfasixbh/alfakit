@@ -53,6 +53,12 @@ return [
         'invalid_dimensions' => 'Görsel boyutlarına izin verilmiyor.',
         'invalid_aspect_ratio' => 'Görselin en boy oranına izin verilmiyor.',
         'chunk_failed' => 'Yükleme tamamlanmadı. Dosyayı yeniden yükleyin.',
+        'types' => [
+            'images' => 'Görseller',
+            'videos' => 'Videolar',
+            'audio' => 'Ses dosyaları',
+            'text' => 'Metin dosyaları',
+        ],
     ],
     'tags_input' => [
         'placeholder' => 'Etiket ekle…',

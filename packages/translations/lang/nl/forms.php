@@ -53,6 +53,12 @@ return [
         'invalid_dimensions' => 'De afmetingen van de afbeelding zijn niet toegestaan.',
         'invalid_aspect_ratio' => 'De beeldverhouding van de afbeelding is niet toegestaan.',
         'chunk_failed' => 'De upload is onvolledig. Upload het bestand opnieuw.',
+        'types' => [
+            'images' => 'Afbeeldingen',
+            'videos' => 'Video\'s',
+            'audio' => 'Audiobestanden',
+            'text' => 'Tekstbestanden',
+        ],
     ],
     'tags_input' => [
         'placeholder' => 'Tag toevoegen…',

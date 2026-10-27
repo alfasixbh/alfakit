@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Fixed
+
+- FileUpload: the drop zone lists the accepted types by short name instead of raw MIME types: `['image/png', 'image/jpeg', 'image/webp', 'image/x-icon', 'image/vnd.microsoft.icon']` shows "PNG, JPG, WebP, ICO", and `image/*` (also from `image()`) shows "Images", translated. Other types show their `mimeTypeMap()` extension or their subtype (`application/vnd.sketchup.skp` is "SKP", `.csv` is "CSV"). The label is sent as `acceptedFileTypesLabel` in the field's schema.
+
 ## [0.1.13] - 2026-10-26
 
 ### Upgrading from 0.1.12

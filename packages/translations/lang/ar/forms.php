@@ -53,6 +53,12 @@ return [
         'invalid_dimensions' => 'أبعاد الصورة غير مسموح بها.',
         'invalid_aspect_ratio' => 'نسبة أبعاد الصورة غير مسموح بها.',
         'chunk_failed' => 'الرفع غير مكتمل. ارفع الملف مرة أخرى.',
+        'types' => [
+            'images' => 'صور',
+            'videos' => 'مقاطع فيديو',
+            'audio' => 'ملفات صوتية',
+            'text' => 'ملفات نصية',
+        ],
     ],
     'tags_input' => [
         'placeholder' => 'إضافة وسم…',

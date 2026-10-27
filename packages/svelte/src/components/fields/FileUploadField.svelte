@@ -390,7 +390,7 @@
 
   const hints = $derived(
     [
-      component.acceptedFileTypes?.join(', '),
+      component.acceptedFileTypesLabel,
       component.maxSize
         ? `≤ ${fileManagerSize(component.maxSize * 1024, formatter.current)}`
         : null,

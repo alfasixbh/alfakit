@@ -53,6 +53,12 @@ return [
         'invalid_dimensions' => '不允许此图片尺寸。',
         'invalid_aspect_ratio' => '不允许此图片宽高比。',
         'chunk_failed' => '上传不完整。请重新上传文件。',
+        'types' => [
+            'images' => '图片',
+            'videos' => '视频',
+            'audio' => '音频',
+            'text' => '文本文件',
+        ],
     ],
     'tags_input' => [
         'placeholder' => '添加标签…',
