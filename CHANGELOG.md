@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Card and grid table layouts: row actions no longer cover the record's text; they sit beside it, or move under it when the card is too narrow.
+- A long copyable value (such as the API reference's Base URL) wraps inside its own column, with the copy button right after it instead of on top of the next column.
 - Pressing Back again while a page restored by Back was still reloading could leave the browser showing a different page than the address bar. The reload is now cancelled on the next Back or Forward.
 
 ## [0.2.1] - 2026-10-27
