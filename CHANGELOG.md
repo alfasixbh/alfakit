@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-27
+
+### Upgrading from 0.2.0
+
+- `composer update "alfasix/*"`. The npm packages are unchanged (still 0.2.0).
+
 ### Fixed
 
 - Panels without a dashboard open the first item in sidebar order again. Since 0.2.0 the CMS **Site design** page (a page in the Content group) could become the home page ahead of the app's own first menu item.
@@ -1430,7 +1436,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/alfasixbh/alfakit/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/alfasixbh/alfakit/compare/v0.1.13...v0.2.0
 [0.1.13]: https://github.com/alfasixbh/alfakit/compare/v0.1.12...v0.1.13
 [0.1.12]: https://github.com/alfasixbh/alfakit/compare/v0.1.11...v0.1.12
