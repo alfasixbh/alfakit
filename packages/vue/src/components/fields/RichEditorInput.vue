@@ -52,7 +52,7 @@ import {
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useActionRunner, usePanel, useT } from '../../context'
 import { cn } from '../../lib/utils'
-import { useField } from '../form/form-context'
+import { useField, useOptionalFormStore } from '../form/form-context'
 import FieldWrapper from '../schema/FieldWrapper.vue'
 import Button from '../ui/Button.vue'
 import { useRichEditorExtensions } from './rich-editor-extensions'
@@ -113,6 +113,7 @@ function toolbarExtensions(buttons: string[], markdown: boolean): Extensions {
 const props = defineProps<{ component: RichEditorSchema; plugins: LoadedRichEditorExtensions }>()
 const t = useT()
 const panel = usePanel()
+const formStore = useOptionalFormStore()
 const runner = useActionRunner()
 const { value, setValue, blur, error, id, disabled, readOnly, aria } = useField<unknown>(
   () => props.component,
@@ -336,7 +337,11 @@ watch(
 
 const pickImage = () => fileInput.value?.click()
 
-const uploadImage = async (file: File) => {
+// Submits wait for the attachment's upload, so saving now doesn't drop the image.
+const uploadImage = (file: File) =>
+  formStore ? formStore.trackUpload(sendImage(file)) : sendImage(file)
+
+const sendImage = async (file: File) => {
   if (!panel.value.endpoints.upload || !editor.value) return
 
   // The server checks again when the form is saved.

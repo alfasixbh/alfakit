@@ -110,7 +110,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { useActionRunner, usePanel, useT } from '../../context'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
-import { useField } from '../form/form-context'
+import { useField, useOptionalFormStore } from '../form/form-context'
 import { FieldWrapper } from '../schema/field-wrapper'
 import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
@@ -284,6 +284,7 @@ function RichEditorInput({
 }) {
   const t = useT()
   const panel = usePanel()
+  const formStore = useOptionalFormStore()
   const runner = useActionRunner()
   const { value, setValue, blur, error, id, disabled, readOnly, aria } =
     useField<unknown>(component)
@@ -516,7 +517,11 @@ function RichEditorInput({
 
   const pickImage = () => fileInput.current?.click()
 
-  const uploadImage = async (file: File) => {
+  // Submits wait for the attachment's upload, so saving now doesn't drop the image.
+  const uploadImage = (file: File) =>
+    formStore ? formStore.trackUpload(sendImage(file)) : sendImage(file)
+
+  const sendImage = async (file: File) => {
     if (!panel.endpoints.upload || !editor) return
 
     // The server checks again when the form is saved.

@@ -183,7 +183,8 @@ const upload = async (list: FileList | File[]) => {
     const local = pendingFile(file, position)
     uploading.value = [...uploading.value, local]
 
-    queued.push(limit(() => send(endpoint, file, local)))
+    // Submits wait for queued and running uploads, so saving now doesn't drop the file.
+    queued.push(store.trackUpload(limit(() => send(endpoint, file, local))))
   }
 
   await Promise.all(queued)
@@ -299,7 +300,7 @@ const editExisting = async (existing: LocalFile) => {
 
   const local = pendingFile(file, `edit:${existing.path}`)
   uploading.value = [...uploading.value, local]
-  await send(endpoint, file, local, existing.path)
+  await store.trackUpload(send(endpoint, file, local, existing.path))
 }
 
 const send = async (endpoint: string, file: File, local: LocalFile, replacing?: string) => {

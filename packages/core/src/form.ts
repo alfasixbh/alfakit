@@ -569,21 +569,54 @@ export class FormStore {
    * sends the state the server computed (`$set` in `afterStateUpdated`), not the one before.
    */
   async settle(): Promise<void> {
-    for (const debounced of this.liveDebouncers.values()) debounced.flush()
+    for (;;) {
+      for (const debounced of this.liveDebouncers.values()) debounced.flush()
 
-    while (this.refreshInFlight) {
-      await this.refreshInFlight.catch(() => undefined)
+      if (this.refreshInFlight) {
+        await this.refreshInFlight.catch(() => undefined)
+      } else if (this.uploadsInFlight.size > 0) {
+        // A file still uploading isn't in the state yet: saving now would drop it. Its
+        // field commits the upload's key when it completes (which may refresh a live
+        // field, so the loop runs again).
+        await Promise.allSettled([...this.uploadsInFlight])
+      } else {
+        return
+      }
     }
   }
 
   /**
+   * Register an upload of one of the form's fields (FileUpload, RichEditor attachments)
+   * while it runs: `settle()` and `whenSettled()`, and so every submit, wait for it.
+   * Returns the same promise; a failed upload stops counting as pending.
+   */
+  trackUpload<T>(upload: Promise<T>): Promise<T> {
+    this.uploadsInFlight.add(upload)
+
+    const forget = () => {
+      this.uploadsInFlight.delete(upload)
+    }
+
+    upload.then(forget, forget)
+
+    return upload
+  }
+
+  /** Whether an upload registered with `trackUpload()` is still running. */
+  get hasPendingUploads(): boolean {
+    return this.uploadsInFlight.size > 0
+  }
+
+  private readonly uploadsInFlight = new Set<Promise<unknown>>()
+
+  /**
    * Run `callback` once the form is settled (see `settle()`): straight away when no live
-   * refresh is waiting or in flight, so a submit stays synchronous in the usual case.
+   * refresh or upload is waiting or in flight, so a submit stays synchronous in the usual case.
    */
   whenSettled(callback: () => void): void {
     const waiting = [...this.liveDebouncers.values()].some((debounced) => debounced.pending)
 
-    if (!waiting && !this.refreshInFlight) {
+    if (!waiting && !this.refreshInFlight && this.uploadsInFlight.size === 0) {
       callback()
 
       return

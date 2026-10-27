@@ -209,6 +209,47 @@ describe('FormStore', () => {
     await vi.waitFor(() => expect(afterRefresh).toBe(true))
   })
 
+  it('waits for uploads in progress before a submit reads the state', async () => {
+    const form = new FormStore(
+      { components, state: { title: '', slug: null, email: null } },
+      { token: 't', component: 'form' },
+    )
+
+    let finish: (() => void) | undefined
+    const upload = form.trackUpload(
+      new Promise<void>((resolve) => {
+        finish = () => {
+          // The field commits the temporary upload's key when it completes.
+          form.setValue('slug', 'tmp:manual.txt')
+          resolve()
+        }
+      }),
+    )
+
+    expect(form.hasPendingUploads).toBe(true)
+
+    let submitted: unknown
+    form.whenSettled(() => (submitted = form.state.values.slug))
+    await Promise.resolve()
+
+    // Saving while the upload runs waits for it instead of dropping the file.
+    expect(submitted).toBeUndefined()
+
+    finish?.()
+    await upload
+    await vi.waitFor(() => expect(submitted).toBe('tmp:manual.txt'))
+    expect(form.hasPendingUploads).toBe(false)
+
+    // A failed upload doesn't hold the form back.
+    const failing = form.trackUpload(Promise.reject(new Error('Too large')))
+    await expect(failing).rejects.toThrow('Too large')
+    await form.settle()
+
+    let ran = false
+    form.whenSettled(() => (ran = true))
+    expect(ran).toBe(true)
+  })
+
   it('debounces live fields by 150 ms without a server debounce and coalesces rapid typing', async () => {
     vi.useFakeTimers()
 
