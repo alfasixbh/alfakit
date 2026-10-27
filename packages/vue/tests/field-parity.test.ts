@@ -201,6 +201,7 @@ describe('FileUpload options', () => {
         panelAspectRatio: '2:1',
         positions: { removeButton: 'start', uploadButton: 'end' },
         acceptedFileTypes: ['application/vnd.sketchup.skp'],
+        acceptedFileTypesLabel: 'SKP',
         mimeTypeMap: { skp: 'application/vnd.sketchup.skp' },
         files: [{ path: 'a.pdf', name: 'Report.pdf' }],
       }),
@@ -220,6 +221,8 @@ describe('FileUpload options', () => {
     expect(document.querySelector('input[type="file"]')!.getAttribute('accept')).toBe(
       'application/vnd.sketchup.skp,.skp',
     )
+    expect(zone.textContent).toContain('SKP')
+    expect(zone.textContent).not.toContain('application/vnd.sketchup.skp')
   })
 })
 

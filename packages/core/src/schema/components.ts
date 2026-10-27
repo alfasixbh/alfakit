@@ -389,6 +389,8 @@ export interface FileUploadSchema extends BaseField {
   image?: boolean
   avatar?: boolean
   acceptedFileTypes?: string[]
+  /** Short names of the accepted types for the drop zone hint (`PNG, JPG, ICO`, `Images`). */
+  acceptedFileTypesLabel?: string
   maxSize?: number
   minSize?: number
   /** Encrypted limits sent with each upload so the endpoint applies the field's `maxSize()`. */

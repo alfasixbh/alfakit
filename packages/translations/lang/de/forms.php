@@ -53,6 +53,12 @@ return [
         'invalid_dimensions' => 'Die Bildabmessungen sind nicht erlaubt.',
         'invalid_aspect_ratio' => 'Das Seitenverhältnis des Bildes ist nicht erlaubt.',
         'chunk_failed' => 'Der Upload ist unvollständig. Lade die Datei erneut hoch.',
+        'types' => [
+            'images' => 'Bilder',
+            'videos' => 'Videos',
+            'audio' => 'Audiodateien',
+            'text' => 'Textdateien',
+        ],
     ],
     'tags_input' => [
         'placeholder' => 'Tag hinzufügen…',

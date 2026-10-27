@@ -419,7 +419,7 @@ const onItemDrop = (event: DragEvent, index: number) => {
 
 const hints = computed(() =>
   [
-    props.component.acceptedFileTypes?.join(', '),
+    props.component.acceptedFileTypesLabel,
     props.component.maxSize
       ? `≤ ${fileManagerSize(props.component.maxSize * 1024, formatter.value)}`
       : null,

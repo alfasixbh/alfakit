@@ -1054,6 +1054,7 @@
                       "label": "Cover image",
                       "image": true,
                       "acceptedFileTypes": ["image/*"],
+                      "acceptedFileTypesLabel": "Images",
                       "maxFiles": 1,
                       "previewable": true,
                       "deletable": true,

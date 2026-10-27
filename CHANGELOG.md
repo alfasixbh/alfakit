@@ -18,6 +18,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - CMS block **Style** section on every block: background (soft, main color, second color, dark), space above and below, show on all screens / computers only / phones only, and a link name (`#pricing`) for in-page links. Sent as `block.style` and applied on the block wrapper by `CmsBlocks` in React, Vue and Svelte (`cmsBlockAttributes()` in `@alfakit/core`).
 - CMS custom CSS and code (`CmsPlugin::customCode()`, **off by default**; `true` or `fn (User $user): bool` for who may edit): CSS for every public page and HTML snippets before `</head>` / `</body>` (analytics, chat widgets), with **Code history** to restore any of the last 20 versions. Custom CSS can't `@import`, run scripts or load files from other websites (escaped forms included) and can never close its `<style>` element; snippets reach pages only through the root view, never previews, Inertia props or the JSON API.
 
+### Fixed
+
+- FileUpload: the drop zone lists the accepted types by short name instead of raw MIME types: `['image/png', 'image/jpeg', 'image/webp', 'image/x-icon', 'image/vnd.microsoft.icon']` shows "PNG, JPG, WebP, ICO", and `image/*` (also from `image()`) shows "Images", translated. Other types show their `mimeTypeMap()` extension or their subtype (`application/vnd.sketchup.skp` is "SKP", `.csv` is "CSV"). The label is sent as `acceptedFileTypesLabel` in the field's schema.
+
 ## [0.1.13] - 2026-10-26
 
 ### Upgrading from 0.1.12
