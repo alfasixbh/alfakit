@@ -20,6 +20,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Kanban: a card dropped on a column it may not enter now stays in its own column with a message, instead of being saved to the last allowed column the pointer crossed on the way (dragging Draft straight to Shipped used to save it as Confirmed). While you drag over a column it may not enter, the card shows back in its own column.
 - React and Svelte starter kits and standalone components with SSR: pages no longer hydrate with a mismatch (React #418) once the SSR server has rendered a panel page. Components split out of the main bundle (Html, Tabs, date pickers, Repeater, …) and auto-registered components appear right after hydration on those pages, the same on every request; panel pages still render them on the server. Svelte's on-demand icons and lazy parts there keep their server markup until hydration, as on panel pages.
 - Sliders: a single-thumb slider is named by its label again, and screen readers read its hint, helper text and error, in all three renderers.
 - Accessibility: the search shortcut hint (⌘K), keyboard-shortcut keys and inactive view and list tabs reach 4.5:1 contrast in the Laravel starter kits' neutral palette (they were 4.34:1), in all three renderers and every theme.
