@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Fixed
+
+- Panels without a dashboard open the first item in sidebar order again. Since 0.2.0 the CMS **Site design** page (a page in the Content group) could become the home page ahead of the app's own first menu item.
+
 ## [0.2.0] - 2026-10-27
 
 ### Upgrading from 0.1.x
