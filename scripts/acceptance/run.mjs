@@ -52,7 +52,11 @@ mkdirSync(reportsDir, { recursive: true })
 mkdirSync(appsDir, { recursive: true })
 setLogFile(join(reportsDir, `${stamp}-run.log`))
 
+// The version being prepared (the npm packages are bumped before tagging), so plugins that
+// require the new minor version resolve against the copied core package.
 const version = (() => {
+    const prepared = JSON.parse(readFileSync(join(REPO, 'packages/core/package.json'), 'utf8')).version
+    if (/^\d+\.\d+\.\d+$/.test(prepared ?? '')) return prepared
     const tag = run('git', ['describe', '--tags', '--abbrev=0'], { cwd: REPO }).stdout.trim()
     return /^v?\d+\.\d+\.\d+$/.test(tag) ? tag.replace(/^v/, '') : '0.1.99'
 })()

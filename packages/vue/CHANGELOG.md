@@ -1,5 +1,11 @@
 # @alfakit/vue
 
+## 0.2.0
+
+### Minor Changes
+
+- Panel layout stays mounted between pages; CMS Site design and block styles; saving waits for uploads in progress; slider accessible name; contrast of shortcut hints and inactive tabs; Kanban refused drops; friendly file type labels.
+
 ## 0.1.13
 
 ### Patch Changes

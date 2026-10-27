@@ -23,7 +23,7 @@
   },
   "require": {
     "php": "^8.4",
-    "alfasix/alfakit": "^0.1|@dev",
+    "alfasix/alfakit": "^0.2|@dev",
     "spatie/laravel-backup": "^10.0"
   },
   "autoload": {
@@ -43,7 +43,7 @@
       ]
     },
     "alfakit": {
-      "version": "^0.1",
+      "version": "^0.2",
       "frontend": null,
       "showcase": {
         "demoPath": "backups",

@@ -6,10 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
-### Upgrading
+## [0.2.0] - 2026-10-27
 
-- CMS: publish and run the new migration for Site design with `php artisan alfakit:upgrade --migrations`, then `php artisan migrate` (adds `alfakit_cms_site_settings`). Don't use `vendor:publish --tag=alfakit-cms-migrations` for this: it copies the migration you already ran again. Public pages keep working before you migrate; they just have no design.
+### Upgrading from 0.1.x
+
+0.2 is a new minor version, so `composer update` and `npm update` don't install it until you raise your constraints:
+
+1. In `composer.json`, change every `alfasix/*` constraint (for example `"alfasix/alfakit": "^0.1.13"`) to `"^0.2"`, then run `composer update "alfasix/*" -W`.
+2. In `package.json`, change `@alfakit/react` (or `@alfakit/vue`, `@alfakit/svelte`) to `"^0.2.0"`, then run `npm install`.
+3. Run `php artisan alfakit:upgrade --migrations`, then `php artisan migrate`. This publishes only the migrations you don't have yet (the CMS adds `alfakit_cms_site_settings`). Don't use `vendor:publish --tag=…-migrations` for this: it copies migrations you already ran again.
+4. Rebuild your frontend: `npm run build` (and restart your SSR server if you use one).
+
+Also check:
+
 - CMS with your own Blade root view (`->rootView('site')`): to use `customCode()`, print `{{ $alfakitCmsCode ?? '' }}` before `</head>` and `{{ $alfakitCmsBodyCode ?? '' }}` before `</body>`. AlfaKit's own root view already does.
+- Custom `layout:*` components now stay mounted between pages (they receive new props on each visit), so close your own menus when the URL changes.
+- Plugin `authorize()` callbacks are no longer called for guests; guests are not authorized.
 
 ### Added
 
@@ -1407,7 +1419,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.1.13...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/alfasixbh/alfakit/compare/v0.1.13...v0.2.0
 [0.1.13]: https://github.com/alfasixbh/alfakit/compare/v0.1.12...v0.1.13
 [0.1.12]: https://github.com/alfasixbh/alfakit/compare/v0.1.11...v0.1.12
 [0.1.11]: https://github.com/alfasixbh/alfakit/compare/v0.1.10...v0.1.11

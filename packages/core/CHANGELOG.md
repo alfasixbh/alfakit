@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.2.0
+
+### Minor Changes
+
+- CMS site design and block style types and helpers (`cmsDesignCss`, `cmsDesignLinks`, `cmsBlockAttributes`); `FormStore.trackUpload()` so submits wait for uploads in progress; Kanban drops on a refused column return the card with a message; FileUpload accepted-type labels.
+
 ## 0.1.13
 
 ### Patch Changes

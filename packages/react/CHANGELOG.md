@@ -1,5 +1,11 @@
 # @alfakit/react
 
+## 0.2.0
+
+### Minor Changes
+
+- Panel layout stays mounted between pages (no sidebar flicker) and icons render instantly once loaded; CMS Site design and block styles; saving waits for uploads in progress; slider accessible name; starter-kit SSR hydration fixed; contrast of shortcut hints and inactive tabs; Kanban refused drops; friendly file type labels.
+
 ## 0.1.13
 
 ### Patch Changes

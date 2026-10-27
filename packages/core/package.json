@@ -1,6 +1,6 @@
 {
   "name": "@alfakit/core",
-  "version": "0.1.13",
+  "version": "0.2.0",
   "description": "Framework-agnostic schema types and state management for Alfakit, the Laravel admin panel builder by Alfa Six.",
   "license": "MIT",
   "author": "Alfa Six (https://alfasixbh.com)",

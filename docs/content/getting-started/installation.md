@@ -33,7 +33,7 @@ composer require alfasix/alfakit
 
 ### Versions during the beta
 
-AlfaKit is in public beta (0.1), and APIs may still change before 1.0. Composer's default caret constraint for a 0.x release, `^0.1`, already accepts only 0.1.x patch releases, so a new minor version (0.2) is never installed without you changing the constraint. The npm renderer's default, `^0.1.0`, behaves the same way. Keep both constraints on the same minor version and read the [changelog](/changelog) before you move to the next minor version.
+AlfaKit is in public beta (0.2), and APIs may still change before 1.0. Composer's default caret constraint for a 0.x release, `^0.2`, accepts only 0.2.x patch releases, so a new minor version (0.3) is never installed without you changing the constraint. The npm renderer's default, `^0.2.0`, behaves the same way. Keep both constraints on the same minor version and read the [changelog](/changelog) before you move to the next minor version.
 
 ## 2. Run the setup wizard (recommended)
 
