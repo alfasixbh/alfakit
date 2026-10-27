@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useOpenWhenActive } from '../../composables/use-persistent-layout'
 import { PREFETCH_CACHE_FOR, type NavigationItemSchema } from '@alfakit/core'
 import { Link } from '@inertiajs/vue3'
 import { ChevronRightIcon } from '@lucide/vue'
@@ -20,6 +21,11 @@ import { useT } from '../../context'
 
 /** A child navigation item (any depth): badge, new-tab link and nested children. */
 const props = defineProps<{ item: NavigationItemSchema }>()
+// Keeps what the user opened across visits; opens again when the item becomes active.
+const open = useOpenWhenActive(
+  () => !!props.item.active,
+  () => !!props.item.active,
+)
 const t = useT()
 const hasBadge = computed(() => props.item.badge !== undefined && props.item.badge !== null)
 const badgeClass = computed(() =>
@@ -31,7 +37,7 @@ const badgeClass = computed(() =>
   <SidebarMenuSubItem>
     <Collapsible
       v-if="props.item.children && props.item.children.length > 0"
-      :default-open="props.item.active"
+      v-model:open="open"
       class="group/nav-sub"
     >
       <CollapsibleTrigger as-child>

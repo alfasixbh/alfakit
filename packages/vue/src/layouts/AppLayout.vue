@@ -16,6 +16,7 @@ import Slot from '../components/panel/Slot.vue'
 import Topbar from '../components/panel/Topbar.vue'
 import SidebarInset from '../components/ui/SidebarInset.vue'
 import SidebarProvider from '../components/ui/SidebarProvider.vue'
+import { CloseMobileSidebarOnVisit } from '../composables/use-persistent-layout'
 import { useAlfakitProps, useRegistry } from '../context'
 import { cn } from '../lib/utils'
 import { MAX_WIDTHS } from './max-widths'
@@ -56,6 +57,7 @@ const width = computed(
     <slot />
   </TopNavLayout>
   <SidebarProvider v-else :default-open="defaultOpen" :style="sidebarWidthStyle(pageProps.alfakit)">
+    <CloseMobileSidebarOnVisit />
     <Slot name="body.start" />
     <Slot name="layout.start" />
     <component :is="Sidebar" />

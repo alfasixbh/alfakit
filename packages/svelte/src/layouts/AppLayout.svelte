@@ -10,6 +10,7 @@
   import type { Snippet } from 'svelte'
   import AppSidebar from '../components/panel/AppSidebar.svelte'
   import BottomNav from '../components/panel/BottomNav.svelte'
+  import CloseMobileSidebarOnVisit from '../components/panel/CloseMobileSidebarOnVisit.svelte'
   import MobileTopbar from '../components/panel/MobileTopbar.svelte'
   import Slot from '../components/panel/Slot.svelte'
   import Topbar from '../components/panel/Topbar.svelte'
@@ -53,6 +54,7 @@
   <TopNavLayout {breadcrumbs} {maxContentWidth}>{@render children?.()}</TopNavLayout>
 {:else}
   <SidebarProvider defaultOpen={sidebarOpen} style={sidebarStyle}>
+    <CloseMobileSidebarOnVisit />
     <Slot name="body.start" />
     <Slot name="layout.start" />
     <Sidebar />

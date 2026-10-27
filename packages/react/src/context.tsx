@@ -12,7 +12,15 @@ import {
   type Translator,
 } from '@alfakit/core'
 import { usePage } from '@inertiajs/react'
-import { createContext, useContext, useMemo, type ComponentType, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  type ComponentType,
+  type ReactNode,
+} from 'react'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyComponent = ComponentType<any>
@@ -50,6 +58,35 @@ function useOptionalPageProps(): AlfakitPageProps {
   } catch {
     return NO_PROPS
   }
+}
+
+/**
+ * The Inertia page URL, or undefined outside an Inertia app. Persistent chrome (the panel
+ * layout stays mounted across visits) closes its phone sheets when it changes.
+ */
+export function useOptionalPageUrl(): string | undefined {
+  try {
+    return usePage().url
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Calls `close` when the user moves to another page. The panel layout persists across
+ * visits, so menus and sheets that used to be reset by remounting close here instead.
+ * Partial reloads (deferred props, polling) keep the URL and leave them open.
+ */
+export function useCloseOnVisit(close: () => void): void {
+  const url = useOptionalPageUrl()
+  const previous = useRef(url)
+
+  useEffect(() => {
+    if (previous.current === url) return
+
+    previous.current = url
+    close()
+  }, [url, close])
 }
 
 /**

@@ -21,6 +21,7 @@ import Toaster from './components/ui/Toaster.vue'
 import TooltipProvider from './components/ui/TooltipProvider.vue'
 import { useAlfakit } from './context'
 import { startIdScope } from './lib/hydration'
+import PanelLayoutHost from './pages/PanelLayoutHost.vue'
 import { claimToaster } from './standalone/toaster-claims'
 
 /**
@@ -84,7 +85,10 @@ onUnmounted(() => releaseToaster?.())
   <ConfigProvider :dir="direction">
     <TooltipProvider :delay-duration="0">
       <SchemaContractGuard :panel="panel">
-        <slot />
+        <!-- The panel layout stays mounted across visits between Alfakit pages. -->
+        <PanelLayoutHost>
+          <slot />
+        </PanelLayoutHost>
       </SchemaContractGuard>
       <ActionModals />
       <FlashToasts />

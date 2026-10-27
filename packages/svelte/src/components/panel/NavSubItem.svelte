@@ -20,6 +20,17 @@
   const t = useT()
 
   let open = $state(untrack(() => Boolean(item.active)))
+
+  // The sidebar stays mounted across visits: it keeps what the user opened or closed, and
+  // opens again when the item becomes active.
+  let wasActive = untrack(() => Boolean(item.active))
+  $effect.pre(() => {
+    const active = Boolean(item.active)
+
+    if (active && !wasActive) open = true
+    wasActive = active
+  })
+
   const hasBadge = $derived(item.badge !== undefined && item.badge !== null)
 </script>
 

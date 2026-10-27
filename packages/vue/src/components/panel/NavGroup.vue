@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useOpenWhenActive } from '../../composables/use-persistent-layout'
 import type { NavigationGroupSchema } from '@alfakit/core'
 import { ChevronRightIcon } from '@lucide/vue'
 import { Icon } from '../../lib/icons'
@@ -14,6 +15,9 @@ import NavGroupFlyout from './NavGroupFlyout.vue'
 import NavItem from './NavItem.vue'
 
 const props = defineProps<{ group: NavigationGroupSchema }>()
+// Keeps what the user opened across visits; opens again when one of its items becomes active.
+const active = () => props.group.items.some((item) => item.active)
+const open = useOpenWhenActive(() => !props.group.collapsed || active(), active)
 // `NavigationGroup::extraSidebarAttributes()`; Vue merges `class` with the group's own.
 const attributes = () => props.group.extraSidebarAttributes ?? {}
 // A labelled group with an icon collapses into a flyout in the icon-only sidebar.
@@ -41,11 +45,7 @@ const contentClass = () => cn(flyout() && 'group-data-[collapsible=icon]:hidden'
     </SidebarGroupContent>
     <NavGroupFlyout v-if="flyout()" :group="props.group" />
   </SidebarGroup>
-  <Collapsible
-    v-else
-    :default-open="!props.group.collapsed || props.group.items.some((item) => item.active)"
-    class="group/nav-group"
-  >
+  <Collapsible v-else v-model:open="open" class="group/nav-group">
     <SidebarGroup v-bind="attributes()">
       <CollapsibleTrigger as-child>
         <SidebarGroupLabel

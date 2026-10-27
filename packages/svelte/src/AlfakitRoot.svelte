@@ -21,6 +21,7 @@
   import { TooltipProvider } from './components/ui/tooltip'
   import { useAlfakit } from './context.svelte'
   import { markAppMounted } from './lib/hydration.svelte'
+  import PanelLayoutHost from './pages/PanelLayoutHost.svelte'
   import { claimToaster } from './standalone/toaster-claims'
 
   // Starter kit mode: Alfakit's toaster gets an id so the host's id-less one never doubles its toasts.
@@ -72,7 +73,8 @@
 <TooltipProvider delayDuration={0}>
   {#key locale}
     <SchemaContractGuard {panel}>
-      {@render children?.()}
+      <!-- The panel layout stays mounted across visits between Alfakit pages. -->
+      <PanelLayoutHost>{@render children?.()}</PanelLayoutHost>
     </SchemaContractGuard>
     <!-- Inside the key like the page, so their texts follow a language switch. -->
     <!-- Schema inspector: renders (and loads its code) only with `alfakitDevTools`. -->

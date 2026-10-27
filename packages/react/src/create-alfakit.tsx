@@ -50,7 +50,7 @@ import { AlfakitProvider, useAlfakit, type AlfakitContextValue, type AnyComponen
 import { panelLayouts } from './layouts/panel-layouts'
 import { discoverComponents } from './lib/discovery'
 import { preloadIcons } from './lib/icons'
-import { AlfakitPage } from './pages/page'
+import { AlfakitPage, PanelLayoutHost } from './pages/page'
 import { builtInComponents, createDefaultRegistry } from './registry'
 import { claimToaster } from './standalone/toaster-claims'
 
@@ -100,7 +100,10 @@ export function AlfakitRoot({
   return (
     <Direction.Provider dir={direction}>
       <TooltipProvider delayDuration={0}>
-        <SchemaContractGuard panel={panel}>{children}</SchemaContractGuard>
+        {/* The panel layout stays mounted across visits between Alfakit pages. */}
+        <SchemaContractGuard panel={panel}>
+          <PanelLayoutHost>{children}</PanelLayoutHost>
+        </SchemaContractGuard>
         <ActionModals />
         <FlashToasts />
         <RealtimeNotifications />
