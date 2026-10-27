@@ -5,6 +5,7 @@ import type {
   TableSchema,
   TableSummaryRowSchema,
 } from '@alfakit/core'
+import { isolationDirection } from '@alfakit/core'
 import { useFormatter, useT } from '../../context'
 import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
@@ -92,7 +93,9 @@ export function SummaryRow({
                 {summary.icons ? (
                   <SummaryIcons icons={summary.icons} />
                 ) : (
-                  <span className="font-medium tabular-nums">{summary.value ?? '—'}</span>
+                  <bdi dir={isolationDirection(summary.value)} className="font-medium tabular-nums">
+                    {summary.value ?? '—'}
+                  </bdi>
                 )}
               </div>
             ))}

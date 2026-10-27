@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ColumnSchema, ColumnSummariesSchema } from '@alfakit/core'
+  import { isolationDirection, type ColumnSchema, type ColumnSummariesSchema } from '@alfakit/core'
   import { useFormatter } from '../../context.svelte'
   import { colorClass, textColorClasses } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
@@ -72,7 +72,9 @@
                 {/each}
               </span>
             {:else}
-              <span class="font-medium tabular-nums">{summary.value ?? '—'}</span>
+              <bdi dir={isolationDirection(summary.value)} class="font-medium tabular-nums"
+                >{summary.value ?? '—'}</bdi
+              >
             {/if}
           </div>
         {/each}

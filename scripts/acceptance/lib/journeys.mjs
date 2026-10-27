@@ -630,6 +630,12 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
                 // Client-side (Inertia) navigation to the app's own dashboard, as a user clicks it.
                 await page.getByRole('link', { name: 'Dashboard', exact: true }).first().click()
                 await waitUrl(/\/dashboard$/, 'the app dashboard')
+                // The URL changes before the visit's navigate event puts the page's lang on.
+                await page
+                    .waitForFunction(() => document.documentElement.lang !== 'ar', null, {
+                        timeout: 10_000,
+                    })
+                    .catch(() => {})
                 const dir = await direction()
                 const side = await sidebarSide()
                 // The page is right to left (the kit's sidebar docks on the right); its text is
