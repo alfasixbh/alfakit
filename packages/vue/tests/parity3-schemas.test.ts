@@ -255,6 +255,9 @@ describe('schema layout parity (round 3)', () => {
       }),
     )
 
+    expect(wrapper.find('p > span').classes()).toEqual(
+      expect.arrayContaining(['min-w-0', 'break-words']),
+    )
     const paragraph = wrapper.find('p')
     expect(paragraph.classes()).toContain('font-mono')
     expect(paragraph.classes()).toContain('text-foreground')
@@ -274,6 +277,29 @@ describe('schema layout parity (round 3)', () => {
     )
 
     expect(wrapper.text()).toContain('Hover')
+    wrapper.unmount()
+  })
+
+  it('breaks a long copyable value inside its column, keeping the copy button beside it', () => {
+    const wrapper = mountWithAlfakit(() =>
+      h(TextEntryComponent, {
+        component: {
+          type: 'TextEntry',
+          key: 'base_url',
+          name: 'base_url',
+          label: 'Base URL',
+          state: 'http://127.0.0.1:18752/api/staff-inventory/v1',
+          fontFamily: 'mono',
+          copyable: true,
+        } as TextEntrySchema,
+      }),
+    )
+
+    const value = wrapper.find('bdi')
+    expect(value.classes()).toEqual(expect.arrayContaining(['min-w-0', 'break-words']))
+    expect(value.element.parentElement!.classList).toContain('max-w-full')
+    expect(value.element.parentElement!.classList).toContain('font-mono')
+    expect(wrapper.find('button[aria-label="Copy"]').classes()).toContain('shrink-0')
     wrapper.unmount()
   })
 

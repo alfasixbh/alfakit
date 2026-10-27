@@ -122,6 +122,23 @@ describe('content layouts', () => {
       expect.anything(),
     )
   })
+
+  it('keeps record actions beside the text, wrapping them below instead of overlapping', () => {
+    const { container } = render(
+      <Wrapper>
+        <DataTable table={{ ...layout, contentGrid: { md: 2, xl: 3 } }} />
+      </Wrapper>,
+    )
+
+    const content = container.querySelector('[data-slot="record-content"]')!
+    expect(content).toHaveClass('min-w-0', 'grow', 'basis-40', 'break-words')
+    expect(content.parentElement).toHaveClass('flex-wrap')
+    const actions = container.querySelector('[data-slot="record-actions"]')!
+    expect(actions).toHaveClass('min-w-0', 'max-w-full')
+    expect(actions.parentElement).toHaveClass('ms-auto')
+    expect(actions.querySelector('[data-slot="actions"]')).not.toHaveClass('flex-nowrap')
+    expect(screen.getByRole('button', { name: 'Show details' })).toHaveClass('shrink-0')
+  })
 })
 
 describe('column groups and record actions', () => {

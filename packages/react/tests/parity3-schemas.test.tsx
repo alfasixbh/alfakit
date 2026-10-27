@@ -274,13 +274,39 @@ describe('schema layout parity (round 3)', () => {
       </Wrapper>,
     )
 
-    const paragraph = screen.getByText('ABC-1')
+    expect(screen.getByText('ABC-1')).toHaveClass('min-w-0', 'break-words')
+    const paragraph = screen.getByText('ABC-1').closest('p')!
     expect(paragraph.className).toContain('font-mono')
     expect(paragraph.className).toContain('text-foreground')
 
     fireEvent.click(screen.getByRole('button', { name: 'Copy' }))
     expect(writeText).toHaveBeenCalledWith('ABC-1')
     expect(await screen.findByText('Copied!')).toBeInTheDocument()
+  })
+
+  it('breaks a long copyable value inside its column, keeping the copy button beside it', () => {
+    const { container } = render(
+      <Wrapper>
+        <TextEntryComponent
+          component={
+            {
+              type: 'TextEntry',
+              key: 'base_url',
+              name: 'base_url',
+              label: 'Base URL',
+              state: 'http://127.0.0.1:18752/api/staff-inventory/v1',
+              fontFamily: 'mono',
+              copyable: true,
+            } as TextEntrySchema
+          }
+        />
+      </Wrapper>,
+    )
+
+    const value = container.querySelector('bdi')!
+    expect(value).toHaveClass('min-w-0', 'break-words')
+    expect(value.parentElement).toHaveClass('inline-flex', 'max-w-full', 'font-mono')
+    expect(screen.getByRole('button', { name: 'Copy' })).toHaveClass('shrink-0')
   })
 
   it('puts extraAttributes on the entry value and aligns it', () => {

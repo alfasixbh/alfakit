@@ -106,15 +106,20 @@
     {@const clickable = Boolean(record.url || table.recordAction)}
     {@const selected = isSelected(record.key)}
     {@const open = isOpen(record)}
+    <!-- The actions keep their natural width beside the record's text and wrap onto a line
+         of their own when the card is too narrow for both, so they never overlap the text. -->
     {#snippet actions()}
       <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-      <div class="shrink-0" onclick={(event) => event.stopPropagation()}>
+      <div
+        data-slot="record-actions"
+        class="max-w-full min-w-0"
+        onclick={(event) => event.stopPropagation()}
+      >
         <ActionList
           actions={record.actions ?? []}
           context={{ ...context, record: record.key }}
           size="sm"
           align="end"
-          class="flex-nowrap"
         />
       </div>
     {/snippet}
@@ -136,7 +141,7 @@
       )}
       onclick={() => clickable && onRecordClick(record)}
     >
-      <div class="flex items-start gap-3">
+      <div class="flex flex-wrap items-start gap-3">
         {#if record.actions?.length && table.recordActionsPosition === 'before-cells'}
           {@render actions()}
         {/if}
@@ -155,7 +160,11 @@
         {#if record.actions?.length && table.recordActionsPosition === 'before-columns'}
           {@render actions()}
         {/if}
-        <div class="flex min-w-0 flex-1 flex-col gap-3">
+        <!-- The text takes the remaining width (at least 10rem before the actions wrap). -->
+        <div
+          data-slot="record-content"
+          class="flex min-w-0 grow basis-40 flex-col gap-3 break-words"
+        >
           {#each main as node, index (nodeKey(node, index))}
             <ContentLayoutNode
               {node}
@@ -172,26 +181,31 @@
             />
           {/each}
         </div>
-        {#if record.actions?.length && !atStart}
-          {@render actions()}
-        {/if}
-        {#if collapsible}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-expanded={open}
-            aria-controls={open ? `${panelId}-${record.key}` : undefined}
-            aria-label={open
-              ? t('table.hide_details', {}, 'Hide details')
-              : t('table.show_details', {}, 'Show details')}
-            onclick={(event: MouseEvent) => {
-              event.stopPropagation()
-              opened.set(String(record.key), !open)
-            }}
-          >
-            <ChevronDownIcon class={cn('transition-transform', open && 'rotate-180')} />
-          </Button>
+        {#if (record.actions?.length && !atStart) || collapsible}
+          <div class="ms-auto flex max-w-full min-w-0 items-start gap-3">
+            {#if record.actions?.length && !atStart}
+              {@render actions()}
+            {/if}
+            {#if collapsible}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                class="shrink-0"
+                aria-expanded={open}
+                aria-controls={open ? `${panelId}-${record.key}` : undefined}
+                aria-label={open
+                  ? t('table.hide_details', {}, 'Hide details')
+                  : t('table.show_details', {}, 'Show details')}
+                onclick={(event: MouseEvent) => {
+                  event.stopPropagation()
+                  opened.set(String(record.key), !open)
+                }}
+              >
+                <ChevronDownIcon class={cn('transition-transform', open && 'rotate-180')} />
+              </Button>
+            {/if}
+          </div>
         {/if}
       </div>
       {#if open && details.length > 0}
