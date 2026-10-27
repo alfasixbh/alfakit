@@ -69,6 +69,80 @@ export function containerColumnSpanClasses(span: Breakpoints<ColumnSpanValue> | 
     .join(' ')
 }
 
+/**
+ * `contentGrid()` breakpoints, read against the width of the table rather than the
+ * viewport: the table sits beside the panel sidebar (and a cluster's sub-navigation), so a
+ * viewport breakpoint says little about the room the cards have. Each viewport key maps to
+ * the largest container size at or below that viewport minus 24rem (a 16rem sidebar plus
+ * the page's gutters): `md` 48rem → `@sm` 24rem, `xl` 80rem → `@4xl` 56rem.
+ */
+const CONTENT_GRID_FROM: Record<string, ContainerBreakpoint | null> = {
+  default: null,
+  sm: '@3xs',
+  md: '@sm',
+  lg: '@xl',
+  xl: '@4xl',
+  '2xl': '@6xl',
+}
+
+/**
+ * The smallest container size that keeps `n` cards at least 15rem wide, with the grid's
+ * `p-4` and `gap-4`: 16rem per column plus 1rem. Five or more columns need `@7xl` (80rem).
+ */
+const CONTENT_GRID_MIN: Record<number, ContainerBreakpoint | null> = {
+  1: null,
+  2: '@xl', // 33rem → 36rem
+  3: '@4xl', // 49rem → 56rem
+  4: '@6xl', // 65rem → 72rem
+}
+
+const CONTENT_GRID_KEYS = ['default', 'sm', 'md', 'lg', 'xl', '2xl'] as const
+
+function widerBreakpoint(
+  a: ContainerBreakpoint | null,
+  b: ContainerBreakpoint | null,
+): ContainerBreakpoint | null {
+  if (!a) return b
+  if (!b) return a
+
+  return CONTAINER_BREAKPOINTS.indexOf(a) >= CONTAINER_BREAKPOINTS.indexOf(b) ? a : b
+}
+
+/**
+ * Classes for a table's `contentGrid()`: one column, then `@…:grid-cols-N` container-query
+ * classes relative to the `@container` around the card grid. A column count applies from
+ * the wider of its key's size (`CONTENT_GRID_FROM`) and the size that fits that many cards
+ * (`CONTENT_GRID_MIN`), so cards get fewer columns instead of getting narrow. Container
+ * keys (`'@lg' => 2`) are used as given; when two keys land on the same size, the later
+ * (wider) key wins.
+ */
+export function contentGridClasses(grid: Breakpoints | undefined | null): string {
+  const classes = new Map<ContainerBreakpoint, string>()
+
+  for (const key of CONTENT_GRID_KEYS) {
+    const value = grid?.[key]
+
+    if (!value) continue
+
+    const count = Math.min(Math.max(Math.trunc(value), 1), 12)
+    const at = widerBreakpoint(CONTENT_GRID_FROM[key] ?? null, CONTENT_GRID_MIN[count] ?? '@7xl')
+    const cls = at ? CONTAINER_GRID_COLS[at]?.[String(count)] : undefined
+
+    if (at && cls) classes.set(at, cls)
+  }
+
+  for (const breakpoint of CONTAINER_BREAKPOINTS) {
+    const cls = CONTAINER_GRID_COLS[breakpoint]?.[String(grid?.[breakpoint] ?? '')]
+
+    if (cls) classes.set(breakpoint, cls)
+  }
+
+  return [
+    'grid-cols-1',
+    ...CONTAINER_BREAKPOINTS.map((breakpoint) => classes.get(breakpoint)).filter(Boolean),
+  ].join(' ')
+}
+
 const FLEX_ROW: Record<string, string> = {
   default: 'flex-row',
   sm: 'sm:flex-row',

@@ -77,6 +77,25 @@ $table
 
 `contentGrid()` also works without layout components: each card then stacks the table's columns.
 
+The breakpoints follow the width of the table, not the browser window, so a table beside the sidebar and a cluster's sub-navigation gets fewer columns than a full-width one. Each key stands for the room that window size leaves beside a sidebar and the page's gutters (about 24rem), and a column count only applies once every card can be at least 15rem wide:
+
+| Key   | Table width from |
+| ----- | ---------------- |
+| `sm`  | 16rem (256px)    |
+| `md`  | 24rem (384px)    |
+| `lg`  | 36rem (576px)    |
+| `xl`  | 56rem (896px)    |
+| `2xl` | 72rem (1152px)   |
+
+| Columns   | Table width from |
+| --------- | ---------------- |
+| 2         | 36rem (576px)    |
+| 3         | 56rem (896px)    |
+| 4         | 72rem (1152px)   |
+| 5 or more | 80rem (1280px)   |
+
+A count applies from the larger of the two widths, so `['md' => 2, 'xl' => 3]` shows two columns once the table is 36rem wide and three from 56rem; a narrower table stacks its cards in one column. An integer (`contentGrid(3)`) is the count from `lg`. To pick the widths yourself, use container keys, which are used as given: `->contentGrid(['@lg' => 2, '@4xl' => 3])` (Tailwind's `@container` sizes, `@3xs` to `@7xl`).
+
 ## Column groups
 
 `ColumnGroup` puts a shared header above adjacent columns in a regular table:

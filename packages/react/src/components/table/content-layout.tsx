@@ -11,6 +11,7 @@ import {
   columnSpanClasses,
   columnStartClasses,
   columnVisibilityClasses,
+  contentGridClasses,
   gridColumnsClasses,
   layoutNodeGrows,
   layoutVisibilityClasses,
@@ -66,28 +67,32 @@ export function ContentLayout(props: ContentLayoutProps) {
     virtualizeOptions(table.virtualize, VIRTUAL_ESTIMATES.item, grid ? 16 : 0, grid ? 'auto' : 1),
   )
 
+  // `contentGrid()` breakpoints follow the table's width (this `@container`), not the
+  // viewport's: beside the sidebar and a cluster's sub-navigation the table can be narrow.
   return (
-    <div
-      data-slot="table-content"
-      role={range.active ? 'list' : undefined}
-      ref={attach}
-      style={style}
-      className={cn(grid ? cn('grid gap-4 p-4', gridColumnsClasses(grid)) : 'divide-y')}
-    >
-      {indexes.map((index) => {
-        const record = records[index] as TableRecordSchema
+    <div data-slot="table-content-container" className="@container">
+      <div
+        data-slot="table-content"
+        role={range.active ? 'list' : undefined}
+        ref={attach}
+        style={style}
+        className={cn(grid ? cn('grid gap-4 p-4', contentGridClasses(grid)) : 'divide-y')}
+      >
+        {indexes.map((index) => {
+          const record = records[index] as TableRecordSchema
 
-        return (
-          <ContentRecord
-            key={String(record.key)}
-            {...props}
-            record={record}
-            card={Boolean(grid)}
-            index={index}
-            position={range.active ? { size: records.length, item } : undefined}
-          />
-        )
-      })}
+          return (
+            <ContentRecord
+              key={String(record.key)}
+              {...props}
+              record={record}
+              card={Boolean(grid)}
+              index={index}
+              position={range.active ? { size: records.length, item } : undefined}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -268,10 +273,11 @@ function ContentRecord({
           </div>
         )}
         {atStart && table.recordActionsPosition === 'before-columns' && actions}
-        {/* The text takes the remaining width (at least 10rem before the actions wrap). */}
+        {/* The text takes the remaining width (at least 15rem before the actions wrap, so a
+          name is not broken mid-word beside them). */}
         <div
           data-slot="record-content"
-          className="flex min-w-0 grow basis-40 flex-col gap-3 break-words"
+          className="flex min-w-0 grow basis-60 flex-col gap-3 break-words"
         >
           {main.map((node, index) => renderNode(node, index))}
         </div>

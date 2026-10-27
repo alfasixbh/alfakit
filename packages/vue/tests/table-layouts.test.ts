@@ -92,9 +92,14 @@ describe('content layouts', () => {
       h(DataTable, { table: { ...layout, contentGrid: { md: 2, xl: 3 } } }),
     )
 
-    expect(wrapper.find('[data-slot="table-content"]').classes()).toEqual(
-      expect.arrayContaining(['grid', 'md:grid-cols-2', 'xl:grid-cols-3']),
+    // The breakpoints follow the table's width (`@container`), not the viewport's.
+    const grid = wrapper.find('[data-slot="table-content"]')
+    expect(grid.classes()).toEqual(
+      expect.arrayContaining(['grid', 'grid-cols-1', '@xl:grid-cols-2', '@4xl:grid-cols-3']),
     )
+    expect(grid.classes()).not.toContain('md:grid-cols-2')
+    expect(grid.classes()).not.toContain('xl:grid-cols-3')
+    expect(grid.element.parentElement!.classList).toContain('@container')
   })
 
   it('keeps record actions beside the text, wrapping them below instead of overlapping', () => {
@@ -104,7 +109,7 @@ describe('content layouts', () => {
 
     const content = wrapper.find('[data-slot="record-content"]')
     expect(content.classes()).toEqual(
-      expect.arrayContaining(['min-w-0', 'grow', 'basis-40', 'break-words']),
+      expect.arrayContaining(['min-w-0', 'grow', 'basis-60', 'break-words']),
     )
     expect(content.element.parentElement!.classList).toContain('flex-wrap')
     const actions = wrapper.find('[data-slot="record-actions"]')

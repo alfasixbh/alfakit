@@ -96,18 +96,19 @@ describe('content layouts', () => {
   it('lays cards out in a content grid', () => {
     const { container } = mount(DataTable, { table: { ...layout, contentGrid: { md: 2, xl: 3 } } })
 
-    expect(container.querySelector('[data-slot="table-content"]')).toHaveClass(
-      'grid',
-      'md:grid-cols-2',
-      'xl:grid-cols-3',
-    )
+    // The breakpoints follow the table's width (`@container`), not the viewport's.
+    const grid = container.querySelector('[data-slot="table-content"]')!
+    expect(grid).toHaveClass('grid', 'grid-cols-1', '@xl:grid-cols-2', '@4xl:grid-cols-3')
+    expect(grid).not.toHaveClass('md:grid-cols-2')
+    expect(grid).not.toHaveClass('xl:grid-cols-3')
+    expect(grid.parentElement).toHaveClass('@container')
   })
 
   it('keeps record actions beside the text, wrapping them below instead of overlapping', () => {
     const { container } = mount(DataTable, { table: { ...layout, contentGrid: { md: 2, xl: 3 } } })
 
     const content = container.querySelector('[data-slot="record-content"]')!
-    expect(content).toHaveClass('min-w-0', 'grow', 'basis-40', 'break-words')
+    expect(content).toHaveClass('min-w-0', 'grow', 'basis-60', 'break-words')
     expect(content.parentElement).toHaveClass('flex-wrap')
     const actions = container.querySelector('[data-slot="record-actions"]')!
     expect(actions).toHaveClass('min-w-0', 'max-w-full')

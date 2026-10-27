@@ -39,7 +39,7 @@
 @source inline('{,sm:,md:,lg:,xl:,2xl:}{flex,hidden,flex-row,flex-col,items-center}');
 /* Column `visibleFrom()` / `hiddenFrom()`: header cells, body cells and layout blocks. */
 @source inline('{sm:,md:,lg:,xl:,2xl:}{table-cell,block}');
-/* Container-query columns (`columns(['@md' => 2])`), relative to the schema's `@container`. */
+/* Container-query columns (`columns(['@md' => 2])`, table `contentGrid()` via core `contentGridClasses()`), relative to the nearest `@container`. */
 @source inline(
   '{@3xs:,@2xs:,@xs:,@sm:,@md:,@lg:,@xl:,@2xl:,@3xl:,@4xl:,@5xl:,@6xl:,@7xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12}'
 );
