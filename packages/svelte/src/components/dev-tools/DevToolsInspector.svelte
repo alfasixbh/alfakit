@@ -100,7 +100,7 @@
           variant="outline"
           size="icon"
           aria-label={t('dev_tools.open', {}, 'Open schema inspector')}
-          class="fixed end-4 bottom-16 z-40 rounded-full shadow-md [[data-slot=starter-kit-root]_&]:end-auto [[data-slot=starter-kit-root]_&]:right-4"
+          class="fixed end-4 bottom-16 z-40 rounded-full shadow-md"
           {...triggerProps}
           data-slot="dev-tools-toggle"
         >
