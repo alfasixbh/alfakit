@@ -252,6 +252,77 @@ describe('kanban', () => {
     wrapper.unmount()
   })
 
+  describe('dragging past a column the card may not enter (UR-02)', () => {
+    const transitions = { todo: ['todo', 'doing'], doing: ['doing', 'done'], done: ['done'] }
+    const zone = (column: string) =>
+      document.querySelector<HTMLElement>(`[data-slot="kanban-dropzone"][data-column="${column}"]`)!
+    const pointer = (type: string, target: EventTarget, x: number) => {
+      const event = new MouseEvent(type, { bubbles: true, cancelable: true, button: 0, clientX: x })
+      Object.defineProperties(event, { pointerId: { value: 1 }, pointerType: { value: 'mouse' } })
+      target.dispatchEvent(event)
+    }
+    let over: HTMLElement | null = null
+    const drag = async (title: string, ...columns: string[]) => {
+      pointer('pointerdown', card(title), 0)
+      for (const [index, column] of columns.entries()) {
+        over = zone(column)
+        pointer('pointermove', document, 20 + index * 20)
+        await flush()
+      }
+      pointer('pointerup', document, 100)
+      await flush()
+    }
+
+    beforeEach(() => {
+      over = null
+      document.elementFromPoint = () => over
+    })
+
+    it('returns the card to its column, says why and saves nothing', async () => {
+      const executeJson = vi.spyOn(actions, 'executeJson').mockResolvedValue({ ok: true })
+      const wrapper = mountWithAlfakit(() =>
+        h(RenderComponent, { component: board({ transitions }) as never }),
+      )
+      await settle()
+
+      await drag('Write docs', 'doing', 'done')
+
+      expect(status()).toBe('Write docs cannot be moved to Done.')
+      expect(titles('todo')).toEqual(['Write docs', 'Review PR'])
+      expect(titles('doing')).toEqual([])
+      expect(titles('done')).toEqual([])
+      expect(document.body.textContent).toContain('2 cards')
+      expect(executeJson).not.toHaveBeenCalled()
+      executeJson.mockRestore()
+      wrapper.unmount()
+    })
+
+    it('saves an allowed column and keeps the card there', async () => {
+      const executeJson = vi.spyOn(actions, 'executeJson').mockResolvedValue({
+        ok: true,
+        card: { key: '2', title: 'Review PR' },
+        counts: { todo: 1, doing: 1 },
+      })
+      const wrapper = mountWithAlfakit(() =>
+        h(RenderComponent, { component: board({ transitions }) as never }),
+      )
+      await settle()
+
+      await drag('Review PR', 'doing', 'done', 'doing')
+      await vi.waitFor(() => expect(executeJson).toHaveBeenCalledTimes(1))
+      await flush()
+
+      expect(executeJson.mock.calls[0]![1]).toMatchObject({
+        record: '2',
+        arguments: { kanban: { column: 'doing' } },
+      })
+      expect(titles('doing')).toEqual(['Review PR'])
+      expect(titles('todo')).toEqual(['Write docs'])
+      executeJson.mockRestore()
+      wrapper.unmount()
+    })
+  })
+
   it('opens cards, quick-creates in a column and collapses columns', async () => {
     const trigger = vi.spyOn(actions, 'trigger').mockResolvedValue(undefined)
     const wrapper = mountWithAlfakit(() => h(RenderComponent, { component: board() as never }))

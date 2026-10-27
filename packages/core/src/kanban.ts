@@ -487,12 +487,34 @@ export class KanbanController {
     const picked = this.state.picked
 
     if (!picked) return false
-    if (sameTarget(picked.target, target)) return true
+
+    if (sameTarget(picked.target, target)) {
+      if (this.state.refused) this.store.update({ refused: null })
+
+      return true
+    }
 
     const reason = this.refusal(target)
 
     if (reason) {
+      // Still over the same refused column, already shown back home: nothing changes.
+      if (
+        this.state.refused?.column === target.column &&
+        sameTarget(picked.target, picked.origin)
+      ) {
+        return false
+      }
+
+      // A dragged card goes back to where it was picked up while it hovers a column it
+      // may not enter, so what is shown is what a release would do (nothing).
+      const columns =
+        picked.via === 'pointer'
+          ? (moveKanbanCard(this.state.columns, picked.key, picked.origin) ?? this.state.columns)
+          : this.state.columns
+
       this.store.update({
+        columns,
+        picked: picked.via === 'pointer' ? { ...picked, target: picked.origin } : picked,
         refused: { column: target.column, reason },
         announcement:
           picked.via === 'keyboard'
@@ -556,6 +578,22 @@ export class KanbanController {
     const picked = this.state.picked
 
     if (!picked) return false
+
+    // Released over a column the card may not enter: refuse it there and then (the card
+    // is back where it was picked up), never save the last allowed preview instead.
+    const refused = picked.via === 'pointer' ? this.state.refused : null
+
+    if (refused) {
+      const columns =
+        moveKanbanCard(this.state.columns, picked.key, picked.origin) ?? this.state.columns
+      const text = this.refusedMessage(picked.key, refused.column)
+
+      this.store.update({ columns, picked: null, refused: null, announcement: text })
+      this.env.error(text)
+      this.flushPending()
+
+      return false
+    }
 
     if (sameTarget(picked.origin, picked.target)) {
       this.store.update({
