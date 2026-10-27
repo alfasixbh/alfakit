@@ -1,4 +1,7 @@
 import {
+  installStarterKitDocument,
+  starterKitDirection,
+  starterKitDocument,
   starterKitNavigation,
   toStarterKitNavGroups,
   toStarterKitUserMenuItems,
@@ -7,7 +10,7 @@ import {
   type StarterKitUserMenuItem,
 } from '@alfakit/core'
 import { usePage } from '@inertiajs/vue3'
-import { computed, type ComputedRef } from 'vue'
+import { computed, watch, type ComputedRef } from 'vue'
 
 // Its own module, away from `createStarterKitPage()`: the host's sidebar imports it on every
 // page, and it must not pull the panel runtime into the host's main chunk.
@@ -37,6 +40,8 @@ export interface AlfakitNavigation {
 export function useAlfakitNavigation(panelId?: string): ComputedRef<AlfakitNavigation> {
   const page = usePage()
 
+  useStarterKitDocument(page)
+
   return computed(() => {
     const navigation = starterKitNavigation(page.props, panelId)
 
@@ -46,4 +51,37 @@ export function useAlfakitNavigation(panelId?: string): ComputedRef<AlfakitNavig
       userMenuItems: toStarterKitUserMenuItems(navigation?.userMenu),
     }
   })
+}
+
+/**
+ * The reading direction of the page in a starter kit app: `rtl` while the user has picked a
+ * right-to-left language for the `starterKit()` panel, on AlfaKit's pages and the app's own.
+ * The installer docks the kit's sidebar with it (`side`, which is physical in shadcn):
+ *
+ * ```vue
+ * const direction = useAlfakitDirection()
+ * <Sidebar :side="direction === 'rtl' ? 'right' : 'left'" …>
+ * ```
+ *
+ * It also keeps `<html lang dir>` in step after every visit and language switch.
+ */
+export function useAlfakitDirection(): ComputedRef<'ltr' | 'rtl'> {
+  const page = usePage()
+
+  useStarterKitDocument(page)
+
+  return computed(() => starterKitDirection(page.props))
+}
+
+/** Keep `<html lang dir>` on the shared `alfakitDocument` (from the first page onwards). */
+export function useStarterKitDocument(page: { props: unknown } = usePage()): void {
+  watch(
+    () => {
+      const document = starterKitDocument(page.props)
+
+      return document ? `${document.tag}|${document.direction}` : ''
+    },
+    () => installStarterKitDocument(page.props),
+    { immediate: true },
+  )
 }

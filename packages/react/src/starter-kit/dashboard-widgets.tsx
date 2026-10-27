@@ -8,6 +8,7 @@ import type { ReactNode } from 'react'
 import type { AnyComponent } from '../context'
 import { lazyComponent } from '../lib/lazy'
 import { cn } from '../lib/utils'
+import { useStarterKitDocument } from './navigation'
 
 /** Props of `<AlfakitWidgets>`. */
 export interface AlfakitWidgetsProps {
@@ -66,7 +67,10 @@ function WidgetsPlaceholder({ component, className }: LoadedProps) {
  * ```
  */
 export function AlfakitWidgets({ panel, components, className, children }: AlfakitWidgetsProps) {
-  const component = starterKitDashboardWidgets(usePage().props, panel)
+  const props = usePage().props
+  const component = starterKitDashboardWidgets(props, panel)
+
+  useStarterKitDocument(props)
 
   if (!component) return <>{children}</>
 

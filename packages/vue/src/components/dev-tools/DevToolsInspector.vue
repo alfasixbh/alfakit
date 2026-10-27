@@ -82,7 +82,7 @@ const time = (value: number | null) =>
         size="icon"
         :aria-label="t('dev_tools.open', {}, 'Open schema inspector')"
         data-slot="dev-tools-toggle"
-        class="fixed end-4 bottom-16 z-40 rounded-full shadow-md [[data-slot=starter-kit-root]_&]:end-auto [[data-slot=starter-kit-root]_&]:right-4"
+        class="fixed end-4 bottom-16 z-40 rounded-full shadow-md"
       >
         <BracesIcon />
       </Button>

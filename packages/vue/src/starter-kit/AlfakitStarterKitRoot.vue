@@ -11,6 +11,7 @@ import AlfakitRoot from '../AlfakitRoot.vue'
 import DebugPanelSlot from '../components/panel/DebugPanelSlot.vue'
 import { setToasterId, showToast } from '../components/notifications/flash-toasts'
 import { provideAlfakit } from '../context'
+import { useStarterKitDocument } from './navigation'
 import { starterKitContext, type StarterKitPageOptions } from './runtime'
 
 /**
@@ -23,6 +24,9 @@ const context = starterKitContext(props.options ?? {})
 const page = usePage<AlfakitPageProps>()
 
 provideAlfakit(context)
+
+// `<html lang dir>` of the whole page (the host layout around AlfaKit's content too).
+useStarterKitDocument(page)
 
 // Endpoints follow the open page (synchronously, before children run actions).
 watch(
@@ -57,8 +61,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!-- The reading direction and language of Alfakit's content only: the host layout around it
-       (sidebar, header) and the app's own pages keep the document's. -->
+  <!-- The reading direction and language of Alfakit's content. The document has the same
+       direction (`alfakitDocument`), so the host layout around it mirrors too. -->
   <div
     data-slot="starter-kit-root"
     :dir="page.props.alfakit?.localization?.direction ?? 'ltr'"
@@ -68,9 +72,8 @@ onUnmounted(() => {
     <AlfakitRoot :toaster-id="STARTER_KIT_TOASTER_ID">
       <slot />
       <!-- The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
-           render: float it in the corner (nothing without `alfakitDebug`). The corner is the
-           document's right: the kit's sidebar stays on the left in a right-to-left panel language. -->
-      <div data-slot="starter-kit-debug-panel" class="fixed right-16 bottom-16 z-40">
+           render: float it in the end corner (nothing without `alfakitDebug`). -->
+      <div data-slot="starter-kit-debug-panel" class="fixed end-16 bottom-16 z-40">
         <DebugPanelSlot />
       </div>
     </AlfakitRoot>

@@ -12,6 +12,7 @@
   import { setToasterId, showToast } from '../components/notifications/toast'
   import { provideAlfakit, setGlobalAlfakitContext } from '../context.svelte'
   import { APP_MOUNTED, createAppMounted } from '../lib/hydration.svelte'
+  import { useStarterKitDocument } from './direction.svelte'
   import { starterKitContext, type StarterKitPageOptions } from './runtime'
 
   /**
@@ -41,6 +42,9 @@
     syncStarterKitPage(pageProps)
   })
 
+  // `<html lang dir>` of the whole page (the host layout around AlfaKit's content too).
+  useStarterKitDocument()
+
   onMount(() => {
     // Toasts and other content rendered outside the component tree find the context too.
     setGlobalAlfakitContext(context)
@@ -60,8 +64,8 @@
   })
 </script>
 
-<!-- The reading direction and language of Alfakit's content only: the host layout around it
-     (sidebar, header) and the app's own pages keep the document's. -->
+<!-- The reading direction and language of Alfakit's content. The document has the same
+     direction (`alfakitDocument`), so the host layout around it mirrors too. -->
 <div
   data-slot="starter-kit-root"
   dir={pageProps.alfakit?.localization?.direction ?? 'ltr'}
@@ -71,8 +75,8 @@
   <AlfakitRoot toasterId={STARTER_KIT_TOASTER_ID}>
     {@render children?.()}
     <!-- The debug panel's button lives in AlfaKit's top bar, which a starter kit doesn't
-         render: float it in the corner (nothing without `alfakitDebug`). -->
-    <div data-slot="starter-kit-debug-panel" class="fixed right-16 bottom-16 z-40">
+         render: float it in the end corner (nothing without `alfakitDebug`). -->
+    <div data-slot="starter-kit-debug-panel" class="fixed end-16 bottom-16 z-40">
       <DebugPanelSlot />
     </div>
   </AlfakitRoot>

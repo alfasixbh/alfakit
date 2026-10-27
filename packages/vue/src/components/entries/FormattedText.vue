@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { BaseEntry, TextEntrySchema } from '@alfakit/core'
-import { limitedListItems } from '@alfakit/core'
+import { isolationDirection, limitedListItems } from '@alfakit/core'
 import { CheckIcon, CopyIcon } from '@lucide/vue'
 import { computed, ref, type HTMLAttributes } from 'vue'
 import { badgeColorClasses, colorClass, textColorClasses } from '../../lib/colors'
@@ -153,7 +153,9 @@ const t = useT()
             :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
             v-html="String(item)"
           />
-          <bdi v-else :class="innerClasses">{{ String(item) }}</bdi>
+          <bdi v-else :dir="isolationDirection(String(item))" :class="innerClasses">{{
+            String(item)
+          }}</bdi>
           <Icon
             v-if="itemIcon(index) && props.schema.iconPosition === 'after'"
             :name="itemIcon(index)!"
@@ -170,7 +172,9 @@ const t = useT()
             :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
             v-html="String(item)"
           />
-          <bdi v-else :class="innerClasses">{{ String(item) }}</bdi>
+          <bdi v-else :dir="isolationDirection(String(item))" :class="innerClasses">{{
+            String(item)
+          }}</bdi>
           <Icon
             v-if="itemIcon(index) && props.schema.iconPosition === 'after'"
             :name="itemIcon(index)!"
@@ -231,7 +235,9 @@ const t = useT()
         :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
         v-html="String(items[0])"
       />
-      <bdi v-else :class="innerClasses">{{ String(items[0]) }}</bdi>
+      <bdi v-else :dir="isolationDirection(String(items[0]))" :class="innerClasses">{{
+        String(items[0])
+      }}</bdi>
       <Icon
         v-if="props.schema.icon && props.schema.iconPosition === 'after'"
         :name="props.schema.icon"
@@ -248,7 +254,9 @@ const t = useT()
         :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
         v-html="String(items[0])"
       />
-      <bdi v-else :class="innerClasses">{{ String(items[0]) }}</bdi>
+      <bdi v-else :dir="isolationDirection(String(items[0]))" :class="innerClasses">{{
+        String(items[0])
+      }}</bdi>
       <Icon
         v-if="props.schema.icon && props.schema.iconPosition === 'after'"
         :name="props.schema.icon"

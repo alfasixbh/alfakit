@@ -20,6 +20,7 @@
   import { page } from '@inertiajs/svelte'
   import type { Snippet } from 'svelte'
   import Lazy from '../lib/Lazy.svelte'
+  import { useStarterKitDocument } from './direction.svelte'
 
   /**
    * The dashboard widgets of a `starterKit()` panel on the host's own dashboard. Reads the
@@ -53,6 +54,8 @@
   } = $props()
 
   const component = $derived(starterKitDashboardWidgets(page.props, panel))
+
+  useStarterKitDocument()
 </script>
 
 {#if component}

@@ -9,6 +9,7 @@ import { Popover, PopoverContent } from '../src/components/ui/popover'
 import {
   AlfakitStarterKitRoot,
   createStarterKitPage,
+  useAlfakitDirection,
   useAlfakitNavigation,
 } from '../src/starter-kit'
 import { Wrapper, panel, setPageProps } from './mocks'
@@ -58,7 +59,14 @@ beforeAll(() => {
   })) as unknown as typeof window.matchMedia
 })
 
-afterEach(() => setPageProps({ alfakit: panel, page: undefined, alfakitNavigation: undefined }))
+afterEach(() =>
+  setPageProps({
+    alfakit: panel,
+    page: undefined,
+    alfakitNavigation: undefined,
+    alfakitDocument: undefined,
+  }),
+)
 
 describe('starter kit mode', () => {
   it('puts the page in the host layout, then the Alfakit root', () => {
@@ -157,7 +165,7 @@ describe('starter kit mode', () => {
     expect(await screen.findByRole('button', { name: 'Open debug panel' })).toBeInTheDocument()
   })
 
-  it('mirrors only its own content in a right-to-left language, never the host document', () => {
+  it('flips the whole document in a right-to-left panel language, and back after a switch', () => {
     document.documentElement.dir = 'ltr'
     document.documentElement.lang = 'en'
     setPageProps({
@@ -166,6 +174,7 @@ describe('starter kit mode', () => {
         starterKit: true,
         localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
       },
+      alfakitDocument: { tag: 'ar', direction: 'rtl' },
       page,
     } as unknown as Partial<AlfakitPageProps>)
     const Page = createStarterKitPage({ layout: HostLayout })
@@ -178,7 +187,62 @@ describe('starter kit mode', () => {
       </HostLayout>,
     )
 
-    // The host's sidebar and its own pages are not right to left: <html> stays the host's.
+    // The kit's sidebar and header mirror too: <html> follows the shared `alfakitDocument`.
+    expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+    expect(document.documentElement).toHaveAttribute('lang', 'ar')
+    expect(document.querySelector('[data-slot="starter-kit-root"]')).toHaveAttribute('dir', 'rtl')
+
+    // Switching back to English redirects back: a visit with the new props.
+    act(() => {
+      document.dispatchEvent(
+        new CustomEvent('inertia:navigate', {
+          detail: { page: { props: { alfakitDocument: { tag: 'en', direction: 'ltr' } } } },
+        }),
+      )
+    })
+
+    expect(document.documentElement).toHaveAttribute('dir', 'ltr')
+    expect(document.documentElement).toHaveAttribute('lang', 'en')
+  })
+
+  it("keeps the kit's own pages in the app's language, right to left, and docks the sidebar on the right", () => {
+    document.documentElement.dir = 'ltr'
+    document.documentElement.lang = 'en'
+    setPageProps({
+      alfakit: undefined,
+      alfakitDocument: { tag: 'en', direction: 'rtl' },
+    } as unknown as Partial<AlfakitPageProps>)
+
+    const { result } = renderHook(() => useAlfakitDirection())
+
+    expect(result.current).toBe('rtl')
+    expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+    expect(document.documentElement).toHaveAttribute('lang', 'en')
+  })
+
+  it('leaves the document alone without the shared prop', () => {
+    document.documentElement.dir = 'ltr'
+    document.documentElement.lang = 'en'
+    setPageProps({
+      alfakit: {
+        ...panel,
+        starterKit: true,
+        localization: { code: 'ar', tag: 'ar', direction: 'rtl', locales: [] },
+      },
+      alfakitDocument: undefined,
+      page,
+    } as unknown as Partial<AlfakitPageProps>)
+    const Page = createStarterKitPage({ layout: HostLayout })
+
+    render(
+      <HostLayout>
+        <AlfakitStarterKitRoot>
+          <Page />
+        </AlfakitStarterKitRoot>
+      </HostLayout>,
+    )
+
+    // An app whose server does not share it yet: <html> stays the host's.
     expect(document.documentElement).toHaveAttribute('dir', 'ltr')
     expect(document.documentElement).toHaveAttribute('lang', 'en')
     const root = document.querySelector('[data-slot="starter-kit-root"]')

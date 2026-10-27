@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { StatSchema } from '@alfakit/core'
+import { isolationDirection, type StatSchema } from '@alfakit/core'
 import { Link } from '@inertiajs/vue3'
 import {
   colorClass,
@@ -56,7 +56,7 @@ const props = defineProps<{ stat: StatSchema }>()
                 props.stat.color && textColorClasses[props.stat.color],
               )
             "
-            ><bdi>{{ props.stat.value }}</bdi></span
+            ><bdi :dir="isolationDirection(props.stat.value)">{{ props.stat.value }}</bdi></span
           >
           <span
             v-if="props.stat.description"
@@ -75,7 +75,9 @@ const props = defineProps<{ stat: StatSchema }>()
               class="size-3.5"
             />
             <!-- Mixed-direction text (a Latin "-3% this month" in Arabic) keeps its order. -->
-            <bdi>{{ props.stat.description }}</bdi>
+            <bdi :dir="isolationDirection(props.stat.description)">{{
+              props.stat.description
+            }}</bdi>
             <Icon
               v-if="props.stat.descriptionIcon && props.stat.descriptionIconPosition === 'after'"
               :name="props.stat.descriptionIcon"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ColumnSchema, ColumnSummariesSchema } from '@alfakit/core'
+import { isolationDirection, type ColumnSchema, type ColumnSummariesSchema } from '@alfakit/core'
 import { useFormatter } from '../../context'
 import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
@@ -78,7 +78,9 @@ const ALIGN: Record<string, string> = {
               <span class="font-medium tabular-nums">{{ format.number(item.count) }}</span>
             </span>
           </span>
-          <span v-else class="font-medium tabular-nums">{{ summary.value ?? '—' }}</span>
+          <bdi v-else :dir="isolationDirection(summary.value)" class="font-medium tabular-nums">{{
+            summary.value ?? '—'
+          }}</bdi>
         </div>
       </div>
     </TableCell>

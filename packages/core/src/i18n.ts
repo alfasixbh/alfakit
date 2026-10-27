@@ -438,3 +438,21 @@ export function switchLocale(endpoint: string, locale: string): void {
   lazyComponentCache.clear()
   router.post(endpoint, { locale }, { preserveScroll: true, preserveState: false })
 }
+
+// ---------------------------------------------------------------------------- Bidi
+
+/** A letter of a script written right to left (not its digits or separators). */
+const RTL_LETTER =
+  /(?=\p{L})(?:\p{Script=Arabic}|\p{Script=Hebrew}|\p{Script=Syriac}|\p{Script=Thaana}|\p{Script=Nko}|\p{Script=Adlam}|\p{Script=Samaritan}|\p{Script=Mandaic}|\p{Script=Hanifi_Rohingya}|\p{Script=Yezidi}|\p{Script=Mende_Kikakui})/u
+
+/**
+ * The `dir` for a `<bdi>` around a display value: `auto` (the value's first strong letter
+ * decides) when it has right-to-left letters, else `ltr`. Numbers and money formatted for a
+ * right-to-left locale start with an invisible right-to-left mark (`‏0.00 US$` in Arabic),
+ * which `auto` reads as right to left and reorders into `$US 0.00`; without right-to-left
+ * letters the value is laid out as written. Values with them (`٠٫٠٠٠ د.ب.‏`, Arabic
+ * text) keep their own direction.
+ */
+export function isolationDirection(value: unknown): 'ltr' | 'auto' {
+  return typeof value === 'string' && RTL_LETTER.test(value) ? 'auto' : 'ltr'
+}

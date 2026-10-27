@@ -12,6 +12,7 @@
   import { starterKitWidgets } from '@alfakit/core'
   import { page } from '@inertiajs/svelte'
   import Lazy from '../../lib/Lazy.svelte'
+  import { useStarterKitDocument } from '../direction.svelte'
   import { impersonationBannerLoader } from './banner-loader'
   import SearchTrigger from './SearchTrigger.svelte'
 
@@ -27,6 +28,9 @@
   } = $props()
 
   const source = $derived(starterKitWidgets(page.props, panel, 'search'))
+
+  // The header is on every page of the app: it keeps `<html lang dir>` in step too.
+  useStarterKitDocument()
 </script>
 
 <!-- While impersonating, the first header component shows the banner on host pages. -->

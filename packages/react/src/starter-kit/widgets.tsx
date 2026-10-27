@@ -7,6 +7,7 @@ import {
 import { usePage } from '@inertiajs/react'
 import { lazy, Suspense } from 'react'
 import { lazyComponent } from '../lib/lazy'
+import { useStarterKitDocument } from './navigation'
 import {
   CopilotTrigger,
   LanguageSwitcherTrigger,
@@ -93,7 +94,12 @@ function useWidgets(
   panelId: string | undefined,
   part: keyof StarterKitWidgetsSchema,
 ): StarterKitWidgets | null {
-  return starterKitWidgets(usePage().props, panelId, part)
+  const props = usePage().props
+
+  // The header is on every page of the app: it keeps `<html lang dir>` in step too.
+  useStarterKitDocument(props)
+
+  return starterKitWidgets(props, panelId, part)
 }
 
 /**

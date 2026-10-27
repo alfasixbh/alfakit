@@ -54,8 +54,8 @@
     return localization?.tag ?? 'en'
   })
 
-  // Starter kit mode: the host app owns `<html lang dir>` (its own pages and layout are not
-  // mirrored); `AlfakitStarterKitRoot` puts the direction on Alfakit's own root element.
+  // Starter kit mode: `<html lang dir>` follows the shared `alfakitDocument` prop (the host's
+  // pages have it too), which `AlfakitStarterKitRoot` and the kit's sidebar and header apply.
   $effect.pre(() => {
     if (panel?.starterKit !== true) applyDocumentLocale(localization)
   })

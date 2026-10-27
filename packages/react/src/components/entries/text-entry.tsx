@@ -1,5 +1,5 @@
 import type { TextEntrySchema } from '@alfakit/core'
-import { limitedListItems } from '@alfakit/core'
+import { isolationDirection, limitedListItems } from '@alfakit/core'
 import { Link } from '@inertiajs/react'
 import { CheckIcon, CopyIcon } from 'lucide-react'
 import { useState } from 'react'
@@ -115,6 +115,7 @@ export function FormattedText({
     ) : (
       // <bdi> isolates each value's direction (an English email inside an Arabic page).
       <bdi
+        dir={isolationDirection(text)}
         className={cn(
           'min-w-0 break-words',
           schema.lineClamp && `line-clamp-${schema.lineClamp}`,

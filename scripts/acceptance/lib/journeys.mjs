@@ -553,20 +553,15 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
             await switchTo('ar')
             await open(`${PANEL}/posts`)
             const rtl = await direction()
-            // Panel mode: the whole document mirrors. Starter kit mode: the app owns the
-            // document (its own pages and sidebar are not translated), so AlfaKit mirrors only
-            // its own content root and leaves `<html dir>` alone.
-            const ok =
-                mode === 'panel' ? rtl.html === 'rtl' : rtl.content === 'rtl' && rtl.html !== 'rtl'
-            if (!ok)
+            // The whole document mirrors, in starter kit mode too (the kit's sidebar and
+            // header included: `alfakitDocument`, the installer's `<html dir>` and `side`).
+            if (rtl.html !== 'rtl' || rtl.content !== 'rtl')
                 throw new Error(
-                    mode === 'panel'
-                        ? `Expected <html dir="rtl"> after switching to Arabic, got ${JSON.stringify(rtl)}`
-                        : `Expected AlfaKit's content root dir="rtl" and the app's <html> untouched, got ${JSON.stringify(rtl)}`,
+                    `Expected <html dir="rtl"> and AlfaKit's content rtl after switching to Arabic, got ${JSON.stringify(rtl)}`,
                 )
-            // The layout must not break: no overlap, nothing scrolls sideways, and in panel mode
-            // the sidebar sits right of the content (mirrored). In starter kit mode the app's
-            // sidebar keeps its own side.
+            // The layout must not break: no overlap, nothing scrolls sideways, and the sidebar
+            // (AlfaKit's, or the kit's docked by `useAlfakitDirection()`) sits right of the
+            // content (mirrored).
             const layout = await page.evaluate(() => {
                 const box = (el) => {
                     if (!el) return null
@@ -588,7 +583,7 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
                     `the page scrolls horizontally (${layout.scrollWidth}px > ${layout.viewport}px)`,
                 )
             if (layout.sidebar && layout.content) {
-                if (mode === 'panel' && layout.sidebar.left < layout.content.left)
+                if (layout.sidebar.left < layout.content.left)
                     problems.push('the sidebar is left of the content (not mirrored)')
                 if (
                     layout.sidebar.left < layout.content.right &&
@@ -615,22 +610,56 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
 
     await step(
         'B29',
-        "Starter kit: AlfaKit's Arabic does not leak into the app's own pages",
+        "Starter kit: the app's own pages mirror in Arabic and keep the app's language",
         async () => {
             if (mode !== 'starter-kit') skip('starter-kit mode only')
             if (!route) throw new Error('No locale route')
+            const sidebarSide = () =>
+                page.evaluate(() => {
+                    const sidebar = document.querySelector('[data-sidebar="sidebar"]')
+                    const box = sidebar?.getBoundingClientRect()
+                    return box && box.width > 0
+                        ? box.left + box.width / 2 > window.innerWidth / 2
+                            ? 'right'
+                            : 'left'
+                        : null
+                })
             try {
                 await switchTo('ar')
                 await open(`${PANEL}/posts`)
                 // Client-side (Inertia) navigation to the app's own dashboard, as a user clicks it.
                 await page.getByRole('link', { name: 'Dashboard', exact: true }).first().click()
                 await waitUrl(/\/dashboard$/, 'the app dashboard')
+                // The URL changes before the visit's navigate event puts the page's lang on.
+                await page
+                    .waitForFunction(() => document.documentElement.lang !== 'ar', null, {
+                        timeout: 10_000,
+                    })
+                    .catch(() => {})
                 const dir = await direction()
-                if (dir.html === 'rtl')
+                const side = await sidebarSide()
+                // The page is right to left (the kit's sidebar docks on the right); its text is
+                // the app's own, so `lang` stays the app's.
+                if (dir.html !== 'rtl' || dir.lang === 'ar' || side !== 'right')
                     throw new Error(
-                        `The app's /dashboard (not an AlfaKit page) keeps <html dir="rtl" lang="${dir.lang}"> after visiting an AlfaKit page in Arabic`,
+                        `Expected the app's /dashboard right to left with its own lang and the sidebar on the right in Arabic, got ${JSON.stringify({ ...dir, side })}`,
                     )
-                return JSON.stringify(dir)
+                // A full page load renders the root view's <html dir> (no left-to-right flash).
+                const response = await page.request.get('/dashboard')
+                const html = await response.text()
+                if (!/<html[^>]*\sdir="rtl"/.test(html))
+                    throw new Error(
+                        `The root view does not render <html dir="rtl"> in Arabic: ${html.match(/<html[^>]*>/)?.[0]}`,
+                    )
+                await switchTo('en')
+                await open('/dashboard')
+                const ltr = await direction()
+                const ltrSide = await sidebarSide()
+                if (ltr.html !== 'ltr' || ltrSide !== 'left')
+                    throw new Error(
+                        `Expected the app's /dashboard left to right again in English, got ${JSON.stringify({ ...ltr, side: ltrSide })}`,
+                    )
+                return JSON.stringify({ ar: { ...dir, side }, en: { ...ltr, side: ltrSide } })
             } finally {
                 await switchTo('en').catch((error) =>
                     log(`switching back to en failed: ${error.message}`),
@@ -682,14 +711,14 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
                 await pick('العربية')
                 await contentDir('rtl')
                 const rtl = await direction()
-                if (rtl.content !== 'rtl' || rtl.html !== before.html)
+                if (rtl.content !== 'rtl' || rtl.html !== 'rtl')
                     throw new Error(
-                        `Expected AlfaKit's content rtl and <html dir> unchanged after picking Arabic in the header, got ${JSON.stringify({ before, rtl })}`,
+                        `Expected AlfaKit's content and <html dir> rtl after picking Arabic in the header, got ${JSON.stringify({ before, rtl })}`,
                     )
                 await pick('English')
                 await contentDir('ltr')
                 const ltr = await direction()
-                if (ltr.content !== 'ltr')
+                if (ltr.content !== 'ltr' || ltr.html !== 'ltr')
                     throw new Error(
                         `Expected ltr after picking English, got ${JSON.stringify(ltr)}`,
                     )

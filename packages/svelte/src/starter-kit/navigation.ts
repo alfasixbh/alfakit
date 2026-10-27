@@ -7,6 +7,7 @@ import {
   type StarterKitUserMenuItem,
 } from '@alfakit/core'
 import { page } from '@inertiajs/svelte'
+import { useStarterKitDocument } from './direction.svelte'
 
 // Its own module, away from `createStarterKitLayout()`: the host's sidebar imports it on every
 // page, and it must not pull the panel runtime into the host's main chunk.
@@ -27,7 +28,8 @@ export interface AlfakitNavigation {
  * The navigation of a `starterKit()` panel (the first one unless `panelId` is given), for the
  * host's sidebar. Every Inertia page of the application carries it, so the host's own pages
  * list the panel's resources too. The getters read the current page, so they update after
- * each visit when read in markup or `$derived`.
+ * each visit when read in markup or `$derived`. Call during component initialisation (it
+ * keeps `<html lang dir>` in step too).
  *
  * ```svelte
  * const navigation = useAlfakitNavigation()
@@ -35,6 +37,8 @@ export interface AlfakitNavigation {
  * ```
  */
 export function useAlfakitNavigation(panelId?: string): AlfakitNavigation {
+  useStarterKitDocument()
+
   return {
     get navigation() {
       return starterKitNavigation(page.props, panelId)

@@ -6,12 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Upgrading (starter kits)
+
+- To mirror the whole page for right-to-left languages, run `php artisan alfakit:install --starter-kit --no-npm` (with the `--panel`/`--path` you installed with), then rebuild your frontend. It adds `dir` to `<html>` in `app.blade.php`, makes the kit's sidebar dock on the right in RTL, and switches a few kit classes to logical ones; it only adds what's missing, and `alfakit:upgrade` reminds you until it's done.
+
+### Added
+
+- Starter kits: a right-to-left panel language (Arabic, Hebrew…) mirrors the whole page, including the app's own pages and the kit's sidebar and header. `<html dir>` follows the panel language (shared `alfakitDocument` prop, `StarterKitDocument::direction()` in the root view), and the kit's sidebar docks on the right with the new `useAlfakitDirection()` (React, Vue, Svelte). The debug and schema-inspector buttons sit at the reading end.
+
 ### Changed
 
 - Card grids (`contentGrid()`) choose their column count from the table's own width instead of the browser window, and only use a column count once each card can be at least 15rem wide. A table beside the sidebar shows fewer, wider cards instead of narrow ones with broken words. Container keys (`'@lg' => 2`) are used as given. Record text keeps at least 15rem before the record actions wrap onto their own line.
 
 ### Fixed
 
+- Arabic-locale money and numbers in table cells, entries, stats and summaries no longer render reordered (`$US 0.00`); new `isolationDirection()` in `@alfakit/core`.
+- Arabic navigation label for Webhooks.
 - Card and grid table layouts: row actions no longer cover the record's text; they sit beside it, or move under it when the card is too narrow.
 - A long copyable value (such as the API reference's Base URL) wraps inside its own column, with the copy button right after it instead of on top of the next column.
 - Pressing Back again while a page restored by Back was still reloading could leave the browser showing a different page than the address bar. The reload is now cancelled on the next Back or Forward.
