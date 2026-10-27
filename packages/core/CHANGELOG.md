@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.2.2
+
+### Patch Changes
+
+- Starter-kit document direction (`alfakitDocument`, starter-kit-document helpers), `isolationDirection()` for numbers and money in RTL, container-based `contentGridClasses()`, and the reload of a page restored by Back is cancelled on the next Back or Forward.
+
 ## 0.2.0
 
 ### Minor Changes

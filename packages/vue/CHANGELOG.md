@@ -1,5 +1,11 @@
 # @alfakit/vue
 
+## 0.2.2
+
+### Patch Changes
+
+- Starter kits mirror the whole page for right-to-left languages (`useAlfakitDirection()`); Arabic money no longer reordered; card grids follow the table's width; row actions and copy buttons no longer overlap long text.
+
 ## 0.2.0
 
 ### Minor Changes
