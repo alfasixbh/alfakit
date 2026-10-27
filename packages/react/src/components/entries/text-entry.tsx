@@ -105,15 +105,18 @@ export function FormattedText({
     // Lists of enums whose items differ carry a colour and icon per item.
     const color = schema.itemColors?.[index] ?? schema.color
     const icon = schema.itemIcons?.[index] ?? schema.icon
+    // `min-w-0 break-words`: a long value (a URL, a token) breaks inside its column instead
+    // of pushing the copy button and the icons past it.
     const inner = schema.html ? (
       <span
-        className={cn(schema.prose && 'alfakit-prose')}
+        className={cn('min-w-0 break-words', schema.prose && 'alfakit-prose')}
         dangerouslySetInnerHTML={{ __html: text }}
       />
     ) : (
       // <bdi> isolates each value's direction (an English email inside an Arabic page).
       <bdi
         className={cn(
+          'min-w-0 break-words',
           schema.lineClamp && `line-clamp-${schema.lineClamp}`,
           !schema.wrap && !schema.lineClamp && 'whitespace-pre-line',
         )}
@@ -145,7 +148,7 @@ export function FormattedText({
       <span
         key={index}
         className={cn(
-          'inline-flex items-center gap-1.5',
+          'inline-flex max-w-full items-center gap-1.5',
           color && textColorClasses[color],
           schema.size && SIZES[schema.size],
           schema.weight && WEIGHTS[schema.weight],
@@ -168,7 +171,7 @@ export function FormattedText({
         {schema.copyable && (
           <button
             type="button"
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground shrink-0"
             onClick={(event) => {
               // The entry may sit inside a link or a clickable table row.
               event.preventDefault()

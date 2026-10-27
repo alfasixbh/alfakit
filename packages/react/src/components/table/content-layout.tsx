@@ -218,17 +218,23 @@ function ContentRecord({
   const main = layout.filter((node) => !(node.type === 'Panel' && node.collapsible))
   const details = layout.filter((node) => node.type === 'Panel' && node.collapsible)
   const atStart = recordActionsAtStart(table.recordActionsPosition)
+  // The actions keep their natural width beside the record's text and wrap onto a line of
+  // their own when the card is too narrow for both, so they never overlap the text.
   const actions = record.actions?.length ? (
-    <div className="shrink-0" onClick={(event) => event.stopPropagation()}>
+    <div
+      data-slot="record-actions"
+      className="max-w-full min-w-0"
+      onClick={(event) => event.stopPropagation()}
+    >
       <ActionList
         actions={record.actions}
         context={{ ...context, record: record.key }}
         size="sm"
         align="end"
-        className="flex-nowrap"
       />
     </div>
   ) : null
+  const trailing = !atStart && actions
 
   return (
     <div
@@ -248,7 +254,7 @@ function ContentRecord({
       )}
       onClick={() => clickable && onRecordClick(record)}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex flex-wrap items-start gap-3">
         {atStart && table.recordActionsPosition === 'before-cells' && actions}
         {selectable && (
           <div className="pt-0.5" onClick={(event) => event.stopPropagation()}>
@@ -262,29 +268,38 @@ function ContentRecord({
           </div>
         )}
         {atStart && table.recordActionsPosition === 'before-columns' && actions}
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
+        {/* The text takes the remaining width (at least 10rem before the actions wrap). */}
+        <div
+          data-slot="record-content"
+          className="flex min-w-0 grow basis-40 flex-col gap-3 break-words"
+        >
           {main.map((node, index) => renderNode(node, index))}
         </div>
-        {!atStart && actions}
-        {collapsible && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-expanded={open}
-            aria-controls={open ? panelId : undefined}
-            aria-label={
-              open
-                ? t('table.hide_details', {}, 'Hide details')
-                : t('table.show_details', {}, 'Show details')
-            }
-            onClick={(event) => {
-              event.stopPropagation()
-              setOpen(!open)
-            }}
-          >
-            <ChevronDownIcon className={cn('transition-transform', open && 'rotate-180')} />
-          </Button>
+        {(trailing || collapsible) && (
+          <div className="ms-auto flex max-w-full min-w-0 items-start gap-3">
+            {trailing}
+            {collapsible && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="shrink-0"
+                aria-expanded={open}
+                aria-controls={open ? panelId : undefined}
+                aria-label={
+                  open
+                    ? t('table.hide_details', {}, 'Hide details')
+                    : t('table.show_details', {}, 'Show details')
+                }
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setOpen(!open)
+                }}
+              >
+                <ChevronDownIcon className={cn('transition-transform', open && 'rotate-180')} />
+              </Button>
+            )}
+          </div>
         )}
       </div>
       {open && details.length > 0 && (

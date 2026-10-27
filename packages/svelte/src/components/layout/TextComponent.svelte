@@ -64,7 +64,7 @@
     <button
       type="button"
       data-slot="text-copy"
-      class="text-muted-foreground hover:text-foreground"
+      class="text-muted-foreground hover:text-foreground shrink-0"
       aria-label={t('copy', {}, 'Copy')}
       onclick={copy}
     >
@@ -114,7 +114,8 @@
       {...props}
     >
       {#if component.icon}<Icon name={component.icon} />{/if}
-      {component.content}
+      <!-- A long value (a URL path) breaks here instead of pushing the copy button out. -->
+      <span class="min-w-0 break-words">{component.content}</span>
       {@render copyButton()}
     </p>
   {/if}

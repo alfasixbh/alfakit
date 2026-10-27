@@ -71,7 +71,7 @@ const copy = (text: string) => {
 
 const itemClasses = computed(() =>
   cn(
-    'inline-flex items-center gap-1.5',
+    'inline-flex max-w-full items-center gap-1.5',
     props.schema.color && textColorClasses[props.schema.color],
     props.schema.size && SIZES[props.schema.size],
     props.schema.weight && WEIGHTS[props.schema.weight],
@@ -91,15 +91,18 @@ const listItemClasses = (index: number) => {
   const color = itemColor(index)
 
   return cn(
-    'inline-flex items-center gap-1.5',
+    'inline-flex max-w-full items-center gap-1.5',
     color && textColorClasses[color],
     props.schema.size && SIZES[props.schema.size],
     props.schema.weight && WEIGHTS[props.schema.weight],
     props.schema.fontFamily && FAMILIES[props.schema.fontFamily],
   )
 }
+// `min-w-0 break-words`: a long value (a URL, a token) breaks inside its column instead of
+// pushing the copy button and the icons past it.
 const innerClasses = computed(() =>
   cn(
+    'min-w-0 break-words',
     props.schema.lineClamp && `line-clamp-${props.schema.lineClamp}`,
     !props.schema.wrap && !props.schema.lineClamp && 'whitespace-pre-line',
   ),
@@ -147,7 +150,7 @@ const t = useT()
           />
           <span
             v-if="props.schema.html"
-            :class="cn(props.schema.prose && 'alfakit-prose')"
+            :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
             v-html="String(item)"
           />
           <bdi v-else :class="innerClasses">{{ String(item) }}</bdi>
@@ -164,7 +167,7 @@ const t = useT()
           />
           <span
             v-if="props.schema.html"
-            :class="cn(props.schema.prose && 'alfakit-prose')"
+            :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
             v-html="String(item)"
           />
           <bdi v-else :class="innerClasses">{{ String(item) }}</bdi>
@@ -176,7 +179,7 @@ const t = useT()
           <button
             v-if="props.schema.copyable"
             type="button"
-            class="text-muted-foreground hover:text-foreground"
+            class="text-muted-foreground hover:text-foreground shrink-0"
             :aria-label="t('copy', {}, 'Copy')"
             @click.prevent.stop="copy(String(item))"
           >
@@ -225,7 +228,7 @@ const t = useT()
       />
       <span
         v-if="props.schema.html"
-        :class="cn(props.schema.prose && 'alfakit-prose')"
+        :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
         v-html="String(items[0])"
       />
       <bdi v-else :class="innerClasses">{{ String(items[0]) }}</bdi>
@@ -242,7 +245,7 @@ const t = useT()
       />
       <span
         v-if="props.schema.html"
-        :class="cn(props.schema.prose && 'alfakit-prose')"
+        :class="cn('min-w-0 break-words', props.schema.prose && 'alfakit-prose')"
         v-html="String(items[0])"
       />
       <bdi v-else :class="innerClasses">{{ String(items[0]) }}</bdi>
@@ -254,7 +257,7 @@ const t = useT()
       <button
         v-if="props.schema.copyable"
         type="button"
-        class="text-muted-foreground hover:text-foreground"
+        class="text-muted-foreground hover:text-foreground shrink-0"
         :aria-label="t('copy', {}, 'Copy')"
         @click.prevent.stop="copy(String(items[0]))"
       >

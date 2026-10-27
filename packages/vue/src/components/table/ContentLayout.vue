@@ -129,10 +129,13 @@ const nodeKey = (node: ColumnLayoutNode, index: number) =>
       "
       @click="clickable(record) && emit('recordClick', record)"
     >
-      <div class="flex items-start gap-3">
+      <!-- The actions keep their natural width beside the record's text and wrap onto a line
+           of their own when the card is too narrow for both, so they never overlap the text. -->
+      <div class="flex flex-wrap items-start gap-3">
         <div
           v-if="record.actions?.length && props.table.recordActionsPosition === 'before-cells'"
-          class="shrink-0"
+          data-slot="record-actions"
+          class="max-w-full min-w-0"
           @click.stop
         >
           <ActionList
@@ -140,7 +143,6 @@ const nodeKey = (node: ColumnLayoutNode, index: number) =>
             :context="{ ...props.context, record: record.key }"
             size="sm"
             align="end"
-            class="flex-nowrap"
           />
         </div>
         <div v-if="props.selectable" class="pt-0.5" @click.stop>
@@ -153,7 +155,8 @@ const nodeKey = (node: ColumnLayoutNode, index: number) =>
         </div>
         <div
           v-if="record.actions?.length && props.table.recordActionsPosition === 'before-columns'"
-          class="shrink-0"
+          data-slot="record-actions"
+          class="max-w-full min-w-0"
           @click.stop
         >
           <ActionList
@@ -161,10 +164,13 @@ const nodeKey = (node: ColumnLayoutNode, index: number) =>
             :context="{ ...props.context, record: record.key }"
             size="sm"
             align="end"
-            class="flex-nowrap"
           />
         </div>
-        <div class="flex min-w-0 flex-1 flex-col gap-3">
+        <!-- The text takes the remaining width (at least 10rem before the actions wrap). -->
+        <div
+          data-slot="record-content"
+          class="flex min-w-0 grow basis-40 flex-col gap-3 break-words"
+        >
           <ContentLayoutNode
             v-for="(node, nodeIndex) in main"
             :key="nodeKey(node, nodeIndex)"
@@ -181,31 +187,41 @@ const nodeKey = (node: ColumnLayoutNode, index: number) =>
             @record-click="emit('recordClick', $event)"
           />
         </div>
-        <div v-if="record.actions?.length && !atStart" class="shrink-0" @click.stop>
-          <ActionList
-            :actions="record.actions"
-            :context="{ ...props.context, record: record.key }"
-            size="sm"
-            align="end"
-            class="flex-nowrap"
-          />
-        </div>
-        <Button
-          v-if="collapsible"
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          :aria-expanded="isOpen(record)"
-          :aria-controls="isOpen(record) ? `${panelId}-${record.key}` : undefined"
-          :aria-label="
-            isOpen(record)
-              ? t('table.hide_details', {}, 'Hide details')
-              : t('table.show_details', {}, 'Show details')
-          "
-          @click.stop="opened[String(record.key)] = !isOpen(record)"
+        <div
+          v-if="(record.actions?.length && !atStart) || collapsible"
+          class="ms-auto flex max-w-full min-w-0 items-start gap-3"
         >
-          <ChevronDownIcon :class="cn('transition-transform', isOpen(record) && 'rotate-180')" />
-        </Button>
+          <div
+            v-if="record.actions?.length && !atStart"
+            data-slot="record-actions"
+            class="max-w-full min-w-0"
+            @click.stop
+          >
+            <ActionList
+              :actions="record.actions"
+              :context="{ ...props.context, record: record.key }"
+              size="sm"
+              align="end"
+            />
+          </div>
+          <Button
+            v-if="collapsible"
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            class="shrink-0"
+            :aria-expanded="isOpen(record)"
+            :aria-controls="isOpen(record) ? `${panelId}-${record.key}` : undefined"
+            :aria-label="
+              isOpen(record)
+                ? t('table.hide_details', {}, 'Hide details')
+                : t('table.show_details', {}, 'Show details')
+            "
+            @click.stop="opened[String(record.key)] = !isOpen(record)"
+          >
+            <ChevronDownIcon :class="cn('transition-transform', isOpen(record) && 'rotate-180')" />
+          </Button>
+        </div>
       </div>
       <div
         v-if="isOpen(record) && details.length > 0"

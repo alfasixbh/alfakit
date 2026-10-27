@@ -80,7 +80,7 @@ export function TextComponent({ component }: { component: TextSchema }) {
       <button
         type="button"
         data-slot="text-copy"
-        className="text-muted-foreground hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground shrink-0"
         onClick={(event) => {
           event.preventDefault()
           event.stopPropagation()
@@ -131,7 +131,8 @@ export function TextComponent({ component }: { component: TextSchema }) {
       )}
     >
       {component.icon && <Icon name={component.icon} />}
-      {component.content}
+      {/* A long value (a URL path) breaks here instead of pushing the copy button out. */}
+      <span className="min-w-0 break-words">{component.content}</span>
       {copyButton}
     </p>
   )

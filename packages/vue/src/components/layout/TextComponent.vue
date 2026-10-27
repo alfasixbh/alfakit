@@ -90,7 +90,7 @@ function copy() {
       <button
         type="button"
         data-slot="text-copy"
-        class="text-muted-foreground hover:text-foreground"
+        class="text-muted-foreground hover:text-foreground shrink-0"
         :aria-label="t('copy', {}, 'Copy')"
         @click.prevent.stop="copy"
       >
@@ -119,12 +119,13 @@ function copy() {
     v-bind="props.component.extraAttributes"
   >
     <Icon v-if="props.component.icon" :name="props.component.icon" />
-    {{ props.component.content }}
+    <!-- A long value (a URL path) breaks here instead of pushing the copy button out. -->
+    <span class="min-w-0 break-words">{{ props.component.content }}</span>
     <template v-if="props.component.copyable">
       <button
         type="button"
         data-slot="text-copy"
-        class="text-muted-foreground hover:text-foreground"
+        class="text-muted-foreground hover:text-foreground shrink-0"
         :aria-label="t('copy', {}, 'Copy')"
         @click.prevent.stop="copy"
       >

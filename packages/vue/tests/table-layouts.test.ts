@@ -96,6 +96,23 @@ describe('content layouts', () => {
       expect.arrayContaining(['grid', 'md:grid-cols-2', 'xl:grid-cols-3']),
     )
   })
+
+  it('keeps record actions beside the text, wrapping them below instead of overlapping', () => {
+    const wrapper = mountWithAlfakit(() =>
+      h(DataTable, { table: { ...layout, contentGrid: { md: 2, xl: 3 } } }),
+    )
+
+    const content = wrapper.find('[data-slot="record-content"]')
+    expect(content.classes()).toEqual(
+      expect.arrayContaining(['min-w-0', 'grow', 'basis-40', 'break-words']),
+    )
+    expect(content.element.parentElement!.classList).toContain('flex-wrap')
+    const actions = wrapper.find('[data-slot="record-actions"]')
+    expect(actions.classes()).toEqual(expect.arrayContaining(['min-w-0', 'max-w-full']))
+    expect(actions.element.parentElement!.classList).toContain('ms-auto')
+    expect(actions.find('[data-slot="actions"]').classes()).not.toContain('flex-nowrap')
+    expect(wrapper.find('button[aria-label="Show details"]').classes()).toContain('shrink-0')
+  })
 })
 
 describe('column groups and record actions', () => {

@@ -99,12 +99,15 @@
   {@const icon = schema.itemIcons?.[index] ?? schema.icon}
   {@const text = String(entry)}
   {#snippet inner()}
+    <!-- `min-w-0 break-words`: a long value (a URL, a token) breaks inside its column instead
+         of pushing the copy button and the icons past it. -->
     {#if schema.html}
-      <span class={cn(schema.prose && 'alfakit-prose')}>{@html text}</span>
+      <span class={cn('min-w-0 break-words', schema.prose && 'alfakit-prose')}>{@html text}</span>
     {:else}
       <!-- <bdi> isolates each value's direction (an English email inside an Arabic page). -->
       <bdi
         class={cn(
+          'min-w-0 break-words',
           schema.lineClamp && `line-clamp-${schema.lineClamp}`,
           !schema.wrap && !schema.lineClamp && 'whitespace-pre-line',
         )}>{text}</bdi
@@ -123,7 +126,7 @@
   {:else}
     <span
       class={cn(
-        'inline-flex items-center gap-1.5',
+        'inline-flex max-w-full items-center gap-1.5',
         color && textColorClasses[color],
         schema.size && SIZES[schema.size],
         schema.weight && WEIGHTS[schema.weight],
@@ -142,7 +145,7 @@
       {#if schema.copyable}
         <button
           type="button"
-          class="text-muted-foreground hover:text-foreground"
+          class="text-muted-foreground hover:text-foreground shrink-0"
           onclick={(event) => {
             // The entry may sit inside a link or a clickable table row.
             event.preventDefault()
