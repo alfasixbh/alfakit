@@ -9,7 +9,7 @@
   } from '@alfakit/core'
   import {
     VIRTUAL_ESTIMATES,
-    gridColumnsClasses,
+    contentGridClasses,
     primaryColumnName,
     recordActionsAtStart,
     virtualizeOptions,
@@ -92,141 +92,146 @@
     node.type === 'Column' ? `column:${node.name}` : `${node.type}:${index}`
 </script>
 
-<div
-  data-slot="table-content"
-  role={virtual.range.active ? 'list' : undefined}
-  style={virtual.style}
-  class={table.contentGrid
-    ? cn('grid gap-4 p-4', gridColumnsClasses(table.contentGrid))
-    : 'divide-y'}
-  {@attach virtual.attach}
->
-  {#each virtual.indexes as index (String(records[index]?.key ?? index))}
-    {@const record = records[index] as TableRecordSchema}
-    {@const clickable = Boolean(record.url || table.recordAction)}
-    {@const selected = isSelected(record.key)}
-    {@const open = isOpen(record)}
-    <!-- The actions keep their natural width beside the record's text and wrap onto a line
+<!-- `contentGrid()` breakpoints follow the table's width (this `@container`), not the
+     viewport's: beside the sidebar and a cluster's sub-navigation the table can be narrow. -->
+<div data-slot="table-content-container" class="@container">
+  <div
+    data-slot="table-content"
+    role={virtual.range.active ? 'list' : undefined}
+    style={virtual.style}
+    class={table.contentGrid
+      ? cn('grid gap-4 p-4', contentGridClasses(table.contentGrid))
+      : 'divide-y'}
+    {@attach virtual.attach}
+  >
+    {#each virtual.indexes as index (String(records[index]?.key ?? index))}
+      {@const record = records[index] as TableRecordSchema}
+      {@const clickable = Boolean(record.url || table.recordAction)}
+      {@const selected = isSelected(record.key)}
+      {@const open = isOpen(record)}
+      <!-- The actions keep their natural width beside the record's text and wrap onto a line
          of their own when the card is too narrow for both, so they never overlap the text. -->
-    {#snippet actions()}
+      {#snippet actions()}
+        <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+        <div
+          data-slot="record-actions"
+          class="max-w-full min-w-0"
+          onclick={(event) => event.stopPropagation()}
+        >
+          <ActionList
+            actions={record.actions ?? []}
+            context={{ ...context, record: record.key }}
+            size="sm"
+            align="end"
+          />
+        </div>
+      {/snippet}
       <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
       <div
-        data-slot="record-actions"
-        class="max-w-full min-w-0"
-        onclick={(event) => event.stopPropagation()}
+        data-slot="table-record"
+        data-state={selected ? 'selected' : undefined}
+        data-index={index}
+        role={virtual.range.active ? 'listitem' : undefined}
+        aria-setsize={virtual.range.active ? records.length : undefined}
+        aria-posinset={virtual.range.active ? index + 1 : undefined}
+        {@attach virtual.item}
+        class={cn(
+          'flex flex-col gap-3 p-4',
+          table.contentGrid && 'bg-card rounded-lg border shadow-xs',
+          clickable && 'hover:bg-muted/40 cursor-pointer',
+          selected && 'bg-muted/60',
+          record.classes,
+        )}
+        onclick={() => clickable && onRecordClick(record)}
       >
-        <ActionList
-          actions={record.actions ?? []}
-          context={{ ...context, record: record.key }}
-          size="sm"
-          align="end"
-        />
-      </div>
-    {/snippet}
-    <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-    <div
-      data-slot="table-record"
-      data-state={selected ? 'selected' : undefined}
-      data-index={index}
-      role={virtual.range.active ? 'listitem' : undefined}
-      aria-setsize={virtual.range.active ? records.length : undefined}
-      aria-posinset={virtual.range.active ? index + 1 : undefined}
-      {@attach virtual.item}
-      class={cn(
-        'flex flex-col gap-3 p-4',
-        table.contentGrid && 'bg-card rounded-lg border shadow-xs',
-        clickable && 'hover:bg-muted/40 cursor-pointer',
-        selected && 'bg-muted/60',
-        record.classes,
-      )}
-      onclick={() => clickable && onRecordClick(record)}
-    >
-      <div class="flex flex-wrap items-start gap-3">
-        {#if record.actions?.length && table.recordActionsPosition === 'before-cells'}
-          {@render actions()}
-        {/if}
-        {#if selectable}
-          <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-          <div class="pt-0.5" onclick={(event) => event.stopPropagation()}>
-            {#if record.selectable !== false}
-              <Checkbox
-                checked={selected}
-                onCheckedChange={(checked) => selection.toggle(record.key, checked === true)}
-                aria-label={t('table.select_row', {}, 'Select row')}
+        <div class="flex flex-wrap items-start gap-3">
+          {#if record.actions?.length && table.recordActionsPosition === 'before-cells'}
+            {@render actions()}
+          {/if}
+          {#if selectable}
+            <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+            <div class="pt-0.5" onclick={(event) => event.stopPropagation()}>
+              {#if record.selectable !== false}
+                <Checkbox
+                  checked={selected}
+                  onCheckedChange={(checked) => selection.toggle(record.key, checked === true)}
+                  aria-label={t('table.select_row', {}, 'Select row')}
+                />
+              {/if}
+            </div>
+          {/if}
+          {#if record.actions?.length && table.recordActionsPosition === 'before-columns'}
+            {@render actions()}
+          {/if}
+          <!-- The text takes the remaining width (at least 15rem before the actions wrap, so a
+          name is not broken mid-word beside them). -->
+          <div
+            data-slot="record-content"
+            class="flex min-w-0 grow basis-60 flex-col gap-3 break-words"
+          >
+            {#each main as node, index (nodeKey(node, index))}
+              <ContentLayoutNode
+                {node}
+                {record}
+                {columns}
+                {token}
+                {component}
+                {context}
+                {clickable}
+                {primary}
+                hasRecordAction={Boolean(table.recordAction)}
+                {open}
+                {onRecordClick}
               />
-            {/if}
+            {/each}
           </div>
-        {/if}
-        {#if record.actions?.length && table.recordActionsPosition === 'before-columns'}
-          {@render actions()}
-        {/if}
-        <!-- The text takes the remaining width (at least 10rem before the actions wrap). -->
-        <div
-          data-slot="record-content"
-          class="flex min-w-0 grow basis-40 flex-col gap-3 break-words"
-        >
-          {#each main as node, index (nodeKey(node, index))}
-            <ContentLayoutNode
-              {node}
-              {record}
-              {columns}
-              {token}
-              {component}
-              {context}
-              {clickable}
-              {primary}
-              hasRecordAction={Boolean(table.recordAction)}
-              {open}
-              {onRecordClick}
-            />
-          {/each}
+          {#if (record.actions?.length && !atStart) || collapsible}
+            <div class="ms-auto flex max-w-full min-w-0 items-start gap-3">
+              {#if record.actions?.length && !atStart}
+                {@render actions()}
+              {/if}
+              {#if collapsible}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  class="shrink-0"
+                  aria-expanded={open}
+                  aria-controls={open ? `${panelId}-${record.key}` : undefined}
+                  aria-label={open
+                    ? t('table.hide_details', {}, 'Hide details')
+                    : t('table.show_details', {}, 'Show details')}
+                  onclick={(event: MouseEvent) => {
+                    event.stopPropagation()
+                    opened.set(String(record.key), !open)
+                  }}
+                >
+                  <ChevronDownIcon class={cn('transition-transform', open && 'rotate-180')} />
+                </Button>
+              {/if}
+            </div>
+          {/if}
         </div>
-        {#if (record.actions?.length && !atStart) || collapsible}
-          <div class="ms-auto flex max-w-full min-w-0 items-start gap-3">
-            {#if record.actions?.length && !atStart}
-              {@render actions()}
-            {/if}
-            {#if collapsible}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                class="shrink-0"
-                aria-expanded={open}
-                aria-controls={open ? `${panelId}-${record.key}` : undefined}
-                aria-label={open
-                  ? t('table.hide_details', {}, 'Hide details')
-                  : t('table.show_details', {}, 'Show details')}
-                onclick={(event: MouseEvent) => {
-                  event.stopPropagation()
-                  opened.set(String(record.key), !open)
-                }}
-              >
-                <ChevronDownIcon class={cn('transition-transform', open && 'rotate-180')} />
-              </Button>
-            {/if}
+        {#if open && details.length > 0}
+          <div id="{panelId}-{record.key}" class="flex flex-col gap-3">
+            {#each details as node, index (nodeKey(node, main.length + index))}
+              <ContentLayoutNode
+                {node}
+                {record}
+                {columns}
+                {token}
+                {component}
+                {context}
+                {clickable}
+                {primary}
+                hasRecordAction={Boolean(table.recordAction)}
+                open={true}
+                {onRecordClick}
+              />
+            {/each}
           </div>
         {/if}
       </div>
-      {#if open && details.length > 0}
-        <div id="{panelId}-{record.key}" class="flex flex-col gap-3">
-          {#each details as node, index (nodeKey(node, main.length + index))}
-            <ContentLayoutNode
-              {node}
-              {record}
-              {columns}
-              {token}
-              {component}
-              {context}
-              {clickable}
-              {primary}
-              hasRecordAction={Boolean(table.recordAction)}
-              open={true}
-              {onRecordClick}
-            />
-          {/each}
-        </div>
-      {/if}
-    </div>
-  {/each}
+    {/each}
+  </div>
 </div>

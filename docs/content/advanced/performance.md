@@ -32,7 +32,7 @@ Everything a non-virtualised list does keeps working:
 - **Server-side rendering.** The server renders the first window (about a viewport's worth plus overscan); the browser hydrates it as-is and extends it after mount, so there is no hydration mismatch.
 - **Assistive technology.** Windowed items carry `aria-setsize` / `aria-posinset`, windowed tables `aria-rowcount` / `aria-rowindex`, so screen readers announce the real position in the full list; the spacers are `aria-hidden`.
 
-A Repeater with a multi-column `grid()` and a table [content layout](/docs/tables/layout) (stacks, or cards in a `contentGrid()`) are windowed by **whole rows**: the renderer counts the columns of the rendered grid (`grid-template-columns`, so it follows the viewport's breakpoint) and a row is as tall as its tallest item. Before the list is measured it is treated as one column, so the server-rendered first window still matches the client. Windowed content-layout records carry `role="list"` / `role="listitem"` with `aria-setsize` / `aria-posinset`.
+A Repeater with a multi-column `grid()` and a table [content layout](/docs/tables/layout) (stacks, or cards in a `contentGrid()`) are windowed by **whole rows**: the renderer counts the columns of the rendered grid (`grid-template-columns`, so it follows whichever breakpoint applies: the viewport's for a Repeater, the table's width for `contentGrid()`) and a row is as tall as its tallest item. Before the list is measured it is treated as one column, so the server-rendered first window still matches the client. Windowed content-layout records carry `role="list"` / `role="listitem"` with `aria-setsize` / `aria-posinset`.
 
 ### In custom components
 
