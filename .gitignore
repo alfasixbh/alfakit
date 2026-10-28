@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 vendor/
+# Translation-manager fixtures: a package's published translations (lang/vendor/<package>).
+!packages/plugins/translation-manager/tests/Fixtures/lang/vendor/
 
 # Build output
 dist/
