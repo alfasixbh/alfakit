@@ -143,8 +143,9 @@ describe('form settings from PHP', () => {
 
     await wrapper.find('button').trigger('click')
 
-    // The calendar is a lazily loaded chunk: wait for it instead of a fixed delay, which
-    // failed under parallel load.
+    // The calendar is a lazily loaded chunk: let its import finish (it takes longer the
+    // busier the machine is), then wait for it to render.
+    await vi.dynamicImportSettled()
     await vi.waitFor(
       () => {
         const grid = document.body.querySelector('[data-slot="calendar"], [role="application"]')
