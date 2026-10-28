@@ -12,6 +12,8 @@
   const field = useField<string | null>(() => component)
   const isHex = $derived(component.format === 'hex')
   const swatch = $derived(colorToHex(field.value) ?? '#000000')
+  // No colour yet: a struck-through swatch rather than a white one (or black from the picker).
+  const empty = $derived(!field.value)
 
   const t = useT()
   const formatter = useFormatter()
@@ -22,10 +24,22 @@
 <FieldWrapper field={component} htmlFor={field.id} error={field.error}>
   <div class="flex items-center gap-2">
     <label
-      class="border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border shadow-xs"
-      style:background-color={field.value ?? 'transparent'}
+      data-slot="color-picker-swatch"
+      data-empty={empty ? '' : undefined}
+      class={empty
+        ? 'border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border border-dashed shadow-xs'
+        : 'border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border shadow-xs'}
+      style:background-color={field.value || 'transparent'}
       aria-label={t('form.pick_color', {}, 'Pick a colour')}
     >
+      {#if empty}
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 flex items-center justify-center"
+        >
+          <span class="bg-muted-foreground/50 h-px w-[140%] -rotate-45"></span>
+        </span>
+      {/if}
       <input
         type="color"
         value={swatch}
@@ -43,7 +57,7 @@
       value={field.value ?? ''}
       oninput={(event) => field.setValue(event.currentTarget.value)}
       onblur={field.blur}
-      placeholder={component.placeholder ?? (isHex ? '#000000' : component.format)}
+      placeholder={component.placeholder ?? (isHex ? '#rrggbb' : component.format)}
       disabled={field.disabled}
       readonly={field.readOnly}
       {...field.aria}

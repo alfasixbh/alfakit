@@ -305,6 +305,27 @@ describe('ColorPicker rgba()', () => {
 
     expect($('input[type="range"]')).toBeNull()
   })
+
+  it('shows an empty colour as empty, not as a colour', async () => {
+    renderForm(
+      [
+        field('ColorPicker', 'tint', { format: 'hex' }),
+        field('ColorPicker', 'brand', { format: 'hex', placeholder: 'Default' }),
+      ],
+      { brand: null },
+    )
+    await flushPromises()
+    const swatches = document.querySelectorAll('[data-slot="color-picker-swatch"]')
+    const inputs = document.querySelectorAll<HTMLInputElement>('input:not([type="color"])')
+
+    expect(swatches[0]!.hasAttribute('data-empty')).toBe(true)
+    expect(inputs[0]!.placeholder).toBe('#rrggbb')
+    expect(inputs[1]!.placeholder).toBe('Default')
+
+    await setInput(inputs[0]!, '#ff6600')
+
+    expect(swatches[0]!.hasAttribute('data-empty')).toBe(false)
+  })
 })
 
 describe('Repeater compact()', () => {
