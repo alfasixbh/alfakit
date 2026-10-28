@@ -15,15 +15,31 @@ export function ColorPickerField({ component }: { component: ColorPickerSchema }
   const isHex = component.format === 'hex'
   // `rgba()`: the native swatch has no alpha, so a slider sets the opacity.
   const alpha = Math.round(colorAlpha(value) * 100)
+  // No colour yet: a struck-through swatch rather than a white one (or black from the picker).
+  const empty = !value
 
   return (
     <FieldWrapper field={component} htmlFor={id} error={error}>
       <div className="flex items-center gap-2">
         <label
-          className="border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border shadow-xs"
-          style={{ backgroundColor: value ?? 'transparent' }}
+          data-slot="color-picker-swatch"
+          data-empty={empty ? '' : undefined}
+          className={
+            empty
+              ? 'border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border border-dashed shadow-xs'
+              : 'border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border shadow-xs'
+          }
+          style={{ backgroundColor: value || 'transparent' }}
           aria-label={t('form.pick_color', {}, 'Pick a colour')}
         >
+          {empty && (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            >
+              <span className="bg-muted-foreground/50 h-px w-[140%] -rotate-45" />
+            </span>
+          )}
           <input
             type="color"
             value={colorToHex(value) ?? '#000000'}
@@ -40,7 +56,7 @@ export function ColorPickerField({ component }: { component: ColorPickerSchema }
           value={value ?? ''}
           onChange={(event) => setValue(event.target.value)}
           onBlur={blur}
-          placeholder={component.placeholder ?? (isHex ? '#000000' : component.format)}
+          placeholder={component.placeholder ?? (isHex ? '#rrggbb' : component.format)}
           disabled={disabled}
           readOnly={readOnly}
           {...aria}

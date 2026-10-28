@@ -249,6 +249,16 @@ export interface CmsPayload {
   translations: Record<string, unknown>
 }
 
+/**
+ * `GET /api/cms/page` (`CmsPlugin::api()`): the page, as `cms.page`, and the site's
+ * **Site design** as `cms.site.design` (null when none is set or `siteDesign(false)`). The
+ * `customCode()` head and body snippets are never part of it.
+ */
+export interface CmsPageApiResponse {
+  data: CmsPageSchema
+  site: { design: CmsSiteDesign | null }
+}
+
 export interface CmsAdminBarSchema {
   editUrl: string
   /** A signed preview of the unpublished changes, when there are some. */

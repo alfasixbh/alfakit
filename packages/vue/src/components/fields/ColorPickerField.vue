@@ -13,6 +13,8 @@ const { value, setValue, blur, error, id, disabled, readOnly, aria } = useField<
 )
 const isHex = computed(() => props.component.format === 'hex')
 const swatch = computed(() => colorToHex(value.value) ?? '#000000')
+// No colour yet: a struck-through swatch rather than a white one (or black from the picker).
+const empty = computed(() => !value.value)
 const t = useT()
 const formatter = useFormatter()
 // `rgba()`: the native swatch has no alpha, so a slider sets the opacity.
@@ -25,10 +27,23 @@ const onAlpha = (event: Event) =>
   <FieldWrapper :field="props.component" :html-for="id" :error="error">
     <div class="flex items-center gap-2">
       <label
-        class="border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border shadow-xs"
-        :style="{ backgroundColor: value ?? 'transparent' }"
+        data-slot="color-picker-swatch"
+        :data-empty="empty ? '' : undefined"
+        :class="
+          empty
+            ? 'border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border border-dashed shadow-xs'
+            : 'border-input relative size-9 shrink-0 cursor-pointer overflow-hidden rounded-md border shadow-xs'
+        "
+        :style="{ backgroundColor: value || 'transparent' }"
         :aria-label="t('form.pick_color', {}, 'Pick a colour')"
       >
+        <span
+          v-if="empty"
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 flex items-center justify-center"
+        >
+          <span class="bg-muted-foreground/50 h-px w-[140%] -rotate-45" />
+        </span>
         <input
           type="color"
           :value="swatch"
@@ -47,7 +62,7 @@ const onAlpha = (event: Event) =>
         :name="props.component.name"
         dir="ltr"
         :model-value="value ?? ''"
-        :placeholder="props.component.placeholder ?? (isHex ? '#000000' : props.component.format)"
+        :placeholder="props.component.placeholder ?? (isHex ? '#rrggbb' : props.component.format)"
         :disabled="disabled"
         :readonly="readOnly"
         :aria-invalid="aria['aria-invalid']"

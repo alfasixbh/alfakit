@@ -480,7 +480,7 @@ $url = Cms::url($page);               // the page's public URL
 
 - **Colors** are mapped onto the theme variables every block already uses (`--primary`, `--secondary`, `--background`, `--foreground`, plus soft surfaces, quiet text and borders mixed from the background and text colors), so built-in and custom blocks follow without changes. The text color on the main and second colors is picked on the server for contrast. The variables are set on the document root, so menus and dialogs outside the page follow them too, and they win over panel themes.
 - **Fonts** come from [fonts.bunny.net](https://fonts.bunny.net) (no visitor data goes to Google) and are applied as `--cms-font-body` / `--cms-font-heading`.
-- **Corners** set `--radius`. The **logo** replaces the site name in `CmsHeader`; the **favicon** and the fonts' stylesheet are added to the head by `CmsHead` (pass `design={cms.site.design}` when you build your own page) and to `$alfakitCmsHead`.
+- **Corners** set `--radius`. The **logo** replaces the site name in `CmsHeader`; the **favicon** and the fonts' stylesheet are added to the head by `CmsHead` (pass `design={cms.site.design}` when you build your own page) and to `$alfakitCmsHead`. When the site has a favicon, AlfaKit's root view leaves the panel's `favicon()` out on public pages (the response sets the `$alfakitPanelFavicon` view data to `false`; a root view of your own can check it too), so the page has a single `<link rel="icon">`.
 
 Every block gets a collapsed **Style** section stored under `cms_style` in its data. The rendered block carries only the options that differ from the default (`block.style`: `background`, `spacing`, `visibility`, `anchor`); `CmsBlocks` puts them on the block's wrapper as `id` and `data-cms-background`, `data-cms-spacing`, `data-cms-visibility`, styled by the shared theme CSS. Use `cmsBlockAttributes(block)` from `@alfakit/core` on your own wrappers.
 
@@ -629,13 +629,29 @@ CmsPlugin::make()->api(prefix: 'api/cms', middleware: ['api']);
 
 Read-only endpoints for headless frontends; drafts, scheduled pages, hidden menu items and other tenants' content are never returned:
 
-| Endpoint                                      | Returns                                                                                                 |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `GET /api/cms/pages?locale=en&per_page=50`    | Live pages (`id`, `title`, `path`, `url`, `locale`, `isHome`, `updatedAt`) with pagination `meta`       |
-| `GET /api/cms/page?path=about/team&locale=en` | One page with its render-ready blocks, SEO, breadcrumbs and alternates (an empty path is the home page) |
-| `GET /api/cms/menus/{handle}?locale=en`       | A menu with its live links                                                                              |
+| Endpoint                                      | Returns                                                                                                                                                       |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /api/cms/pages?locale=en&per_page=50`    | Live pages (`id`, `title`, `path`, `url`, `locale`, `isHome`, `updatedAt`) with pagination `meta`                                                             |
+| `GET /api/cms/page?path=about/team&locale=en` | One page with its render-ready blocks, SEO, breadcrumbs and alternates (an empty path is the home page) under `data`, and the site design under `site.design` |
+| `GET /api/cms/menus/{handle}?locale=en`       | A menu with its live links                                                                                                                                    |
 
-The page payload is the same `cms.page` the Inertia route sends, typed as `CmsPageSchema` in `@alfakit/core`. Add throttling or authentication with the `middleware` argument.
+The page payload is the same `cms.page` the Inertia route sends, typed as `CmsPageSchema` in `@alfakit/core`. `site.design` is the same `cms.site.design` (`css` with the color variables and the custom CSS, `fonts`, `logo`, `favicon`; `null` until a design is saved or with `siteDesign(false)`), so a headless frontend can put `css` in a `<style>` element, load `fonts` and use the logo and favicon. The whole response is typed as `CmsPageApiResponse`. The head and body snippets of `customCode()` are never part of the API: only the public site's root view prints them.
+
+```json
+{
+    "data": { "title": "Team", "path": "about/team", "blocks": [], "seo": {} },
+    "site": {
+        "design": {
+            "css": "html:not(#alfakit-cms-design){--primary:#2563eb;…}",
+            "fonts": "https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap",
+            "logo": { "url": "/storage/cms/site/logo.png", "alt": "Acme" },
+            "favicon": null
+        }
+    }
+}
+```
+
+Add throttling or authentication with the `middleware` argument.
 
 ## Authorisation
 

@@ -159,6 +159,14 @@
   padding-left: 2rem;
 }
 
+/*
+ * The kits' breadcrumbs (`ui/breadcrumb`) separate items with a right-pointing chevron:
+ * it points to the start of the line (the left) in a right-to-left language.
+ */
+[dir='rtl'] [data-slot='breadcrumb-separator'] > svg {
+  rotate: 180deg;
+}
+
 /* Rich editor content and extensions (same rules as the panel stylesheet). */
 .alfakit-prose :where(h2) {
   @apply mt-4 mb-2 text-xl font-semibold;

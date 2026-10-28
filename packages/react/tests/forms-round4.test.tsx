@@ -271,6 +271,26 @@ describe('ColorPicker rgba()', () => {
 
     expect(screen.queryByRole('slider', { name: 'Opacity' })).toBeNull()
   })
+
+  it('shows an empty colour as empty, not as a colour', () => {
+    const { container } = renderForm(
+      [
+        field('ColorPicker', 'tint', { format: 'hex' }),
+        field('ColorPicker', 'brand', { format: 'hex', placeholder: 'Default' }),
+      ],
+      { brand: null },
+    )
+    const swatches = container.querySelectorAll('[data-slot="color-picker-swatch"]')
+    const inputs = container.querySelectorAll<HTMLInputElement>('input:not([type="color"])')
+
+    expect(swatches[0]!.hasAttribute('data-empty')).toBe(true)
+    expect(inputs[0]!.placeholder).toBe('#rrggbb')
+    expect(inputs[1]!.placeholder).toBe('Default')
+
+    fireEvent.change(inputs[0]!, { target: { value: '#ff6600' } })
+
+    expect(swatches[0]!.hasAttribute('data-empty')).toBe(false)
+  })
 })
 
 describe('Repeater compact()', () => {

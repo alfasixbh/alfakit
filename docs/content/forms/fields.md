@@ -569,6 +569,12 @@ KeyValue::make('meta')
 
 `hex()` (default), `rgb()`, `rgba()`, `hsl()`. With `rgba()` an opacity slider sits under the swatch (the browser's colour picker has no alpha); it keeps the colour and changes only the alpha channel.
 
+While the field is empty the swatch is drawn struck through with a dashed border (`data-empty` on `[data-slot="color-picker-swatch"]`), and the text box shows the format (`#rrggbb`, `rgb`…) as its placeholder. When empty means something, say so with `placeholder()`:
+
+```php
+ColorPicker::make('accent')->placeholder(__('Default'))->nullable();
+```
+
 ## IconPicker
 
 Stores an icon name (`house`, `mdi-home`, `heroicon-o-user`) picked from Lucide and the [registered icon sets](../design/icons#iconify-icon-sets). The stored value works anywhere an icon is accepted: `->icon($record->icon)`, `IconColumn::make('icon')`, `IconEntry::make('icon')`, navigation items.
