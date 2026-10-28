@@ -209,6 +209,13 @@ describe('CodeEntry', () => {
     expect(pre.textContent).toBe('{\n  "a": 1\n}')
     // The key and the number are coloured tokens.
     expect(pre.querySelectorAll('span').length).toBeGreaterThan(0)
+    // The `<code>` scrolls inside the padded `<pre>`, and the copy button sits in that padding
+    // on the code's (left-to-right) end, so a long line never runs under it.
+    expect(pre).toHaveClass('pe-10')
+    expect(pre).not.toHaveClass('overflow-auto')
+    expect(pre.querySelector('code')).toHaveClass('block', 'overflow-x-auto')
+    expect(pre.parentElement).toHaveAttribute('dir', 'ltr')
+    expect(pre.parentElement!.querySelector('[data-slot="code-entry-copy"]')).toHaveClass('end-2')
 
     fireEvent.click(screen.getByRole('button', { name: 'Copy' }))
 

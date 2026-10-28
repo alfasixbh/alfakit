@@ -12,7 +12,7 @@ const props = defineProps<{ item: NavigationItemSchema; tab: boolean }>()
 const classes = computed(() =>
   cn(
     'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
-    props.tab ? 'shrink-0 whitespace-nowrap' : 'w-full',
+    props.tab ? 'shrink-0 whitespace-nowrap' : 'shrink-0 whitespace-nowrap @2xl:w-full @2xl:shrink',
     props.item.active
       ? 'bg-accent text-accent-foreground font-medium'
       : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',

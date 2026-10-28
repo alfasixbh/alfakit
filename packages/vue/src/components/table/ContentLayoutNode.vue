@@ -6,12 +6,11 @@ import type {
   TableRecordSchema,
 } from '@alfakit/core'
 import {
-  columnSpanClasses,
-  columnStartClasses,
   columnVisibilityClasses,
-  gridColumnsClasses,
   layoutNodeGrows,
   layoutVisibilityClasses,
+  recordColumnSpanClasses,
+  recordGridColumnsClasses,
   splitClasses,
   stackClasses,
 } from '@alfakit/core'
@@ -50,10 +49,9 @@ const column = computed(() =>
     ? props.columns.find((item) => item.name === (props.node as { name: string }).name)
     : undefined,
 )
-// `columnSpan()` / `columnStart()` of a column or layout inside a `Grid`.
-const span = computed(() =>
-  cn(columnSpanClasses(props.node.columnSpan), columnStartClasses(props.node.columnStart)),
-)
+// `columnSpan()` / `columnStart()` of a column or layout inside a `Grid`, read against the
+// record's width (its `@container`).
+const span = computed(() => recordColumnSpanClasses(props.node.columnSpan, props.node.columnStart))
 const classes = computed(() => {
   const node = props.node
 
@@ -65,7 +63,7 @@ const classes = computed(() => {
     case 'Grid':
       return cn(
         'grid gap-2',
-        gridColumnsClasses(node.columns),
+        recordGridColumnsClasses(node.columns),
         layoutVisibilityClasses(node),
         sizing.value,
         span.value,

@@ -83,16 +83,24 @@ export function layoutColumnNames(nodes: ColumnLayoutNode[] | undefined): string
   return names
 }
 
+/**
+ * `Split::from()` follows the width of the record (its `@container`), not the viewport, at
+ * the sizes of `RECORD_CONTAINER_FROM`: in a narrow card a badge goes under the text
+ * instead of squeezing it.
+ */
 const SPLIT_FROM: Record<Breakpoint | 'default', string> = {
   default: 'flex-row items-center',
-  sm: 'flex-col sm:flex-row sm:items-center',
-  md: 'flex-col md:flex-row md:items-center',
-  lg: 'flex-col lg:flex-row lg:items-center',
-  xl: 'flex-col xl:flex-row xl:items-center',
-  '2xl': 'flex-col 2xl:flex-row 2xl:items-center',
+  sm: 'flex-col @3xs:flex-row @3xs:items-center',
+  md: 'flex-col @xs:flex-row @xs:items-center',
+  lg: 'flex-col @md:flex-row @md:items-center',
+  xl: 'flex-col @xl:flex-row @xl:items-center',
+  '2xl': 'flex-col @3xl:flex-row @3xl:items-center',
 }
 
-/** Classes of a `Split`: side by side from its breakpoint, stacked below it. */
+/**
+ * Classes of a `Split`: side by side once the record is wide enough for its `from`
+ * breakpoint, stacked below it. Needs the record's `@container` (`data-slot="table-record"`).
+ */
 export function splitClasses(layout: Pick<SplitLayoutSchema, 'from'>): string {
   return `flex gap-3 ${SPLIT_FROM[layout.from ?? 'default']}`
 }

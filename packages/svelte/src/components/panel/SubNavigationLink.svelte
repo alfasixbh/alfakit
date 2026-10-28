@@ -12,7 +12,7 @@
   const classes = $derived(
     cn(
       'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
-      tab ? 'shrink-0 whitespace-nowrap' : 'w-full',
+      tab ? 'shrink-0 whitespace-nowrap' : 'shrink-0 whitespace-nowrap @2xl:w-full @2xl:shrink',
       item.active
         ? 'bg-accent text-accent-foreground font-medium'
         : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',

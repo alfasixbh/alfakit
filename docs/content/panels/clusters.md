@@ -131,6 +131,8 @@ Set it on a page, a resource (for its record pages) or a cluster; the panel's `-
 | `End`   | A column on the end side                                                                  |
 | `Top`   | Tabs above the content                                                                    |
 
+A `Start` or `End` column needs room: it goes beside the content only once the page's content area is 42rem (672px) wide, a container query on that area, so the content keeps about 30rem beside the 14rem column. In a narrower area (a phone, or a tablet with the panel sidebar open) the sub-navigation becomes a scrolling row of links above the content (below it for `End`).
+
 Set it on a page, a resource (all its pages) or a cluster (all its pages). The most specific one wins: page, then resource, then cluster.
 
 ## Custom sub-navigation

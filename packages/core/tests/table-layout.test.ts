@@ -94,7 +94,11 @@ describe('content layouts', () => {
   })
 
   it('spells out responsive classes', () => {
-    expect(splitClasses({ from: 'md' })).toBe('flex gap-3 flex-col md:flex-row md:items-center')
+    // A split follows the record's width (its `@container`), not the viewport.
+    expect(splitClasses({ from: 'md' })).toBe('flex gap-3 flex-col @xs:flex-row @xs:items-center')
+    expect(splitClasses({ from: '2xl' })).toBe(
+      'flex gap-3 flex-col @3xl:flex-row @3xl:items-center',
+    )
     expect(splitClasses({})).toBe('flex gap-3 flex-row items-center')
     expect(stackClasses({ space: 2, alignment: 'end' })).toBe(
       'flex flex-col gap-2 items-end text-end',

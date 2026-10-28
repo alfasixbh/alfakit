@@ -31,12 +31,14 @@ $table->columns([
 
 | Component                                                | What it does                                                                                                               |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `Split::make([...])`                                     | Columns side by side. `from('md')` stacks them below the breakpoint (`sm`, `md`, `lg`, `xl`, `2xl`).                       |
+| `Split::make([...])`                                     | Columns side by side. `from('md')` stacks them while the record is narrower than that breakpoint (see below).              |
 | `Stack::make([...])`                                     | Columns stacked vertically. `space(1 \| 2 \| 3)` sets the gap, `alignment()` / `alignCenter()` / `alignEnd()`.             |
 | `Panel::make([...])`                                     | A muted box for secondary details. `collapsible()` hides it behind a per-record toggle; `collapsed(false)` starts it open. |
 | `Grid::make(['default' => 1, 'md' => 2])->schema([...])` | Columns in a responsive grid. An integer is the column count from `lg` up.                                                 |
 
 Inside a `Grid`, columns and layouts take `columnSpan()` and `columnStart()`, like form components: a number applies from `lg` up, `columnSpanFull()` spans every column at every size, and a breakpoint map is used as given.
+
+Breakpoints inside a record (`Split::from()`, a `Grid`'s columns and its children's `columnSpan()` / `columnStart()`) follow the width of the record, not the viewport: each record is a container query, so a narrow card keeps a badge under the text instead of squeezing the text beside it. The keys map to card-sized widths: `sm` 16rem (256px), `md` 20rem (320px), `lg` 28rem (448px), `xl` 36rem (576px), `2xl` 48rem (768px). Container keys in a `Grid` (`Grid::make(['@sm' => 2])`) are used as given. `visibleFrom()` / `hiddenFrom()` still follow the viewport, since they describe the device.
 
 ```php
 use AlfaSix\Alfakit\Tables\Columns\Layout\Grid;

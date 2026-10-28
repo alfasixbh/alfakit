@@ -6,12 +6,11 @@
     TableRecordSchema,
   } from '@alfakit/core'
   import {
-    columnSpanClasses,
-    columnStartClasses,
     columnVisibilityClasses,
-    gridColumnsClasses,
     layoutNodeGrows,
     layoutVisibilityClasses,
+    recordColumnSpanClasses,
+    recordGridColumnsClasses,
     splitClasses,
     stackClasses,
   } from '@alfakit/core'
@@ -59,10 +58,9 @@
     node.type === 'Column' ? columns.find((item) => item.name === node.name) : undefined,
   )
   const layout = $derived(node.type === 'Column' ? null : node)
-  // `columnSpan()` / `columnStart()` of a column or layout inside a `Grid`.
-  const span = $derived(
-    cn(columnSpanClasses(node.columnSpan), columnStartClasses(node.columnStart)),
-  )
+  // `columnSpan()` / `columnStart()` of a column or layout inside a `Grid`, read against the
+  // record's width (its `@container`).
+  const span = $derived(recordColumnSpanClasses(node.columnSpan, node.columnStart))
   const classes = $derived.by(() => {
     if (node.type === 'Column') return cn(sizing, span)
 
@@ -74,7 +72,7 @@
       case 'Stack':
         return cn(stackClasses(node), visibility, sizing, span)
       case 'Grid':
-        return cn('grid gap-2', gridColumnsClasses(node.columns), visibility, sizing, span)
+        return cn('grid gap-2', recordGridColumnsClasses(node.columns), visibility, sizing, span)
       default:
         return cn('bg-muted/50 flex flex-col gap-2 rounded-lg p-3', visibility, sizing, span)
     }

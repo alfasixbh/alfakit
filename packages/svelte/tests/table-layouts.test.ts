@@ -77,7 +77,12 @@ describe('content layouts', () => {
     const { container } = mount(DataTable, { table: layout })
 
     expect(screen.queryByRole('table')).toBeNull()
-    expect(container.querySelector('[data-layout="split"]')).toHaveClass('md:flex-row')
+    // `Split::from('md')` follows the record's width (its `@container`), not the viewport.
+    const split = container.querySelector('[data-layout="split"]')!
+    expect(split).toHaveClass('flex-col', '@xs:flex-row')
+    expect(split).not.toHaveClass('md:flex-row')
+    expect(split.closest('[data-slot="record-content"]')).toHaveClass('@container')
+    expect(split.closest('[data-slot="table-record"]')).toHaveClass('@container')
     expect(container.querySelector('[data-layout="stack"]')).toHaveClass('gap-2')
     expect(screen.getByRole('link', { name: 'Ada' })).toHaveAttribute('href', '/users/1')
     expect(screen.queryByText('123')).toBeNull()

@@ -72,7 +72,12 @@ describe('content layouts', () => {
     const wrapper = mountWithAlfakit(() => h(DataTable, { table: layout }))
 
     expect(wrapper.find('table').exists()).toBe(false)
-    expect(wrapper.find('[data-layout="split"]').classes()).toContain('md:flex-row')
+    // `Split::from('md')` follows the record's width (its `@container`), not the viewport.
+    const split = wrapper.find('[data-layout="split"]')
+    expect(split.classes()).toEqual(expect.arrayContaining(['flex-col', '@xs:flex-row']))
+    expect(split.classes()).not.toContain('md:flex-row')
+    expect(split.element.closest('[data-slot="record-content"]')!.classList).toContain('@container')
+    expect(split.element.closest('[data-slot="table-record"]')!.classList).toContain('@container')
     expect(wrapper.find('[data-layout="stack"]').classes()).toContain('gap-2')
     expect(wrapper.find('a[href="/users/1"]').text()).toContain('Ada')
     expect(wrapper.text()).not.toContain('123')

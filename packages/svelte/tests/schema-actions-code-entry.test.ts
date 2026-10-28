@@ -173,6 +173,13 @@ describe('CodeEntry', () => {
     expect(pre.getAttribute('data-dark-theme')).toBe('dracula')
     expect(pre.textContent).toBe('{\n  "a": 1\n}')
     expect(pre.querySelectorAll('span').length).toBeGreaterThan(0)
+    // The `<code>` scrolls inside the padded `<pre>`, and the copy button sits in that padding
+    // on the code's (left-to-right) end, so a long line never runs under it.
+    expect(pre).toHaveClass('pe-10')
+    expect(pre).not.toHaveClass('overflow-auto')
+    expect(pre.querySelector('code')).toHaveClass('block', 'overflow-x-auto')
+    expect(pre.parentElement).toHaveAttribute('dir', 'ltr')
+    expect(pre.parentElement!.querySelector('[data-slot="code-entry-copy"]')).toHaveClass('end-2')
 
     await fireEvent.click(screen.getByRole('button', { name: 'Copy' }))
 

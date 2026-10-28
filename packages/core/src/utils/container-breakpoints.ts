@@ -143,6 +143,89 @@ export function contentGridClasses(grid: Breakpoints | undefined | null): string
   ].join(' ')
 }
 
+const CONTAINER_COL_START: Record<string, Record<string, string>> = Object.fromEntries(
+  CONTAINER_BREAKPOINTS.map((breakpoint) => [breakpoint, table(`${breakpoint}:col-start-`, SPANS)]),
+)
+
+/**
+ * Layout breakpoints inside a table record (`Split::from()`, a `Grid`'s `columns` and the
+ * `columnSpan()` / `columnStart()` of its children) are read against the width of the
+ * record (its `@container`) rather than the viewport: a card in a `contentGrid()` can be
+ * 15rem wide on a wide screen. Each viewport key maps to a card-sized width, so
+ * `Split::from('md')` puts its parts side by side once the record has 20rem (320px).
+ */
+export const RECORD_CONTAINER_FROM: Readonly<Record<string, ContainerBreakpoint>> = {
+  sm: '@3xs', // 16rem
+  md: '@xs', // 20rem
+  lg: '@md', // 28rem
+  xl: '@xl', // 36rem
+  '2xl': '@3xl', // 48rem
+}
+
+const RECORD_KEYS = ['sm', 'md', 'lg', 'xl', '2xl'] as const
+
+/**
+ * Classes for a responsive map inside a table record: `default` as is, viewport keys at
+ * their `RECORD_CONTAINER_FROM` size and container keys (`'@md' => 2`) as given; when two
+ * keys land on the same size, the container key wins.
+ */
+function recordClasses(
+  map: Breakpoints<number | string | null> | undefined | null,
+  base: Record<string, string>,
+  containers: Record<string, Record<string, string>>,
+): string[] {
+  if (!map) return []
+
+  const classes = new Map<ContainerBreakpoint, string>()
+
+  for (const key of RECORD_KEYS) {
+    const value = map[key]
+    const at = RECORD_CONTAINER_FROM[key]
+    const cls = value && at ? containers[at]?.[String(value)] : undefined
+
+    if (at && cls) classes.set(at, cls)
+  }
+
+  for (const breakpoint of CONTAINER_BREAKPOINTS) {
+    const value = map[breakpoint]
+    const cls = value ? containers[breakpoint]?.[String(value)] : undefined
+
+    if (cls) classes.set(breakpoint, cls)
+  }
+
+  const value = map.default
+
+  return [
+    value ? base[String(value)] : undefined,
+    ...CONTAINER_BREAKPOINTS.map((breakpoint) => classes.get(breakpoint)),
+  ].filter((cls): cls is string => Boolean(cls))
+}
+
+const GRID_COLS = table('grid-cols-', SPANS)
+const COL_SPAN = table('col-span-', [...SPANS, 'full'])
+const COL_START = table('col-start-', SPANS)
+
+/** A `Grid` layout's `columns` inside a table record (sizes of `RECORD_CONTAINER_FROM`). */
+export function recordGridColumnsClasses(columns: Breakpoints | undefined | null): string {
+  const classes = recordClasses(columns, GRID_COLS, CONTAINER_GRID_COLS)
+
+  return (columns?.default ? classes : ['grid-cols-1', ...classes]).join(' ')
+}
+
+/**
+ * `columnSpan()` / `columnStart()` of a node inside a table record's `Grid` (sizes of
+ * `RECORD_CONTAINER_FROM`).
+ */
+export function recordColumnSpanClasses(
+  span: Breakpoints<ColumnSpanValue> | undefined | null,
+  start?: Breakpoints<number | string | null> | undefined | null,
+): string {
+  return [
+    ...recordClasses(span, COL_SPAN, CONTAINER_COL_SPAN),
+    ...recordClasses(start, COL_START, CONTAINER_COL_START),
+  ].join(' ')
+}
+
 const FLEX_ROW: Record<string, string> = {
   default: 'flex-row',
   sm: 'sm:flex-row',

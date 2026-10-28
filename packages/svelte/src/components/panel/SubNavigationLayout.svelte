@@ -21,17 +21,25 @@
   <Slot name="page.sub-navigation.top.after" />
   {@render children?.()}
 {:else}
-  <div data-slot="sub-navigation-layout" class="flex flex-col gap-6 md:flex-row md:items-start">
-    {#if navigation.position !== 'end'}
-      <Slot name="page.sub-navigation.start.before" />
-      <Nav {navigation} />
-      <Slot name="page.sub-navigation.start.after" />
-    {/if}
-    <div class="flex min-w-0 flex-1 flex-col gap-6">{@render children?.()}</div>
-    {#if navigation.position === 'end'}
-      <Slot name="page.sub-navigation.end.before" />
-      <Nav {navigation} />
-      <Slot name="page.sub-navigation.end.after" />
-    {/if}
+  <!-- The navigation goes beside the content once the page's content area (this `@container`)
+    has 42rem, so the content keeps about 30rem next to it; narrower (beside the panel
+    sidebar on a tablet), it is a scrolling row of links above (`end`: below) the content. -->
+  <div data-slot="sub-navigation-container" class="@container">
+    <div
+      data-slot="sub-navigation-layout"
+      class="flex flex-col gap-6 @2xl:flex-row @2xl:items-start"
+    >
+      {#if navigation.position !== 'end'}
+        <Slot name="page.sub-navigation.start.before" />
+        <Nav {navigation} />
+        <Slot name="page.sub-navigation.start.after" />
+      {/if}
+      <div class="flex min-w-0 flex-1 flex-col gap-6">{@render children?.()}</div>
+      {#if navigation.position === 'end'}
+        <Slot name="page.sub-navigation.end.before" />
+        <Nav {navigation} />
+        <Slot name="page.sub-navigation.end.after" />
+      {/if}
+    </div>
   </div>
 {/if}

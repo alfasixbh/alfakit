@@ -8,15 +8,14 @@ import type {
 } from '@alfakit/core'
 import {
   VIRTUAL_ESTIMATES,
-  columnSpanClasses,
-  columnStartClasses,
   columnVisibilityClasses,
   contentGridClasses,
-  gridColumnsClasses,
   layoutNodeGrows,
   layoutVisibilityClasses,
   primaryColumnName,
   recordActionsAtStart,
+  recordColumnSpanClasses,
+  recordGridColumnsClasses,
   splitClasses,
   stackClasses,
   virtualizeOptions,
@@ -134,7 +133,7 @@ function ContentRecord({
     const grows = inSplit && layoutNodeGrows(node, columns)
     const sizing = inSplit ? (grows ? 'min-w-0 flex-1' : 'shrink-0') : undefined
     // `columnSpan()` / `columnStart()` of a column or layout inside a `Grid`.
-    const span = cn(columnSpanClasses(node.columnSpan), columnStartClasses(node.columnStart))
+    const span = recordColumnSpanClasses(node.columnSpan, node.columnStart)
 
     if (node.type === 'Column') {
       const column = columns.find((item) => item.name === node.name)
@@ -193,7 +192,7 @@ function ContentRecord({
             data-layout="grid"
             {...extraProps(
               node.extraAttributes,
-              cn('grid gap-2', gridColumnsClasses(node.columns), visibility, sizing, span),
+              cn('grid gap-2', recordGridColumnsClasses(node.columns), visibility, sizing, span),
             )}
           >
             {node.schema.map((child, childIndex) => renderNode(child, childIndex))}
@@ -250,8 +249,10 @@ function ContentRecord({
       role={position ? 'listitem' : undefined}
       aria-setsize={position?.size}
       aria-posinset={position ? index + 1 : undefined}
+      // `@container`: a `Split`, `Grid` or `columnSpan()` inside the record follows the
+      // record's width, not the viewport's (core `RECORD_CONTAINER_FROM`).
       className={cn(
-        'flex flex-col gap-3 p-4',
+        '@container flex flex-col gap-3 p-4',
         card && 'bg-card rounded-lg border shadow-xs',
         clickable && 'hover:bg-muted/40 cursor-pointer',
         selected && 'bg-muted/60',
@@ -274,10 +275,10 @@ function ContentRecord({
         )}
         {atStart && table.recordActionsPosition === 'before-columns' && actions}
         {/* The text takes the remaining width (at least 15rem before the actions wrap, so a
-          name is not broken mid-word beside them). */}
+          name is not broken mid-word beside them); its layouts follow that width. */}
         <div
           data-slot="record-content"
-          className="flex min-w-0 grow basis-60 flex-col gap-3 break-words"
+          className="@container flex min-w-0 grow basis-60 flex-col gap-3 break-words"
         >
           {main.map((node, index) => renderNode(node, index))}
         </div>
