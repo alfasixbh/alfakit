@@ -6,6 +6,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed
+
+- Cluster and record sub-navigation sits beside the content only when the content area is at least 42rem wide (container query); narrower, it becomes a scrolling row of links above the content, the same in React, Vue and Svelte.
+- `Split::from()`, `Grid` columns and `columnSpan()`/`columnStart()` inside table records follow the record's width (`sm` 16rem, `md` 20rem, `lg` 28rem, `xl` 36rem, `2xl` 48rem) instead of the browser window, so a narrow card keeps a badge under its text.
+
+### Fixed
+
+- `CodeEntry`: the copy button no longer covers the first line of code when the code scrolls sideways, and it sits at the code's end in right-to-left panels too.
+
 ## [0.2.2] - 2026-10-27
 
 ### Upgrading from 0.2.1
