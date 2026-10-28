@@ -21,6 +21,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Starter kits: `<html dir>` in the root view and the shared `alfakitDocument` prop use one direction resolved once per request, so they can never disagree; an error while resolving it is now reported instead of silently falling back to the app locale's direction.
 - Starter kits: the header layout, password field, appearance tabs, two-factor setup, split auth layout and React login link mirror in right-to-left languages; the header's mobile menu opens from the end of the line and breadcrumb chevrons turn around. Customised files are skipped with a note.
 - ColorPicker: an empty field shows a struck-through swatch and a `#rrggbb` placeholder instead of `#000000`; CMS Site design colors show "Default".
 - CMS public pages print a single favicon: the site design's replaces the panel's.
