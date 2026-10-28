@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-10-28
+
+### Upgrading from 0.2.3
+
+- `composer update "alfasix/*"`, `npm install @alfakit/react@^0.2.4` (or `@alfakit/vue`, `@alfakit/svelte`), then `npm run build`.
+
 ### Fixed
 
 - A file that failed to upload (a timeout, a server error, a size the field rejects) no longer lets the form save without it, also when Save was clicked while the file was still uploading: the submit stops and the field shows "A file didn't upload. Remove it or upload it again before saving." until the file is removed. The same in React, Vue and Svelte, for page forms and action modals. New `FormStore::failUpload()`, `forgetFailedUpload()`, and an optional `blocked` callback on `whenSettled()`.
@@ -1497,7 +1503,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/alfasixbh/alfakit/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/alfasixbh/alfakit/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/alfasixbh/alfakit/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/alfasixbh/alfakit/compare/v0.2.0...v0.2.1

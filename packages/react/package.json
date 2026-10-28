@@ -1,6 +1,6 @@
 {
   "name": "@alfakit/react",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "React + shadcn/ui renderer for Alfakit, the Laravel admin panel builder by Alfa Six.",
   "license": "MIT",
   "author": "Alfa Six (https://alfasixbh.com)",

@@ -1,5 +1,11 @@
 # @alfakit/svelte
 
+## 0.2.4
+
+### Patch Changes
+
+- A file that failed to upload no longer lets the form save without it: the field asks to remove it or upload it again.
+
 ## 0.2.3
 
 ### Patch Changes

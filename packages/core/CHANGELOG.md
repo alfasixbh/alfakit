@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.2.4
+
+### Patch Changes
+
+- `FormStore` stops a submit while a picked file failed to upload (`failUpload()`, `forgetFailedUpload()`, a `blocked` callback on `whenSettled()`).
+
 ## 0.2.3
 
 ### Patch Changes
