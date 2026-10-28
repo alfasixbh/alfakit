@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PageSchema } from '@alfakit/core'
+import { TOPBAR_END_SLOT_CLASS, type PageSchema } from '@alfakit/core'
 import { Link } from '@inertiajs/vue3'
 import { LogOutIcon } from '@lucide/vue'
 import { computed } from 'vue'
@@ -35,7 +35,7 @@ const exitUrl = computed(() => props.page?.fullscreen?.exitUrl)
       v-if="header"
       data-slot="topbar"
       data-variant="fullscreen"
-      class="bg-background flex h-12 shrink-0 items-center gap-3 border-b px-3 md:px-4"
+      class="bg-background flex h-12 shrink-0 items-center gap-3 overflow-x-clip border-b px-3 md:px-4"
     >
       <Slot name="topbar.logo.before" />
       <Brand class="hidden shrink-0 sm:flex" />
@@ -45,8 +45,8 @@ const exitUrl = computed(() => props.page?.fullscreen?.exitUrl)
         {{ props.page?.heading ?? props.page?.title }}
       </h1>
       <Slot name="topbar.start" />
-      <div class="ms-auto flex shrink-0 items-center gap-1">
-        <Slot name="topbar.end" />
+      <div class="ms-auto flex min-w-0 items-center gap-1">
+        <Slot name="topbar.end" :class="TOPBAR_END_SLOT_CLASS" />
         <NotificationsMenu />
         <TopbarLocaleSwitcher />
         <ThemeToggle />

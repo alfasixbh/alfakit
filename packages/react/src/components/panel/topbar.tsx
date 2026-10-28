@@ -1,4 +1,4 @@
-import type { BreadcrumbSchema } from '@alfakit/core'
+import { TOPBAR_END_SLOT_CLASS, type BreadcrumbSchema } from '@alfakit/core'
 import { Link } from '@inertiajs/react'
 import { Fragment } from 'react'
 import { usePanel, useT } from '../../context'
@@ -57,14 +57,16 @@ export function Topbar({ breadcrumbs }: { breadcrumbs?: BreadcrumbSchema[] }) {
   return (
     <header
       data-slot="topbar"
-      className="bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20 flex h-14 min-w-0 shrink-0 items-center gap-2 border-b px-4 backdrop-blur"
+      // `@container/topbar`: the search field folds into an icon button when the bar is narrow.
+      // `overflow-x-clip`: whatever apps add to the bar never makes the page scroll sideways.
+      className="bg-background/80 supports-[backdrop-filter]:bg-background/60 @container/topbar sticky top-0 z-20 flex h-14 min-w-0 shrink-0 items-center gap-2 overflow-x-clip border-b px-4 backdrop-blur"
     >
       <SidebarTrigger className="-ms-1" />
       <Separator orientation="vertical" className="me-2 h-4" />
       {panel.breadcrumbs && breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
       <Slot name="topbar.start" />
-      <div className="ms-auto flex items-center gap-1">
-        <Slot name="topbar.end" />
+      <div className="ms-auto flex min-w-0 items-center gap-1">
+        <Slot name="topbar.end" className={TOPBAR_END_SLOT_CLASS} />
         {/* `globalSearch(position: Sidebar)` moves the field to the sidebar header. */}
         {(panel.topNavigation || panel.globalSearch?.position !== 'sidebar') && <GlobalSearch />}
         {panel.databaseNotifications?.position !== 'sidebar' && <NotificationsMenu />}

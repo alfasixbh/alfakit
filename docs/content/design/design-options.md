@@ -29,7 +29,7 @@ Each value is also an enum (`Layout::Rail`, `NavStyle::Bar`, `MobileNavigation::
 | Value     | Result                                                                                                                                                                                              |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sidebar` | Navigation in a collapsible sidebar. Choose its style with `sidebarVariant()`: `inset` (content in a rounded card), `floating` (sidebar as a floating card) or `flush` (full height with a border). |
-| `topbar`  | No sidebar. Navigation runs across the top: ungrouped items are links, and groups open as dropdowns. Phones get a slide-out menu. `->topNavigation()` is a shortcut.                                |
+| `topbar`  | No sidebar. Navigation runs across the top: ungrouped items are links, and groups open as dropdowns. Below `lg` (1024px) the links move into a slide-out menu. `->topNavigation()` is a shortcut.   |
 | `rail`    | A slim column of icons with tooltips that expands on demand. The user's choice is remembered.                                                                                                       |
 
 ## Navigation items

@@ -1,5 +1,6 @@
 import {
   PREFETCH_CACHE_FOR,
+  TOPBAR_END_SLOT_CLASS,
   hasMobilePreset,
   type BreadcrumbSchema,
   type NavigationGroupSchema,
@@ -217,16 +218,23 @@ export function TopNavLayout({ children, breadcrumbs, maxContentWidth }: TopNavL
       <Slot name="topbar.before" />
       <header
         data-slot="topbar"
-        className="bg-background/90 supports-[backdrop-filter]:bg-background/70 sticky top-0 z-30 border-b backdrop-blur"
+        // `overflow-x-clip`: whatever apps add to the bar never makes the page scroll sideways.
+        className="bg-background/90 supports-[backdrop-filter]:bg-background/70 sticky top-0 z-30 overflow-x-clip border-b backdrop-blur"
       >
-        <div className={cn('mx-auto flex h-14 w-full items-center gap-3 px-4 md:px-6', width)}>
+        {/* `@container/topbar`: the search field folds into an icon button when the bar is narrow. */}
+        <div
+          className={cn(
+            '@container/topbar mx-auto flex h-14 w-full items-center gap-2 px-4 sm:gap-3 md:px-6',
+            width,
+          )}
+        >
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="md:hidden"
+                className="lg:hidden"
                 aria-label={t('toggle_sidebar', {}, 'Toggle sidebar')}
               >
                 <Icon name="alfakit::panels.topbar.open-sidebar-button" fallback={MenuIcon} />
@@ -244,7 +252,7 @@ export function TopNavLayout({ children, breadcrumbs, maxContentWidth }: TopNavL
             </SheetContent>
           </Sheet>
           <Slot name="topbar.logo.before" />
-          <Brand className="me-2 shrink-0" />
+          <Brand className="me-2 min-w-0 sm:shrink-0" />
           <Slot name="topbar.logo.after" />
           {panel.tenancy?.current && <Slot name="tenant-menu.before" />}
           <TenantMenu variant="topbar" />
@@ -252,15 +260,16 @@ export function TopNavLayout({ children, breadcrumbs, maxContentWidth }: TopNavL
           <nav
             data-slot="topnav"
             aria-label={t('navigation', {}, 'Navigation')}
-            className="hidden min-w-0 flex-1 items-center gap-1 self-stretch overflow-x-auto md:flex"
+            // Below `lg` the links live in the drawer (the menu button above).
+            className="hidden min-w-0 flex-1 items-center gap-1 self-stretch overflow-x-auto lg:flex"
           >
             {panel.navigation.map((group, index) => (
               <TopNavGroup key={group.label ?? `group-${index}`} group={group} />
             ))}
           </nav>
           <Slot name="topbar.start" />
-          <div className="ms-auto flex shrink-0 items-center gap-1">
-            <Slot name="topbar.end" />
+          <div className="ms-auto flex min-w-0 items-center gap-1">
+            <Slot name="topbar.end" className={TOPBAR_END_SLOT_CLASS} />
             <GlobalSearch />
             <NotificationsMenu />
             <TopbarLocaleSwitcher />

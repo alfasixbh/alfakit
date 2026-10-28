@@ -2,6 +2,7 @@
   import { uniqueKey, navigationKey } from '../lib/keys'
   import {
     PREFETCH_CACHE_FOR,
+    TOPBAR_END_SLOT_CLASS,
     hasMobilePreset,
     type BreadcrumbSchema,
     type NavigationItemSchema,
@@ -145,11 +146,18 @@
   <Slot name="body.start" />
   <Slot name="layout.start" />
   <Slot name="topbar.before" />
+  <!-- `overflow-x-clip`: whatever apps add to the bar never makes the page scroll sideways. -->
   <header
     data-slot="topbar"
-    class="bg-background/90 supports-[backdrop-filter]:bg-background/70 sticky top-0 z-30 border-b backdrop-blur"
+    class="bg-background/90 supports-[backdrop-filter]:bg-background/70 sticky top-0 z-30 overflow-x-clip border-b backdrop-blur"
   >
-    <div class={cn('mx-auto flex h-14 w-full items-center gap-3 px-4 md:px-6', width)}>
+    <!-- `@container/topbar`: the search field folds into an icon button when the bar is narrow. -->
+    <div
+      class={cn(
+        '@container/topbar mx-auto flex h-14 w-full items-center gap-2 px-4 sm:gap-3 md:px-6',
+        width,
+      )}
+    >
       <Sheet bind:open>
         <SheetTrigger>
           {#snippet child({ props })}
@@ -157,7 +165,7 @@
               type="button"
               variant="ghost"
               size="icon"
-              class="md:hidden"
+              class="lg:hidden"
               aria-label={t('toggle_sidebar', {}, 'Toggle sidebar')}
               {...props}
             >
@@ -198,15 +206,16 @@
         </SheetContent>
       </Sheet>
       <Slot name="topbar.logo.before" />
-      <Brand class="me-2 shrink-0" />
+      <Brand class="me-2 min-w-0 sm:shrink-0" />
       <Slot name="topbar.logo.after" />
       {#if panel.tenancy?.current}<Slot name="tenant-menu.before" />{/if}
       <TenantMenu variant="topbar" />
       {#if panel.tenancy?.current}<Slot name="tenant-menu.after" />{/if}
+      <!-- Below `lg` the links live in the drawer (the menu button above). -->
       <nav
         data-slot="topnav"
         aria-label={t('navigation', {}, 'Navigation')}
-        class="hidden min-w-0 flex-1 items-center gap-1 self-stretch overflow-x-auto md:flex"
+        class="hidden min-w-0 flex-1 items-center gap-1 self-stretch overflow-x-auto lg:flex"
       >
         {#each panel.navigation as group, index (uniqueKey(panel.navigation, index, (item) => item.label ?? ''))}
           {#snippet entries()}
@@ -232,8 +241,8 @@
         {/each}
       </nav>
       <Slot name="topbar.start" />
-      <div class="ms-auto flex shrink-0 items-center gap-1">
-        <Slot name="topbar.end" />
+      <div class="ms-auto flex min-w-0 items-center gap-1">
+        <Slot name="topbar.end" class={TOPBAR_END_SLOT_CLASS} />
         <GlobalSearch />
         <NotificationsMenu />
         <TopbarLocaleSwitcher />
