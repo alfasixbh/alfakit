@@ -94,7 +94,14 @@ export function installPrefetchInvalidation(): () => void {
   window.addEventListener('popstate', onPopstate)
 
   // A visit started after the popstate (a hash-only change fires no navigate) is not a restore.
-  const removeStart = router.on('start', () => {
+  // Partial reloads (deferred props, navigation badges) and prefetches the restored page starts
+  // itself are not new visits: they leave the restore pending.
+  const removeStart = router.on('start', (event) => {
+    const visit = (event as { detail?: { visit?: { only?: unknown[]; prefetch?: boolean } } })
+      .detail?.visit
+
+    if ((visit?.only?.length ?? 0) > 0 || visit?.prefetch === true) return
+
     restoring = false
   })
   const removeFinish = router.on('finish', (event) => {

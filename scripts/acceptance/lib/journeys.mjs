@@ -184,13 +184,30 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
         'Browser Back from the new post to the list shows the new post without a refresh',
         async () => {
             if (!state.postId) skip('no post was created')
-            // B05 went list → create → post by clicking: Back restores the list from history.
-            for (let i = 0; i < 3 && !/\/admin\/posts\/?$/.test(pathOf()); i++) {
-                await page.goBack()
-                await page.waitForLoadState('networkidle')
+            // B05 went list → create → post by clicking: two Backs restore the list from history.
+            // Wait for each traversal's URL rather than network idle: under load `goBack()` can
+            // resolve before a same-document traversal lands, and a third Back would overshoot to
+            // the entry before the list (B04 and B05 opened the same URL, which is one entry).
+            const landed = []
+            const popstates = await page.evaluate(() => {
+                window.__accPopstates = 0
+                addEventListener('popstate', () => window.__accPopstates++)
+                return 0
+            })
+            await page.goBack()
+            await page.waitForURL(/\/admin\/posts\/create$/, { timeout: 15_000 }).catch(() => {})
+            landed.push(pathOf())
+            await page.goBack()
+            await page.waitForURL(/\/admin\/posts\/?$/, { timeout: 15_000 }).catch(() => {})
+            landed.push(pathOf())
+            const diagnose = async () =>
+                `Backs landed on ${landed.join(' → ')}; now on ${pathOf()}; popstate events: ${await page.evaluate(() => window.__accPopstates).catch(() => popstates)}`
+            if (!/\/admin\/posts\/?$/.test(pathOf())) throw new Error(await diagnose())
+            try {
+                await see(rowWith(state.postTitle), 'the new post in the list after Back')
+            } catch (error) {
+                throw new Error(`${error.message}. ${await diagnose()}`)
             }
-            if (!/\/admin\/posts\/?$/.test(pathOf())) throw new Error(`Back landed on ${pathOf()}`)
-            await see(rowWith(state.postTitle), 'the new post in the list after Back')
         },
     )
 

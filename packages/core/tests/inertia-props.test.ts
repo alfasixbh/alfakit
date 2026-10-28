@@ -295,11 +295,20 @@ describe('prefetching', () => {
     expect(cancel).toHaveBeenCalledTimes(1)
     navigate('/admin/posts')
 
+    // A partial reload (deferred props, badges) starting between the popstate and the
+    // navigate keeps the restore: the page is still reloaded.
+    listeners.get('finish')?.({ detail: { visit: { method: 'post' } } })
+    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
+    listeners.get('start')?.({ detail: { visit: { only: ['alfakitNavigationBadges'] } } })
+    listeners.get('start')?.({ detail: { visit: { only: [], prefetch: true } } })
+    navigate('/admin/posts')
+    expect(visit).toHaveBeenCalledTimes(4)
+
     // A normal visit after a popstate that restored nothing is not a restore.
     window.dispatchEvent(new PopStateEvent('popstate', { state: null }))
     listeners.get('start')?.({})
     navigate('/admin/tags')
-    expect(visit).toHaveBeenCalledTimes(3)
+    expect(visit).toHaveBeenCalledTimes(4)
 
     uninstall()
   })

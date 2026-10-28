@@ -29,6 +29,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Back to a page that changed since it was shown reloads it even when the page's own deferred props or navigation badges start loading first (they used to cancel the reload, so the list could miss a just-created record).
 - The top bar no longer makes the page scroll sideways on tablets (sidebar layout with the sidebar open, and the top navigation layout): the search field folds into an icon button while the bar is narrower than 56rem, and `Slot::TOPBAR_END` content shrinks and is clipped before the bar's buttons, also in the fullscreen layout header.
 - Starter kits: `<html dir>` in the root view and the shared `alfakitDocument` prop use one direction resolved once per request, so they can never disagree; an error while resolving it is now reported instead of silently falling back to the app locale's direction.
 - Starter kits: the header layout, password field, appearance tabs, two-factor setup, split auth layout and React login link mirror in right-to-left languages; the header's mobile menu opens from the end of the line and breadcrumb chevrons turn around. Customised files are skipped with a note.
