@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Upgrading (starter kits)
+
+- Run `php artisan alfakit:install --starter-kit --no-npm` again (with your `--panel`/`--path`) and rebuild: it makes the kit's header, password field, appearance tabs, two-factor setup and split auth layout mirror in right-to-left languages. `alfakit:upgrade` lists kit files that still need it.
+
+### Added
+
+- CMS JSON API: `GET api/cms/page` returns the site design under `site.design` (typed `CmsPageApiResponse`), never the custom code snippets.
+
 ### Changed
 
 - Cluster and record sub-navigation sits beside the content only when the content area is at least 42rem wide (container query); narrower, it becomes a scrolling row of links above the content, the same in React, Vue and Svelte.
@@ -13,6 +21,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Starter kits: the header layout, password field, appearance tabs, two-factor setup, split auth layout and React login link mirror in right-to-left languages; the header's mobile menu opens from the end of the line and breadcrumb chevrons turn around. Customised files are skipped with a note.
+- ColorPicker: an empty field shows a struck-through swatch and a `#rrggbb` placeholder instead of `#000000`; CMS Site design colors show "Default".
+- CMS public pages print a single favicon: the site design's replaces the panel's.
 - `CodeEntry`: the copy button no longer covers the first line of code when the code scrolls sideways, and it sits at the code's end in right-to-left panels too.
 
 ## [0.2.2] - 2026-10-27
