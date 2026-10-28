@@ -119,6 +119,8 @@ Layout:
 | `FOOTER`                                       | Under the content                                            |
 | `HEAD_START` / `HEAD_END`                      | Start and end of `<head>` (HTML only, see below)             |
 
+`TOPBAR_END` content sits in a box of its own that shrinks, and is clipped, when the top bar runs out of room, so the page never scrolls sideways and the bar's own buttons stay visible. Keep top bar items compact, or hide them on small screens (`hidden sm:flex`).
+
 Pages and resources:
 
 | Constant                                                        | Where                                                     |

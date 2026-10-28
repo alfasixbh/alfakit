@@ -104,7 +104,7 @@
     data-variant={variant}
     class={variant === 'sidebar'
       ? 'text-muted-foreground w-full justify-start gap-2 px-2.5 font-normal group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0'
-      : 'text-muted-foreground size-8 justify-center gap-2 px-0 font-normal sm:w-56 sm:justify-start sm:px-2.5'}
+      : 'text-muted-foreground size-8 justify-center gap-2 px-0 font-normal sm:w-56 sm:justify-start sm:px-2.5 @max-4xl/topbar:w-8 @max-4xl/topbar:justify-center @max-4xl/topbar:px-0'}
     onclick={() => (open = true)}
     onpointerenter={preload}
     onfocus={preload}
@@ -113,16 +113,18 @@
     <span
       class={variant === 'sidebar'
         ? 'flex-1 truncate text-start group-data-[collapsible=icon]:sr-only'
-        : 'sr-only sm:not-sr-only sm:flex-1 sm:text-start'}>{placeholder}</span
+        : 'sr-only sm:not-sr-only sm:flex-1 sm:text-start @max-4xl/topbar:sr-only'}
+      >{placeholder}</span
     >
     <!-- `globalSearchFieldSuffix()`, or the first key binding (after hydration: ⌘ or Ctrl). -->
     {#if suffix?.type === 'text'}<span
         data-slot="global-search-suffix"
-        class="text-muted-foreground hidden text-[10px] sm:inline">{suffix.text}</span
+        class="text-muted-foreground hidden text-[10px] sm:inline @max-4xl/topbar:hidden"
+        >{suffix.text}</span
       >{/if}
     {#if hydrated.current && suffix?.type === 'keyBinding'}<kbd
         dir="ltr"
-        class="bg-muted text-foreground/70 hidden rounded px-1 font-mono text-[10px] sm:inline"
+        class="bg-muted text-foreground/70 hidden rounded px-1 font-mono text-[10px] sm:inline @max-4xl/topbar:hidden"
         >{formatKeyBinding(suffix.keyBinding)}</kbd
       >{/if}
   </Button>

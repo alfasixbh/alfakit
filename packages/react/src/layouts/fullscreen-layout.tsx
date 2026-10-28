@@ -1,4 +1,4 @@
-import type { PageSchema } from '@alfakit/core'
+import { TOPBAR_END_SLOT_CLASS, type PageSchema } from '@alfakit/core'
 import { Link } from '@inertiajs/react'
 import { LogOutIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -38,7 +38,7 @@ export function FullscreenLayout({ children, page }: FullscreenLayoutProps) {
         <header
           data-slot="topbar"
           data-variant="fullscreen"
-          className="bg-background flex h-12 shrink-0 items-center gap-3 border-b px-3 md:px-4"
+          className="bg-background flex h-12 shrink-0 items-center gap-3 overflow-x-clip border-b px-3 md:px-4"
         >
           <Slot name="topbar.logo.before" />
           <Brand className="hidden shrink-0 sm:flex" />
@@ -46,8 +46,8 @@ export function FullscreenLayout({ children, page }: FullscreenLayoutProps) {
           <Separator orientation="vertical" className="hidden h-4 sm:block" />
           <h1 className="min-w-0 truncate text-sm font-semibold">{page?.heading ?? page?.title}</h1>
           <Slot name="topbar.start" />
-          <div className="ms-auto flex shrink-0 items-center gap-1">
-            <Slot name="topbar.end" />
+          <div className="ms-auto flex min-w-0 items-center gap-1">
+            <Slot name="topbar.end" className={TOPBAR_END_SLOT_CLASS} />
             <NotificationsMenu />
             <TopbarLocaleSwitcher />
             <ThemeToggle />

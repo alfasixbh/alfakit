@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageSchema } from '@alfakit/core'
+  import { TOPBAR_END_SLOT_CLASS, type PageSchema } from '@alfakit/core'
   import LogOutIcon from '@lucide/svelte/icons/log-out'
   import type { Snippet } from 'svelte'
   import NotificationsMenu from '../components/notifications/NotificationsMenu.svelte'
@@ -34,7 +34,7 @@
     <header
       data-slot="topbar"
       data-variant="fullscreen"
-      class="bg-background flex h-12 shrink-0 items-center gap-3 border-b px-3 md:px-4"
+      class="bg-background flex h-12 shrink-0 items-center gap-3 overflow-x-clip border-b px-3 md:px-4"
     >
       <Slot name="topbar.logo.before" />
       <Brand class="hidden shrink-0 sm:flex" />
@@ -42,8 +42,8 @@
       <Separator orientation="vertical" class="hidden h-4 sm:block" />
       <h1 class="min-w-0 truncate text-sm font-semibold">{page?.heading ?? page?.title}</h1>
       <Slot name="topbar.start" />
-      <div class="ms-auto flex shrink-0 items-center gap-1">
-        <Slot name="topbar.end" />
+      <div class="ms-auto flex min-w-0 items-center gap-1">
+        <Slot name="topbar.end" class={TOPBAR_END_SLOT_CLASS} />
         <NotificationsMenu />
         <TopbarLocaleSwitcher />
         <ThemeToggle />
