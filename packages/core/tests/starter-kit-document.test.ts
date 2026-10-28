@@ -75,4 +75,28 @@ describe('starter kit document', () => {
     navigate({})
     expect(document.documentElement.dir).toBe('rtl')
   })
+
+  it('applies only what the server sent, never the browser language', () => {
+    // A guest whose browser asks for English on a page the server rendered right to left
+    // (`defaultLocale('ar')->detectBrowserLocale(false)`).
+    const language = vi.spyOn(navigator, 'language', 'get').mockReturnValue('en-US')
+    const languages = vi.spyOn(navigator, 'languages', 'get').mockReturnValue(['en-US', 'en'])
+    document.documentElement.lang = 'ar'
+    document.documentElement.dir = 'rtl'
+
+    installStarterKitDocument({ alfakitDocument: { tag: 'ar', direction: 'rtl' } })
+    expect(document.documentElement.dir).toBe('rtl')
+    expect(starterKitDirection({ alfakitDocument: { tag: 'en', direction: 'rtl' } })).toBe('rtl')
+
+    // Without the prop the root view's `dir` stays: nothing is derived on the client.
+    installStarterKitDocument({})
+    navigate({})
+    expect(document.documentElement.dir).toBe('rtl')
+    expect(document.documentElement.lang).toBe('ar')
+
+    expect(language).not.toHaveBeenCalled()
+    expect(languages).not.toHaveBeenCalled()
+    language.mockRestore()
+    languages.mockRestore()
+  })
 })
