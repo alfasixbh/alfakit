@@ -29,31 +29,38 @@
   {#if code === ''}
     <EntryPlaceholder entry={component} />
   {:else}
-    <div class="relative">
-      <pre
-        dir="ltr"
-        data-slot="code-entry"
-        data-grammar={component.grammar ?? undefined}
-        data-light-theme={component.lightTheme ?? undefined}
-        data-dark-theme={component.darkTheme ?? undefined}
-        class={cn(
-          'bg-muted/40 m-0 overflow-auto rounded-md border p-3 font-mono text-sm leading-6 whitespace-pre',
-          component.copyable && 'pe-10',
-        )}><code
-          >{#each tokens as token, index (index)}{#if token.kind === 'plain'}{token.text}{:else}<span
-                class={codeTokenClasses[token.kind]}>{token.text}</span
-              >{/if}{/each}</code
-        ></pre>
+    <div>
+      <!-- Code reads left to right in every panel, and the copy button sits at its end. The
+        `<pre>` keeps its padding while the `<code>` scrolls inside it, so a long first line
+        scrolls under the padding, never under the button. -->
+      <div dir="ltr" class="relative">
+        <pre
+          dir="ltr"
+          data-slot="code-entry"
+          data-grammar={component.grammar ?? undefined}
+          data-light-theme={component.lightTheme ?? undefined}
+          data-dark-theme={component.darkTheme ?? undefined}
+          class={cn(
+            'bg-muted/40 m-0 rounded-md border p-3 font-mono text-sm leading-6 whitespace-pre',
+            component.copyable && 'pe-10',
+          )}><code class="block overflow-x-auto"
+            >{#each tokens as token, index (index)}{#if token.kind === 'plain'}{token.text}{:else}<span
+                  class={codeTokenClasses[token.kind]}>{token.text}</span
+                >{/if}{/each}</code
+          ></pre>
+        {#if component.copyable}
+          <button
+            type="button"
+            data-slot="code-entry-copy"
+            class="text-muted-foreground hover:text-foreground bg-background/80 absolute end-2 top-2 rounded-md p-1"
+            onclick={copy}
+            aria-label={t('copy', {}, 'Copy')}
+          >
+            {#if copied}<CheckIcon class="size-4" />{:else}<CopyIcon class="size-4" />{/if}
+          </button>
+        {/if}
+      </div>
       {#if component.copyable}
-        <button
-          type="button"
-          data-slot="code-entry-copy"
-          class="text-muted-foreground hover:text-foreground bg-background/80 absolute end-2 top-2 rounded-md p-1"
-          onclick={copy}
-          aria-label={t('copy', {}, 'Copy')}
-        >
-          {#if copied}<CheckIcon class="size-4" />{:else}<CopyIcon class="size-4" />{/if}
-        </button>
         {#if copied}
           <span role="status" class={cn('text-xs', !component.copyMessage && 'sr-only')}
             >{component.copyMessage ?? t('copied', {}, 'Copied')}</span

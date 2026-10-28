@@ -14,7 +14,7 @@ function SubNavigationLink({ item, tab }: { item: NavigationItemSchema; tab: boo
   const attributes = (className: string) => extraProps(item.extraAttributes, className)
   const className = cn(
     'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
-    tab ? 'shrink-0 whitespace-nowrap' : 'w-full',
+    tab ? 'shrink-0 whitespace-nowrap' : 'shrink-0 whitespace-nowrap @2xl:w-full @2xl:shrink',
     item.active
       ? 'bg-accent text-accent-foreground font-medium'
       : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',
@@ -82,18 +82,21 @@ export function SubNavigation({ navigation }: { navigation: SubNavigationSchema 
       aria-label={label}
       data-slot="sub-navigation"
       data-position={navigation.position}
-      className="flex w-full shrink-0 flex-col gap-4 md:w-56"
+      className="flex w-full shrink-0 flex-row gap-4 overflow-x-auto border-b pb-2 @2xl:w-56 @2xl:flex-col @2xl:overflow-visible @2xl:border-b-0 @2xl:pb-0"
     >
       <Slot name="page.sub-navigation.sidebar.before" />
       {navigation.groups.map((group, index) => (
-        <div key={group.label ?? `group-${index}`} className="flex flex-col gap-1">
+        <div
+          key={group.label ?? `group-${index}`}
+          className="flex shrink-0 flex-row items-center gap-1 @2xl:flex-col @2xl:items-stretch"
+        >
           {group.label && (
-            <p className="text-muted-foreground flex items-center gap-1.5 px-3 text-xs font-medium">
+            <p className="text-muted-foreground flex items-center gap-1.5 px-3 text-xs font-medium whitespace-nowrap">
               {group.icon && <Icon name={group.icon} className="size-3.5" />}
               {group.label}
             </p>
           )}
-          <ul className="flex flex-col gap-0.5">
+          <ul className="flex flex-row gap-0.5 @2xl:flex-col">
             {group.items.map((item) => (
               <li key={`${item.label}-${item.url ?? ''}`}>
                 <SubNavigationLink item={item} tab={false} />
@@ -136,26 +139,31 @@ export function SubNavigationLayout({
 
   const content = <div className="flex min-w-0 flex-1 flex-col gap-6">{children}</div>
 
+  // The navigation goes beside the content once the page's content area (this `@container`)
+  // has 42rem, so the content keeps about 30rem next to it; narrower (beside the panel
+  // sidebar on a tablet), it is a scrolling row of links above (`end`: below) the content.
   return (
-    <div
-      data-slot="sub-navigation-layout"
-      className="flex flex-col gap-6 md:flex-row md:items-start"
-    >
-      {navigation.position === 'end' ? (
-        <>
-          {content}
-          <Slot name="page.sub-navigation.end.before" />
-          {nav}
-          <Slot name="page.sub-navigation.end.after" />
-        </>
-      ) : (
-        <>
-          <Slot name="page.sub-navigation.start.before" />
-          {nav}
-          <Slot name="page.sub-navigation.start.after" />
-          {content}
-        </>
-      )}
+    <div data-slot="sub-navigation-container" className="@container">
+      <div
+        data-slot="sub-navigation-layout"
+        className="flex flex-col gap-6 @2xl:flex-row @2xl:items-start"
+      >
+        {navigation.position === 'end' ? (
+          <>
+            {content}
+            <Slot name="page.sub-navigation.end.before" />
+            {nav}
+            <Slot name="page.sub-navigation.end.after" />
+          </>
+        ) : (
+          <>
+            <Slot name="page.sub-navigation.start.before" />
+            {nav}
+            <Slot name="page.sub-navigation.start.after" />
+            {content}
+          </>
+        )}
+      </div>
     </div>
   )
 }

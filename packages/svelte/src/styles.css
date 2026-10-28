@@ -40,6 +40,11 @@
 @source inline(
   '{@3xs:,@2xs:,@xs:,@sm:,@md:,@lg:,@xl:,@2xl:,@3xl:,@4xl:,@5xl:,@6xl:,@7xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,full}'
 );
+/* Layouts inside a table record follow the record's `@container` (core `RECORD_CONTAINER_FROM`: `splitClasses()`, `recordGridColumnsClasses()`, `recordColumnSpanClasses()`). */
+@source inline(
+  '{@3xs:,@2xs:,@xs:,@sm:,@md:,@lg:,@xl:,@2xl:,@3xl:,@4xl:,@5xl:,@6xl:,@7xl:}col-start-{1,2,3,4,5,6,7,8,9,10,11,12}'
+);
+@source inline('{@3xs:,@xs:,@md:,@xl:,@3xl:}{flex-row,items-center}');
 /* `Flex` rows and alignment from a breakpoint (`flexLayoutClasses()`). */
 @source inline('{,sm:,md:,lg:,xl:,2xl:}{flex-row,items-start,items-center,items-end}');
 /* `Flex::alignment()` (`flexLayoutClasses()`). */

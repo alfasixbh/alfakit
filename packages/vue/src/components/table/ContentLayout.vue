@@ -123,7 +123,7 @@ const nodeKey = (node: ColumnLayoutNode, index: number) =>
         :data-state="isSelected(record) ? 'selected' : undefined"
         :class="
           cn(
-            'flex flex-col gap-3 p-4',
+            '@container flex flex-col gap-3 p-4',
             props.table.contentGrid && 'bg-card rounded-lg border shadow-xs',
             clickable(record) && 'hover:bg-muted/40 cursor-pointer',
             isSelected(record) && 'bg-muted/60',
@@ -173,7 +173,7 @@ const nodeKey = (node: ColumnLayoutNode, index: number) =>
           name is not broken mid-word beside them). -->
           <div
             data-slot="record-content"
-            class="flex min-w-0 grow basis-60 flex-col gap-3 break-words"
+            class="@container flex min-w-0 grow basis-60 flex-col gap-3 break-words"
           >
             <ContentLayoutNode
               v-for="(node, nodeIndex) in main"

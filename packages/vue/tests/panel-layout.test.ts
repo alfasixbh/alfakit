@@ -135,6 +135,17 @@ describe('sub-navigation', () => {
     expect(wrapper.find('[aria-current="page"]').text()).toBe('View')
     expect(wrapper.text()).toContain('Body')
     expect(wrapper.find('[data-slot="sub-navigation-layout"]').exists()).toBe(position !== 'top')
+
+    if (position !== 'top') {
+      // Beside the content only when the page's content area is wide enough (`@container`).
+      const layout = wrapper.find('[data-slot="sub-navigation-layout"]')
+      expect(layout.classes()).toEqual(expect.arrayContaining(['flex-col', '@2xl:flex-row']))
+      expect(layout.classes()).not.toContain('md:flex-row')
+      expect(layout.element.parentElement!.classList).toContain('@container')
+      expect(nav.classes()).toEqual(
+        expect.arrayContaining(['flex-row', 'overflow-x-auto', '@2xl:flex-col', '@2xl:w-56']),
+      )
+    }
     wrapper.unmount()
   })
 })

@@ -345,7 +345,9 @@ describe('content layout grid spans', () => {
     }
     const wrapper = mountWithAlfakit(() => h(DataTable, { table }))
 
-    expect(wrapper.find('[data-column="title"]').classes()).toContain('lg:col-span-2')
+    // Inside a record, `lg` reads the record's width (`@md`, core `RECORD_CONTAINER_FROM`).
+    expect(wrapper.find('[data-layout="grid"]').classes()).toContain('@md:grid-cols-3')
+    expect(wrapper.find('[data-column="title"]').classes()).toContain('@md:col-span-2')
     expect(wrapper.find('[data-column="body"]').classes()).toContain('col-span-full')
     wrapper.unmount()
   })

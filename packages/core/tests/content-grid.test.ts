@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { contentGridClasses } from '../src/utils/container-breakpoints'
+import {
+  contentGridClasses,
+  recordColumnSpanClasses,
+  recordGridColumnsClasses,
+} from '../src/utils/container-breakpoints'
 
 describe('contentGridClasses', () => {
   it('is one column without a grid', () => {
@@ -29,6 +33,30 @@ describe('contentGridClasses', () => {
     expect(contentGridClasses({ xl: 5, '2xl': 6 })).toBe('grid-cols-1 @7xl:grid-cols-6')
     expect(contentGridClasses({ '@md': 2, '@3xl': 3 })).toBe(
       'grid-cols-1 @md:grid-cols-2 @3xl:grid-cols-3',
+    )
+  })
+})
+
+describe('record layout classes', () => {
+  it('reads a Grid inside a table record against the record width', () => {
+    expect(recordGridColumnsClasses(undefined)).toBe('grid-cols-1')
+    expect(recordGridColumnsClasses({ default: 1, md: 2 })).toBe('grid-cols-1 @xs:grid-cols-2')
+    expect(recordGridColumnsClasses({ md: 2, xl: 3 })).toBe(
+      'grid-cols-1 @xs:grid-cols-2 @xl:grid-cols-3',
+    )
+    expect(recordGridColumnsClasses({ default: 2, lg: 4 })).toBe('grid-cols-2 @md:grid-cols-4')
+    expect(recordGridColumnsClasses({ md: 2 })).not.toMatch(/(^| )md:/)
+  })
+
+  it('keeps container keys, which win over a viewport key on the same size', () => {
+    expect(recordGridColumnsClasses({ '@sm': 3 })).toBe('grid-cols-1 @sm:grid-cols-3')
+    expect(recordGridColumnsClasses({ md: 2, '@xs': 4 })).toBe('grid-cols-1 @xs:grid-cols-4')
+  })
+
+  it('maps column spans and starts the same way', () => {
+    expect(recordColumnSpanClasses(undefined)).toBe('')
+    expect(recordColumnSpanClasses({ default: 'full', md: 1 }, { lg: 2 })).toBe(
+      'col-span-full @xs:col-span-1 @md:col-start-2',
     )
   })
 })

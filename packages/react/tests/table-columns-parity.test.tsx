@@ -363,7 +363,12 @@ describe('content layout grid spans', () => {
       </Wrapper>,
     )
 
-    expect(container.querySelector('[data-column="title"]')).toHaveClass('lg:col-span-2')
+    // Inside a record, `lg` reads the record's width (`@md`, core `RECORD_CONTAINER_FROM`).
+    expect(container.querySelector('[data-layout="grid"]')).toHaveClass(
+      'grid-cols-1',
+      '@md:grid-cols-3',
+    )
+    expect(container.querySelector('[data-column="title"]')).toHaveClass('@md:col-span-2')
     expect(container.querySelector('[data-column="body"]')).toHaveClass('col-span-full')
   })
 })

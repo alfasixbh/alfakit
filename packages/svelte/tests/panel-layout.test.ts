@@ -122,6 +122,20 @@ describe('sub-navigation', () => {
     expect(!!container.querySelector('[data-slot="sub-navigation-layout"]')).toBe(
       position !== 'top',
     )
+
+    if (position !== 'top') {
+      // Beside the content only when the page's content area is wide enough (`@container`).
+      const layout = container.querySelector('[data-slot="sub-navigation-layout"]')!
+      expect(layout).toHaveClass('flex-col', '@2xl:flex-row')
+      expect(layout).not.toHaveClass('md:flex-row')
+      expect(layout.parentElement).toHaveClass('@container')
+      expect(screen.getByRole('navigation', { name: 'Page navigation' })).toHaveClass(
+        'flex-row',
+        'overflow-x-auto',
+        '@2xl:flex-col',
+        '@2xl:w-56',
+      )
+    }
   })
 })
 

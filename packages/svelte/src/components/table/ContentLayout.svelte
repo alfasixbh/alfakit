@@ -136,7 +136,7 @@
         aria-posinset={virtual.range.active ? index + 1 : undefined}
         {@attach virtual.item}
         class={cn(
-          'flex flex-col gap-3 p-4',
+          '@container flex flex-col gap-3 p-4',
           table.contentGrid && 'bg-card rounded-lg border shadow-xs',
           clickable && 'hover:bg-muted/40 cursor-pointer',
           selected && 'bg-muted/60',
@@ -167,7 +167,7 @@
           name is not broken mid-word beside them). -->
           <div
             data-slot="record-content"
-            class="flex min-w-0 grow basis-60 flex-col gap-3 break-words"
+            class="@container flex min-w-0 grow basis-60 flex-col gap-3 break-words"
           >
             {#each main as node, index (nodeKey(node, index))}
               <ContentLayoutNode
