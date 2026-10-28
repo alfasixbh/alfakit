@@ -250,6 +250,44 @@ describe('FormStore', () => {
     expect(ran).toBe(true)
   })
 
+  it('stops a submit while a picked file failed to upload, until the file is removed', () => {
+    const form = new FormStore(
+      {
+        components: [{ type: 'FileUpload', key: 'manual', name: 'manual', statePath: 'manual' }],
+        state: { manual: null },
+      },
+      { token: 't', component: 'form' },
+    )
+
+    form.failUpload('pending:0', 'manual', 'Not uploaded.')
+
+    let ran = false
+    let blocked = false
+    form.whenSettled(
+      () => (ran = true),
+      () => (blocked = true),
+    )
+
+    // Saving now would store the form without the file the user picked.
+    expect(ran).toBe(false)
+    expect(blocked).toBe(true)
+    expect(form.getError('manual')).toBe('Not uploaded.')
+
+    form.forgetFailedUpload('pending:0')
+    form.whenSettled(() => (ran = true))
+    expect(ran).toBe(true)
+  })
+
+  it('ignores a failed upload of a field that left the form', () => {
+    const form = new FormStore({ components: [], state: {} }, { token: 't', component: 'form' })
+
+    form.failUpload('pending:0', 'manual', 'Not uploaded.')
+
+    let ran = false
+    form.whenSettled(() => (ran = true))
+    expect(ran).toBe(true)
+  })
+
   it('debounces live fields by 150 ms without a server debounce and coalesces rapid typing', async () => {
     vi.useFakeTimers()
 

@@ -183,6 +183,7 @@ return [
         'previous_step' => 'Geri',
         'file_too_large' => 'Bu dosya çok büyük.',
         'file_too_small' => 'Bu dosya çok küçük.',
+        'upload_not_saved' => 'Bir dosya yüklenmedi. Kaydetmeden önce kaldırın veya yeniden yükleyin.',
         'min_files' => 'En az :count dosya',
         'clone' => 'Çoğalt',
         'remove_row' => 'Satırı kaldır',

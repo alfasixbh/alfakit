@@ -195,29 +195,33 @@
         : original
 
     if (component.minSize && file.size < component.minSize * 1024) {
+      const rejected = `rejected:${++localId}:${file.name}`
       uploadingStore.set([
         ...uploadingStore.get(),
         {
-          path: `rejected:${++localId}:${file.name}`,
+          path: rejected,
           name: file.name,
           size: file.size,
           error: t('form.file_too_small', {}, 'This file is too small.'),
         },
       ])
+      failed(rejected)
 
       return null
     }
 
     if (component.maxSize && file.size > component.maxSize * 1024) {
+      const rejected = `rejected:${++localId}:${file.name}`
       uploadingStore.set([
         ...uploadingStore.get(),
         {
-          path: `rejected:${++localId}:${file.name}`,
+          path: rejected,
           name: file.name,
           size: file.size,
           error: t('form.file_too_large', {}, 'This file is too large.'),
         },
       ])
+      failed(rejected)
 
       return null
     }
@@ -336,8 +340,21 @@
             item.path === local.path ? { ...item, error: message, progress: undefined } : item,
           ),
       )
+      failed(local.path)
     }
   }
+
+  /** A picked file that didn't upload: saving stops until it is removed. */
+  const failed = (path: string) =>
+    store.failUpload(
+      path,
+      component.statePath,
+      t(
+        'form.upload_not_saved',
+        {},
+        "A file didn't upload. Remove it or upload it again before saving.",
+      ),
+    )
 
   const remove = (path: string) => {
     commit(paths.filter((item) => item !== path))
@@ -433,6 +450,7 @@
       onclick={() => {
         if (file.error || file.progress !== undefined) {
           releasePreview(file.preview)
+          store.forgetFailedUpload(file.path)
           uploadingStore.set(uploadingStore.get().filter((item) => item.path !== file.path))
         } else {
           remove(file.path)

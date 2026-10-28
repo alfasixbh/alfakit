@@ -206,7 +206,7 @@ export async function runJourneys({ app, report, session, ids, credentials, rout
             try {
                 await see(rowWith(state.postTitle), 'the new post in the list after Back')
             } catch (error) {
-                throw new Error(`${error.message}. ${await diagnose()}`)
+                throw new Error(`${error.message}. ${await diagnose()}`, { cause: error })
             }
         },
     )

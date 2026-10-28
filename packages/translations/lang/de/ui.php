@@ -183,6 +183,7 @@ return [
         'previous_step' => 'Zurück',
         'file_too_large' => 'Diese Datei ist zu groß.',
         'file_too_small' => 'Diese Datei ist zu klein.',
+        'upload_not_saved' => 'Eine Datei wurde nicht hochgeladen. Entfernen Sie sie oder laden Sie sie vor dem Speichern erneut hoch.',
         'min_files' => 'Mindestens :count Datei|Mindestens :count Dateien',
         'clone' => 'Duplizieren',
         'remove_row' => 'Zeile entfernen',

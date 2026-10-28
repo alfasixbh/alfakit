@@ -217,6 +217,7 @@ const prepare = async (original: File, edited: boolean): Promise<File | null> =>
         error: t('form.file_too_small', {}, 'This file is too small.'),
       },
     ]
+    failed(file.name)
 
     return null
   }
@@ -231,6 +232,7 @@ const prepare = async (original: File, edited: boolean): Promise<File | null> =>
         error: t('form.file_too_large', {}, 'This file is too large.'),
       },
     ]
+    failed(file.name)
 
     return null
   }
@@ -345,8 +347,21 @@ const send = async (endpoint: string, file: File, local: LocalFile, replacing?: 
     uploading.value = uploading.value.map((item) =>
       item.path === local.path ? { ...item, error: message, progress: undefined } : item,
     )
+    failed(local.path)
   }
 }
+
+/** A picked file that didn't upload: saving stops until it is removed. */
+const failed = (path: string) =>
+  store.failUpload(
+    path,
+    props.component.statePath,
+    t(
+      'form.upload_not_saved',
+      {},
+      "A file didn't upload. Remove it or upload it again before saving.",
+    ),
+  )
 
 const remove = (path: string) => {
   commit(paths.value.filter((item) => item !== path))
@@ -368,6 +383,7 @@ const discard = (path: string) => {
 const removeEntry = (file: LocalFile) => {
   if (file.error || file.progress !== undefined) {
     releasePreview(file.preview)
+    store.forgetFailedUpload(file.path)
     uploading.value = uploading.value.filter((item) => item.path !== file.path)
   } else {
     remove(file.path)

@@ -181,6 +181,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
           error: t('form.file_too_small', {}, 'This file is too small.'),
         },
       ])
+      failed(file.name)
 
       return null
     }
@@ -195,6 +196,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
           error: t('form.file_too_large', {}, 'This file is too large.'),
         },
       ])
+      failed(file.name)
 
       return null
     }
@@ -301,8 +303,21 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
           item.path === local.path ? { ...item, error: message, progress: undefined } : item,
         ),
       )
+      failed(local.path)
     }
   }
+
+  /** A picked file that didn't upload: saving stops until it is removed. */
+  const failed = (path: string) =>
+    store.failUpload(
+      path,
+      component.statePath,
+      t(
+        'form.upload_not_saved',
+        {},
+        "A file didn't upload. Remove it or upload it again before saving.",
+      ),
+    )
 
   const remove = (path: string) => {
     commit(paths.filter((item) => item !== path))
@@ -376,6 +391,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
         onClick={() => {
           if (file.error || file.progress !== undefined) {
             releasePreview(file.preview)
+            store.forgetFailedUpload(file.path)
             setUploading((state) => state.filter((item) => item.path !== file.path))
           } else {
             remove(file.path)

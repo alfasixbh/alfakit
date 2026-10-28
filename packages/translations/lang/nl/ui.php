@@ -183,6 +183,7 @@ return [
         'previous_step' => 'Terug',
         'file_too_large' => 'Dit bestand is te groot.',
         'file_too_small' => 'Dit bestand is te klein.',
+        'upload_not_saved' => 'Een bestand is niet geüpload. Verwijder het of upload het opnieuw voordat je opslaat.',
         'min_files' => 'Minstens :count bestand|Minstens :count bestanden',
         'clone' => 'Dupliceren',
         'remove_row' => 'Rij verwijderen',

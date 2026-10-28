@@ -165,7 +165,14 @@ const trigger = async (action: ActionSchema, ctx: ActionContext) => {
   submittedBlock = props.block
   store.setProcessing(true)
   // A click that blurred a live field started a refresh: send the state it returns.
-  store.whenSettled(() => runner.execute(action, ctx, store.state.values))
+  store.whenSettled(
+    () => runner.execute(action, ctx, store.state.values),
+    // A picked file failed to upload: nothing is sent, its field shows why.
+    () => {
+      store.setProcessing(false)
+      submitting = false
+    },
+  )
 }
 
 // Track this form's own submit visit so unrelated reloads finishing meanwhile (polling,

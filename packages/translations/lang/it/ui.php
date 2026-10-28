@@ -183,6 +183,7 @@ return [
         'previous_step' => 'Indietro',
         'file_too_large' => 'Questo file è troppo grande.',
         'file_too_small' => 'Questo file è troppo piccolo.',
+        'upload_not_saved' => 'Un file non è stato caricato. Rimuovilo o caricalo di nuovo prima di salvare.',
         'min_files' => 'Almeno :count file|Almeno :count file',
         'clone' => 'Duplica',
         'remove_row' => 'Rimuovi riga',

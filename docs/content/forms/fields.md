@@ -309,7 +309,7 @@ FileUpload::make('video')->acceptedFileTypes(['video/mp4'])->maxSize(512000); //
 
 Saving a form while a file (or a rich editor attachment) is still uploading waits for the upload to finish, with the submit button busy, and then saves the form with the file. A failed upload doesn't hold the form back: its error stays on the field.
 
-Custom frontends can use the same upload with `uploadTemporaryFile(endpoint, file, { ...panelUploadOptions(panel, component.uploadPolicy), onProgress })` from `@alfakit/core`; wrap it in `form.trackUpload(...)` (the field's `FormStore`) so submits wait for it. The web server's `upload_max_filesize` / `post_max_size` only need to fit one chunk.
+Custom frontends can use the same upload with `uploadTemporaryFile(endpoint, file, { ...panelUploadOptions(panel, component.uploadPolicy), onProgress })` from `@alfakit/core`; wrap it in `form.trackUpload(...)` (the field's `FormStore`) so submits wait for it. When the upload fails, call `form.failUpload(id, component.statePath, message)`: submits then stop and show `message` under the field until you call `form.forgetFailedUpload(id)` (the user removed the file). The built-in field does this, so a form is never saved without a file the user picked. The web server's `upload_max_filesize` / `post_max_size` only need to fit one chunk.
 
 ### Original file names
 

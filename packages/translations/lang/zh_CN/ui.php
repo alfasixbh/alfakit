@@ -183,6 +183,7 @@ return [
         'previous_step' => '上一步',
         'file_too_large' => '文件过大。',
         'file_too_small' => '文件过小。',
+        'upload_not_saved' => '有文件未上传成功。请在保存前将其移除或重新上传。',
         'min_files' => '至少 :count 个文件',
         'clone' => '复制',
         'remove_row' => '删除行',

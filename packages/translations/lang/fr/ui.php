@@ -183,6 +183,7 @@ return [
         'previous_step' => 'Précédent',
         'file_too_large' => 'Ce fichier est trop volumineux.',
         'file_too_small' => 'Ce fichier est trop petit.',
+        'upload_not_saved' => 'Un fichier n\'a pas été envoyé. Retirez-le ou envoyez-le à nouveau avant d\'enregistrer.',
         'min_files' => 'Au moins :count fichier|Au moins :count fichiers',
         'clone' => 'Dupliquer',
         'remove_row' => 'Retirer la ligne',

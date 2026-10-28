@@ -610,19 +610,63 @@ export class FormStore {
   private readonly uploadsInFlight = new Set<Promise<unknown>>()
 
   /**
+   * Record a file the user picked that didn't upload (a failed request, a rejected size),
+   * so submits stop instead of saving the form without it: `whenSettled()` shows `message`
+   * under the field until the file is removed (`forgetFailedUpload()`) or the field is gone.
+   */
+  failUpload(id: string, path: string, message: string): void {
+    this.failedUploads.set(id, { path, message })
+  }
+
+  /** The failed file `id` left the field (removed, or replaced by a new upload). */
+  forgetFailedUpload(id: string): void {
+    this.failedUploads.delete(id)
+  }
+
+  private readonly failedUploads = new Map<string, { path: string; message: string }>()
+
+  /**
+   * Show the failed-upload errors of fields still in the form; true when there are any,
+   * and the submit must not run.
+   */
+  private blockFailedUploads(): boolean {
+    if (this.failedUploads.size === 0) return false
+
+    const fields = new Set(collectFields(this.state.components).map((field) => field.statePath))
+    const errors: Record<string, string[]> = {}
+
+    for (const { path, message } of this.failedUploads.values()) {
+      if (fields.has(path)) errors[path] ??= [message]
+    }
+
+    if (Object.keys(errors).length === 0) return false
+
+    this.store.update({ errors: { ...this.state.errors, ...errors } })
+
+    return true
+  }
+
+  /**
    * Run `callback` once the form is settled (see `settle()`): straight away when no live
    * refresh or upload is waiting or in flight, so a submit stays synchronous in the usual case.
+   * Not at all while a picked file failed to upload (`failUpload()`): its field shows why,
+   * and `blocked` runs instead (to end the submit's processing state).
    */
-  whenSettled(callback: () => void): void {
+  whenSettled(callback: () => void, blocked?: () => void): void {
     const waiting = [...this.liveDebouncers.values()].some((debounced) => debounced.pending)
 
+    const run = () => {
+      if (this.blockFailedUploads()) blocked?.()
+      else callback()
+    }
+
     if (!waiting && !this.refreshInFlight && this.uploadsInFlight.size === 0) {
-      callback()
+      run()
 
       return
     }
 
-    void this.settle().then(callback)
+    void this.settle().then(run)
   }
 
   private refreshInFlight: Promise<void> | null = null

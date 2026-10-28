@@ -183,6 +183,7 @@ return [
         'previous_step' => '戻る',
         'file_too_large' => 'ファイルサイズが大きすぎます。',
         'file_too_small' => 'ファイルサイズが小さすぎます。',
+        'upload_not_saved' => 'アップロードされていないファイルがあります。保存する前に削除するか、もう一度アップロードしてください。',
         'min_files' => ':count 個以上のファイル',
         'clone' => '複製',
         'remove_row' => '行を削除',

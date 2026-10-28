@@ -74,4 +74,69 @@ describe('FileUpload while uploading', () => {
     await vi.waitFor(() => expect(submitted).toEqual(['tmp:manual']))
     expect(store.hasPendingUploads).toBe(false)
   })
+
+  it('stops a submit when the upload fails, until the file is removed', async () => {
+    let fail: (() => void) | undefined
+    const fetchMock = vi.fn(
+      () =>
+        new Promise<Response>((resolve) => {
+          fail = () =>
+            resolve(
+              new Response(
+                JSON.stringify({ message: 'Maximum execution time of 30 seconds exceeded' }),
+                { status: 500, headers: { 'Content-Type': 'application/json' } },
+              ),
+            )
+        }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+
+    const store = new FormStore(
+      { components: [component as SchemaComponent], state: { manual: null } },
+      { token: 't', component: 'form' },
+    )
+    const Form = defineComponent({
+      setup() {
+        provideForm(store)
+
+        return () => h(FileUploadField, { component })
+      },
+    })
+    mountWithAlfakit(() => h(Form), { attachTo: document.body })
+
+    const input = document.querySelector<HTMLInputElement>('input[type="file"]')!
+    Object.defineProperty(input, 'files', {
+      value: [new File(['manual'], 'manual.txt', { type: 'text/plain' })],
+      configurable: true,
+    })
+    input.dispatchEvent(new Event('change'))
+
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
+
+    // Save is clicked while the file uploads, and the upload then fails.
+    const submitted: unknown[] = []
+    let blocked = 0
+    store.whenSettled(
+      () => submitted.push(store.getValue('manual')),
+      () => blocked++,
+    )
+    fail?.()
+
+    // The form isn't saved without the file: the field says why.
+    await vi.waitFor(() => expect(blocked).toBe(1))
+    expect(submitted).toEqual([])
+    expect(store.getError('manual')).toMatch(/upload it again/)
+
+    const removeButton = await vi.waitFor(() => {
+      const button = document.querySelector<HTMLButtonElement>('button[aria-label*="manual.txt"]')
+      expect(button).not.toBeNull()
+
+      return button!
+    })
+    removeButton.click()
+
+    // Once the failed file is removed, saving goes ahead without it.
+    store.whenSettled(() => submitted.push(store.getValue('manual')))
+    expect(submitted).toEqual([null])
+  })
 })

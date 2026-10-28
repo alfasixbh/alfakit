@@ -125,7 +125,14 @@
     submittedBlock = untrack(() => block)
     store.setProcessing(true)
     // A click that blurred a live field started a refresh: send the state it returns.
-    store.whenSettled(() => runner.execute(action, ctx, store.state.values))
+    store.whenSettled(
+      () => runner.execute(action, ctx, store.state.values),
+      // A picked file failed to upload: nothing is sent, its field shows why.
+      () => {
+        store.setProcessing(false)
+        submitting = false
+      },
+    )
   }
 
   // Buttons elsewhere with `formId('form')` (a header "Save") submit through this form.
