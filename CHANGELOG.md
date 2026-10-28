@@ -12,15 +12,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `TOPBAR_END_SLOT_CLASS` in `@alfakit/core` for custom top bars.
 - CMS JSON API: `GET api/cms/page` returns the site design under `site.design` (typed `CmsPageApiResponse`), never the custom code snippets.
 
 ### Changed
 
+- The `topbar` layout moves its navigation links into the slide-out menu below `lg` (1024px) instead of `md`; between 768 and 1023px the links had been squeezed to nothing.
 - Cluster and record sub-navigation sits beside the content only when the content area is at least 42rem wide (container query); narrower, it becomes a scrolling row of links above the content, the same in React, Vue and Svelte.
 - `Split::from()`, `Grid` columns and `columnSpan()`/`columnStart()` inside table records follow the record's width (`sm` 16rem, `md` 20rem, `lg` 28rem, `xl` 36rem, `2xl` 48rem) instead of the browser window, so a narrow card keeps a badge under its text.
 
 ### Fixed
 
+- The top bar no longer makes the page scroll sideways on tablets (sidebar layout with the sidebar open, and the top navigation layout): the search field folds into an icon button while the bar is narrower than 56rem, and `Slot::TOPBAR_END` content shrinks and is clipped before the bar's buttons, also in the fullscreen layout header.
 - Starter kits: `<html dir>` in the root view and the shared `alfakitDocument` prop use one direction resolved once per request, so they can never disagree; an error while resolving it is now reported instead of silently falling back to the app locale's direction.
 - Starter kits: the header layout, password field, appearance tabs, two-factor setup, split auth layout and React login link mirror in right-to-left languages; the header's mobile menu opens from the end of the line and breadcrumb chevrons turn around. Customised files are skipped with a note.
 - ColorPicker: an empty field shows a struck-through swatch and a `#rrggbb` placeholder instead of `#000000`; CMS Site design colors show "Default".
