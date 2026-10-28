@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.2.3
+
+### Patch Changes
+
+- Container-based layouts for table records (`recordGridColumnsClasses`, `recordColumnSpanClasses`, Split from the record width), `TOPBAR_END_SLOT_CLASS`, `CmsPageApiResponse`, starter-kit direction applied only from the server prop.
+
 ## 0.2.2
 
 ### Patch Changes

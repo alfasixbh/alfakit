@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-10-28
+
+### Upgrading from 0.2.2
+
+- `composer update "alfasix/*"`, `npm install @alfakit/react@^0.2.3` (or `@alfakit/vue`, `@alfakit/svelte`), then `npm run build`.
+
 ### Upgrading (starter kits)
 
 - Run `php artisan alfakit:install --starter-kit --no-npm` again (with your `--panel`/`--path`) and rebuild: it makes the kit's header, password field, appearance tabs, two-factor setup and split auth layout mirror in right-to-left languages. `alfakit:upgrade` lists kit files that still need it.
@@ -1486,7 +1492,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/alfasixbh/alfakit/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/alfasixbh/alfakit/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/alfasixbh/alfakit/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/alfasixbh/alfakit/compare/v0.1.13...v0.2.0

@@ -1,5 +1,11 @@
 # @alfakit/svelte
 
+## 0.2.3
+
+### Patch Changes
+
+- Sub-navigation stacks above narrow content; layouts inside table records follow the record's width; the top bar never makes the page scroll sideways; code copy button no longer covers code; empty ColorPicker looks empty; starter-kit header and auth pages mirror in RTL.
+
 ## 0.2.2
 
 ### Patch Changes
