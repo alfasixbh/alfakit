@@ -89,10 +89,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/activity-log",
-                "reference": "27842efb064f37711543e6e01f873470f7fd888c"
+                "reference": "9e60c157bbaf6ed088941d41842c11c50fe41343"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4",
                 "spatie/laravel-activitylog": "^5.0"
             },
@@ -104,7 +104,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "activity-log",
@@ -181,10 +181,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/ai",
-                "reference": "2a8b71259871a7f5f5c0e9cb8d3c343175222f4d"
+                "reference": "deb0a2864080cfd4587902a0359602dcbbc8794e"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "laravel/ai": "^1.2",
                 "php": "^8.4"
             },
@@ -201,7 +201,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "products/3/edit",
@@ -281,10 +281,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/analytics",
-                "reference": "fde0ab20ced7d83d7522f07af18c13dc3d1d5d51"
+                "reference": "6e7cbc8ebd2dea4f065c38168cd3e672cb4ca1e4"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "suggest": {
@@ -298,7 +298,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "analytics",
@@ -379,10 +379,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/api",
-                "reference": "93d215e02f496a194ed779b72e168bab80a015b6"
+                "reference": "def19e58f9192950f0e823478465a939fb045206"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "suggest": {
@@ -396,7 +396,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "api-docs",
@@ -475,10 +475,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/backup",
-                "reference": "ad1c6e501327848e964773b2060e5fda1e9c3263"
+                "reference": "802ccaea8e6f60b89486533360096abfdf35910f"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4",
                 "spatie/laravel-backup": "^10.0"
             },
@@ -490,7 +490,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "backups",
@@ -566,10 +566,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/billing",
-                "reference": "278875ba7c6038907c3822e5607331250c8dfd00"
+                "reference": "cbbcfec164ccf5afe388e8f9c1997795b3ad2431"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "suggest": {
@@ -585,7 +585,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "billing/plans",
@@ -665,10 +665,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/calendar",
-                "reference": "536949d50d6a163f8b173512124dbe8aa13017ac"
+                "reference": "e908534d984a3fd7ab582cd4e2ad8a56c10984e7"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -679,7 +679,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "calendar",
@@ -758,10 +758,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/cms",
-                "reference": "008ef742867f08c33129cb4a22e7562c16212a40"
+                "reference": "b83d4fbc7c616093fe2cfae13df8c1bb24068f99"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -772,7 +772,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "cms/pages",
@@ -855,10 +855,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/comments",
-                "reference": "8c25e32b287c99488fca78740794c951177c52af"
+                "reference": "a98623fdb3537928ae0c208f3a406cb369130260"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -869,7 +869,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "orders/1",
@@ -948,10 +948,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/feature-flags",
-                "reference": "c7c8d49778ebfc6783454a7ff3e4892df789cc2a"
+                "reference": "aa6e4da2a791e2558d08181a99dba5b5a3281372"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "laravel/pennant": "^1.26",
                 "php": "^8.4"
             },
@@ -966,7 +966,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "feature-flags",
@@ -1046,10 +1046,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/file-manager",
-                "reference": "cf1278e7d1ddd01c019e28c5bdb41cc9520426a8"
+                "reference": "f1b5097dd36de687d70ed403817a59b3dc8848d5"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "ext-fileinfo": "*",
                 "php": "^8.4"
             },
@@ -1065,7 +1065,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "files",
@@ -1147,10 +1147,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/forms",
-                "reference": "1f3f5d5b8b49210e00affd5c0e551f9423287832"
+                "reference": "ddf4bfa76c929280136ae18f91eee1b7718fef3e"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -1161,7 +1161,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "forms",
@@ -1241,10 +1241,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/health",
-                "reference": "13c3e13ce2b3f13dff33d6c2134de94d1c50fc50"
+                "reference": "3aa9eea6ecb2b11c419004d1fa09328f8531b876"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4",
                 "spatie/laravel-health": "^1.30"
             },
@@ -1256,7 +1256,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "health",
@@ -1331,10 +1331,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/helpdesk",
-                "reference": "58bafde97b843c5c5f57f3ba241ef9f800432077"
+                "reference": "fe173a29154bddc9247c6315d6fa33701dfd170b"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "suggest": {
@@ -1349,7 +1349,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "helpdesk/inbox",
@@ -1431,10 +1431,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/invoices",
-                "reference": "59cc7aaee922bb443c728b8887f3433e1fdd9f30"
+                "reference": "bb5a502d3dfbed3ab4ac226c43186c78df8f4773"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "brick/math": "^0.11|^0.12|^0.13|^0.14|^0.15|^0.16|^0.17|^0.18|^0.19|^0.20|^1.0",
                 "ext-intl": "*",
                 "php": "^8.4"
@@ -1453,7 +1453,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "invoices",
@@ -1535,10 +1535,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/kanban",
-                "reference": "bd2cfcffc580a54782101d13de66fddd9450829c"
+                "reference": "64ed8cf1635b5d5c8b5ba872fefbe7db1825b2c8"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -1549,7 +1549,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "orders/board",
@@ -1628,10 +1628,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/mail-templates",
-                "reference": "bf5066c2d6f9a6cf9944a1f66eeaeca6510b18b4"
+                "reference": "fd1670bfeacbce8e26abad5b3a16720b033f5a58"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -1642,7 +1642,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "mail-templates",
@@ -1721,10 +1721,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/media-library",
-                "reference": "2f6789b17102b8ea2630aa44de49322cd2425116"
+                "reference": "4b18475b7694b40014fba8fb5f585d9f255a2fe8"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4",
                 "spatie/laravel-medialibrary": "^11.0"
             },
@@ -1736,7 +1736,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "products/3/edit",
@@ -1813,10 +1813,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/ops",
-                "reference": "e2b9969eb68e36f23f05bb3eba013d741acf25d9"
+                "reference": "a1e74dc261197cf9ac6eb5a74c507488b3581b56"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -1827,7 +1827,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "ops/overview",
@@ -1908,10 +1908,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/settings",
-                "reference": "e7ebfc83514e215c90480e58ca425f65ec1149f4"
+                "reference": "dad636bebc35cdfe5b07024c97c0f07fb0b5c7a9"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4",
                 "spatie/laravel-settings": "^3.0"
             },
@@ -1923,7 +1923,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "house-settings",
@@ -1998,10 +1998,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/shield",
-                "reference": "07c54d00de23250596c85a3f645bb14ddbbef66d"
+                "reference": "8055b88841ad59bfed9f20dfbabb3b0ebd9a58bc"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4",
                 "spatie/laravel-permission": "^8.3"
             },
@@ -2013,7 +2013,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "shield/roles",
@@ -2091,17 +2091,17 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/tags",
-                "reference": "7a5cd8ad0c491826f813553aeb39f122f18aa0e6"
+                "reference": "797e3e92d77d9a921c265fdb00a6049ab3609738"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4",
                 "spatie/laravel-tags": "^4.0"
             },
             "type": "library",
             "extra": {
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "customers",
@@ -2177,10 +2177,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/teams",
-                "reference": "7e1eabb3b689d6d0c27f7de5c822c150d49a3b7c"
+                "reference": "3593f6f643789e1f877d18e72d2c23fb375829ec"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "suggest": {
@@ -2195,7 +2195,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "staff",
@@ -2275,10 +2275,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/translation-manager",
-                "reference": "adf1866e39c6629be2dd9a776c9cd3a93e7d966d"
+                "reference": "9a385e2c4976485de1fbfa6c2da4179021323652"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "suggest": {
@@ -2292,7 +2292,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "translations",
@@ -2425,10 +2425,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/tree",
-                "reference": "99d9f124695c276e3d30aa2afe3d53a5f28cc5ad"
+                "reference": "d51a32646fec66095d4ff0e07b55aa0e93c79d56"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -2439,7 +2439,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "categories/tree",
@@ -2515,10 +2515,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/webhooks",
-                "reference": "cdff681c9e13430aa6424cfda1c71b4bde0b9dd9"
+                "reference": "168a30f2546ecc69a4c6027b2d02aeb016369f50"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -2529,7 +2529,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "webhooks",
@@ -2608,10 +2608,10 @@
             "dist": {
                 "type": "path",
                 "url": "../packages/plugins/workflows",
-                "reference": "11f37f0da57567b9d6de41b49556deed976f626c"
+                "reference": "e798747b871b29ec16932fe2da37471853bf7b12"
             },
             "require": {
-                "alfasix/alfakit": "^0.1|@dev",
+                "alfasix/alfakit": "^0.2|@dev",
                 "php": "^8.4"
             },
             "type": "library",
@@ -2622,7 +2622,7 @@
                     ]
                 },
                 "alfakit": {
-                    "version": "^0.1",
+                    "version": "^0.2",
                     "frontend": null,
                     "showcase": {
                         "demoPath": "approvals",
@@ -5970,16 +5970,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "2.3.6",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "1427af4647235b4a73b13940b1f1258d3584f36e"
+                "reference": "e3647094ed8f0f1f67393d812b793a5143e25af3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/1427af4647235b4a73b13940b1f1258d3584f36e",
-                "reference": "1427af4647235b4a73b13940b1f1258d3584f36e",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/e3647094ed8f0f1f67393d812b793a5143e25af3",
+                "reference": "e3647094ed8f0f1f67393d812b793a5143e25af3",
                 "shasum": ""
             },
             "require": {
@@ -6011,9 +6011,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.6"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.4.0"
             },
-            "time": "2026-09-27T20:07:45+00:00"
+            "time": "2026-10-28T20:28:58+00:00"
         },
         {
             "name": "psr/clock",
@@ -8066,16 +8066,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v8.1.9",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "630e74196a2635ec0f06c12bd3fb47cfedf85157"
+                "reference": "5b6d9b127ec27bc6db59bf65e2e37b6fe5b00083"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/630e74196a2635ec0f06c12bd3fb47cfedf85157",
-                "reference": "630e74196a2635ec0f06c12bd3fb47cfedf85157",
+                "url": "https://api.github.com/repos/symfony/console/zipball/5b6d9b127ec27bc6db59bf65e2e37b6fe5b00083",
+                "reference": "5b6d9b127ec27bc6db59bf65e2e37b6fe5b00083",
                 "shasum": ""
             },
             "require": {
@@ -8142,7 +8142,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v8.1.9"
+                "source": "https://github.com/symfony/console/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -8162,7 +8162,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-12T19:11:16+00:00"
+            "time": "2026-10-28T11:16:19+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -8553,16 +8553,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v8.1.8",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "bd4fed193a3132c91c5c93595cbfc78988915822"
+                "reference": "2f4c0f26106520d82e1b71759d2fb8d32d8b7a43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/bd4fed193a3132c91c5c93595cbfc78988915822",
-                "reference": "bd4fed193a3132c91c5c93595cbfc78988915822",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/2f4c0f26106520d82e1b71759d2fb8d32d8b7a43",
+                "reference": "2f4c0f26106520d82e1b71759d2fb8d32d8b7a43",
                 "shasum": ""
             },
             "require": {
@@ -8597,7 +8597,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v8.1.8"
+                "source": "https://github.com/symfony/finder/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -8617,7 +8617,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-26T06:33:49+00:00"
+            "time": "2026-10-19T17:00:07+00:00"
         },
         {
             "name": "symfony/html-sanitizer",
@@ -8964,16 +8964,16 @@
         },
         {
             "name": "symfony/mime",
-            "version": "v8.1.7",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "773ac57f20e2795bdadb65b5b1b5f4850d498283"
+                "reference": "8d1232052c9cdef170ed9608b3147bca4f61ff69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/773ac57f20e2795bdadb65b5b1b5f4850d498283",
-                "reference": "773ac57f20e2795bdadb65b5b1b5f4850d498283",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/8d1232052c9cdef170ed9608b3147bca4f61ff69",
+                "reference": "8d1232052c9cdef170ed9608b3147bca4f61ff69",
                 "shasum": ""
             },
             "require": {
@@ -9026,7 +9026,7 @@
                 "mime-type"
             ],
             "support": {
-                "source": "https://github.com/symfony/mime/tree/v8.1.7"
+                "source": "https://github.com/symfony/mime/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -9046,7 +9046,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-04T11:02:17+00:00"
+            "time": "2026-10-28T17:58:38+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -9133,16 +9133,16 @@
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
-            "version": "v1.43.0",
+            "version": "v1.43.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "5cac8f4db97208823aa353f59a01faad2da52c75"
+                "reference": "5a8f33c87aeecffce24e721b5064fab05f4becf8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/5cac8f4db97208823aa353f59a01faad2da52c75",
-                "reference": "5cac8f4db97208823aa353f59a01faad2da52c75",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/5a8f33c87aeecffce24e721b5064fab05f4becf8",
+                "reference": "5a8f33c87aeecffce24e721b5064fab05f4becf8",
                 "shasum": ""
             },
             "require": {
@@ -9191,7 +9191,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.43.0"
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.43.3"
             },
             "funding": [
                 {
@@ -9211,7 +9211,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-25T15:46:47+00:00"
+            "time": "2026-10-15T09:18:53+00:00"
         },
         {
             "name": "symfony/polyfill-intl-idn",
@@ -9387,16 +9387,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.43.0",
+            "version": "v1.43.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72"
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/122889ed24dc000165bcbfd77ec412f15cbdfc6a",
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a",
                 "shasum": ""
             },
             "require": {
@@ -9448,7 +9448,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.3"
             },
             "funding": [
                 {
@@ -9468,7 +9468,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-24T15:19:04+00:00"
+            "time": "2026-10-28T09:35:49+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -9959,16 +9959,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v8.1.9",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "59a682fd049b2d4d37c444f5ac21b7d01b8c7189"
+                "reference": "08aa69fa0998bb65a089f9e148a2c0f8b391398e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/59a682fd049b2d4d37c444f5ac21b7d01b8c7189",
-                "reference": "59a682fd049b2d4d37c444f5ac21b7d01b8c7189",
+                "url": "https://api.github.com/repos/symfony/process/zipball/08aa69fa0998bb65a089f9e148a2c0f8b391398e",
+                "reference": "08aa69fa0998bb65a089f9e148a2c0f8b391398e",
                 "shasum": ""
             },
             "require": {
@@ -10000,7 +10000,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v8.1.9"
+                "source": "https://github.com/symfony/process/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -10020,7 +10020,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-08T16:57:43+00:00"
+            "time": "2026-10-25T14:40:25+00:00"
         },
         {
             "name": "symfony/routing",
@@ -10191,16 +10191,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v8.1.9",
+            "version": "v8.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "07fb208558f941eab50ec49c89c2a6a93fb11f01"
+                "reference": "6c6110979c0150393bbb336170e286d51ab4d76c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/07fb208558f941eab50ec49c89c2a6a93fb11f01",
-                "reference": "07fb208558f941eab50ec49c89c2a6a93fb11f01",
+                "url": "https://api.github.com/repos/symfony/string/zipball/6c6110979c0150393bbb336170e286d51ab4d76c",
+                "reference": "6c6110979c0150393bbb336170e286d51ab4d76c",
                 "shasum": ""
             },
             "require": {
@@ -10257,7 +10257,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v8.1.9"
+                "source": "https://github.com/symfony/string/tree/v8.1.10"
             },
             "funding": [
                 {
@@ -10277,7 +10277,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-03T15:16:03+00:00"
+            "time": "2026-10-23T17:06:53+00:00"
         },
         {
             "name": "symfony/translation",
@@ -10912,16 +10912,16 @@
     "packages-dev": [
         {
             "name": "brianium/paratest",
-            "version": "v7.26.1",
+            "version": "v7.27.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paratestphp/paratest.git",
-                "reference": "4660303009de20706b71d2df487bb89fb4d8a4c2"
+                "reference": "6d73b615611a2da7af85637d99d1b0efac9fcd00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/4660303009de20706b71d2df487bb89fb4d8a4c2",
-                "reference": "4660303009de20706b71d2df487bb89fb4d8a4c2",
+                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/6d73b615611a2da7af85637d99d1b0efac9fcd00",
+                "reference": "6d73b615611a2da7af85637d99d1b0efac9fcd00",
                 "shasum": ""
             },
             "require": {
@@ -10935,7 +10935,7 @@
                 "phpunit/php-code-coverage": "^14.4.1",
                 "phpunit/php-file-iterator": "^7.0.2",
                 "phpunit/php-timer": "^9",
-                "phpunit/phpunit": "^13.4.1",
+                "phpunit/phpunit": "^13.4.3",
                 "sebastian/environment": "^9.3.3",
                 "symfony/console": "^7.4.20 || ^8.1.8",
                 "symfony/process": "^7.4.19 || ^8.1.7"
@@ -10989,7 +10989,7 @@
             ],
             "support": {
                 "issues": "https://github.com/paratestphp/paratest/issues",
-                "source": "https://github.com/paratestphp/paratest/tree/v7.26.1"
+                "source": "https://github.com/paratestphp/paratest/tree/v7.27.4"
             },
             "funding": [
                 {
@@ -11001,7 +11001,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2026-10-10T20:10:31+00:00"
+            "time": "2026-10-22T06:15:12+00:00"
         },
         {
             "name": "fakerphp/faker",
@@ -11130,16 +11130,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.18.6",
+            "version": "2.18.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "7d0a2cde892089bb09372f4366e9b960eb3001a9"
+                "reference": "50670ba239926c50f2073e868f6672f775cd57ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/7d0a2cde892089bb09372f4366e9b960eb3001a9",
-                "reference": "7d0a2cde892089bb09372f4366e9b960eb3001a9",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/50670ba239926c50f2073e868f6672f775cd57ec",
+                "reference": "50670ba239926c50f2073e868f6672f775cd57ec",
                 "shasum": ""
             },
             "require": {
@@ -11189,7 +11189,7 @@
             ],
             "support": {
                 "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.18.6"
+                "source": "https://github.com/filp/whoops/tree/2.18.7"
             },
             "funding": [
                 {
@@ -11197,7 +11197,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-03T17:03:57+00:00"
+            "time": "2026-10-18T13:17:38+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -11754,20 +11754,20 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v5.3.1",
+            "version": "v5.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "83baa5de2f64967d48326ab93594e45d300bd105"
+                "reference": "159514bacefb30fd674aa74c52738f8a535bfaa9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/83baa5de2f64967d48326ab93594e45d300bd105",
-                "reference": "83baa5de2f64967d48326ab93594e45d300bd105",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/159514bacefb30fd674aa74c52738f8a535bfaa9",
+                "reference": "159514bacefb30fd674aa74c52738f8a535bfaa9",
                 "shasum": ""
             },
             "require": {
-                "brianium/paratest": "^7.26.0",
+                "brianium/paratest": "^7.27.4",
                 "nunomaduro/collision": "^8.9.5",
                 "nunomaduro/termwind": "^2.4.0",
                 "pestphp/pest-plugin": "^5.0.0",
@@ -11775,13 +11775,13 @@
                 "pestphp/pest-plugin-mutate": "^5.0.2",
                 "pestphp/pest-plugin-profanity": "^5.0.1",
                 "php": "^8.4",
-                "phpunit/phpunit": "^13.4.1",
-                "symfony/process": "^8.1.7"
+                "phpunit/phpunit": "^13.4.5",
+                "symfony/process": "^8.1.9"
             },
             "conflict": {
                 "filp/whoops": "<2.18.3",
                 "laravel/boost": "<2.6.0",
-                "phpunit/phpunit": ">13.4.1",
+                "phpunit/phpunit": ">13.4.5",
                 "sebastian/exporter": "<7.0.0",
                 "webmozart/assert": "<1.11.0"
             },
@@ -11789,7 +11789,7 @@
                 "pestphp/pest-dev-tools": "^5.0.0",
                 "pestphp/pest-plugin-browser": "^5.1.2",
                 "pestphp/pest-plugin-phpstan": "^5.2.2",
-                "pestphp/pest-plugin-rector": "^5.0.5",
+                "pestphp/pest-plugin-rector": "^5.0.6",
                 "pestphp/pest-plugin-type-coverage": "^5.0.3",
                 "psy/psysh": "^0.12.24"
             },
@@ -11858,7 +11858,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pestphp/pest/issues",
-                "source": "https://github.com/pestphp/pest/tree/v5.3.1"
+                "source": "https://github.com/pestphp/pest/tree/v5.3.4"
             },
             "funding": [
                 {
@@ -11870,7 +11870,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-07T20:11:43+00:00"
+            "time": "2026-10-27T11:04:36+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
@@ -12864,16 +12864,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "13.4.1",
+            "version": "13.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ccde40327c501eebff192614b0dcf11806418901"
+                "reference": "941457a4f147a60fe2074d40e1fce0d08ea8d930"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ccde40327c501eebff192614b0dcf11806418901",
-                "reference": "ccde40327c501eebff192614b0dcf11806418901",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/941457a4f147a60fe2074d40e1fce0d08ea8d930",
+                "reference": "941457a4f147a60fe2074d40e1fce0d08ea8d930",
                 "shasum": ""
             },
             "require": {
@@ -12898,7 +12898,7 @@
                 "sebastian/environment": "^9.3.3",
                 "sebastian/exporter": "^8.2.1",
                 "sebastian/file-filter": "^1.0",
-                "sebastian/git-state": "^1.0",
+                "sebastian/git-state": "^1.1",
                 "sebastian/global-state": "^9.0.1",
                 "sebastian/object-enumerator": "^8.1.0",
                 "sebastian/recursion-context": "^8.0.1",
@@ -12944,7 +12944,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.4.1"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.4.5"
             },
             "funding": [
                 {
@@ -12952,7 +12952,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-05T05:51:21+00:00"
+            "time": "2026-10-27T04:16:22+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -13501,28 +13501,28 @@
         },
         {
             "name": "sebastian/git-state",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/git-state.git",
-                "reference": "792a952e0eba55b6960a48aeceb9f371aad1f76b"
+                "reference": "31a565f463686f0eefa85f899549256bf5805985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/git-state/zipball/792a952e0eba55b6960a48aeceb9f371aad1f76b",
-                "reference": "792a952e0eba55b6960a48aeceb9f371aad1f76b",
+                "url": "https://api.github.com/repos/sebastianbergmann/git-state/zipball/31a565f463686f0eefa85f899549256bf5805985",
+                "reference": "31a565f463686f0eefa85f899549256bf5805985",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.0"
+                "phpunit/phpunit": "^13.4.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.0-dev"
+                    "dev-main": "1.1-dev"
                 }
             },
             "autoload": {
@@ -13546,7 +13546,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/git-state/issues",
                 "security": "https://github.com/sebastianbergmann/git-state/security/policy",
-                "source": "https://github.com/sebastianbergmann/git-state/tree/1.0.0"
+                "source": "https://github.com/sebastianbergmann/git-state/tree/1.1.0"
             },
             "funding": [
                 {
@@ -13566,7 +13566,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-21T12:54:28+00:00"
+            "time": "2026-10-21T05:59:52+00:00"
         },
         {
             "name": "sebastian/global-state",
