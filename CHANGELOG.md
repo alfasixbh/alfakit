@@ -6,6 +6,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-10-29
+
+### Upgrading from 0.2.4
+
+- `composer update "alfasix/*"`, `npm install @alfakit/react@^0.2.5` (or `@alfakit/vue`, `@alfakit/svelte`), then `npm run build`. The npm packages have no changes of their own; they keep the same version as `alfasix/alfakit`.
+- Pages converted with `alfakit:migrate-from-filament` before 0.2.5 save the right values without changes. To keep Filament's validation, change their `$this->getForm()->getState()` to `$this->getForm()->validate()` (search for `getForm()->getState()`), and run the command's discovery again (`--dry-run`) to find Livewire components written `extends \Livewire\Component`.
+
 ### Fixed
 
 - A button below a custom page's form (`getFormActions()`) without a form of its own now sees what the user typed: `$this->getForm()` holds the submitted state, so `$this->getForm()->validate()` / `getState()` no longer return the state the page was filled with. Pages converted by `alfakit:migrate-from-filament` saved their initial values while reporting success (FM-B02).
@@ -1510,7 +1517,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/alfasixbh/alfakit/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/alfasixbh/alfakit/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/alfasixbh/alfakit/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/alfasixbh/alfakit/compare/v0.2.1...v0.2.2

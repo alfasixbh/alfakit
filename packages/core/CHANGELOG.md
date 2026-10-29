@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.2.5
+
+### Patch Changes
+
+- No frontend changes; released with `alfasix/alfakit` 0.2.5 (custom page form buttons and the Filament migration).
+
 ## 0.2.4
 
 ### Patch Changes
