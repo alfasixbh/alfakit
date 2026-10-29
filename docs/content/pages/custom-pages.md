@@ -76,6 +76,8 @@ class Settings extends Page
 
 `Setting` (with its `sync()` method) and `SystemStats` stand for your own model and widget; a new app has neither. For a ready-made settings store, see the [Settings plugin](../plugins/settings).
 
+A button from `getFormActions()` submits the page form. Without a `form()` of its own it receives no `$data`, but `$this->getForm()` holds what the user typed: `$this->getForm()->validate()` checks it and returns it (`getState()` returns it without validating), so a handler can call a method of the page, `->action(fn () => $this->save())`.
+
 Pages compose blocks in this order: header widgets, form, infolist, table, `content()`, footer widgets. Override `getContentBlocks()` to control it.
 
 ## Tables on pages

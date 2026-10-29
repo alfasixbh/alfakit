@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Fixed
+
+- A button below a custom page's form (`getFormActions()`) without a form of its own now sees what the user typed: `$this->getForm()` holds the submitted state, so `$this->getForm()->validate()` / `getState()` no longer return the state the page was filled with. Pages converted by `alfakit:migrate-from-filament` saved their initial values while reporting success (FM-B02).
+- `alfakit:migrate-from-filament` converts a page's `$this->form->getState()` to `$this->getForm()->validate()`, which validates like Filament's `getState()` (it became `getState()`, which doesn't); `getState(false)` becomes `getState()`.
+- `alfakit:migrate-from-filament` finds Livewire components written `extends \Livewire\Component` or `extends Livewire\Component`, or with an aliased import, and scaffolds them; they were skipped with no TODO or report entry (FM-B01).
+
 ## [0.2.4] - 2026-10-29
 
 ### Upgrading from 0.2.3
