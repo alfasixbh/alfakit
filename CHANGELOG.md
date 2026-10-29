@@ -15,6 +15,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ### Fixed
 
 - A file that failed to upload (a timeout, a server error, a size the field rejects) no longer lets the form save without it, also when Save was clicked while the file was still uploading: the submit stops and the field shows "A file didn't upload. Remove it or upload it again before saving." until the file is removed. The same in React, Vue and Svelte, for page forms and action modals. New `FormStore::failUpload()`, `forgetFailedUpload()`, and an optional `blocked` callback on `whenSettled()`.
+- Pressing Back twice quickly (from an edit page to a list, after saving) now refreshes the page the browser lands on. The first restored page used up the refresh and the second popstate cancelled it, so the list could show the old rows.
 
 ## [0.2.3] - 2026-10-28
 

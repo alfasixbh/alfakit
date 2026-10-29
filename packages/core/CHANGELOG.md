@@ -5,6 +5,7 @@
 ### Patch Changes
 
 - `FormStore` stops a submit while a picked file failed to upload (`failUpload()`, `forgetFailedUpload()`, a `blocked` callback on `whenSettled()`).
+- Back pressed twice quickly refreshes the page it lands on when records changed.
 
 ## 0.2.3
 

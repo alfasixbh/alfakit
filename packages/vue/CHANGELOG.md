@@ -5,6 +5,7 @@
 ### Patch Changes
 
 - A file that failed to upload no longer lets the form save without it: the field asks to remove it or upload it again.
+- Back pressed twice quickly refreshes the page it lands on when records changed.
 
 ## 0.2.3
 

@@ -304,11 +304,21 @@ describe('prefetching', () => {
     navigate('/admin/posts')
     expect(visit).toHaveBeenCalledTimes(4)
 
+    // Back twice before the first restore lands (two popstates, then two navigates): only
+    // the page the browser ends on is reloaded, the one before it would be cancelled anyway.
+    listeners.get('finish')?.({ detail: { visit: { method: 'post' } } })
+    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
+    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }))
+    navigate('/admin/posts/create')
+    expect(visit).toHaveBeenCalledTimes(4)
+    navigate('/admin/posts')
+    expect(visit).toHaveBeenCalledTimes(5)
+
     // A normal visit after a popstate that restored nothing is not a restore.
     window.dispatchEvent(new PopStateEvent('popstate', { state: null }))
     listeners.get('start')?.({})
     navigate('/admin/tags')
-    expect(visit).toHaveBeenCalledTimes(4)
+    expect(visit).toHaveBeenCalledTimes(5)
 
     uninstall()
   })

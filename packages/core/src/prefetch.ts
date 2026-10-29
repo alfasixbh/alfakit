@@ -82,12 +82,15 @@ export function installPrefetchInvalidation(): () => void {
   if (typeof window === 'undefined' || installed) return () => {}
 
   installed = true
-  let restoring = false
+  // Popstates whose page Inertia hasn't restored yet: it decrypts the history entry first,
+  // so pressing Back twice fires both popstates before the first navigate.
+  let restoring = 0
   // The reload of a restored page still in flight. Another Back or Forward cancels it: its
   // response would replace the history entry the browser has moved on to.
   let pendingReload: { cancel(): void } | null = null
-  const onPopstate = (): void => {
-    restoring = true
+  const onPopstate = (event: PopStateEvent): void => {
+    // A hash-only change (no state) restores nothing and fires no navigate.
+    if (event.state !== null) restoring++
     pendingReload?.cancel()
     pendingReload = null
   }
@@ -102,15 +105,19 @@ export function installPrefetchInvalidation(): () => void {
 
     if ((visit?.only?.length ?? 0) > 0 || visit?.prefetch === true) return
 
-    restoring = false
+    restoring = 0
   })
   const removeFinish = router.on('finish', (event) => {
     if (event.detail.visit.method !== 'get') invalidatePrefetchedPages()
   })
   const removeNavigate = router.on('navigate', (event) => {
     const url = event.detail.page.url
-    const restored = restoring
-    restoring = false
+    const restored = restoring > 0
+    if (restored) restoring--
+
+    // A later Back or Forward is still being restored: only the page it lands on is
+    // reloaded (this one's reload would be cancelled by it anyway), and this one stays stale.
+    if (restored && restoring > 0) return
 
     // A URL never shown in this page load may come from before it: reload it too.
     if (restored && (shownAt.get(url) ?? -1) < mutationCount) {
