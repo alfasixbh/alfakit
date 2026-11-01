@@ -26,7 +26,7 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl, gd
           coverage: pcov
           ini-values: memory_limit=-1
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.stability }}
           composer-options: --prefer-dist --no-progress
@@ -43,6 +43,6 @@ jobs:
         with:
           php-version: '8.4'
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - run: vendor/bin/pint --test
       - run: vendor/bin/phpstan analyse --memory-limit=2G --error-format=github
