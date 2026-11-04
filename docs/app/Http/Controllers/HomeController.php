@@ -22,7 +22,7 @@ class HomeController extends Controller
                     'alternateName' => 'alfasix/alfakit',
                     'description' => 'An admin panel builder for Laravel: define panels, resources, forms, tables, actions and widgets in PHP and render them with React, Vue or Svelte through Inertia.',
                     'applicationCategory' => 'DeveloperApplication',
-                    'operatingSystem' => 'PHP 8.3+, Laravel 13',
+                    'operatingSystem' => 'PHP 8.4+, Laravel 13',
                     'url' => url('/'),
                     'image' => url(Seo::DEFAULT_IMAGE),
                     'license' => 'https://opensource.org/licenses/MIT',
@@ -33,7 +33,7 @@ class HomeController extends Controller
                 ],
             ),
             'versions' => [
-                'php' => '8.3+',
+                'php' => '8.4+',
                 'laravel' => '13',
                 'inertia' => '3',
             ],

@@ -217,7 +217,7 @@ function Hero({ demoUrl }: { demoUrl: string }) {
                         >
                             Public beta · v{RELEASE_VERSION}
                         </Link>
-                        <p>PHP 8.3+ · Laravel 13 · Inertia 3 · Open source · MIT</p>
+                        <p>PHP 8.4+ · Laravel 13 · Inertia 3 · Open source · MIT</p>
                     </div>
                 </div>
             </div>

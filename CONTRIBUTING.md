@@ -21,8 +21,8 @@ alfakit/
 
 ## Prerequisites
 
-- PHP 8.3+, Composer 2
-- Node 22+, pnpm 10+
+- PHP 8.4+, Composer 2
+- Node 22+, pnpm 11+
 - SQLite (playgrounds default to it)
 
 ## Setup

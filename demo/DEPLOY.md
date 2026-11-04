@@ -6,8 +6,8 @@ The demo is an ordinary Laravel 13 application that lives inside the monorepo: C
 
 ## Requirements
 
-- PHP 8.3+ with `pdo_sqlite`, `intl`, `mbstring`, `fileinfo`
-- Node 22+ and pnpm 10 (build time, and at runtime for server-side rendering)
+- PHP 8.4+ with `pdo_sqlite`, `intl`, `mbstring`, `fileinfo`
+- Node 22+ and pnpm 11 (build time, and at runtime for server-side rendering)
 - A process supervisor (systemd, Supervisor, Forge daemons) for the SSR server
 - Cron for the scheduler
 

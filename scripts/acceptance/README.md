@@ -25,7 +25,7 @@ node scripts/acceptance/run.mjs --serve ...   # php artisan serve instead of Her
 | `--tarballs=`    | a new temp dir                                  | Where the npm tarballs are packed                                               |
 | `--reuse=<name>` |                                                 | Skip the install, re-run the browser journeys against an app kept with `--keep` |
 
-Requirements: PHP 8.3+ with intl and sqlite, Composer, the Laravel installer (`laravel new`),
+Requirements: PHP 8.4+ with intl and sqlite, Composer, the Laravel installer (`laravel new`),
 Node 22 with npm and pnpm, and Herd on macOS (the site is `http://<app>.localhost`) unless you
 pass `--serve`. Chromium is Playwright's bundled one (`pnpm --filter @alfakit/e2e exec
 playwright install chromium`); `ACC_BROWSER_CHANNEL=chrome` uses the installed Chrome and
