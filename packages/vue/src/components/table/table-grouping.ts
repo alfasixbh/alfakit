@@ -12,6 +12,7 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
  */
 export function useCollapsedGroups(table: () => TableSchema) {
   const collapsed = ref<Set<string>>(initialCollapsedGroups(table()))
+  let seen = initialCollapsedGroups(table())
 
   watch(
     () => {
@@ -21,6 +22,20 @@ export function useCollapsedGroups(table: () => TableSchema) {
     },
     () => {
       collapsed.value = initialCollapsedGroups(table())
+      seen = initialCollapsedGroups(table())
+    },
+  )
+
+  // Groups that arrive later (another page, load more, a search) start collapsed as well.
+  watch(
+    () => [...initialCollapsedGroups(table())].join('\u0000'),
+    () => {
+      const unseen = [...initialCollapsedGroups(table())].filter((key) => !seen.has(key))
+
+      if (unseen.length === 0) return
+
+      seen = new Set([...seen, ...unseen])
+      collapsed.value = new Set([...collapsed.value, ...unseen])
     },
   )
 

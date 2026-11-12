@@ -14,6 +14,7 @@ return [
         'loading' => 'Yükleniyor…',
     ],
     'key_value' => [
+        'locked' => ':attribute satırları bu şekilde değiştirilemez.',
         'key' => 'Anahtar',
         'value' => 'Değer',
         'add' => 'Satır ekle',

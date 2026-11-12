@@ -8,7 +8,7 @@
     type NavigationItemSchema,
     type Width,
   } from '@alfakit/core'
-  import { Link, router } from '@inertiajs/svelte'
+  import { Link } from '@inertiajs/svelte'
   import ChevronDownIcon from '@lucide/svelte/icons/chevron-down'
   import MenuIcon from '@lucide/svelte/icons/menu'
   import type { Snippet } from 'svelte'
@@ -19,6 +19,8 @@
   import Breadcrumbs from '../components/panel/Breadcrumbs.svelte'
   import GlobalSearch from '../components/panel/GlobalSearch.svelte'
   import NavLabel from '../components/panel/NavLabel.svelte'
+  import NavMenuItems from '../components/panel/NavMenuItems.svelte'
+  import NavSheetItems from '../components/panel/NavSheetItems.svelte'
   import Slot from '../components/panel/Slot.svelte'
   import DebugPanelSlot from '../components/panel/DebugPanelSlot.svelte'
   import ThemeToggle from '../components/panel/ThemeToggle.svelte'
@@ -28,7 +30,6 @@
   import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
   } from '../components/ui/dropdown-menu'
   import {
@@ -96,18 +97,7 @@
       <ChevronDownIcon class="opacity-60" />
     </DropdownMenuTrigger>
     <DropdownMenuContent align="start" class="min-w-48">
-      {#each items as item, itemIndex (uniqueKey(items, itemIndex, navigationKey))}
-        <DropdownMenuItem
-          {...extraProps(item.extraAttributes, cn('w-full', item.active && 'font-medium'))}
-          onSelect={() =>
-            item.openInNewTab
-              ? window.open(item.url ?? '#', '_blank', 'noopener')
-              : router.visit(item.url ?? '#')}
-        >
-          {#if item.icon}<Icon name={item.icon} />{/if}
-          <NavLabel text={item.label} html={item.labelHtml} />
-        </DropdownMenuItem>
-      {/each}
+      <NavMenuItems {items} />
     </DropdownMenuContent>
   </DropdownMenu>
 {/snippet}
@@ -184,22 +174,11 @@
           <!-- Vertical navigation for the mobile drawer. -->
           <nav class="flex flex-col gap-4 overflow-y-auto p-4 text-sm">
             {#each panel.navigation as group, index (uniqueKey(panel.navigation, index, (item) => item.label ?? ''))}
-              {@const flatItems = group.items.flatMap((item) => [item, ...(item.children ?? [])])}
               <div class="flex flex-col gap-1">
                 {#if group.label}
                   <p class="text-muted-foreground px-2 text-xs font-medium">{group.label}</p>
                 {/if}
-                {#each flatItems as item, itemIndex (uniqueKey(flatItems, itemIndex, navigationKey))}
-                  <Link
-                    href={item.url ?? '#'}
-                    onclick={() => (open = false)}
-                    data-active={item.active ? 'true' : undefined}
-                    class="hover:bg-accent data-[active=true]:bg-accent flex items-center gap-2 rounded-md px-2 py-2 font-medium [&_svg]:size-4"
-                  >
-                    {#if item.icon}<Icon name={item.icon} />{/if}
-                    <NavLabel text={item.label} html={item.labelHtml} />
-                  </Link>
-                {/each}
+                <NavSheetItems items={group.items} onNavigate={() => (open = false)} />
               </div>
             {/each}
           </nav>

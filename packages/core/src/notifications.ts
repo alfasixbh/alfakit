@@ -50,12 +50,18 @@ export class NotificationCenter {
         // Keep pages added with "Load more" when polling refreshes the first page.
         if (state.page > 1) {
           const fresh = new Set(response.notifications.map((notification) => notification.id))
+          // The fresh first page is complete down to its last notification: anything the
+          // list held above that one and the page no longer has was deleted elsewhere.
+          const last = response.notifications[response.notifications.length - 1]?.id
+          const boundary = state.notifications.findIndex((notification) => notification.id === last)
+          const older =
+            boundary === -1 ? state.notifications : state.notifications.slice(boundary + 1)
 
           return {
             ...state,
             notifications: [
               ...response.notifications,
-              ...state.notifications.filter((notification) => !fresh.has(notification.id)),
+              ...older.filter((notification) => !fresh.has(notification.id)),
             ],
             unreadCount: response.unreadCount,
             loading: false,
@@ -299,4 +305,16 @@ export function notificationTintStyles(value: string): {
     },
     item: { backgroundColor: `color-mix(in oklab, ${value} 10%, transparent)` },
   }
+}
+
+/**
+ * An unread count for a badge: the number in the panel's digits, capped (`99+`).
+ * `format` is `LocaleFormatter.number`.
+ */
+export function unreadCountLabel(
+  count: number,
+  format: (value: number) => string,
+  cap = 99,
+): string {
+  return count > cap ? `${format(cap)}+` : format(count)
 }

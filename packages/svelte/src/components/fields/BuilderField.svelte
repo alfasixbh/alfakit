@@ -89,10 +89,18 @@
   const addAction = $derived(resolve('add'))
 
   const update = (next: unknown[]) => field.setValue(next as BuilderItemState[])
+  // Previews and summaries are rendered by the server, per item position: after an item
+  // moved, was cloned or removed they are asked for again, or they stay where they were.
+  const refreshServerItems = () => {
+    if ((component.items ?? []).some((item) => item.preview || item.summary)) {
+      void form?.refresh(component.statePath)
+    }
+  }
   const moveItem = (from: number, to: number) => {
     update(moveRepeaterItem(items, from, to))
     collapsed = moveIndexedState(collapsed, from, to)
     editing = moveIndexedState(editing, from, to)
+    refreshServerItems()
   }
   // Move buttons: announced, one at a time, focus kept on the moved item.
   const moves = useItemMoves(
@@ -104,11 +112,13 @@
     update(removeRepeaterItem(items, index))
     collapsed = removeIndexedState(collapsed, index)
     editing = removeIndexedState(editing, index)
+    refreshServerItems()
   }
   const cloneItem = (index: number) => {
     update(cloneRepeaterItem(items, index))
     collapsed = cloneIndexedState(collapsed, index)
     editing = cloneIndexedState(editing, index)
+    refreshServerItems()
   }
   const addBlock = (block: BuilderBlockSchema) =>
     runItemAction(addAction, { block: block.name }, () => update(insertBuilderItem(items, block)))
@@ -267,10 +277,17 @@
             data-block={item.type}
             {@attach virtual.item}
             {draggable}
-            ondragstart={() => (dragIndex = index)}
-            ondragover={(event) => draggable && event.preventDefault()}
-            ondrop={() => {
-              if (dragIndex !== null && dragIndex !== index) dropItem(dragIndex, index)
+            ondragstart={(event) => {
+              // Only this item's own drag: one from a nested list or of selected text is not a reorder.
+              if (event.target !== event.currentTarget) return
+              event.stopPropagation()
+              dragIndex = index
+            }}
+            ondragover={(event) => draggable && dragIndex !== null && event.preventDefault()}
+            ondrop={(event) => {
+              if (dragIndex === null) return
+              event.stopPropagation()
+              if (dragIndex !== index) dropItem(dragIndex, index)
               dragIndex = null
             }}
             ondragend={() => (dragIndex = null)}

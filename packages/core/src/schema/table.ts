@@ -74,7 +74,10 @@ export interface ImageColumnSchema extends BaseColumnSchema, ImageStackProps {
   square?: boolean
   size?: number | string
   height?: number | string
+  /** The column's width; also the image's when `imageWidth` is not set. */
   width?: string
+  /** `imageWidth()`: the width of the image alone. */
+  imageWidth?: number | string
   stacked?: boolean
   limit?: number
   limitedRemainingText?: boolean

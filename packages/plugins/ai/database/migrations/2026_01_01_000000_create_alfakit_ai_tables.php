@@ -40,7 +40,8 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->timestamps();
 
-            $table->index(['panel', 'user_type', 'user_id', 'updated_at']);
+            // Named: the generated name is over MySQL's 64 characters.
+            $table->index(['panel', 'user_type', 'user_id', 'updated_at'], 'alfakit_ai_conversations_owner_index');
         });
 
         Schema::create('alfakit_ai_messages', function (Blueprint $table): void {

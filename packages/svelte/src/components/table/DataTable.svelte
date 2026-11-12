@@ -43,6 +43,7 @@
     tableTotalsFailed,
     tableTotalsStore,
     withTableTotals,
+    escapeHtml,
   } from '@alfakit/core'
   import { Link, router } from '@inertiajs/svelte'
   import ArrowDownIcon from '@lucide/svelte/icons/arrow-down'
@@ -62,6 +63,7 @@
     usePanel,
     usePollComponent,
     useT,
+    useFormatter,
   } from '../../context.svelte'
   import { useIsMobile } from '../../hooks/mobile.svelte'
   import { useStore } from '../../hooks/store.svelte'
@@ -126,6 +128,7 @@
   }: Props = $props()
 
   const t = useT()
+  const format = useFormatter()
   const choice = useChoice()
   const panel = usePanel()
   const page = usePageSchema()
@@ -358,7 +361,8 @@
       showToast({
         id: 'alfakit-reorder-failed',
         title: t('table.reorder_failed', {}, "Couldn't save the new order"),
-        body: error instanceof Error ? error.message : String(error),
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: escapeHtml(error instanceof Error ? error.message : String(error)),
         status: 'danger',
         format: 'alfakit',
       })
@@ -711,7 +715,9 @@
       <Slot name="table.selection-indicator.actions.before" scope={component} />
       {#if !selectionState.current.allSelected && total !== null && total > records.length && canSelectAllRecords(table)}
         <Button type="button" variant="link" size="sm" onclick={() => selection.selectAll()}
-          >{t('table.select_all', {}, 'Select all')} ({total})</Button
+          >{t('table.select_all', {}, 'Select all')} ({total === null
+            ? ''
+            : format.current.number(total)})</Button
         >
       {/if}
       <Button type="button" variant="link" size="sm" onclick={() => selection.clear()}

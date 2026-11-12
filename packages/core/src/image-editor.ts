@@ -999,21 +999,19 @@ export class ImageEditor {
   /** The cropped result as a file of the same type (PNG for types the browser can't write). */
   async export(source: CanvasImageSource, file: Pick<File, 'name' | 'type'>): Promise<File> {
     const { crop } = this.state
-    const full = document.createElement('canvas')
-    full.width = Math.max(1, Math.round(this.state.width))
-    full.height = Math.max(1, Math.round(this.state.height))
-    const fullContext = full.getContext('2d')
-
-    if (!fullContext) throw new Error('Canvas is not available.')
-
-    this.paint(fullContext, source)
-
+    // Painted straight into a canvas of the crop's size: an intermediate canvas of the whole
+    // editing area can pass a browser's canvas limit for a large photo (about 16.7 million
+    // pixels on iOS), and such a canvas is silently blank.
     const output = document.createElement('canvas')
     output.width = Math.max(1, Math.round(crop.width))
     output.height = Math.max(1, Math.round(crop.height))
-    output
-      .getContext('2d')
-      ?.drawImage(full, crop.x, crop.y, crop.width, crop.height, 0, 0, output.width, output.height)
+    const context = output.getContext('2d')
+
+    if (!context) throw new Error('Canvas is not available.')
+
+    context.scale(output.width / Math.max(1, crop.width), output.height / Math.max(1, crop.height))
+    context.translate(-crop.x, -crop.y)
+    this.paint(context, source)
 
     const type = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type)
       ? file.type

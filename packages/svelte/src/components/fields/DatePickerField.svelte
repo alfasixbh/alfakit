@@ -110,7 +110,12 @@
       : undefined,
   )
   const disabledDates = $derived(
-    (component.disabledDates ?? []).map((date) => formatDate(parseStorage(date), 'yyyy-MM-dd')),
+    // A date that isn't in the field's format can't be read: it is skipped (formatting an
+    // invalid date throws).
+    (component.disabledDates ?? [])
+      .map((date) => parseStorage(date))
+      .filter((date) => isValid(date))
+      .map((date) => formatDate(date, 'yyyy-MM-dd')),
   )
 
   // `defaultFocusedDate()`: the month the calendar opens on while the field is empty.
@@ -202,7 +207,7 @@
       />
       {#if component.datalist}
         <datalist id={listId}>
-          {#each component.datalist as option (option)}
+          {#each component.datalist as option, optionIndex (`${option}-${optionIndex}`)}
             <option value={toNative(option) ?? option}></option>
           {/each}
         </datalist>

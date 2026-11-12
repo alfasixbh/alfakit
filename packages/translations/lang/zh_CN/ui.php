@@ -381,6 +381,8 @@ return [
         'timings' => '耗时',
         'hidden' => '隐藏',
         'unauthorized' => '未授权',
+        'processing' => '处理中',
+        'refreshing' => '刷新中',
         'no_forms' => '此页面没有表单。',
         'no_requests' => '尚无内部请求。',
         'clear' => '清除',

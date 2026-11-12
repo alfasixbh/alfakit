@@ -9,6 +9,7 @@ import {
   columnGroupHeaderRow,
   columnVisibilityClasses,
   debounce,
+  escapeHtml,
   filtersPlacement,
   groupTableRows,
   isGroupedColumn,
@@ -51,6 +52,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   useActionRunner,
   useChoice,
+  useFormatter,
   usePageSchema,
   usePanel,
   usePollComponent,
@@ -117,6 +119,7 @@ export function DataTable({
   className,
 }: DataTableProps) {
   const t = useT()
+  const format = useFormatter()
   const choice = useChoice()
   const panel = usePanel()
   const isMobile = useIsMobile()
@@ -335,7 +338,8 @@ export function DataTable({
       showToast({
         id: 'alfakit-reorder-failed',
         title: t('table.reorder_failed', {}, "Couldn't save the new order"),
-        body: error instanceof Error ? error.message : String(error),
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: escapeHtml(error instanceof Error ? error.message : String(error)),
         status: 'danger',
         format: 'alfakit',
       })
@@ -557,7 +561,7 @@ export function DataTable({
           total > records.length &&
           canSelectAllRecords(table) && (
             <Button type="button" variant="link" size="sm" onClick={() => selection.selectAll()}>
-              {t('table.select_all', {}, 'Select all')} ({total})
+              {t('table.select_all', {}, 'Select all')} ({format.number(total)})
             </Button>
           )}
         <Button type="button" variant="link" size="sm" onClick={() => selection.clear()}>

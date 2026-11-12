@@ -72,6 +72,9 @@ HelpdeskPlugin::make()
     ->authorize(fn (User $user): bool => $user->hasRole('support'))
     // The users tickets can be assigned to (default: the panel's users, members of the tenant on tenancy panels).
     ->agents(fn (?Model $tenant) => User::query()->where('is_agent', true))
+    // Who agents can pick as a ticket's requester (default: every user; on tenancy panels the tenant's
+    // members and the people who already have a ticket with it). Anyone else is entered by name and email.
+    ->requesters(fn (?Model $tenant) => Customer::query()->whereBelongsTo($tenant))
     ->businessHours(BusinessHours::make('Europe/Paris')->weekdays('09:00', '12:30')->weekdays('13:30', '18:00')->holidays(['2026-12-25']))
     ->slaPolicies([...])
     ->dueSoonMinutes(60)                       // "due soon" window (default 60)

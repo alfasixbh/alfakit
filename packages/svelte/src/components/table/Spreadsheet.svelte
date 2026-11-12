@@ -20,6 +20,7 @@
     spreadsheetRows,
     spreadsheetSelectionSize,
     virtualizeOptions,
+    escapeHtml,
   } from '@alfakit/core'
   import CheckIcon from '@lucide/svelte/icons/check'
   import { tick, untrack } from 'svelte'
@@ -73,6 +74,7 @@
   )
   const store = useStore(grid.store)
   let announcement = $state('')
+  let pasteRequest = 0
   let preview = $state<PastePreview | null>(null)
   let gridElement = $state<HTMLTableElement | null>(null)
 
@@ -183,7 +185,8 @@
       showToast({
         id: 'alfakit-spreadsheet-failed',
         title: t('table.spreadsheet.request_failed', {}, "Couldn't save the changes"),
-        body: error instanceof Error ? error.message : String(error),
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: escapeHtml(error instanceof Error ? error.message : String(error)),
         status: 'danger',
         format: 'alfakit',
       })
@@ -206,6 +209,20 @@
       announce(spreadsheetAnnouncement('undo', result.saved.length))
 
       if (result.saved.length > 0) inertiaReload()
+
+      // Cells another user changed since the save are reported, not silently skipped.
+      if (result.errors.length > 0) {
+        announce(spreadsheetAnnouncement('failed', result.errors.length))
+      }
+    } catch (error) {
+      showToast({
+        id: 'alfakit-spreadsheet-failed',
+        title: t('table.spreadsheet.request_failed', {}, "Couldn't save the changes"),
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: escapeHtml(error instanceof Error ? error.message : String(error)),
+        status: 'danger',
+        format: 'alfakit',
+      })
     } finally {
       grid.setSaving(false)
     }
@@ -262,6 +279,7 @@
 
     const url = endpoint
 
+    const request = ++pasteRequest
     preview = { plan, errors: [], validating: Boolean(url && plan.changes.length > 0) }
 
     if (!url || plan.changes.length === 0) return
@@ -278,11 +296,15 @@
       })),
       { dryRun: true },
     )
+      // Only for the paste that asked: a newer paste has its own check running. (Counted,
+      // not compared: `preview.plan` is a reactive proxy of `plan`.)
       .then((result) => {
-        if (preview) preview = { ...preview, errors: result.errors, validating: false }
+        if (preview && request === pasteRequest) {
+          preview = { ...preview, errors: result.errors, validating: false }
+        }
       })
       .catch(() => {
-        if (preview) preview = { ...preview, validating: false }
+        if (preview && request === pasteRequest) preview = { ...preview, validating: false }
       })
   }
 
@@ -588,7 +610,7 @@
         </Button>
         <Button
           type="button"
-          disabled={!preview || preview.plan.changes.length === 0}
+          disabled={!preview || preview.validating || preview.plan.changes.length === 0}
           onclick={applyPaste}
         >
           {t('table.spreadsheet.paste_apply', {}, 'Apply')}

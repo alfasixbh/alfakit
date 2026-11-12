@@ -18,6 +18,8 @@ RichEditor::make('content')
     ->columnSpanFull();
 ```
 
+The toolbar also decides what the editor keeps: tables, text colour, highlight, alignment, details, grids, subscript, superscript and small text are only understood when their button is in `toolbarButtons()`. Content with such formatting opened in an editor without the button loses it on the first edit, so give every form that edits the same content the same buttons.
+
 Toolbar buttons:
 
 | Group     | Buttons                                                                                                                                                                                                                                                           |

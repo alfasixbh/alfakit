@@ -113,6 +113,8 @@ export function toolCommand(
 
           if (live && !live.isDestroyed) applyEditorActionResult(live, result)
         })
+        // A failed action has already told the user (the action runner reports it).
+        .catch(() => undefined)
     },
     active: active ? (editor) => editor.isActive(active.name, active.attributes ?? {}) : undefined,
   }

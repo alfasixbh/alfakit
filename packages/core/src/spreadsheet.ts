@@ -389,6 +389,12 @@ export class SpreadsheetGrid {
   }
 
   setData(rows: SpreadsheetRow[], columns: SpreadsheetColumn[]): void {
+    // The cell being edited, by record and column: a reload (a poll, `live()`) must not
+    // close its editor and drop what is being typed.
+    const editing = this.state.editing
+    const editingRecord = editing ? this.rows[editing.row]?.key : undefined
+    const editingColumn = editing ? this.columns[editing.col]?.name : undefined
+
     this.rows = rows
     this.columns = columns
     // A reload brings the saved values: they are the originals now.
@@ -404,11 +410,15 @@ export class SpreadsheetGrid {
         Object.entries(state.errors).filter(([key]) => keys.has(key)),
       )
 
+      const row = editing ? rows.findIndex((item) => item.key === editingRecord) : -1
+      const col = editing ? columns.findIndex((item) => item.name === editingColumn) : -1
+      const stillEditing = editing && row !== -1 && col !== -1
+
       return {
         ...state,
-        active: this.clamp(state.active),
-        anchor: this.clamp(state.anchor),
-        editing: null,
+        active: stillEditing ? { row, col } : this.clamp(state.active),
+        anchor: stillEditing ? { row, col } : this.clamp(state.anchor),
+        editing: stillEditing ? { row, col, value: editing.value } : null,
         edits,
         errors,
       }
@@ -548,6 +558,15 @@ export class SpreadsheetGrid {
 
   move(rows: number, cols: number, extend = false): void {
     this.moveTo(this.state.active.row + rows, this.state.active.col + cols, extend)
+  }
+
+  /** Move one cell with Tab / Shift+Tab; false when the active cell was already at the edge. */
+  private tab(backwards: boolean): boolean {
+    const { row, col } = this.state.active
+
+    this.move(0, backwards ? -1 : 1)
+
+    return this.state.active.row !== row || this.state.active.col !== col
   }
 
   /** Start editing the active cell, optionally replacing its value with typed text. */
@@ -867,9 +886,9 @@ export class SpreadsheetGrid {
           return 'commit'
         case 'Tab':
           this.commitEdit()
-          this.move(0, event.shiftKey ? -1 : 1)
 
-          return 'commit'
+          // At the edge of the grid Tab leaves it (the browser moves focus on).
+          return this.tab(event.shiftKey === true) ? 'commit' : 'ignored'
         default:
           return 'ignored'
       }
@@ -933,9 +952,8 @@ export class SpreadsheetGrid {
 
         return 'moved'
       case 'Tab':
-        this.move(0, event.shiftKey ? -1 : 1)
-
-        return 'moved'
+        // At the edge of the grid Tab leaves it: a keyboard user is never trapped inside.
+        return this.tab(event.shiftKey === true) ? 'moved' : 'ignored'
       case 'Enter':
       case 'F2':
         return this.toggleOrEdit()

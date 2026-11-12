@@ -165,7 +165,7 @@
           reorderable={buttons}
           cloneable={Boolean(component.cloneable) && canAdd}
           deletable={canDelete}
-          onMove={moveItem}
+          onMove={moves.moveWithButton}
           onClone={cloneItem}
           onRemove={removeItem}
           {virtual}
@@ -200,10 +200,17 @@
               aria-posinset={virtual.range.active ? index + 1 : undefined}
               {@attach virtual.item}
               {draggable}
-              ondragstart={() => (dragIndex = index)}
-              ondragover={(event) => draggable && event.preventDefault()}
-              ondrop={() => {
-                if (dragIndex !== null && dragIndex !== index) dropItem(dragIndex, index)
+              ondragstart={(event) => {
+                // Only this item's own drag: one from a nested list or of selected text is not a reorder.
+                if (event.target !== event.currentTarget) return
+                event.stopPropagation()
+                dragIndex = index
+              }}
+              ondragover={(event) => draggable && dragIndex !== null && event.preventDefault()}
+              ondrop={(event) => {
+                if (dragIndex === null) return
+                event.stopPropagation()
+                if (dragIndex !== index) dropItem(dragIndex, index)
                 dragIndex = null
               }}
               ondragend={() => (dragIndex = null)}
@@ -222,9 +229,9 @@
                     {#if draggable}
                       <span
                         class="text-muted-foreground cursor-grab"
-                        title={resolve('reorder')?.label ?? undefined}
+                        title={resolve('reorder', index)?.label ?? undefined}
                         aria-hidden="true"
-                        ><Icon name={resolve('reorder')?.icon ?? 'grip-vertical'} /></span
+                        ><Icon name={resolve('reorder', index)?.icon ?? 'grip-vertical'} /></span
                       >
                     {/if}
                     {#if component.itemNumbers}

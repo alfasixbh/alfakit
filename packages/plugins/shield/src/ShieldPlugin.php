@@ -11,7 +11,9 @@ use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\Alfakit\Support\Concerns\EvaluatesClosures;
 use AlfaSix\AlfakitShield\Resources\RoleResource;
 use AlfaSix\AlfakitShield\Support\PermissionRegistry;
+use AlfaSix\AlfakitShield\Support\PolicyGenerator;
 use Closure;
+use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -116,6 +118,9 @@ class ShieldPlugin implements Plugin
 
     protected ?string $guard = null;
 
+    /** @var array<string, true> */
+    protected array $policiesRegisteredFor = [];
+
     public static function make(): static
     {
         return app(static::class);
@@ -160,6 +165,32 @@ class ShieldPlugin implements Plugin
     public function boot(Panel $panel): void
     {
         $this->configureTeamModel($panel);
+        $this->registerGeneratedPolicies($panel);
+    }
+
+    /**
+     * Laravel finds `App\Policies\PostPolicy` for `App\Models\Post` by itself, but not the
+     * policy `alfakit-shield:generate` wrote for a model that lives elsewhere (a plugin's
+     * model, a module): without this its permissions were listed in the role form and
+     * never checked. A model that already has a policy keeps it.
+     */
+    protected function registerGeneratedPolicies(Panel $panel): void
+    {
+        if (isset($this->policiesRegisteredFor[$panel->getId()])) {
+            return;
+        }
+
+        $this->policiesRegisteredFor[$panel->getId()] = true;
+        $generator = app(PolicyGenerator::class);
+
+        foreach ($this->getPermissionRegistry($panel)->resources() as $resource) {
+            $model = $resource['model'];
+            $policy = $generator->getPolicyClass($model);
+
+            if (class_exists($policy) && Gate::getPolicyFor($model) === null) {
+                Gate::policy($model, $policy);
+            }
+        }
     }
 
     /**

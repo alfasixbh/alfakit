@@ -16,14 +16,15 @@ interface Rgba {
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
 function parseHex(value: string): Rgba | null {
-  const digits = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(value.trim())?.[1]
+  // `#rgb`, `#rgba`, `#rrggbb` and `#rrggbbaa`.
+  const digits = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.exec(value.trim())?.[1]
 
   if (!digits) {
     return null
   }
 
   const hex =
-    digits.length === 3
+    digits.length <= 4
       ? digits
           .split('')
           .map((char) => char + char)
@@ -34,15 +35,27 @@ function parseHex(value: string): Rgba | null {
     r: parseInt(hex.slice(0, 2), 16),
     g: parseInt(hex.slice(2, 4), 16),
     b: parseInt(hex.slice(4, 6), 16),
-    a: 1,
+    a: hex.length === 8 ? Math.round((parseInt(hex.slice(6, 8), 16) / 255) * 100) / 100 : 1,
   }
 }
 
+const SEPARATOR = '(?:\\s*,\\s*|\\s+)'
+const ALPHA = '(?:\\s*[,/]\\s*(\\d*\\.?\\d+%?))?'
+
+function parseAlpha(value: string | undefined): number {
+  if (value === undefined) return 1
+
+  const alpha = value.endsWith('%') ? Number(value.slice(0, -1)) / 100 : Number(value)
+
+  return Number.isFinite(alpha) ? clamp(alpha, 0, 1) : 1
+}
+
 function parseRgb(value: string): Rgba | null {
-  const match =
-    /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(0|1|0?\.\d+|1\.0+)\s*)?\)$/i.exec(
-      value.trim(),
-    )
+  // Commas (`rgb(1, 2, 3)`, `rgba(1, 2, 3, 0.5)`) or spaces (`rgb(1 2 3 / 50%)`).
+  const match = new RegExp(
+    `^rgba?\\(\\s*(\\d{1,3})${SEPARATOR}(\\d{1,3})${SEPARATOR}(\\d{1,3})${ALPHA}\\s*\\)$`,
+    'i',
+  ).exec(value.trim())
 
   if (!match) {
     return null
@@ -52,12 +65,15 @@ function parseRgb(value: string): Rgba | null {
     r: clamp(Number(match[1]), 0, 255),
     g: clamp(Number(match[2]), 0, 255),
     b: clamp(Number(match[3]), 0, 255),
-    a: match[4] === undefined ? 1 : clamp(Number(match[4]), 0, 1),
+    a: parseAlpha(match[4]),
   }
 }
 
 function parseHsl(value: string): Rgba | null {
-  const match = /^hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/i.exec(value.trim())
+  const match = new RegExp(
+    `^hsla?\\(\\s*(\\d{1,3})(?:deg)?${SEPARATOR}(\\d{1,3})%${SEPARATOR}(\\d{1,3})%${ALPHA}\\s*\\)$`,
+    'i',
+  ).exec(value.trim())
 
   if (!match) {
     return null
@@ -70,7 +86,7 @@ function parseHsl(value: string): Rgba | null {
   if (s === 0) {
     const grey = Math.round(l * 255)
 
-    return { r: grey, g: grey, b: grey, a: 1 }
+    return { r: grey, g: grey, b: grey, a: parseAlpha(match[4]) }
   }
 
   const q = l < 0.5 ? l * (1 + s) : l + s - l * s
@@ -89,7 +105,7 @@ function parseHsl(value: string): Rgba | null {
     r: Math.round(channel(h + 1 / 3) * 255),
     g: Math.round(channel(h) * 255),
     b: Math.round(channel(h - 1 / 3) * 255),
-    a: 1,
+    a: parseAlpha(match[4]),
   }
 }
 

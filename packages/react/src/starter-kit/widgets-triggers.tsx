@@ -1,12 +1,14 @@
 import {
   formatKeyBinding,
   initials,
+  LocaleFormatter,
   registerStarterKitCopilotShortcut,
   registerStarterKitSearchShortcut,
   requestStarterKitCopilot,
   requestStarterKitLanguages,
   requestStarterKitSearch,
   tenantNameText,
+  unreadCountLabel,
   type StarterKitWidgets,
 } from '@alfakit/core'
 import { BellIcon, ChevronsUpDownIcon, LanguagesIcon, SearchIcon, SparklesIcon } from 'lucide-react'
@@ -67,6 +69,8 @@ export function SearchTrigger({ source, onLoad }: WidgetProps & { onLoad?: () =>
 export function NotificationsTrigger({ source }: WidgetProps) {
   const notifications = source.widgets.notifications
   const count = notifications?.unreadCount ?? 0
+  // No panel context yet: the digits of the panel's language when it sends one.
+  const format = new LocaleFormatter(source.widgets.language?.current.tag ?? 'en')
 
   return (
     <button
@@ -78,7 +82,7 @@ export function NotificationsTrigger({ source }: WidgetProps) {
       <BellIcon className="size-4" aria-hidden="true" />
       {count > 0 && (
         <span className="bg-primary text-primary-foreground absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium">
-          {count > 99 ? '99+' : count}
+          {unreadCountLabel(count, (value) => format.number(value))}
         </span>
       )}
     </button>

@@ -14,6 +14,7 @@ return [
         'loading' => 'Caricamento…',
     ],
     'key_value' => [
+        'locked' => 'Le righe di :attribute non possono essere modificate in questo modo.',
         'key' => 'Chiave',
         'value' => 'Valore',
         'add' => 'Aggiungi riga',

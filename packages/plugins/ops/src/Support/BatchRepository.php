@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AlfaSix\AlfakitOps\Support;
 
+use AlfaSix\Alfakit\Support\SearchQuery;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\BatchRepository as LaravelBatchRepository;
 use Illuminate\Database\Query\Builder;
@@ -75,7 +76,10 @@ final class BatchRepository
         $query = self::query();
 
         if (($search = trim((string) $search)) !== '') {
-            $query->where(static fn (Builder $query): Builder => $query->where('name', 'like', '%'.$search.'%')->orWhere('id', 'like', '%'.$search.'%'));
+            $query->where(static function (Builder $query) use ($search): void {
+                SearchQuery::contains($query, 'name', $search);
+                SearchQuery::contains($query, 'id', $search, or: true);
+            });
         }
 
         $status = $filters['status']['value'] ?? null;

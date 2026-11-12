@@ -109,7 +109,13 @@ const direction = computed(() => props.component.localization?.direction ?? 'ltr
 const actionContext = computed(() => ({ token: props.component.token, component: 'page' }))
 
 provideStandalone({ panel, page })
-providePageActionContext(actionContext.value)
+// A getter: a new payload (the host page reloads its props) brings a new token.
+providePageActionContext({
+  get token() {
+    return actionContext.value.token
+  },
+  component: 'page',
+})
 
 // Endpoints and strings follow the latest payload (they change per locale or path).
 watch(

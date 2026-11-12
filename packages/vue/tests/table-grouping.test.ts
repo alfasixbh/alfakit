@@ -1,6 +1,6 @@
 import { FormStore, type TableSchema } from '@alfakit/core'
 import { router } from '@inertiajs/core'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import QueryBuilderRulesField from '../src/components/fields/QueryBuilderRulesField.vue'
 import { provideForm } from '../src/components/form/form-context'
 import DataTable from '../src/components/table/DataTable.vue'
@@ -78,6 +78,36 @@ describe('table summaries and grouping', () => {
     expect(wrapper.text()).toContain('Alpha')
     expect(
       wrapper.find('button[aria-label="Expand group: Status: draft"]').attributes('aria-expanded'),
+    ).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('collapses groups that arrive later when groups start collapsed', async () => {
+    const collapsed = { ...grouped, grouping: { ...grouped.grouping!, collapsedByDefault: true } }
+    const table = ref<TableSchema>(collapsed)
+    const wrapper = mountWithAlfakit(() => h(DataTable, { table: table.value }))
+
+    // The user opens one group; it stays open when the next page arrives.
+    await wrapper.find('button[aria-label="Expand group: Status: draft"]').trigger('click')
+    expect(wrapper.text()).toContain('Beta')
+
+    table.value = {
+      ...collapsed,
+      records: [
+        ...collapsed.records!,
+        { key: 9, group: 'archived', cells: { title: { state: 'Omega' }, rating: { state: 2 } } },
+      ],
+      recordGroups: [...collapsed.recordGroups!, { key: 'archived', title: 'Status: archived' }],
+    }
+    await flush()
+
+    expect(wrapper.text()).toContain('Beta')
+    expect(wrapper.text()).not.toContain('Omega')
+    expect(
+      wrapper
+        .find('button[aria-label="Expand group: Status: archived"]')
+        .attributes('aria-expanded'),
     ).toBe('false')
 
     wrapper.unmount()

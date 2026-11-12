@@ -124,7 +124,8 @@ export function reportRequestError(error: unknown): void {
   requestErrorReporter?.(error)
 }
 
-function escapeHtml(value: string): string {
+/** Escape text for a toast body, which is rendered as HTML. */
+export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

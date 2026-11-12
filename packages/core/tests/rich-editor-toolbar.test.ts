@@ -215,11 +215,63 @@ describe('htmlToMarkdown', () => {
     )
   })
 
+  it('keeps nested lists nested, and an ordered list its first number', () => {
+    expect(
+      htmlToMarkdown(
+        '<ul><li><p>one</p><ul><li><p>nested</p><ol><li><p>deep</p></li></ol></li></ul></li><li><p>two</p></li></ul>',
+      ),
+    ).toBe('- one\n  - nested\n    1. deep\n- two')
+    expect(htmlToMarkdown('<ol start="5"><li><p>five</p></li><li><p>six</p></li></ol>')).toBe(
+      '5. five\n6. six',
+    )
+  })
+
+  it('escapes characters the user typed as text', () => {
+    expect(htmlToMarkdown('<p>2 * 3 * 4 and snake_case and [a](b)</p>')).toBe(
+      '2 \\* 3 \\* 4 and snake\\_case and \\[a\\](b)',
+    )
+    expect(htmlToMarkdown('<p># not a heading</p><p>1. not a list</p><p>- nor this</p>')).toBe(
+      '\\# not a heading\n\n1\\. not a list\n\n\\- nor this',
+    )
+    // Code is left as typed.
+    expect(htmlToMarkdown('<p><code>a_b * c</code></p>')).toBe('`a_b * c`')
+  })
+
+  it('keeps hard line breaks and the language of code blocks', () => {
+    expect(htmlToMarkdown('<p>line one<br>line two</p>')).toBe('line one  \nline two')
+    expect(
+      htmlToMarkdown('<pre><code class="language-php">$a_b = 1 * 2;\necho $a_b;</code></pre>'),
+    ).toBe('```php\n$a_b = 1 * 2;\necho $a_b;\n```')
+  })
+
   it('keeps the existing conversions', () => {
     expect(
       htmlToMarkdown(
         '<h2>Title</h2><p>A <em>b</em> <s>c</s> <code>d</code> <a href="/x">e</a></p><ul><li><p>one</p></li></ul><h4>Four</h4>',
       ),
     ).toBe('## Title\n\nA *b* ~~c~~ `d` [e](/x)\n\n- one\n\n#### Four')
+  })
+})
+
+describe('second reading pass', () => {
+  it('escapes every paragraph of a table cell, not only the first', () => {
+    const markdown = htmlToMarkdown(
+      '<table><tr><th><p>Name</p></th></tr><tr><td><p>a</p><p>b * c * d</p></td></tr></table>',
+    )
+
+    expect(markdown).toContain('b \\* c \\* d')
+  })
+
+  it('removes the whole link when the URL is cleared with the caret inside it', () => {
+    const { editor, calls } = fakeEditor()
+
+    TOOLBAR_COMMANDS.link!.run(editor, {
+      prompt: () => '',
+      pickImage: () => undefined,
+      togglePanel: () => undefined,
+      t: (_key, fallback) => fallback,
+    } as ToolbarContext)
+
+    expect(calls).toEqual([['focus'], ['extendMarkRange', 'link'], ['unsetLink']])
   })
 })

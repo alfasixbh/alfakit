@@ -148,9 +148,9 @@ export function TableSummaryFooter({
 
   return (
     <TableFooter className={className}>
-      {rows.map((row) => (
+      {rows.map((row, index) => (
         <SummaryRow
-          key={row.label}
+          key={`${row.label ?? ''}-${index}`}
           columns={columns}
           values={row.values}
           label={row.label}

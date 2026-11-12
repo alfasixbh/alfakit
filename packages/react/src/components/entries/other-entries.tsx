@@ -195,7 +195,11 @@ export function KeyValueEntryComponent({ component }: { component: KeyValueEntry
                 <tr key={key} className="border-t">
                   <td className="px-3 py-1.5 font-medium">{key}</td>
                   <td className="px-3 py-1.5">
-                    {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                    {value === null || value === undefined
+                      ? ''
+                      : typeof value === 'object'
+                        ? JSON.stringify(value)
+                        : String(value)}
                   </td>
                 </tr>
               ))}

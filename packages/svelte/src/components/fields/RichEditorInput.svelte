@@ -607,8 +607,14 @@
       class="sr-only"
       tabindex="-1"
       aria-hidden="true"
-      onchange={(event) =>
-        event.currentTarget.files?.[0] && void uploadImage(event.currentTarget.files[0])}
+      onchange={(event) => {
+        const file = event.currentTarget.files?.[0]
+        // Emptied so that picking the same file again (after a failed upload, or after
+        // deleting the image) fires `change`.
+        event.currentTarget.value = ''
+
+        if (file) void uploadImage(file)
+      }}
     />
   </div>
 </FieldWrapper>

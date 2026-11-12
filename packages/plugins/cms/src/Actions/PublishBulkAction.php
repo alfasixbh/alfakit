@@ -10,6 +10,7 @@ use AlfaSix\AlfakitCms\Models\Page;
 use AlfaSix\AlfakitCms\Support\CmsAuthorization;
 use AlfaSix\AlfakitCms\Support\Publisher;
 use Illuminate\Support\Enumerable;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Publish the selected pages now (each one checked against the `publish` ability).
@@ -35,8 +36,20 @@ class PublishBulkAction extends BulkAction
         $this->authorize(static fn (): bool => CmsAuthorization::allows('publish', Page::class));
         $this->authorizeIndividualRecords('publish');
 
-        $this->action(static function (Enumerable $records): void {
-            $records->each(static fn (mixed $record) => $record instanceof Page ? Publisher::publish($record) : null);
+        $this->action(function (Enumerable $records): void {
+            $records->each(function (mixed $record): void {
+                if (! $record instanceof Page) {
+                    return;
+                }
+
+                // A page whose saved changes can't go live (a path another page has, no
+                // title) is skipped and counted as a failure; the others are published.
+                try {
+                    Publisher::publish($record);
+                } catch (ValidationException $exception) {
+                    $this->reportBulkProcessingFailure('invalid', implode(' ', $exception->validator->errors()->all()));
+                }
+            });
         });
 
         $this->after(fn () => $this->sendSuccessNotification());

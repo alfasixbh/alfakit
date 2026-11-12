@@ -101,20 +101,30 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
   useScrollToErroredItem(virtual.list, range.active, component.statePath)
 
   const update = (next: unknown[]) => setValue(next as BuilderItemState[])
+  // Previews and summaries are rendered by the server, per item position: after an item
+  // moved, was cloned or removed they are asked for again, or they stay where they were.
+  const refreshServerItems = () => {
+    if ((component.items ?? []).some((item) => item.preview || item.summary)) {
+      void form?.refresh(component.statePath)
+    }
+  }
   const moveItem = (from: number, to: number) => {
     update(moveRepeaterItem(items, from, to))
     setCollapsed((state) => moveIndexedState(state, from, to))
     setEditing((state) => moveIndexedState(state, from, to))
+    refreshServerItems()
   }
   const removeItem = (index: number) => {
     update(removeRepeaterItem(items, index))
     setCollapsed((state) => removeIndexedState(state, index))
     setEditing((state) => removeIndexedState(state, index))
+    refreshServerItems()
   }
   const cloneItem = (index: number) => {
     update(cloneRepeaterItem(items, index))
     setCollapsed((state) => cloneIndexedState(state, index))
     setEditing((state) => cloneIndexedState(state, index))
+    refreshServerItems()
   }
   const addBlock = (block: BuilderBlockSchema) =>
     runItemAction(resolve('add'), { block: block.name }, () =>
@@ -258,10 +268,17 @@ function BuilderFieldContent({ component }: { component: BuilderSchema }) {
                 aria-posinset={range.active ? index + 1 : undefined}
                 data-block={item.type}
                 draggable={draggable}
-                onDragStart={() => setDragIndex(index)}
-                onDragOver={(event) => draggable && event.preventDefault()}
-                onDrop={() => {
-                  if (dragIndex !== null && dragIndex !== index) dropItem(dragIndex, index)
+                onDragStart={(event) => {
+                  // Only this item's own drag: one from a nested list or of selected text is not a reorder.
+                  if (event.target !== event.currentTarget) return
+                  event.stopPropagation()
+                  setDragIndex(index)
+                }}
+                onDragOver={(event) => draggable && dragIndex !== null && event.preventDefault()}
+                onDrop={(event) => {
+                  if (dragIndex === null) return
+                  event.stopPropagation()
+                  if (dragIndex !== index) dropItem(dragIndex, index)
                   setDragIndex(null)
                 }}
                 onDragEnd={() => setDragIndex(null)}

@@ -218,7 +218,7 @@ describe('chart filters', () => {
         { range: 'month', tags: [1, 2], empty: '', on: true },
       ),
     ).toBe(
-      '/admin?chartFilters%5Bother%5D%5Bx%5D=1&page=2&chartFilters%5Borders%5D%5Brange%5D=month&chartFilters%5Borders%5D%5Btags%5D%5B%5D=1&chartFilters%5Borders%5D%5Btags%5D%5B%5D=2&chartFilters%5Borders%5D%5Bon%5D=1',
+      '/admin?chartFilters%5Bother%5D%5Bx%5D=1&page=2&chartFilters%5Borders%5D%5Brange%5D=month&chartFilters%5Borders%5D%5Btags%5D%5B%5D=1&chartFilters%5Borders%5D%5Btags%5D%5B%5D=2&chartFilters%5Borders%5D%5Bempty%5D=&chartFilters%5Borders%5D%5Bon%5D=1',
     )
     expect(
       chartFiltersUrl('/admin?chartFilters[orders][range]=week', 'chartFilters', 'orders', null),

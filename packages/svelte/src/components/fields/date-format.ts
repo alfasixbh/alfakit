@@ -22,8 +22,21 @@ export function phpToDateFnsFormat(format: string): string {
     U: 't',
   }
 
-  return format
-    .split('')
-    .map((char) => map[char] ?? (/[a-z]/i.test(char) ? `'${char}'` : char))
-    .join('')
+  const literal = (char: string) => (/[a-z]/i.test(char) ? `'${char}'` : char)
+  let output = ''
+
+  for (let index = 0; index < format.length; index++) {
+    const char = format[index] ?? ''
+
+    // PHP's escape: the next character is text (`Y-m-d\TH:i`), not a token.
+    if (char === '\\' && index + 1 < format.length) {
+      output += literal(format[++index] ?? '')
+
+      continue
+    }
+
+    output += map[char] ?? literal(char)
+  }
+
+  return output
 }

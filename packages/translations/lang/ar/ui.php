@@ -381,6 +381,8 @@ return [
         'timings' => 'الأوقات',
         'hidden' => 'مخفي',
         'unauthorized' => 'غير مصرّح',
+        'processing' => 'جارٍ المعالجة',
+        'refreshing' => 'جارٍ التحديث',
         'no_forms' => 'لا توجد نماذج في هذه الصفحة.',
         'no_requests' => 'لا توجد طلبات داخلية بعد.',
         'clear' => 'مسح',

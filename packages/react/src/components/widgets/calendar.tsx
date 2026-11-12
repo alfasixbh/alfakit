@@ -59,6 +59,11 @@ export function CalendarWidget({ widget }: { widget: CalendarWidgetSchema }) {
 
     const options = calendarOptions(latest.current.widget, {
       ...latest.current.env,
+      // Read per request: the page hands out a new token with every response, and the one
+      // the calendar was created with expires.
+      get token() {
+        return latest.current.env.token
+      },
       runner: {
         trigger: (...args) => latest.current.env.runner.trigger(...args),
         executeJson: (...args) => latest.current.env.runner.executeJson(...args),

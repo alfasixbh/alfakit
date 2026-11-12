@@ -20,6 +20,7 @@ import {
   spreadsheetRows,
   spreadsheetSelectionSize,
   virtualizeOptions,
+  escapeHtml,
 } from '@alfakit/core'
 import { CheckIcon } from '@lucide/vue'
 import { computed, nextTick, ref, useId, watch } from 'vue'
@@ -62,6 +63,7 @@ const rows = computed(() => spreadsheetRows(props.table.records ?? [], columns.v
 const grid = new SpreadsheetGrid(rows.value, columns.value)
 const state = useStore(grid.store)
 const announcement = ref('')
+let pasteRequest = 0
 const preview = ref<PastePreview | null>(null)
 const gridElement = ref<HTMLTableElement | null>(null)
 const helpId = `${baseId}-help`
@@ -136,7 +138,8 @@ async function save() {
     showToast({
       id: 'alfakit-spreadsheet-failed',
       title: t('table.spreadsheet.request_failed', {}, "Couldn't save the changes"),
-      body: error instanceof Error ? error.message : String(error),
+      // Toast bodies are HTML: the server's text is shown as text.
+      body: escapeHtml(error instanceof Error ? error.message : String(error)),
       status: 'danger',
       format: 'alfakit',
     })
@@ -164,6 +167,20 @@ async function undoSave() {
     announce(spreadsheetAnnouncement('undo', result.saved.length))
 
     if (result.saved.length > 0) inertiaReload()
+
+    // Cells another user changed since the save are reported, not silently skipped.
+    if (result.errors.length > 0) {
+      announce(spreadsheetAnnouncement('failed', result.errors.length))
+    }
+  } catch (error) {
+    showToast({
+      id: 'alfakit-spreadsheet-failed',
+      title: t('table.spreadsheet.request_failed', {}, "Couldn't save the changes"),
+      // Toast bodies are HTML: the server's text is shown as text.
+      body: escapeHtml(error instanceof Error ? error.message : String(error)),
+      status: 'danger',
+      format: 'alfakit',
+    })
   } finally {
     grid.setSaving(false)
   }
@@ -220,6 +237,7 @@ function onPaste(event: ClipboardEvent) {
 
   const url = endpoint.value
 
+  const request = ++pasteRequest
   preview.value = { plan, errors: [], validating: Boolean(url && plan.changes.length > 0) }
 
   if (!url || plan.changes.length === 0) return
@@ -236,12 +254,15 @@ function onPaste(event: ClipboardEvent) {
     })),
     { dryRun: true },
   )
+    // Only for the paste that asked: a newer paste has its own check running. (Counted,
+    // not compared: `preview.value.plan` is a reactive proxy of `plan`.)
     .then((result) => {
-      if (preview.value)
+      if (preview.value && request === pasteRequest)
         preview.value = { ...preview.value, errors: result.errors, validating: false }
     })
     .catch(() => {
-      if (preview.value) preview.value = { ...preview.value, validating: false }
+      if (preview.value && request === pasteRequest)
+        preview.value = { ...preview.value, validating: false }
     })
 }
 
@@ -578,7 +599,7 @@ const vFocus = { mounted: (element: HTMLElement) => element.focus() }
           }}</Button>
           <Button
             type="button"
-            :disabled="!preview || preview.plan.changes.length === 0"
+            :disabled="!preview || preview.validating || preview.plan.changes.length === 0"
             @click="applyPaste"
           >
             {{ t('table.spreadsheet.paste_apply', {}, 'Apply') }}

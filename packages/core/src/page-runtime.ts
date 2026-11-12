@@ -76,6 +76,9 @@ export async function runPageMethod<TResult = unknown, TArgs = PageMethodArgumen
       callOptions,
     )
 
+    // `throw new Halt`: nothing happened on the server, so the optimistic change is undone.
+    if (response.halted) rollback?.()
+
     if (toasts) response.notifications.forEach((notification) => runtime.showToast(notification))
 
     if (response.redirect && options.followRedirects !== false) {

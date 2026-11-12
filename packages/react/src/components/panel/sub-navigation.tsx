@@ -3,7 +3,9 @@ import { Link } from '@inertiajs/react'
 import { createElement, type ReactNode } from 'react'
 import { useRegistry, useT } from '../../context'
 import { extraProps } from '../../lib/attributes'
+import { badgeColorClasses, colorClass } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
+import { NewTabHint } from '../../lib/new-tab-hint'
 import { cn } from '../../lib/utils'
 import { Badge } from '../ui/badge'
 import { NavLabel } from './nav-label'
@@ -25,7 +27,14 @@ function SubNavigationLink({ item, tab }: { item: NavigationItemSchema; tab: boo
       {item.icon && <Icon name={item.icon} />}
       <NavLabel item={item} className="truncate" />
       {item.badge !== undefined && item.badge !== null && (
-        <Badge variant="secondary" className="ms-auto px-1.5 py-0" title={item.badgeTooltip}>
+        <Badge
+          variant="outline"
+          className={cn(
+            'ms-auto px-1.5 py-0',
+            colorClass(badgeColorClasses, item.badgeColor, 'gray'),
+          )}
+          title={item.badgeTooltip}
+        >
           {item.badge}
         </Badge>
       )}
@@ -40,6 +49,7 @@ function SubNavigationLink({ item, tab }: { item: NavigationItemSchema; tab: boo
     return (
       <a {...attributes(className)} href={item.url} target="_blank" rel="noopener noreferrer">
         {content}
+        <NewTabHint />
       </a>
     )
   }

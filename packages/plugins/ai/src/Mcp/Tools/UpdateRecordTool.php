@@ -32,7 +32,8 @@ class UpdateRecordTool extends McpTool
         $resource = $this->resource($gateway, $access, $arguments['resource'] ?? null, 'update');
         $record = $resource === null ? null : $gateway->find($resource, $arguments['key'] ?? null);
 
-        if ($resource === null || $record === null || ! $resource::canEdit($record)) {
+        // Only what the panel offers: a resource without an edit page is not editable here.
+        if ($resource === null || $record === null || ! $resource::hasPage('edit') || ! $resource::canEdit($record)) {
             return $this->denied();
         }
 

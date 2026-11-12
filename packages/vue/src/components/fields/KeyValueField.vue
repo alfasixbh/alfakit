@@ -97,8 +97,16 @@ const moves = useItemMoves(
 )
 const moveAnnouncement = moves.announcement
 const moveContainer = moves.container
-const onRowDrop = (index: number) => {
-  if (dragIndex.value !== null && dragIndex.value !== index) move(dragIndex.value, index)
+// Only this item's own drag: one from a nested list or of selected text is not a reorder.
+const onDragStart = (event: DragEvent, index: number) => {
+  if (event.target !== event.currentTarget) return
+  event.stopPropagation()
+  dragIndex.value = index
+}
+const onRowDrop = (event: DragEvent, index: number) => {
+  if (dragIndex.value === null) return
+  event.stopPropagation()
+  if (dragIndex.value !== index) move(dragIndex.value, index)
   dragIndex.value = null
 }
 </script>
@@ -129,9 +137,9 @@ const onRowDrop = (index: number) => {
             :data-index="index"
             :draggable="reorderable"
             :class="cn('border-t', dragIndex === index && 'opacity-50')"
-            @dragstart="dragIndex = index"
-            @dragover="reorderable && $event.preventDefault()"
-            @drop="onRowDrop(index)"
+            @dragstart="onDragStart($event, index)"
+            @dragover="reorderable && dragIndex !== null && $event.preventDefault()"
+            @drop="onRowDrop($event, index)"
             @dragend="dragIndex = null"
           >
             <td v-if="reorderable" class="p-1.5">

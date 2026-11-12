@@ -15,6 +15,7 @@ import {
   columnRegistryKey,
   filterSelectColumnOptions,
   isOptionGroup,
+  isPlainEnter,
   optionText,
   remainingTextSizeClass,
   resolvePartialProps,
@@ -27,7 +28,7 @@ import {
 import { router } from '@inertiajs/react'
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { createElement, useEffect, useId, useRef, useState } from 'react'
-import { usePanel, useRegistry, useT } from '../../context'
+import { useFormatter, usePanel, useRegistry, useT } from '../../context'
 import { extraProps } from '../../lib/attributes'
 import {
   colorClass,
@@ -185,6 +186,7 @@ function TextCell({ column, cell }: CellProps) {
 }
 
 function ImageCell({ column, cell }: CellProps) {
+  const format = useFormatter()
   const urls = Array.isArray(cell.state) ? (cell.state as string[]) : []
   const schema = column as {
     circular?: boolean
@@ -192,6 +194,7 @@ function ImageCell({ column, cell }: CellProps) {
     size?: number | string
     height?: number | string
     width?: string
+    imageWidth?: number | string
     stacked?: boolean
     limit?: number
     limitedRemainingText?: boolean
@@ -225,7 +228,10 @@ function ImageCell({ column, cell }: CellProps) {
           alt={cell.alt ?? (index === 0 ? (column.label ?? '') : '')}
           style={{
             height: schema.height ?? size,
-            width: schema.width ?? (schema.square || schema.circular ? size : undefined),
+            width:
+              schema.imageWidth ??
+              schema.width ??
+              (schema.square || schema.circular ? size : undefined),
             ...stackedImageStyle(index, schema),
           }}
           {...extraProps(
@@ -248,7 +254,7 @@ function ImageCell({ column, cell }: CellProps) {
             remainingTextSizeClass(schema.limitedRemainingTextSize),
           )}
         >
-          +{urls.length - limit}
+          +{format.number(urls.length - limit)}
         </span>
       )}
     </div>
@@ -278,10 +284,10 @@ function ColorCell({ column, cell }: CellProps) {
 
   return (
     <div className={cn('flex items-center gap-1.5', schema.wrap ? 'flex-wrap' : 'flex-nowrap')}>
-      {colors.map((color) =>
+      {colors.map((color, index) =>
         schema.copyable ? (
           <button
-            key={color}
+            key={`${color}-${index}`}
             type="button"
             data-slot="color-copy"
             title={color}
@@ -303,7 +309,7 @@ function ColorCell({ column, cell }: CellProps) {
           </button>
         ) : (
           <span
-            key={color}
+            key={`${color}-${index}`}
             title={color}
             className="size-5 rounded border shadow-xs"
             style={{ backgroundColor: color }}
@@ -714,7 +720,9 @@ function TextInputCell(props: CellProps) {
         )}
         onChange={(event) => setValue(event.target.value)}
         onBlur={() => value !== initial && void update(value)}
-        onKeyDown={(event) => event.key === 'Enter' && (event.target as HTMLInputElement).blur()}
+        onKeyDown={(event) =>
+          isPlainEnter(event.nativeEvent) && (event.target as HTMLInputElement).blur()
+        }
       />
       {schema.suffixIcon && (
         <span

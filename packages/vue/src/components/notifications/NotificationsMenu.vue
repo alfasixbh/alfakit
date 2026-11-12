@@ -7,6 +7,7 @@ import {
   pwaStore,
   startPwa,
   togglePushNotifications,
+  unreadCountLabel,
 } from '@alfakit/core'
 import { BellIcon, BellOffIcon, BellRingIcon, CheckCheckIcon, Trash2Icon } from '@lucide/vue'
 import { computed, onMounted, onScopeDispose, ref, watch } from 'vue'
@@ -141,7 +142,7 @@ async function togglePush() {
         <span
           v-if="state.unreadCount > 0"
           class="bg-primary text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-medium group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:-end-1 group-data-[collapsible=icon]:-top-1 group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:min-w-4 group-data-[collapsible=icon]:text-[10px]"
-          >{{ state.unreadCount > 99 ? '99+' : state.unreadCount }}
+          >{{ unreadCountLabel(state.unreadCount, (value) => format.number(value)) }}
           <span class="sr-only">{{ t('unread_notifications', {}, 'unread') }}</span></span
         >
       </Button>
@@ -161,7 +162,7 @@ async function togglePush() {
         <span
           v-if="state.unreadCount > 0"
           class="bg-primary text-primary-foreground absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium"
-          >{{ state.unreadCount > 99 ? '99+' : state.unreadCount }}</span
+          >{{ unreadCountLabel(state.unreadCount, (value) => format.number(value)) }}</span
         >
       </Button>
     </PopoverTrigger>

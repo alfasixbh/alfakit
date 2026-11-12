@@ -1,6 +1,7 @@
 <script lang="ts">
   import { extraProps } from '../../lib/attributes'
   import NavLabel from './NavLabel.svelte'
+  import NavSheetItems from './NavSheetItems.svelte'
   import {
     PREFETCH_CACHE_FOR,
     bottomNavigationItems,
@@ -24,7 +25,6 @@
   const panel = $derived(usePanel())
   const items = $derived(bottomNavigationItems(panel.navigation))
   const overflowActive = $derived(items.overflow.some(isNavigationItemActive))
-  const overflowLinks = $derived(items.overflow.flatMap((item) => [item, ...(item.children ?? [])]))
   let open = $state(false)
 
   const url = (item: NavigationItemSchema): string => navigationItemUrl(item) ?? '#'
@@ -81,17 +81,11 @@
             aria-label={t('navigation', {}, 'Navigation')}
             class="flex flex-col gap-1 p-3 text-sm"
           >
-            {#each overflowLinks as item, index (uniqueKey(overflowLinks, index, navigationKey))}
-              <Link
-                href={url(item)}
-                data-active={isNavigationItemActive(item) ? 'true' : undefined}
-                class="hover:bg-accent data-[active=true]:bg-accent flex min-h-11 items-center gap-3 rounded-md px-3 font-medium [&_svg]:size-4"
-                onclick={() => (open = false)}
-              >
-                {#if item.icon}<Icon name={item.icon} />{/if}
-                <NavLabel text={item.label} html={item.labelHtml} />
-              </Link>
-            {/each}
+            <NavSheetItems
+              items={items.overflow}
+              itemClass="min-h-11 gap-3 px-3 py-0"
+              onNavigate={() => (open = false)}
+            />
           </nav>
         </SheetContent>
       </Sheet>

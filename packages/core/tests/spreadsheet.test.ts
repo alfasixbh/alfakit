@@ -168,6 +168,42 @@ describe('SpreadsheetGrid', () => {
     expect(sheet.handleKey({ key: 'x' })).toBe('ignored')
   })
 
+  it('lets Tab leave the grid at its edges', () => {
+    const sheet = grid()
+
+    // First cell: Shift+Tab is not consumed, so focus moves out of the grid.
+    expect(sheet.handleKey({ key: 'Tab', shiftKey: true })).toBe('ignored')
+    expect(sheet.handleKey({ key: 'Tab' })).toBe('moved')
+
+    sheet.moveTo(0, 4)
+    expect(sheet.handleKey({ key: 'Tab' })).toBe('ignored')
+  })
+
+  it('keeps the cell being edited when the rows are reloaded', () => {
+    const sheet = grid()
+    const columns = spreadsheetColumns(table)
+
+    sheet.moveTo(1, 0)
+    sheet.handleKey({ key: 'Enter' })
+    sheet.updateDraft('Typing')
+
+    // A poll brings the rows in another order.
+    sheet.setData(spreadsheetRows([...records].reverse(), columns), columns)
+
+    expect(sheet.state.editing).toEqual({ row: 1, col: 0, value: 'Typing' })
+
+    // The edited record left the page: the editor closes.
+    sheet.setData(
+      spreadsheetRows(
+        records.filter((record) => record.key !== 2),
+        columns,
+      ),
+      columns,
+    )
+
+    expect(sheet.state.editing).toBeNull()
+  })
+
   it('toggles booleans with Space and Enter, and clears with Delete', () => {
     const sheet = grid()
 

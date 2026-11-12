@@ -28,8 +28,12 @@ const json = (value: unknown): string => {
       <span v-if="props.form.record !== null" class="text-muted-foreground"
         >#{{ props.form.record }}</span
       >
-      <Badge v-if="state.processing" variant="secondary">processing</Badge>
-      <Badge v-if="state.refreshing" variant="secondary">refreshing</Badge>
+      <Badge v-if="state.processing" variant="secondary">{{
+        t('debug.processing', {}, 'processing')
+      }}</Badge>
+      <Badge v-if="state.refreshing" variant="secondary">{{
+        t('debug.refreshing', {}, 'refreshing')
+      }}</Badge>
     </header>
     <h4 class="text-muted-foreground text-xs font-medium">{{ t('debug.values', {}, 'Values') }}</h4>
     <pre

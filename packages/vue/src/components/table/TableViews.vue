@@ -9,6 +9,7 @@ import {
   tableViewError,
   tableViewFollowUp,
   visitTableView,
+  escapeHtml,
 } from '@alfakit/core'
 import { BookmarkIcon, ChevronDownIcon, RotateCcwIcon, StarIcon, UsersIcon } from '@lucide/vue'
 import { computed, ref } from 'vue'
@@ -120,7 +121,8 @@ async function run(operation: TableViewOperation, success?: string): Promise<boo
       showToast({
         id: 'alfakit-table-view-failed',
         title: t('table.views.failed', {}, "Couldn't save the view"),
-        body: message,
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: message === undefined ? undefined : escapeHtml(message),
         status: 'danger',
         format: 'alfakit',
       })

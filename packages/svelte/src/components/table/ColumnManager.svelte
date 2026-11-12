@@ -16,6 +16,7 @@
     toggleVisibleColumn,
     triggerButtonView,
     visitTable,
+    escapeHtml,
   } from '@alfakit/core'
   import ChevronDownIcon from '@lucide/svelte/icons/chevron-down'
   import ChevronUpIcon from '@lucide/svelte/icons/chevron-up'
@@ -173,7 +174,8 @@
       showToast({
         id: 'alfakit-column-order-failed',
         title: t('table.column_order_failed', {}, "Couldn't save the column order"),
-        body: error instanceof Error ? error.message : String(error),
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: escapeHtml(error instanceof Error ? error.message : String(error)),
         status: 'danger',
         format: 'alfakit',
       })

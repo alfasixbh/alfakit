@@ -45,4 +45,31 @@ describe('NotificationCenter.loadMore', () => {
     expect(center.store.get().notifications.map((n) => n.id)).toEqual(['z', 'a', 'b', 'c'])
     expect(center.store.get().unreadCount).toBe(4)
   })
+  it('drops a notification deleted elsewhere when polling after "Load more"', async () => {
+    const fetch = vi
+      .fn()
+      .mockImplementationOnce(() =>
+        respond({ notifications: [note('a'), note('b')], unreadCount: 3, hasMore: true, page: 1 }),
+      )
+      .mockImplementationOnce(() =>
+        respond({ notifications: [note('c'), note('d')], unreadCount: 3, hasMore: false, page: 2 }),
+      )
+      // "a" was deleted in another tab: the first page is now b, c.
+      .mockImplementationOnce(() =>
+        respond({ notifications: [note('b'), note('c')], unreadCount: 2, hasMore: true, page: 1 }),
+      )
+    vi.stubGlobal('fetch', fetch)
+
+    const center = new NotificationCenter({
+      notifications: '/n',
+      notificationsReadAll: '/n/read',
+      notificationsDestroyAll: '/n',
+    })
+
+    await center.load()
+    await center.loadMore()
+    await center.load()
+
+    expect(center.store.get().notifications.map((n) => n.id)).toEqual(['b', 'c', 'd'])
+  })
 })

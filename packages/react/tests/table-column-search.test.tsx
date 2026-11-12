@@ -155,3 +155,12 @@ describe('editable cells', () => {
     expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true')
   })
 })
+
+describe('date formats', () => {
+  it('reads an escaped character in a PHP format as text', async () => {
+    const { phpToDateFnsFormat } = await import('../src/components/fields/date-picker')
+
+    expect(phpToDateFnsFormat('Y-m-d\\TH:i')).toBe("yyyy-MM-dd'T'HH:mm")
+    expect(phpToDateFnsFormat('d/m/Y')).toBe('dd/MM/yyyy')
+  })
+})

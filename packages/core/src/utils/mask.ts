@@ -1,3 +1,5 @@
+import { toAsciiDigits } from '../i18n'
+
 const TOKENS: Record<string, RegExp> = {
   '9': /\d/,
   a: /\p{L}/u,
@@ -14,6 +16,9 @@ export function applyMask(value: string, mask: string | null | undefined): strin
   if (!mask) {
     return value
   }
+
+  // Digits typed on an Arabic or Persian keyboard count as digits (and are stored as ASCII).
+  value = toAsciiDigits(value)
 
   let result = ''
   let position = 0

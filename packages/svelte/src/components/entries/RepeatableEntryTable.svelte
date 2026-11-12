@@ -22,7 +22,7 @@
     <tbody>
       {#each rows as cells, index (index)}
         <tr class="border-t align-top">
-          {#each cells as cell, cellIndex (cell?.key ?? `empty-${cellIndex}`)}
+          {#each cells as cell, cellIndex (cellIndex)}
             <td
               class={cn(
                 'px-3 py-2 [&_[data-slot=entry-label]]:sr-only',

@@ -2,93 +2,93 @@
   "headroomPercent": 10,
   "entries": {
     "host:react": {
-      "limitGzipBytes": 27117,
-      "limitChunks": 16,
+      "limitGzipBytes": 30181,
+      "limitChunks": 17,
       "baseline": {
-        "rawBytes": 63238,
-        "gzipBytes": 24651,
-        "chunks": 14,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "rawBytes": 71350,
+        "gzipBytes": 27437,
+        "chunks": 15,
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "host:vue": {
-      "limitGzipBytes": 26858,
+      "limitGzipBytes": 29868,
       "limitChunks": 11,
       "baseline": {
-        "rawBytes": 63707,
-        "gzipBytes": 24416,
+        "rawBytes": 72037,
+        "gzipBytes": 27152,
         "chunks": 10,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "host:svelte": {
-      "limitGzipBytes": 28954,
-      "limitChunks": 16,
+      "limitGzipBytes": 32064,
+      "limitChunks": 17,
       "baseline": {
-        "rawBytes": 69647,
-        "gzipBytes": 26321,
-        "chunks": 14,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "rawBytes": 78542,
+        "gzipBytes": 29149,
+        "chunks": 15,
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "panel:react": {
-      "limitGzipBytes": 403802,
-      "limitChunks": 112,
+      "limitGzipBytes": 397428,
+      "limitChunks": 74,
       "baseline": {
-        "rawBytes": 1113270,
-        "gzipBytes": 367092,
-        "chunks": 101,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "rawBytes": 1117256,
+        "gzipBytes": 361298,
+        "chunks": 67,
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "panel:vue": {
-      "limitGzipBytes": 379296,
+      "limitGzipBytes": 385846,
       "limitChunks": 79,
       "baseline": {
-        "rawBytes": 1091009,
-        "gzipBytes": 344814,
+        "rawBytes": 1109877,
+        "gzipBytes": 350769,
         "chunks": 71,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "panel:svelte": {
-      "limitGzipBytes": 403091,
+      "limitGzipBytes": 409208,
       "limitChunks": 105,
       "baseline": {
-        "rawBytes": 1146113,
-        "gzipBytes": 366446,
+        "rawBytes": 1163680,
+        "gzipBytes": 372007,
         "chunks": 95,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "starter-kit:react": {
-      "limitGzipBytes": 240777,
-      "limitChunks": 126,
+      "limitGzipBytes": 245329,
+      "limitChunks": 124,
       "baseline": {
-        "rawBytes": 604289,
-        "gzipBytes": 218888,
-        "chunks": 114,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "rawBytes": 617056,
+        "gzipBytes": 223026,
+        "chunks": 112,
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "starter-kit:vue": {
-      "limitGzipBytes": 276265,
-      "limitChunks": 147,
+      "limitGzipBytes": 281137,
+      "limitChunks": 146,
       "baseline": {
-        "rawBytes": 734334,
-        "gzipBytes": 251150,
-        "chunks": 133,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "rawBytes": 749737,
+        "gzipBytes": 255579,
+        "chunks": 132,
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     },
     "starter-kit:svelte": {
-      "limitGzipBytes": 314496,
-      "limitChunks": 146,
+      "limitGzipBytes": 319812,
+      "limitChunks": 145,
       "baseline": {
-        "rawBytes": 906518,
-        "gzipBytes": 285905,
-        "chunks": 132,
-        "measuredAt": "2026-10-21T10:22:21.174Z"
+        "rawBytes": 922616,
+        "gzipBytes": 290738,
+        "chunks": 131,
+        "measuredAt": "2026-11-12T13:15:00.251Z"
       }
     }
   }

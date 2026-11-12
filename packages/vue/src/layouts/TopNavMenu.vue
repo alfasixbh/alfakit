@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import type { NavigationItemSchema } from '@alfakit/core'
-import { Link } from '@inertiajs/vue3'
 import { ChevronDownIcon } from '@lucide/vue'
 import DropdownMenu from '../components/ui/DropdownMenu.vue'
 import DropdownMenuContent from '../components/ui/DropdownMenuContent.vue'
-import DropdownMenuItem from '../components/ui/DropdownMenuItem.vue'
 import DropdownMenuTrigger from '../components/ui/DropdownMenuTrigger.vue'
 import NavLabel from '../components/panel/NavLabel.vue'
+import NavMenuItems from '../components/panel/NavMenuItems.vue'
 import { Icon } from '../lib/icons'
-import { cn } from '../lib/utils'
 
 /** A top-navigation dropdown: a labelled group or an item with children. */
 const props = defineProps<{
@@ -36,16 +34,7 @@ const props = defineProps<{
       <ChevronDownIcon class="opacity-60" />
     </DropdownMenuTrigger>
     <DropdownMenuContent align="start" class="min-w-48">
-      <DropdownMenuItem v-for="item in props.items" :key="item.url ?? item.label" as-child>
-        <Link
-          v-bind="item.extraAttributes ?? {}"
-          :href="item.url ?? '#'"
-          :class="cn('w-full', item.active && 'font-medium')"
-        >
-          <Icon v-if="item.icon" :name="item.icon" />
-          <NavLabel :text="item.label" :html="item.labelHtml" />
-        </Link>
-      </DropdownMenuItem>
+      <NavMenuItems :items="props.items" />
     </DropdownMenuContent>
   </DropdownMenu>
 </template>

@@ -146,7 +146,13 @@ export function ChartWidget({ widget }: { widget: ChartWidgetSchema }) {
                 </select>
               )}
               {widget.filtersForm && (
-                <ChartFilters form={widget.filtersForm} widgetId={widget.id} />
+                // A fresh instance per server state, as in Vue and Svelte: "applied" starts
+                // from the filters the chart was drawn with (a reset reloaded twice).
+                <ChartFilters
+                  key={JSON.stringify(widget.filtersForm.state)}
+                  form={widget.filtersForm}
+                  widgetId={widget.id}
+                />
               )}
               {widget.collapsible && (
                 <Button

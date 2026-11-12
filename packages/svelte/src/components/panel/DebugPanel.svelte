@@ -132,7 +132,7 @@
                   {t('debug.no_forms', {}, 'No forms on this page.')}
                 </p>
               {:else}
-                {#each state.current.forms as form, index (index)}
+                {#each state.current.forms as form (form)}
                   <DebugFormState {form} />
                 {/each}
               {/if}

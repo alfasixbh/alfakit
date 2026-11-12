@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { StarterKitWidgets } from '@alfakit/core'
+import { LocaleFormatter, unreadCountLabel, type StarterKitWidgets } from '@alfakit/core'
 import { BellIcon } from '@lucide/vue'
 import { computed } from 'vue'
 
@@ -8,6 +8,10 @@ const props = defineProps<{ source: StarterKitWidgets }>()
 
 const notifications = computed(() => props.source.widgets.notifications)
 const count = computed(() => notifications.value?.unreadCount ?? 0)
+// No panel context yet: the digits of the panel's language when it sends one.
+const format = computed(
+  () => new LocaleFormatter(props.source.widgets.language?.current.tag ?? 'en'),
+)
 </script>
 
 <template>
@@ -21,7 +25,7 @@ const count = computed(() => notifications.value?.unreadCount ?? 0)
     <span
       v-if="count > 0"
       class="bg-primary text-primary-foreground absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium"
-      >{{ count > 99 ? '99+' : count }}</span
+      >{{ unreadCountLabel(count, (value) => format.number(value)) }}</span
     >
   </button>
 </template>

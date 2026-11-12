@@ -28,7 +28,9 @@ class CreateRecordTool extends McpTool
     {
         $resource = $this->resource($gateway, $access, $arguments['resource'] ?? null, 'create');
 
-        if ($resource === null || ! $resource::canCreate()) {
+        // Only what the panel offers: a resource without a create page is not creatable here
+        // either (`list_resources` already says so).
+        if ($resource === null || ! $resource::hasPage('create') || ! $resource::canCreate()) {
             return $this->denied();
         }
 

@@ -23,7 +23,13 @@ const entries = computed(() => Object.entries(props.component.state ?? {}))
           <tr v-for="[key, value] in entries" :key="key" class="border-t">
             <td class="px-3 py-1.5 font-medium">{{ key }}</td>
             <td class="px-3 py-1.5">
-              {{ typeof value === 'object' ? JSON.stringify(value) : String(value) }}
+              {{
+                value === null || value === undefined
+                  ? ''
+                  : typeof value === 'object'
+                    ? JSON.stringify(value)
+                    : String(value)
+              }}
             </td>
           </tr>
         </tbody>

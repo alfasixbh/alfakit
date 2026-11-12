@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TextInputColumnSchema } from '@alfakit/core'
+import { isPlainEnter, type TextInputColumnSchema } from '@alfakit/core'
 import { computed, useId } from 'vue'
 import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
@@ -73,7 +73,7 @@ const grouped = computed(() => Boolean(props.cell.prefix || props.cell.suffix))
           "
           @update:model-value="value = $event"
           @blur="value !== initial && void update(value)"
-          @keydown.enter="($event.target as HTMLInputElement).blur()"
+          @keydown="isPlainEnter($event) && ($event.target as HTMLInputElement).blur()"
         />
         <span
           v-if="schema.suffixIcon"

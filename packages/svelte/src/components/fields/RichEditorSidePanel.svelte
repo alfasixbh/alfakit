@@ -83,6 +83,7 @@
         aria-label={searchLabel}
         placeholder={searchLabel}
         class="h-8"
+        onkeydown={(event: KeyboardEvent) => event.key === 'Enter' && event.preventDefault()}
       />
     {/if}
     {#if panel === 'customBlocks'}

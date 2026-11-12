@@ -70,7 +70,8 @@
   }
 
   const onkeydown = (event: KeyboardEvent) => {
-    if (field.readOnly) {
+    // The Enter that confirms an IME candidate (Japanese, Chinese) is not a split key.
+    if (field.readOnly || event.isComposing || event.keyCode === 229) {
       return
     }
 

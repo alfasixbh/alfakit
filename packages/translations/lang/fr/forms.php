@@ -14,6 +14,7 @@ return [
         'loading' => 'Chargement…',
     ],
     'key_value' => [
+        'locked' => 'Les lignes de :attribute ne peuvent pas être modifiées de cette façon.',
         'key' => 'Clé',
         'value' => 'Valeur',
         'add' => 'Ajouter une ligne',

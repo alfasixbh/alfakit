@@ -139,11 +139,19 @@ const setAllCollapsed = (value: boolean) => {
   collapsed.value = Object.fromEntries(items.value.map((_, index) => [index, value]))
 }
 
+// Only this item's own drag: one from a nested list or of selected text is not a reorder.
+const onDragStart = (event: DragEvent, index: number) => {
+  if (event.target !== event.currentTarget) return
+  event.stopPropagation()
+  dragIndex.value = index
+}
 // A drop runs the reorder action: in the browser, or on the server when customised.
-const onDrop = (index: number) => {
+const onDrop = (event: DragEvent, index: number) => {
   const from = dragIndex.value
+  if (from === null) return
+  event.stopPropagation()
   dragIndex.value = null
-  if (from === null || from === index) return
+  if (from === index) return
   runItemAction(
     resolve('reorder'),
     { items: reorderedItemKeys(items.value.length, from, index) },
@@ -198,7 +206,7 @@ const add = () =>
         :extra-actions-for="
           (index: number) => itemExtraActions(props.component, props.component.items[index])
         "
-        @move="moveItem"
+        @move="moves.moveWithButton"
         @clone="cloneItem"
         @remove="removeItem"
       />
@@ -239,9 +247,9 @@ const add = () =>
               props.component.simple && 'border-0 shadow-none',
             )
           "
-          @dragstart="dragIndex = index"
-          @dragover="draggable && $event.preventDefault()"
-          @drop="onDrop(index)"
+          @dragstart="onDragStart($event, index)"
+          @dragover="draggable && dragIndex !== null && $event.preventDefault()"
+          @drop="onDrop($event, index)"
           @dragend="dragIndex = null"
         >
           <Collapsible :open="!isCollapsed(index)">
@@ -253,9 +261,9 @@ const add = () =>
               <span
                 v-if="draggable"
                 class="text-muted-foreground cursor-grab"
-                :title="resolve('reorder')?.label ?? undefined"
+                :title="resolve('reorder', index)?.label ?? undefined"
                 aria-hidden="true"
-                ><Icon :name="resolve('reorder')?.icon ?? 'grip-vertical'"
+                ><Icon :name="resolve('reorder', index)?.icon ?? 'grip-vertical'"
               /></span>
               <span
                 v-if="props.component.itemNumbers"

@@ -17,6 +17,7 @@ import TenantMenu from '../components/panel/TenantMenu.vue'
 import Breadcrumbs from '../components/panel/Breadcrumbs.vue'
 import GlobalSearch from '../components/panel/GlobalSearch.vue'
 import NavLabel from '../components/panel/NavLabel.vue'
+import NavSheetItems from '../components/panel/NavSheetItems.vue'
 import Slot from '../components/panel/Slot.vue'
 import DebugPanelSlot from '../components/panel/DebugPanelSlot.vue'
 import ThemeToggle from '../components/panel/ThemeToggle.vue'
@@ -105,17 +106,7 @@ const linkClass =
                 <p v-if="group.label" class="text-muted-foreground px-2 text-xs font-medium">
                   {{ group.label }}
                 </p>
-                <Link
-                  v-for="item in group.items.flatMap((entry) => [entry, ...(entry.children ?? [])])"
-                  :key="item.url ?? item.label"
-                  :href="item.url ?? '#'"
-                  :data-active="item.active ? 'true' : undefined"
-                  class="hover:bg-accent data-[active=true]:bg-accent flex items-center gap-2 rounded-md px-2 py-2 font-medium [&_svg]:size-4"
-                  @click="open = false"
-                >
-                  <Icon v-if="item.icon" :name="item.icon" />
-                  <NavLabel :text="item.label" :html="item.labelHtml" />
-                </Link>
+                <NavSheetItems :items="group.items" @navigate="open = false" />
               </div>
             </nav>
           </SheetContent>
@@ -144,7 +135,11 @@ const linkClass =
               :items="group.items"
               :active="group.items.some(isActive)"
             />
-            <template v-for="item in group.items" v-else :key="item.url ?? item.label">
+            <template
+              v-for="(item, itemIndex) in group.items"
+              v-else
+              :key="`${item.url ?? item.label}-${itemIndex}`"
+            >
               <TopNavMenu
                 v-if="item.children && item.children.length > 0"
                 :label="item.label"

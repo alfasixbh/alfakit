@@ -381,6 +381,8 @@ return [
         'timings' => 'Temps',
         'hidden' => 'masqué',
         'unauthorized' => 'non autorisé',
+        'processing' => 'traitement',
+        'refreshing' => 'actualisation',
         'no_forms' => 'Aucun formulaire sur cette page.',
         'no_requests' => 'Aucune requête interne pour l\'instant.',
         'clear' => 'Effacer',

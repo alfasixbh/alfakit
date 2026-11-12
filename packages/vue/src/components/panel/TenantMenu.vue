@@ -147,7 +147,12 @@ const tenants = computed(() =>
       </DropdownMenuItem>
       <DropdownMenuSeparator
         v-if="
-          hasSwitcher && (tenancy.registrationUrl || tenancy.profileUrl || tenancy.menu?.length)
+          hasSwitcher &&
+          (tenancy.registration ||
+            tenancy.profile ||
+            tenancy.registrationUrl ||
+            tenancy.profileUrl ||
+            tenancy.menu?.length)
         "
       />
       <MenuItemEntry v-if="tenancy.profile" :item="tenancy.profile" menu="tenantMenu" />

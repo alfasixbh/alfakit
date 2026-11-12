@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AlfaSix\AlfakitCms\Forms\Components;
 
 use AlfaSix\Alfakit\Forms\Components\Select;
+use AlfaSix\Alfakit\Support\SearchQuery;
 use AlfaSix\AlfakitCms\CmsPlugin;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -38,8 +39,11 @@ final class MediaLibraryPicker
         $query = Media::query()->where('mime_type', 'like', 'image/%')->latest('id')->limit(50);
 
         if (is_string($search) && trim($search) !== '') {
-            $term = '%'.str_replace(['%', '_'], ['\\%', '\\_'], trim($search)).'%';
-            $query->where(static fn ($query) => $query->where('name', 'like', $term)->orWhere('file_name', 'like', $term));
+            $term = trim($search);
+            $query->where(static function ($query) use ($term): void {
+                SearchQuery::contains($query, 'name', $term);
+                SearchQuery::contains($query, 'file_name', $term, or: true);
+            });
         }
 
         $options = [];

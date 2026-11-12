@@ -14,6 +14,7 @@ return [
         'loading' => '読み込み中…',
     ],
     'key_value' => [
+        'locked' => ':attribute の行はそのようには変更できません。',
         'key' => 'キー',
         'value' => '値',
         'add' => '行を追加',

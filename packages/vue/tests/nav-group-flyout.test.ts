@@ -63,6 +63,46 @@ describe('navigation group flyouts in the collapsed sidebar', () => {
     wrapper.unmount()
   })
 
+  it('opens new-tab items in a new tab and lists every nested level', async () => {
+    const wrapper = mountSidebar([
+      {
+        label: 'Help',
+        icon: 'life-buoy',
+        collapsible: true,
+        items: [
+          { label: 'Docs', url: 'https://docs.example.test', openInNewTab: true },
+          {
+            label: 'Guides',
+            children: [
+              {
+                label: 'Setup',
+                url: '/setup',
+                children: [{ label: 'Advanced', url: '/advanced' }],
+              },
+            ],
+          },
+        ],
+      },
+    ])
+
+    await wrapper.find('[data-nav-flyout] button').trigger('keydown', { key: 'Enter' })
+    await flushPromises()
+
+    const menu = document.querySelector('[role="menu"]')!
+    const links = [...menu.querySelectorAll('[role="menuitem"]')]
+
+    // "Guides" has no URL: a heading, not a link to "#".
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      'https://docs.example.test',
+      '/setup',
+      '/advanced',
+    ])
+    expect(links[0]!.getAttribute('target')).toBe('_blank')
+    expect(links[0]!.getAttribute('rel')).toBe('noopener noreferrer')
+    expect(links[2]!.className).toContain('ps-9')
+    wrapper.unmount()
+  })
+
   it('keeps groups without an icon as they are', () => {
     const wrapper = mountSidebar([
       { label: 'Shop', collapsible: false, items: [{ label: 'Orders', url: '/o' }] },

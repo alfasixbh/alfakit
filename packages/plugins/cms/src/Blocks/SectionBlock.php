@@ -35,7 +35,8 @@ class SectionBlock extends CmsBlock
     {
         $id = $data['section'] ?? null;
 
-        return is_numeric($id) ? Section::query()->whereKey((int) $id)->value('name') : null;
+        // Within the current tenant: the id comes from the block's state.
+        return is_numeric($id) ? Section::query()->forTenant(alfakit()->getTenant())->whereKey((int) $id)->value('name') : null;
     }
 
     public function schema(): array

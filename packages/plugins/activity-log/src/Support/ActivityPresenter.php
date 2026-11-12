@@ -75,7 +75,8 @@ final class ActivityPresenter
         $label = self::typeLabel($type);
         $subject = self::relatedModel($activity, 'subject');
         $resource = $subject !== null ? self::resourceFor($subject) : null;
-        $title = $resource !== null && $resource::getRecordTitleAttribute() !== null ? $resource::getRecordTitle($subject) : null;
+        // The title only for users who may view the record (the link below checks the same).
+        $title = $resource !== null && $resource::getRecordTitleAttribute() !== null && $resource::canView($subject) ? $resource::getRecordTitle($subject) : null;
 
         return $title !== null && $title !== '' ? "{$label}: {$title}" : "{$label} #{$id}";
     }

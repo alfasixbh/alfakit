@@ -75,7 +75,7 @@ export class DebugRecorder {
         duration: Math.round((now() - started) * 10) / 10,
         serverDuration: parseServerTiming(outcome.serverTiming),
         requestBytes: byteLength(body),
-        responseBytes: outcome.responseText?.length ?? 0,
+        responseBytes: utf8Length(outcome.responseText ?? ''),
         startedAt,
         response: outcome.response,
         request: body instanceof FormData ? '[FormData]' : body,
@@ -131,6 +131,10 @@ export function parseServerTiming(header: string | null | undefined): number | n
   const match = /dur=([\d.]+)/.exec(header)
 
   return match ? Number.parseFloat(match[1]!) : null
+}
+
+function utf8Length(text: string): number {
+  return typeof TextEncoder === 'undefined' ? text.length : new TextEncoder().encode(text).length
 }
 
 /** Approximate size in bytes of a JSON payload (the whole page props, a request body…). */

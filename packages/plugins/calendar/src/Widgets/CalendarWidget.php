@@ -627,10 +627,23 @@ abstract class CalendarWidget extends Widget implements HasResource
             return false;
         }
 
+        $end = $event['end'];
+
+        // The calendar sends no end when an all-day event is dropped on a time (and back):
+        // the event keeps its length instead of losing its end.
+        if ($end === null && static::$endAttribute !== null) {
+            $oldStart = $record->getAttribute(static::$startAttribute);
+            $oldEnd = $record->getAttribute(static::$endAttribute);
+
+            if ($oldStart instanceof DateTimeInterface && $oldEnd instanceof DateTimeInterface && $oldEnd > $oldStart) {
+                $end = $event['start']->addSeconds($oldEnd->getTimestamp() - $oldStart->getTimestamp());
+            }
+        }
+
         $record->setAttribute(static::$startAttribute, $event['start']);
 
         if (static::$endAttribute !== null) {
-            $record->setAttribute(static::$endAttribute, $event['end']);
+            $record->setAttribute(static::$endAttribute, $end);
         }
 
         return $record->save();

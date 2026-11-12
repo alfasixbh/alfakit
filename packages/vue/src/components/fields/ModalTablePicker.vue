@@ -87,10 +87,23 @@ watch(query, load, { immediate: true, deep: true })
 onScopeDispose(() => controller?.abort())
 
 const table = computed(() => response.value?.table)
-const pushSearch = debounce((next: string) => {
+const applySearch = (next: string) => {
   query.value = { ...query.value, search: next || null, page: null }
-}, 400)
-onScopeDispose(() => pushSearch.cancel())
+}
+// The table's own `searchDebounce()` once it has loaded (400 ms until then).
+let debouncedSearch = debounce(applySearch, 400)
+const pushSearch = (next: string) => debouncedSearch(next)
+
+watch(
+  () => table.value?.searchDebounce,
+  (wait) => {
+    if (typeof wait !== 'number') return
+
+    debouncedSearch.cancel()
+    debouncedSearch = debounce(applySearch, wait)
+  },
+)
+onScopeDispose(() => debouncedSearch.cancel())
 
 const columns = computed(() =>
   table.value

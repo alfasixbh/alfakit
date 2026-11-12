@@ -1,10 +1,13 @@
 <script lang="ts">
   import { remainingTextSizeClass, stackedImageStyle, usesDefaultImageStack } from '@alfakit/core'
+  import { useFormatter } from '../../context.svelte'
   import { extraProps } from '../../lib/attributes'
   import { cn } from '../../lib/utils'
   import type { CellProps } from './cell-update.svelte'
 
   let { column, cell }: CellProps = $props()
+
+  const format = useFormatter()
 
   const urls = $derived(Array.isArray(cell.state) ? (cell.state as string[]) : [])
   const schema = $derived(
@@ -14,6 +17,7 @@
       size?: number | string
       height?: number | string
       width?: string
+      imageWidth?: number | string
       stacked?: boolean
       limit?: number
       limitedRemainingText?: boolean
@@ -46,7 +50,11 @@
         src={url}
         alt={cell.alt ?? (index === 0 ? (column.label ?? '') : '')}
         style:height={px(schema.height ?? size)}
-        style:width={px(schema.width ?? (schema.square || schema.circular ? size : undefined))}
+        style:width={px(
+          schema.imageWidth ??
+            schema.width ??
+            (schema.square || schema.circular ? size : undefined),
+        )}
         style:box-shadow={stackedImageStyle(index, schema)?.boxShadow}
         style:margin-inline-start={stackedImageStyle(index, schema)?.marginInlineStart}
         {...extraProps(
@@ -66,7 +74,7 @@
           // The last image keeps the stack's negative end margin (W-S3-03).
           schema.stacked && defaultStack ? 'ms-3' : 'ms-1',
           remainingTextSizeClass(schema.limitedRemainingTextSize),
-        )}>+{urls.length - limit}</span
+        )}>+{format.current.number(urls.length - limit)}</span
       >{/if}
   </div>
 {/if}

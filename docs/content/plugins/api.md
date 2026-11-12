@@ -142,7 +142,7 @@ GET /api/v1/posts?page=2&per_page=25&sort=-published_at&search=laravel&filter[st
 | `fields`           | A comma-separated subset of the resource's fields                                                                                                                                                                                  |
 | `include`          | Comma-separated relations from `includes()`                                                                                                                                                                                        |
 
-Unknown sorts, filters, fields and includes are a `400` problem that lists the allowed values. Filter defaults and the table's `baseQuery()` / `modifyQueryUsing()` apply, as in the panel.
+Unknown sorts, filters, fields and includes are a `400` problem that lists the allowed values. Without `fields()`, a record is returned with every form field and table column of the resource, including the ones a `visible()` / `hidden()` closure hides from some users in the panel: list the fields with `fields()` or drop them with `hiddenFields()` when visibility depends on the user. Filter defaults and the table's `baseQuery()` / `modifyQueryUsing()` apply, as in the panel.
 
 ```json
 {

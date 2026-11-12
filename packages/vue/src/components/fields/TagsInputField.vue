@@ -71,7 +71,8 @@ const commit = (raw: string) => {
 }
 
 const onKeyDown = (event: KeyboardEvent) => {
-  if (readOnly.value) {
+  // The Enter that confirms an IME candidate (Japanese, Chinese) is not a split key.
+  if (readOnly.value || event.isComposing || event.keyCode === 229) {
     return
   }
 

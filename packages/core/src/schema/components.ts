@@ -717,10 +717,13 @@ export const FIELD_TYPES = [
 ] as const
 
 export function isField(component: SchemaComponent): component is FieldSchema {
+  // The built-in types, or the shape of a field: a custom field (`make:alfakit-field`) has
+  // its own type, and only fields are serialised with a name and a state path.
   return (
     'statePath' in component &&
     typeof (component as BaseField).statePath === 'string' &&
-    (FIELD_TYPES as readonly string[]).includes(component.type)
+    ((FIELD_TYPES as readonly string[]).includes(component.type) ||
+      typeof (component as BaseField).name === 'string')
   )
 }
 

@@ -110,6 +110,8 @@ const LANGUAGES: Record<string, Rule[]> = {
     SQ,
     NUMBER,
     LITERALS,
+    // A plain word, so the digits in `v1` or `abc123` are not coloured as a number.
+    ['plain', /[A-Za-z_][\w.-]*/y],
     ['keyword', /^---$|[&*][\w-]+|!![\w]+/my],
   ],
   css: [

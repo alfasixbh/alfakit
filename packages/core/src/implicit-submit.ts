@@ -24,6 +24,8 @@ const SUBMITTING_INPUT_TYPES = new Set([
 export interface ImplicitSubmitEvent {
   key: string
   isComposing?: boolean
+  /** 229 while an IME is composing (Safari ends composition before the Enter's keydown). */
+  keyCode?: number
   defaultPrevented: boolean
   shiftKey?: boolean
   altKey?: boolean
@@ -33,7 +35,8 @@ export interface ImplicitSubmitEvent {
 }
 
 export function isImplicitSubmit(event: ImplicitSubmitEvent, form: Element): boolean {
-  if (event.key !== 'Enter' || event.isComposing || event.defaultPrevented) return false
+  if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return false
+  if (event.defaultPrevented) return false
   if (event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return false
 
   const target = event.target
@@ -54,4 +57,16 @@ export function isImplicitSubmit(event: ImplicitSubmitEvent, form: Element): boo
   if (form.querySelector('[data-surface="wizard"]')) return false
 
   return true
+}
+
+/**
+ * An Enter that means "done" (save an inline cell, add a tag): not the Enter that confirms
+ * an IME candidate (Japanese, Chinese, Korean; Safari reports it as key code 229).
+ */
+export function isPlainEnter(event: {
+  key: string
+  isComposing?: boolean
+  keyCode?: number
+}): boolean {
+  return event.key === 'Enter' && !event.isComposing && event.keyCode !== 229
 }

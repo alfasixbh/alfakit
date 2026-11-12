@@ -11,9 +11,9 @@ import { useState } from 'react'
 import { usePanel, useT } from '../../context'
 import { extraProps } from '../../lib/attributes'
 import { Icon } from '../../lib/icons'
-import { cn } from '../../lib/utils'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
 import { NavLabel } from './nav-label'
+import { NavSheetItems } from './nav-link'
 
 function BottomNavLink({
   item,
@@ -80,8 +80,8 @@ export function BottomNav() {
       aria-label={t('navigation', {}, 'Navigation')}
       className="md:hidden"
     >
-      {primary.map((item) => (
-        <BottomNavLink key={item.url ?? item.label} item={item} />
+      {primary.map((item, index) => (
+        <BottomNavLink key={`${item.url ?? item.label}-${index}`} item={item} />
       ))}
       {overflow.length > 0 && (
         <Sheet open={open} onOpenChange={setOpen}>
@@ -105,22 +105,11 @@ export function BottomNav() {
               aria-label={t('navigation', {}, 'Navigation')}
               className="flex flex-col gap-1 p-3 text-sm"
             >
-              {overflow
-                .flatMap((item) => [item, ...(item.children ?? [])])
-                .map((item) => (
-                  <Link
-                    key={item.url ?? item.label}
-                    href={navigationItemUrl(item) ?? '#'}
-                    onClick={() => setOpen(false)}
-                    data-active={isNavigationItemActive(item) ? 'true' : undefined}
-                    className={cn(
-                      'hover:bg-accent data-[active=true]:bg-accent flex min-h-11 items-center gap-3 rounded-md px-3 font-medium [&_svg]:size-4',
-                    )}
-                  >
-                    {item.icon && <Icon name={item.icon} />}
-                    <NavLabel item={item} />
-                  </Link>
-                ))}
+              <NavSheetItems
+                items={overflow}
+                onNavigate={() => setOpen(false)}
+                className="min-h-11 gap-3 px-3 py-0"
+              />
             </nav>
           </SheetContent>
         </Sheet>

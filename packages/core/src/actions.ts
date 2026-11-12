@@ -371,8 +371,16 @@ export class ActionRunner {
     resolve?: (result: unknown) => void,
   ): Promise<void> {
     const key = `modal:${runKey(action, context)}`
+    // Already loading, or already open for the same record or selection (its key binding
+    // pressed again while the modal is up): one modal is enough.
+    const selection = (item: ActionContext) => JSON.stringify([item.records, item.allRecords])
+    const isOpen = this.state.modals.some(
+      (modal) =>
+        runKey(modal.action, modal.context) === runKey(action, context) &&
+        selection(modal.context) === selection(context),
+    )
 
-    if (this.running.has(key)) {
+    if (this.running.has(key) || isOpen) {
       resolve?.(undefined)
 
       return

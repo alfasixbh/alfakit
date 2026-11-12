@@ -130,7 +130,13 @@
       return page
     },
   })
-  providePageActionContext(untrack(() => ({ token: component.token, component: 'page' })))
+  // A getter: a new payload (the host page reloads its props) brings a new token.
+  providePageActionContext({
+    get token() {
+      return component.token
+    },
+    component: 'page',
+  })
 
   // Endpoints and strings follow the latest payload (they change per locale or path);
   // updated while rendering so children see them on the same update.

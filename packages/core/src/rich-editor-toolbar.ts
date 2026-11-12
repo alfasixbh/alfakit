@@ -147,7 +147,9 @@ export const TOOLBAR_COMMANDS: Record<string, ToolbarCommand> = {
       const url = prompt(t('form.link_prompt', 'URL'))
 
       if (url === null) return
-      if (url === '') runEditorCommands(editor, [['unsetLink']])
+      if (url === '')
+        // The whole link, also when the caret only sits inside it.
+        runEditorCommands(editor, [['extendMarkRange', 'link'], ['unsetLink']])
       else
         runEditorCommands(editor, [
           ['extendMarkRange', 'link'],
@@ -810,7 +812,8 @@ function tableToMarkdown(table: HTMLElement, walk: (node: Node) => string): stri
 
   const cell = (element: Element) =>
     Array.from(element.childNodes)
-      .map(walk)
+      // Not `.map(walk)`: the index would arrive as `walk`'s second argument.
+      .map((child) => walk(child))
       .join(' ')
       .replace(/\s*\n+\s*/g, ' ')
       .replace(/\|/g, '\\|')
@@ -833,11 +836,48 @@ export function htmlToMarkdown(html: string): string {
   const container = document.createElement('div')
   container.innerHTML = html
 
-  const walk = (node: Node): string => {
-    if (node.nodeType === Node.TEXT_NODE) return node.textContent ?? ''
+  // Text the user typed is text: characters Markdown gives a meaning to are escaped, or
+  // `2 * 3 * 4` would come back in italics and `<b>` as markup.
+  const escapeText = (text: string) => text.replace(/[\\`*_[\]<]/g, '\\$&')
+  // The same for what only means something at the start of a line (`# `, `> `, `- `, `1. `).
+  const escapeLineStart = (text: string) =>
+    text.replace(/^(\s*)(#{1,6}\s|>|[-+]\s|\d+[.)]\s)/, (_match, space: string, marker: string) =>
+      /^\d/.test(marker) ? `${space}${marker.replace(/[.)]/, '\\$&')}` : `${space}\\${marker}`,
+    )
+  const indent = (text: string, width: number) =>
+    text
+      .split('\n')
+      .map((line) => (line === '' ? line : ' '.repeat(width) + line))
+      .join('\n')
+
+  const walk = (node: Node, raw = false): string => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return raw ? (node.textContent ?? '') : escapeText(node.textContent ?? '')
+    }
 
     const element = node as HTMLElement
-    const inner = () => Array.from(element.childNodes).map(walk).join('')
+    const inner = (asRaw = raw) =>
+      Array.from(element.childNodes)
+        .map((child) => walk(child, asRaw))
+        .join('')
+
+    // A list item: its own text, then nested lists indented under the marker.
+    const item = (li: Element, marker: string): string => {
+      let text = ''
+      const nested: string[] = []
+
+      for (const child of Array.from(li.childNodes)) {
+        const tag = (child as HTMLElement).tagName
+
+        if (tag === 'UL' || tag === 'OL') nested.push(walk(child).trimEnd())
+        else text += walk(child)
+      }
+
+      const [first = '', ...rest] = text.trim().split('\n')
+      const body = [first, ...rest.map((line) => indent(line, marker.length))].join('\n')
+
+      return [marker + body, ...nested.map((list) => indent(list, marker.length))].join('\n')
+    }
 
     switch (element.tagName) {
       case 'H1':
@@ -848,7 +888,7 @@ export function htmlToMarkdown(html: string): string {
       case 'H6':
         return `${'#'.repeat(Number(element.tagName[1]))} ${inner()}\n\n`
       case 'P':
-        return `${inner()}\n\n`
+        return `${escapeLineStart(inner())}\n\n`
       case 'STRONG':
       case 'B':
         return `**${inner()}**`
@@ -858,9 +898,14 @@ export function htmlToMarkdown(html: string): string {
       case 'S':
         return `~~${inner()}~~`
       case 'CODE':
-        return element.parentElement?.tagName === 'PRE' ? inner() : `\`${inner()}\``
-      case 'PRE':
-        return `\`\`\`\n${inner()}\n\`\`\`\n\n`
+        return element.parentElement?.tagName === 'PRE' ? inner(true) : `\`${inner(true)}\``
+      case 'PRE': {
+        // The language of a fenced block is kept (`<code class="language-php">`).
+        const language =
+          element.querySelector('code')?.className.match(/(?:^|\s)language-([\w+#-]+)/)?.[1] ?? ''
+
+        return `\`\`\`${language}\n${inner(true)}\n\`\`\`\n\n`
+      }
       case 'A':
         return `[${inner()}](${element.getAttribute('href') ?? ''})`
       case 'IMG':
@@ -873,12 +918,15 @@ export function htmlToMarkdown(html: string): string {
           .join('\n')}\n\n`
       case 'UL':
         return `${Array.from(element.children)
-          .map((li) => `- ${walk(li).trim()}`)
+          .map((li) => item(li, '- '))
           .join('\n')}\n\n`
-      case 'OL':
+      case 'OL': {
+        const first = Number(element.getAttribute('start') ?? 1) || 1
+
         return `${Array.from(element.children)
-          .map((li, i) => `${i + 1}. ${walk(li).trim()}`)
+          .map((li, i) => item(li, `${first + i}. `))
           .join('\n')}\n\n`
+      }
       case 'TABLE':
         return tableToMarkdown(element, walk)
       case 'COLGROUP':
@@ -886,11 +934,15 @@ export function htmlToMarkdown(html: string): string {
       case 'HR':
         return `---\n\n`
       case 'BR':
-        return '\n'
+        // Two trailing spaces: a hard line break (a bare newline is a soft one).
+        return raw ? '\n' : '  \n'
       default:
         return inner()
     }
   }
 
-  return Array.from(container.childNodes).map(walk).join('').trim()
+  return Array.from(container.childNodes)
+    .map((node) => walk(node))
+    .join('')
+    .trim()
 }

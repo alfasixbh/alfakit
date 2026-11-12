@@ -3,7 +3,9 @@ import NavLabel from './NavLabel.vue'
 import type { NavigationItemSchema } from '@alfakit/core'
 import { Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
+import { badgeColorClasses, colorClass } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
+import NewTabHint from '../../lib/NewTabHint.vue'
 import { cn } from '../../lib/utils'
 import Badge from '../ui/Badge.vue'
 
@@ -18,47 +20,35 @@ const classes = computed(() =>
       : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',
   ),
 )
-const hasBadge = computed(() => props.item.badge !== undefined && props.item.badge !== null)
+// The element and its own attributes: plain text, a new-tab anchor or an Inertia link.
+const tag = computed(() => (!props.item.url ? 'span' : props.item.openInNewTab ? 'a' : Link))
+const attributes = computed(() =>
+  !props.item.url
+    ? {}
+    : props.item.openInNewTab
+      ? { href: props.item.url, target: '_blank', rel: 'noopener noreferrer' }
+      : { href: props.item.url, 'aria-current': props.item.active ? 'page' : undefined },
+)
 </script>
 
 <template>
-  <span v-if="!props.item.url" v-bind="props.item.extraAttributes ?? {}" :class="classes">
-    <Icon v-if="props.item.icon" :name="props.item.icon" />
-    <NavLabel class="truncate" :text="props.item.label" :html="props.item.labelHtml" />
-    <Badge v-if="hasBadge" variant="secondary" class="ms-auto px-1.5 py-0">
-      {{ props.item.badge }}
-    </Badge>
-  </span>
-  <a
-    v-else-if="props.item.openInNewTab"
-    v-bind="props.item.extraAttributes ?? {}"
-    :href="props.item.url"
-    target="_blank"
-    rel="noopener noreferrer"
+  <component
+    :is="tag"
+    v-bind="{ ...(props.item.extraAttributes ?? {}), ...attributes }"
     :class="classes"
-  >
-    <Icon v-if="props.item.icon" :name="props.item.icon" />
-    <NavLabel class="truncate" :text="props.item.label" :html="props.item.labelHtml" />
-    <Badge v-if="hasBadge" variant="secondary" class="ms-auto px-1.5 py-0">
-      {{ props.item.badge }}
-    </Badge>
-  </a>
-  <Link
-    v-else
-    v-bind="props.item.extraAttributes ?? {}"
-    :href="props.item.url"
-    :class="classes"
-    :aria-current="props.item.active ? 'page' : undefined"
   >
     <Icon v-if="props.item.icon" :name="props.item.icon" />
     <NavLabel class="truncate" :text="props.item.label" :html="props.item.labelHtml" />
     <Badge
-      v-if="hasBadge"
-      variant="secondary"
-      class="ms-auto px-1.5 py-0"
+      v-if="props.item.badge !== undefined && props.item.badge !== null"
+      variant="outline"
+      :class="
+        cn('ms-auto px-1.5 py-0', colorClass(badgeColorClasses, props.item.badgeColor, 'gray'))
+      "
       :title="props.item.badgeTooltip"
     >
       {{ props.item.badge }}
     </Badge>
-  </Link>
+    <NewTabHint v-if="props.item.url && props.item.openInNewTab" />
+  </component>
 </template>

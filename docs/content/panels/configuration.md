@@ -44,7 +44,7 @@ Components [outside panels](../standalone/overview) are served by a hidden `stan
 | `default()`                                           | The panel used by `alfakit()->getPanel()` when no panel is current (e.g. in CLI)                                                                                       |
 | `homeUrl(fn () => …)`                                 | Where `/admin` redirects to; defaults to the dashboard, else the first item in sidebar order the user may open                                                         |
 | `middleware([...])`                                   | Middleware for every panel route (add `web`)                                                                                                                           |
-| `authMiddleware([...])`                               | Extra middleware for authenticated routes                                                                                                                              |
+| `authMiddleware([...])`                               | Extra middleware for authenticated routes. Panels already run their own `AuthenticateSession` on the panel's guard: a session ends once its user's password changes    |
 | `routes(fn (Router $router, Panel $panel) => …)`      | Extra routes in the panel's route group (path, `alfakit.{id}.` names, panel middleware), open to guests; route names are relative (`->name('auth.invitation.accept')`) |
 | `authenticatedRoutes(fn (Router $router) => …)`       | The same behind the panel's auth middleware, under the tenant prefix on tenancy panels                                                                                 |
 

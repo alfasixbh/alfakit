@@ -155,10 +155,18 @@ const onMenuExtra = (action: ActionSchema, index: number) =>
   void runner.trigger(action, itemActionContext(context.value, { item: String(index) }))
 
 const update = (next: unknown[]) => setValue(next as BuilderItemState[])
+// Previews and summaries are rendered by the server, per item position: after an item
+// moved, was cloned or removed they are asked for again, or they stay where they were.
+const refreshServerItems = () => {
+  if ((props.component.items ?? []).some((item) => item.preview || item.summary)) {
+    void form?.refresh(props.component.statePath)
+  }
+}
 const moveItem = (from: number, to: number) => {
   update(moveRepeaterItem(items.value, from, to))
   collapsed.value = moveIndexedState(collapsed.value, from, to)
   editing.value = moveIndexedState(editing.value, from, to)
+  refreshServerItems()
 }
 // Move buttons: announced, one at a time, focus kept on the moved item.
 const moves = useItemMoves(
@@ -173,21 +181,31 @@ const removeItem = (index: number) => {
   update(removeRepeaterItem(items.value, index))
   collapsed.value = removeIndexedState(collapsed.value, index)
   editing.value = removeIndexedState(editing.value, index)
+  refreshServerItems()
 }
 const cloneItem = (index: number) => {
   update(cloneRepeaterItem(items.value, index))
   collapsed.value = cloneIndexedState(collapsed.value, index)
   editing.value = cloneIndexedState(editing.value, index)
+  refreshServerItems()
 }
 const addBlock = (block: BuilderBlockSchema) =>
   runItemAction(addAction.value, { block: block.name }, () =>
     update(insertBuilderItem(items.value, block)),
   )
+// Only this item's own drag: one from a nested list or of selected text is not a reorder.
+const onDragStart = (event: DragEvent, index: number) => {
+  if (event.target !== event.currentTarget) return
+  event.stopPropagation()
+  dragIndex.value = index
+}
 // A drop runs the reorder action: in the browser, or on the server when customised.
-const onDrop = (index: number) => {
+const onDrop = (event: DragEvent, index: number) => {
   const from = dragIndex.value
+  if (from === null) return
+  event.stopPropagation()
   dragIndex.value = null
-  if (from === null || from === index) return
+  if (from === index) return
   runItemAction(
     resolve('reorder'),
     { items: reorderedItemKeys(items.value.length, from, index) },
@@ -310,9 +328,9 @@ const previewIsButton = computed(() => !props.component.interactivePreviews && !
           :class="
             cn('bg-card min-w-0 rounded-lg border shadow-xs', dragIndex === index && 'opacity-50')
           "
-          @dragstart="dragIndex = index"
-          @dragover="draggable && $event.preventDefault()"
-          @drop="onDrop(index)"
+          @dragstart="onDragStart($event, index)"
+          @dragover="draggable && dragIndex !== null && $event.preventDefault()"
+          @drop="onDrop($event, index)"
           @dragend="dragIndex = null"
         >
           <Collapsible :open="!isCollapsed(index)">

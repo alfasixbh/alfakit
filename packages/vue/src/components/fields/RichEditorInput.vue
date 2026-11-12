@@ -381,7 +381,11 @@ const sendImage = async (file: File) => {
 }
 
 const onFilePicked = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  // Emptied so that picking the same file again (after a failed upload, or after deleting
+  // the image) fires `change`.
+  input.value = ''
 
   if (file) void uploadImage(file)
 }

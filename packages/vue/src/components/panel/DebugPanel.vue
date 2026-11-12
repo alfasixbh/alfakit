@@ -2,7 +2,7 @@
 import type { FormStore } from '@alfakit/core'
 import { byteLength, debugRecorder, formatBytes } from '@alfakit/core'
 import { BugIcon, ChevronRightIcon } from '@lucide/vue'
-import { computed } from 'vue'
+import { computed, toRaw } from 'vue'
 import { useStore } from '../../composables/use-store'
 import { useAlfakitProps, useDirection, useT } from '../../context'
 import Badge from '../ui/Badge.vue'
@@ -57,6 +57,19 @@ const pathOf = (url: string): string => {
 }
 
 const forms = computed(() => state.value.forms as FormStore[])
+
+// One entry per form store: another page's form at the same position is a new entry, so
+// its state is subscribed to afresh.
+const formKeys = new WeakMap<object, number>()
+let nextFormKey = 0
+
+const formKey = (form: FormStore): number => {
+  const store = toRaw(form)
+
+  if (!formKeys.has(store)) formKeys.set(store, nextFormKey++)
+
+  return formKeys.get(store) as number
+}
 </script>
 
 <template>
@@ -125,7 +138,7 @@ const forms = computed(() => state.value.forms as FormStore[])
               <p v-if="forms.length === 0" class="text-muted-foreground text-sm">
                 {{ t('debug.no_forms', {}, 'No forms on this page.') }}
               </p>
-              <DebugFormState v-for="(form, index) in forms" :key="index" :form="form" />
+              <DebugFormState v-for="form in forms" :key="formKey(form)" :form="form" />
             </TabsContent>
             <TabsContent value="requests" class="space-y-2 p-4 text-sm">
               <p v-if="state.requests.length === 0" class="text-muted-foreground text-sm">

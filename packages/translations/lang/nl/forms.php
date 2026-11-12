@@ -14,6 +14,7 @@ return [
         'loading' => 'Laden…',
     ],
     'key_value' => [
+        'locked' => 'De rijen van :attribute kunnen niet op die manier worden gewijzigd.',
         'key' => 'Sleutel',
         'value' => 'Waarde',
         'add' => 'Rij toevoegen',

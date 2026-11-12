@@ -14,7 +14,7 @@ import {
 } from '@alfakit/core'
 import { ChevronDownIcon, FilterIcon, XIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { usePageSchema, usePanel, useT } from '../../context'
+import { useFormatter, usePageSchema, usePanel, useT } from '../../context'
 import { useStore } from '../../hooks/use-store'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -40,6 +40,7 @@ import { TableTriggerButton } from './trigger-button'
  */
 export function TableFilters({ table, component }: { table: TableSchema; component: string }) {
   const t = useT()
+  const format = useFormatter()
   const panel = usePanel()
   const page = usePageSchema()
   const filters = useMemo(() => table.filters ?? [], [table.filters])
@@ -255,7 +256,9 @@ export function TableFilters({ table, component }: { table: TableSchema; compone
           >
             <FilterIcon className="size-4" />
             {t('table.filters', {}, 'Filters')}
-            {activeCount > 0 && <Badge className="h-5 min-w-5 px-1">{activeCount}</Badge>}
+            {activeCount > 0 && (
+              <Badge className="h-5 min-w-5 px-1">{format.number(activeCount)}</Badge>
+            )}
             <ChevronDownIcon
               className={cn('ms-auto size-4 transition-transform', open && 'rotate-180')}
             />
@@ -284,7 +287,9 @@ export function TableFilters({ table, component }: { table: TableSchema; compone
         >
           <FilterIcon className="size-4" />
           {t('table.filters', {}, 'Filters')}
-          {activeCount > 0 && <Badge className="h-5 min-w-5 px-1">{activeCount}</Badge>}
+          {activeCount > 0 && (
+            <Badge className="h-5 min-w-5 px-1">{format.number(activeCount)}</Badge>
+          )}
           <ChevronDownIcon
             className={cn('ms-auto size-4 transition-transform', open && 'rotate-180')}
           />

@@ -73,7 +73,8 @@ export function TagsInputField({ component }: { component: TagsInputSchema }) {
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (readOnly) {
+    // The Enter that confirms an IME candidate (Japanese, Chinese) is not a split key.
+    if (readOnly || event.nativeEvent.isComposing || event.keyCode === 229) {
       return
     }
 

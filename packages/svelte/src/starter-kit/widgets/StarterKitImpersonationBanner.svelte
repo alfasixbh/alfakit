@@ -1,12 +1,14 @@
 <script lang="ts" module>
   // The header components appear in both header layouts and next to each other: the first
-  // one mounted shows the banner, the others render nothing.
-  let owner: symbol | null = null
+  // one mounted shows the banner, the others render nothing. When that one goes away (a
+  // host that renders it conditionally), the next one takes over.
+  let candidates = $state.raw<symbol[]>([])
 </script>
 
 <script lang="ts">
   import { isAlfakitPage, type StarterKitWidgets } from '@alfakit/core'
   import { page } from '@inertiajs/svelte'
+  import { untrack } from 'svelte'
   import ImpersonationBanner from '../../components/panel/ImpersonationBanner.svelte'
 
   /**
@@ -18,18 +20,16 @@
   const id = Symbol('impersonation-banner')
   const impersonation = $derived(source?.widgets.impersonation)
   const active = $derived(impersonation !== undefined && !isAlfakitPage(page.props))
-  let owns = $state(false)
+  const owns = $derived(candidates[0] === id)
 
   // Claimed once mounted (effects never run on the server), so SSR and hydration skip it.
   $effect(() => {
     if (!active) return
 
-    if (owner === null) owner = id
-    owns = owner === id
+    untrack(() => (candidates = [...candidates, id]))
 
     return () => {
-      if (owner === id) owner = null
-      owns = false
+      candidates = candidates.filter((candidate) => candidate !== id)
     }
   })
 </script>

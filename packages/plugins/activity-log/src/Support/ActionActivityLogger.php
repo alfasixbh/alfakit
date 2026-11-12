@@ -103,7 +103,13 @@ final class ActionActivityLogger
      */
     public static function changesFor(string $event, Model $record): array
     {
-        $hidden = [...self::IGNORED_ATTRIBUTES, ...$record->getHidden()];
+        // Also what the model stores encrypted or hashed: the log would keep the plain value
+        // (or the hash) and show it on the activity page.
+        $secret = array_keys(array_filter(
+            $record->getCasts(),
+            static fn (mixed $cast): bool => is_string($cast) && (str_starts_with($cast, 'encrypted') || $cast === 'hashed'),
+        ));
+        $hidden = [...self::IGNORED_ATTRIBUTES, ...$record->getHidden(), ...$secret];
 
         return match ($event) {
             'created' => ['attributes' => self::without($record->attributesToArray(), $hidden)],

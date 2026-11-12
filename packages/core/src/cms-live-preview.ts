@@ -45,7 +45,6 @@ export type CmsPreviewDevice = keyof typeof CMS_PREVIEW_DEVICES
 export class CmsAutosave {
   private timer: ReturnType<typeof setTimeout> | null = null
   private pending: Record<string, unknown> | null = null
-  private running = false
   private disposed = false
   private current: CmsAutosaveSnapshot
 
@@ -58,6 +57,8 @@ export class CmsAutosave {
       hasChanges: options.hasChanges ?? false,
     }
   }
+
+  private inflight: Promise<void> | null = null
 
   get snapshot(): CmsAutosaveSnapshot {
     return this.current
@@ -81,11 +82,26 @@ export class CmsAutosave {
       this.timer = null
     }
 
-    if (this.disposed || this.running || this.pending === null) return
+    // A save is running: wait for it, then save what changed meanwhile, so a caller that
+    // awaits `flush()` (closing the preview) never leaves with edits that were not sent.
+    while (this.inflight) await this.inflight
+
+    if (this.disposed || this.pending === null) return
+
+    this.inflight = this.save()
+
+    try {
+      await this.inflight
+    } finally {
+      this.inflight = null
+    }
+  }
+
+  private async save(): Promise<void> {
+    if (this.pending === null) return
 
     const state = this.pending
     this.pending = null
-    this.running = true
     this.update({ status: 'saving' })
 
     try {
@@ -107,8 +123,6 @@ export class CmsAutosave {
       this.pending ??= state
       this.update({ status: 'error' })
       this.timer = setTimeout(() => void this.flush(), this.options.retryAfter ?? 5000)
-    } finally {
-      this.running = false
     }
 
     if (this.pending !== null && this.timer === null) {

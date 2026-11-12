@@ -381,6 +381,8 @@ return [
         'timings' => 'Tijden',
         'hidden' => 'verborgen',
         'unauthorized' => 'niet geautoriseerd',
+        'processing' => 'bezig',
+        'refreshing' => 'vernieuwen',
         'no_forms' => 'Geen formulieren op deze pagina.',
         'no_requests' => 'Nog geen interne verzoeken.',
         'clear' => 'Wissen',

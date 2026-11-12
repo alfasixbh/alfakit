@@ -160,7 +160,7 @@ function RepeaterFieldContent({ component }: { component: RepeaterSchema }) {
             reorderable={buttons}
             cloneable={Boolean(component.cloneable) && canAdd}
             deletable={canDelete}
-            onMove={moveItem}
+            onMove={moveWithButton}
             onClone={cloneItem}
             onRemove={removeItem}
             virtual={virtual}
@@ -199,10 +199,19 @@ function RepeaterFieldContent({ component }: { component: RepeaterSchema }) {
                     aria-setsize={range.active ? items.length : undefined}
                     aria-posinset={range.active ? index + 1 : undefined}
                     draggable={draggable}
-                    onDragStart={() => setDragIndex(index)}
-                    onDragOver={(event) => draggable && event.preventDefault()}
-                    onDrop={() => {
-                      if (dragIndex !== null && dragIndex !== index) dropItem(dragIndex, index)
+                    onDragStart={(event) => {
+                      // Only this item's own drag: one from a nested list or of selected text is not a reorder.
+                      if (event.target !== event.currentTarget) return
+                      event.stopPropagation()
+                      setDragIndex(index)
+                    }}
+                    onDragOver={(event) =>
+                      draggable && dragIndex !== null && event.preventDefault()
+                    }
+                    onDrop={(event) => {
+                      if (dragIndex === null) return
+                      event.stopPropagation()
+                      if (dragIndex !== index) dropItem(dragIndex, index)
                       setDragIndex(null)
                     }}
                     onDragEnd={() => setDragIndex(null)}

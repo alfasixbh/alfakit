@@ -6,6 +6,7 @@ import {
   editableImageName,
   fetchEditableImage,
   fieldMemory,
+  FILE_UPLOADS_MEMORY,
   fileManagerSize,
   filesFromClipboard,
   fileUploadAccept,
@@ -68,7 +69,9 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
   )
   const uploadedStore = fieldMemory<FileUploadSchema['files']>(
     store,
-    `${component.statePath}:uploaded`,
+    // Shared by the form's upload fields and looked up by file key, not by state path: a
+    // Repeater item that is moved or removed takes its files (names, previews) along.
+    FILE_UPLOADS_MEMORY,
     () => [],
   )
   const uploading = useStore(uploadingStore)
@@ -95,7 +98,7 @@ export function FileUploadField({ component }: { component: FileUploadSchema }) 
   // Object URLs made for local image previews; released when the file is removed.
   const objectUrls = fieldMemory<Set<string>>(
     store,
-    `${component.statePath}:previews`,
+    `${FILE_UPLOADS_MEMORY}:previews`,
     () => new Set(),
   ).get()
 

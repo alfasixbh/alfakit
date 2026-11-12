@@ -14,7 +14,7 @@
   import ChevronDownIcon from '@lucide/svelte/icons/chevron-down'
   import FunnelIcon from '@lucide/svelte/icons/funnel'
   import { onDestroy, untrack } from 'svelte'
-  import { usePageSchema, usePanel, useT } from '../../context.svelte'
+  import { useFormatter, usePageSchema, usePanel, useT } from '../../context.svelte'
   import { useStore } from '../../hooks/store.svelte'
   import { cn } from '../../lib/utils'
   import Icon from '../../lib/Icon.svelte'
@@ -41,6 +41,7 @@
    * string. The server re-renders the table with the filtered records.
    */
   const t = useT()
+  const format = useFormatter()
   const panel = usePanel()
   const page = usePageSchema()
   const filters = $derived(table.filters ?? [])
@@ -231,7 +232,9 @@
         >
           <FunnelIcon class="size-4" />
           {t('table.filters', {}, 'Filters')}
-          {#if activeCount > 0}<Badge class="h-5 min-w-5 px-1">{activeCount}</Badge>{/if}
+          {#if activeCount > 0}<Badge class="h-5 min-w-5 px-1"
+              >{format.current.number(activeCount)}</Badge
+            >{/if}
           <ChevronDownIcon
             class={cn('ms-auto size-4 transition-transform', open && 'rotate-180')}
           />
@@ -256,7 +259,9 @@
       >
         <FunnelIcon class="size-4" />
         {t('table.filters', {}, 'Filters')}
-        {#if activeCount > 0}<Badge class="h-5 min-w-5 px-1">{activeCount}</Badge>{/if}
+        {#if activeCount > 0}<Badge class="h-5 min-w-5 px-1"
+            >{format.current.number(activeCount)}</Badge
+          >{/if}
         <ChevronDownIcon class={cn('ms-auto size-4 transition-transform', open && 'rotate-180')} />
       </button>
       {#if open}<div class="border-t p-4">{@render form()}</div>{/if}

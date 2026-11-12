@@ -41,8 +41,8 @@ const rows = computed(() =>
   </TableFooter>
   <TableFooter v-else-if="rows.length > 0" :class="props.class">
     <SummaryRow
-      v-for="row in rows"
-      :key="row.label"
+      v-for="(row, rowIndex) in rows"
+      :key="`${row.label ?? ''}-${rowIndex}`"
       :columns="props.columns"
       :values="row.values"
       :label="row.label"

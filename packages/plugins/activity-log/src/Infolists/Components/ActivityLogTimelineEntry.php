@@ -6,6 +6,7 @@ namespace AlfaSix\AlfakitActivityLog\Infolists\Components;
 
 use AlfaSix\Alfakit\Infolists\Components\RepeatableEntry;
 use AlfaSix\Alfakit\Infolists\Components\TextEntry;
+use AlfaSix\AlfakitActivityLog\ActivityLogPlugin;
 use AlfaSix\AlfakitActivityLog\Support\ActivityPresenter;
 use AlfaSix\AlfakitActivityLog\Support\ActivitySchema;
 use Closure;
@@ -108,6 +109,14 @@ class ActivityLogTimelineEntry extends RepeatableEntry
     {
         /** @var class-string<Model> $model */
         $model = Config::activityModel();
+
+        // The plugin's `authorize()` covers the timeline too, as it does the resource and
+        // the relation manager: who may not see the log sees no history here.
+        $plugin = alfakit()->getCurrentOrDefaultPanel()->getPlugin(ActivityLogPlugin::ID);
+
+        if ($plugin instanceof ActivityLogPlugin && $plugin->hasAuthorization() && ! $plugin->isAuthorized()) {
+            return new Collection;
+        }
 
         $query = $model::query()
             ->where('subject_type', $record->getMorphClass())

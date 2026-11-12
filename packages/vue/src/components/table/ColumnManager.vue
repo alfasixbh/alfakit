@@ -16,6 +16,7 @@ import {
   toggleVisibleColumn,
   triggerButtonView,
   visitTable,
+  escapeHtml,
 } from '@alfakit/core'
 import { ChevronDownIcon, ChevronUpIcon, Columns3Icon, GripVerticalIcon } from '@lucide/vue'
 import { createReusableTemplate } from '@vueuse/core'
@@ -184,7 +185,8 @@ const save = async (order: string[], options: { reload?: boolean } = {}): Promis
     showToast({
       id: 'alfakit-column-order-failed',
       title: t('table.column_order_failed', {}, "Couldn't save the column order"),
-      body: error instanceof Error ? error.message : String(error),
+      // Toast bodies are HTML: the server's text is shown as text.
+      body: escapeHtml(error instanceof Error ? error.message : String(error)),
       status: 'danger',
       format: 'alfakit',
     })

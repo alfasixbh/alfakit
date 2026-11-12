@@ -70,8 +70,8 @@ const t = useT()
       <CollapsibleContent>
         <SidebarMenuSub>
           <NavSubItem
-            v-for="child in props.item.children"
-            :key="child.url ?? child.label"
+            v-for="(child, childIndex) in props.item.children"
+            :key="`${child.url ?? child.label}-${childIndex}`"
             :item="child"
           />
         </SidebarMenuSub>

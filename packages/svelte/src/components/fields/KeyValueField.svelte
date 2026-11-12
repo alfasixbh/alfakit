@@ -90,8 +90,10 @@
     (index) => rows[index]?.key || null,
     () => rows.length,
   )
-  const onRowDrop = (index: number) => {
-    if (dragIndex !== null && dragIndex !== index) move(dragIndex, index)
+  const onRowDrop = (event: DragEvent, index: number) => {
+    if (dragIndex === null) return
+    event.stopPropagation()
+    if (dragIndex !== index) move(dragIndex, index)
     dragIndex = null
   }
 </script>
@@ -119,9 +121,14 @@
           <tr
             data-index={index}
             draggable={reorderable}
-            ondragstart={() => (dragIndex = index)}
-            ondragover={(event) => reorderable && event.preventDefault()}
-            ondrop={() => onRowDrop(index)}
+            ondragstart={(event) => {
+              // Only this item's own drag: one from a nested list or of selected text is not a reorder.
+              if (event.target !== event.currentTarget) return
+              event.stopPropagation()
+              dragIndex = index
+            }}
+            ondragover={(event) => reorderable && dragIndex !== null && event.preventDefault()}
+            ondrop={(event) => onRowDrop(event, index)}
             ondragend={() => (dragIndex = null)}
             class={cn('border-t', dragIndex === index && 'opacity-50')}
           >

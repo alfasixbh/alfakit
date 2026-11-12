@@ -19,13 +19,30 @@ export function useCollapsedGroups(table: () => TableSchema) {
 
   let collapsed = $state(untrack(() => initialCollapsedGroups(table())))
   let syncedKey = untrack(groupingKey)
+  // Keys already met, so a group the user opened stays open when it comes back.
+  let seen = untrack(() => [...initialCollapsedGroups(table())])
 
   $effect.pre(() => {
     const key = groupingKey()
+    const initial = initialCollapsedGroups(table())
 
     if (key !== syncedKey) {
       syncedKey = key
-      collapsed = untrack(() => initialCollapsedGroups(table()))
+      collapsed = initial
+      seen = [...initial]
+
+      return
+    }
+
+    // Groups that arrive later (another page, load more, a search) start collapsed as well.
+    const unseen = [...initial].filter((group) => !seen.includes(group))
+
+    if (unseen.length > 0) {
+      seen = [...seen, ...unseen]
+      collapsed = unseen.reduce(
+        (current, group) => (current.has(group) ? current : toggleCollapsedGroup(current, group)),
+        untrack(() => collapsed),
+      )
     }
   })
 

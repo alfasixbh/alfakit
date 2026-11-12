@@ -609,7 +609,7 @@ class WorkflowActions extends ActionGroup
             'step' => (string) $request->getCurrentStepDefinition()?->getLabel(),
         ]);
 
-        return $request->comment === null ? $summary : $summary.' “'.e($request->comment).'”';
+        return $request->comment === null ? $summary : $summary.' “'.$request->comment.'”';
     }
 
     public static function commentField(bool $required): Textarea

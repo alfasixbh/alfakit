@@ -120,7 +120,16 @@ function watchWaiting(reg: ServiceWorkerRegistration): void {
   })
 }
 
+/**
+ * Whether the browser's subscription was sent to the server for the signed-in user. Reset
+ * when push is not offered (signed out), so the next user of a shared browser takes the
+ * subscription over instead of receiving the previous user's notifications.
+ */
+let pushSynced = false
+
 async function refreshPushStatus(): Promise<void> {
+  if (!schema?.push) pushSynced = false
+
   if (!schema?.push || !pushSupported() || !registration) {
     pwaStore.update({ push: 'unsupported' })
 
@@ -136,6 +145,17 @@ async function refreshPushStatus(): Promise<void> {
   const subscription = await registration.pushManager.getSubscription().catch(() => null)
 
   pwaStore.update({ push: subscription ? 'subscribed' : 'default' })
+
+  // Subscribing is idempotent on the server: it records the endpoint under this user.
+  if (subscription && !pushSynced && schema?.push) {
+    pushSynced = true
+
+    await requestJson(schema.push.endpoint, { method: 'POST', body: subscription.toJSON() }).catch(
+      () => {
+        pushSynced = false
+      },
+    )
+  }
 }
 
 /**
@@ -263,6 +283,7 @@ export async function subscribeToPush(): Promise<PwaPushOutcome> {
       }))
 
     await requestJson(schema.push.endpoint, { method: 'POST', body: subscription.toJSON() })
+    pushSynced = true
     pwaStore.update({ push: 'subscribed' })
 
     return 'subscribed'

@@ -57,6 +57,51 @@ describe('navigation group flyouts in the collapsed sidebar', () => {
     expect(links[1]!.className).toContain('ps-6')
   })
 
+  it('opens new-tab items in a new tab and lists every nested level', () => {
+    withNavigation([
+      {
+        label: 'Help',
+        icon: 'life-buoy',
+        collapsible: true,
+        items: [
+          { label: 'Docs', url: 'https://docs.example.test', openInNewTab: true },
+          {
+            label: 'Guides',
+            children: [
+              {
+                label: 'Setup',
+                url: '/setup',
+                children: [{ label: 'Advanced', url: '/advanced' }],
+              },
+            ],
+          },
+        ],
+      },
+    ])
+
+    const { container } = renderSidebar()
+    const flyout = container.querySelector('[data-nav-flyout]') as HTMLElement
+
+    fireEvent.pointerDown(within(flyout).getByRole('button', { name: 'Help' }), {
+      button: 0,
+      ctrlKey: false,
+      pointerType: 'mouse',
+    })
+
+    const links = within(screen.getByRole('menu')).getAllByRole('menuitem')
+
+    // "Guides" has no URL: a heading, not a link to "#".
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      'https://docs.example.test',
+      '/setup',
+      '/advanced',
+    ])
+    expect(links[0]).toHaveAttribute('target', '_blank')
+    expect(links[0]).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(links[2]!.className).toContain('ps-9')
+    expect(within(screen.getByRole('menu')).getByText('Guides').closest('a')).toBeNull()
+  })
+
   it('keeps groups without an icon as they are', () => {
     withNavigation([{ label: 'Shop', collapsible: false, items: [{ label: 'Orders', url: '/o' }] }])
 

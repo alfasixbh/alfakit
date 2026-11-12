@@ -1,5 +1,5 @@
 import type { FileUploadSchema } from '@alfakit/core'
-import { fieldMemory, FormStore, type SchemaComponent } from '@alfakit/core'
+import { fieldMemory, FILE_UPLOADS_MEMORY, FormStore, type SchemaComponent } from '@alfakit/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { FileUploadField } from '../src/components/fields/file-upload'
@@ -235,7 +235,7 @@ describe('uploaded image previews', () => {
     )
     // This session's upload of `tmp:a` (its local preview) and the server's entry for the
     // same temporary key after a round trip, without a url (W-S2-02).
-    fieldMemory<FileUploadSchema['files']>(store, 'files:uploaded', () => []).set([
+    fieldMemory<FileUploadSchema['files']>(store, FILE_UPLOADS_MEMORY, () => []).set([
       { path: 'tmp:a', name: 'a.png', size: 3, temporary: true, url: 'blob:local-a' },
     ])
     const { container } = render(

@@ -108,6 +108,48 @@ describe('table summaries and grouping', () => {
     )
   })
 
+  it('collapses groups that arrive later when groups start collapsed', async () => {
+    const collapsed = { ...grouped, grouping: { ...grouped.grouping!, collapsedByDefault: true } }
+    const { rerender } = render(Wrapper, {
+      props: { component: DataTable, props: { table: collapsed } },
+    })
+
+    // The user opens one group; it stays open when the next page arrives.
+    await fireEvent.click(screen.getByRole('button', { name: 'Expand group: Status: draft' }))
+    expect(screen.getByText('Beta')).toBeInTheDocument()
+
+    // The wrapper's own `props` prop needs the nested form.
+    await rerender({
+      props: {
+        component: DataTable,
+        props: {
+          table: {
+            ...collapsed,
+            records: [
+              ...collapsed.records!,
+              {
+                key: 9,
+                group: 'archived',
+                cells: { title: { state: 'Omega' }, rating: { state: 2 } },
+              },
+            ],
+            recordGroups: [
+              ...collapsed.recordGroups!,
+              { key: 'archived', title: 'Status: archived' },
+            ],
+          },
+        },
+      },
+    })
+
+    expect(screen.getByText('Beta')).toBeInTheDocument()
+    expect(screen.queryByText('Omega')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Expand group: Status: archived' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
+  })
+
   it('shows only headings for groups-only tables', () => {
     const { container } = render(Wrapper, {
       props: {

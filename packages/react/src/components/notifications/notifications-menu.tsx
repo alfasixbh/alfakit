@@ -6,6 +6,7 @@ import {
   pwaStore,
   startPwa,
   togglePushNotifications,
+  unreadCountLabel,
 } from '@alfakit/core'
 import { BellIcon, BellOffIcon, BellRingIcon, CheckCheckIcon, Trash2Icon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -53,13 +54,23 @@ export function NotificationsMenu({ variant = 'topbar' }: NotificationsMenuProps
             config?.unreadCount ?? 0,
           )
         : null,
-    [
-      endpoints.notifications,
-      endpoints.notificationsReadAll,
-      endpoints.notificationsDestroyAll,
-      config?.unreadCount,
-    ],
+    // One centre per endpoints: the count the server sends later is synced below, so a new
+    // count doesn't restart polling or drop the pages loaded with "Load more".
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [endpoints.notifications, endpoints.notificationsReadAll, endpoints.notificationsDestroyAll],
   )
+
+  const unreadCount = config?.unreadCount
+
+  useEffect(() => {
+    if (
+      center &&
+      typeof unreadCount === 'number' &&
+      unreadCount !== center.store.get().unreadCount
+    ) {
+      center.store.update({ unreadCount })
+    }
+  }, [center, unreadCount])
 
   const [open, setOpen] = useState(false)
   const state = useStore(
@@ -138,7 +149,7 @@ export function NotificationsMenu({ variant = 'topbar' }: NotificationsMenuProps
             </span>
             {state.unreadCount > 0 && (
               <span className="bg-primary text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-medium group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:-end-1 group-data-[collapsible=icon]:-top-1 group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:min-w-4 group-data-[collapsible=icon]:text-[10px]">
-                {state.unreadCount > 99 ? '99+' : state.unreadCount}
+                {unreadCountLabel(state.unreadCount, (value) => format.number(value))}
                 <span className="sr-only"> {t('unread_notifications', {}, 'unread')}</span>
               </span>
             )}
@@ -158,7 +169,7 @@ export function NotificationsMenu({ variant = 'topbar' }: NotificationsMenuProps
             />
             {state.unreadCount > 0 && (
               <span className="bg-primary text-primary-foreground absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium">
-                {state.unreadCount > 99 ? '99+' : state.unreadCount}
+                {unreadCountLabel(state.unreadCount, (value) => format.number(value))}
               </span>
             )}
           </Button>

@@ -81,10 +81,24 @@
   })
 
   const table = $derived(response?.table)
-  const pushSearch = debounce((next: string) => {
+  const applySearch = (next: string) => {
     query = { ...query, search: next || null, page: null }
-  }, 400)
-  onDestroy(() => pushSearch.cancel())
+  }
+  // The table's own `searchDebounce()` once it has loaded (400 ms until then).
+  let debouncedSearch = debounce(applySearch, 400)
+  let searchWait = 400
+  const pushSearch = (next: string) => debouncedSearch(next)
+
+  $effect(() => {
+    const wait = table?.searchDebounce
+
+    if (typeof wait !== 'number' || wait === searchWait) return
+
+    searchWait = wait
+    debouncedSearch.cancel()
+    debouncedSearch = debounce(applySearch, wait)
+  })
+  onDestroy(() => debouncedSearch.cancel())
 
   const columns = $derived(
     table ? table.columns.filter((column) => table.visibleColumns.includes(column.name)) : [],

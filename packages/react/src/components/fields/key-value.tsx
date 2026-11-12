@@ -98,10 +98,17 @@ export function KeyValueField({ component }: { component: KeyValueSchema }) {
                 key={index}
                 data-index={index}
                 draggable={reorderable}
-                onDragStart={() => setDragIndex(index)}
-                onDragOver={(event) => reorderable && event.preventDefault()}
-                onDrop={() => {
-                  if (dragIndex !== null && dragIndex !== index) move(dragIndex, index)
+                onDragStart={(event) => {
+                  // Only this item's own drag: one from a nested list or of selected text is not a reorder.
+                  if (event.target !== event.currentTarget) return
+                  event.stopPropagation()
+                  setDragIndex(index)
+                }}
+                onDragOver={(event) => reorderable && dragIndex !== null && event.preventDefault()}
+                onDrop={(event) => {
+                  if (dragIndex === null) return
+                  event.stopPropagation()
+                  if (dragIndex !== index) move(dragIndex, index)
                   setDragIndex(null)
                 }}
                 onDragEnd={() => setDragIndex(null)}

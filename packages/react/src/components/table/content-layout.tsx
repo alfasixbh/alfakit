@@ -52,6 +52,16 @@ function hasCollapsiblePanel(nodes: ColumnLayoutNode[]): boolean {
   )
 }
 
+/** Whether a collapsible panel, at any depth, starts open (`collapsed(false)`). */
+function hasOpenCollapsiblePanel(nodes: ColumnLayoutNode[]): boolean {
+  return nodes.some(
+    (node) =>
+      node.type !== 'Column' &&
+      ((node.type === 'Panel' && Boolean(node.collapsible) && !node.collapsed) ||
+        hasOpenCollapsiblePanel(node.schema)),
+  )
+}
+
 /**
  * Records arranged by a content layout (`Split`, `Stack`, `Panel`, `Grid`) instead of
  * a row of cells, optionally as cards in a `contentGrid()`. Long pages render only the
@@ -120,9 +130,7 @@ function ContentRecord({
   const panelId = useId()
   const layout = table.contentLayout ?? []
   const collapsible = hasCollapsiblePanel(layout)
-  const startsCollapsed = !layout.some(
-    (node) => node.type === 'Panel' && node.collapsible && !node.collapsed,
-  )
+  const startsCollapsed = !hasOpenCollapsiblePanel(layout)
   const [open, setOpen] = useState(!startsCollapsed)
   const clickable = Boolean(record.url || table.recordAction)
   const primary = primaryColumnName(columns)

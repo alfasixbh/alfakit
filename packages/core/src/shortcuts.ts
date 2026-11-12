@@ -96,7 +96,17 @@ export function isEditableTarget(target: EventTarget | null): boolean {
     )
   }
 
-  return element.getAttribute('role') === 'textbox' || element.getAttribute('role') === 'combobox'
+  if (element.getAttribute('role') === 'textbox' || element.getAttribute('role') === 'combobox') {
+    return true
+  }
+
+  // An open select list or menu takes typed characters (typeahead), and a modal holds work
+  // a shortcut such as "g d" would navigate away from.
+  return Boolean(
+    element.closest?.(
+      '[role="listbox"],[role="menu"],[role="option"],[role="menuitem"],[role="menuitemradio"],[role="menuitemcheckbox"],[role="dialog"],[role="alertdialog"],[aria-modal="true"]',
+    ),
+  )
 }
 
 function parseSteps(binding: string): ParsedKeyBinding[] {

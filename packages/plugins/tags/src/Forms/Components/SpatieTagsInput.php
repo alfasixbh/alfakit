@@ -22,6 +22,9 @@ class SpatieTagsInput extends TagsInput
 {
     use InteractsWithTagTypes;
 
+    /** The most existing tags offered as suggestions. */
+    public const MAX_SUGGESTIONS = 500;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -69,7 +72,8 @@ class SpatieTagsInput extends TagsInput
             ($type = $this->getTagType()) === null ? $query->whereNull('type') : $query->where('type', $type);
         }
 
-        return $query->orderBy('order_column')->get()
+        // A bounded list: these are suggestions sent with the form, not the whole table.
+        return $query->orderBy('order_column')->limit(self::MAX_SUGGESTIONS)->get()
             ->map(static fn (Tag $tag): string => (string) $tag->getAttributeValue('name'))
             ->filter(static fn (string $name): bool => $name !== '')
             ->unique()

@@ -8,6 +8,7 @@
     pwaStore,
     startPwa,
     togglePushNotifications,
+    unreadCountLabel,
   } from '@alfakit/core'
   import BellIcon from '@lucide/svelte/icons/bell'
   import BellOffIcon from '@lucide/svelte/icons/bell-off'
@@ -153,7 +154,9 @@
             {#if centerState.current.unreadCount > 0}
               <span
                 class="bg-primary text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-medium group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:-end-1 group-data-[collapsible=icon]:-top-1 group-data-[collapsible=icon]:h-4 group-data-[collapsible=icon]:min-w-4 group-data-[collapsible=icon]:text-[10px]"
-                >{centerState.current.unreadCount > 99 ? '99+' : centerState.current.unreadCount}
+                >{unreadCountLabel(centerState.current.unreadCount, (value) =>
+                  format.current.number(value),
+                )}
                 <span class="sr-only">{t('unread_notifications', {}, 'unread')}</span></span
               >
             {/if}
@@ -175,9 +178,9 @@
             {#if centerState.current.unreadCount > 0}
               <span
                 class="bg-primary text-primary-foreground absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium"
-                >{centerState.current.unreadCount > 99
-                  ? '99+'
-                  : centerState.current.unreadCount}</span
+                >{unreadCountLabel(centerState.current.unreadCount, (value) =>
+                  format.current.number(value),
+                )}</span
               >
             {/if}
           </Button>

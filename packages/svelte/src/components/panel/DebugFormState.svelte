@@ -26,8 +26,12 @@
   <header class="flex flex-wrap items-center gap-2 font-mono text-xs">
     <span class="font-semibold">{form.component}</span>
     {#if form.record !== null}<span class="text-muted-foreground">#{form.record}</span>{/if}
-    {#if state.current.processing}<Badge variant="secondary">processing</Badge>{/if}
-    {#if state.current.refreshing}<Badge variant="secondary">refreshing</Badge>{/if}
+    {#if state.current.processing}<Badge variant="secondary"
+        >{t('debug.processing', {}, 'processing')}</Badge
+      >{/if}
+    {#if state.current.refreshing}<Badge variant="secondary"
+        >{t('debug.refreshing', {}, 'refreshing')}</Badge
+      >{/if}
   </header>
   <h4 class="text-muted-foreground text-xs font-medium">{t('debug.values', {}, 'Values')}</h4>
   <pre

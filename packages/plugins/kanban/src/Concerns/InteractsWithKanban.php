@@ -18,6 +18,7 @@ use AlfaSix\Alfakit\Schemas\Schema;
 use AlfaSix\Alfakit\Support\Authorization;
 use AlfaSix\Alfakit\Support\EnumState;
 use AlfaSix\Alfakit\Support\Html;
+use AlfaSix\Alfakit\Support\ModelKey;
 use AlfaSix\Alfakit\Tables\Filters\BaseFilter;
 use AlfaSix\AlfakitKanban\Card;
 use AlfaSix\AlfakitKanban\Column;
@@ -757,6 +758,11 @@ trait InteractsWithKanban
         $relationship = $this->getBelongsTo(static::$swimlaneRelationship);
 
         if ($relationship !== null) {
+            // A posted key that can't be this model's key is no lane (not a database error).
+            if (! ModelKey::isComparable($relationship->getRelated(), $relationship->getOwnerKeyName(), $key)) {
+                return false;
+            }
+
             $query = $relationship->getRelated()->newQuery();
             static::scopeToCurrentTenant($query);
             $related = $query->where($relationship->getQualifiedOwnerKeyName(), $key)->first();
@@ -1117,6 +1123,12 @@ trait InteractsWithKanban
         $fromKey = $this->getRecordColumnKey($record);
         $from = $fromKey === null ? null : $this->findKanbanColumn($fromKey);
         $title = $this->getCardTitle($record);
+
+        // A record whose status is not a column of this board is not a card of it: with
+        // transition rules it cannot be dropped in by a hand-made request.
+        if ($from === null && $this->getTransitions() !== null) {
+            $this->failMove('unknown_column');
+        }
 
         if ($from !== null && ! $this->canMoveTo($from, $to, $record)) {
             $this->failMove('transition', ['title' => $title, 'from' => $from->getLabel(), 'to' => $to->getLabel()]);

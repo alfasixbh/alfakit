@@ -283,7 +283,12 @@ export function chartFiltersUrl(
   }
 
   for (const [field, value] of Object.entries(state ?? {})) {
-    if (value === null || value === undefined || value === '') continue
+    // A cleared field is sent empty: left out, the server would fill in its default again.
+    if (value === null || value === undefined || value === '') {
+      url.searchParams.set(`${prefix}[${field}]`, '')
+
+      continue
+    }
 
     if (Array.isArray(value)) {
       for (const item of value) {

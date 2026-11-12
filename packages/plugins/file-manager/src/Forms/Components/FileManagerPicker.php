@@ -12,6 +12,7 @@ use AlfaSix\AlfakitFileManager\Support\FileTypes;
 use AlfaSix\AlfakitFileManager\Support\PathGuard;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use LogicException;
 
 /**
@@ -224,6 +225,12 @@ class FileManagerPicker extends Field
     public function isPickable(mixed $value): bool
     {
         if (! is_string($value) || $value === '') {
+            return false;
+        }
+
+        // The plugin's `authorize()` covers the picker too: a user it refuses can keep a
+        // file the record already has, but not point the field at another one.
+        if (! $this->getPlugin()->isAuthorized() && ! in_array($value, Arr::wrap($this->getContainer()->getServerStateAt($this->getStatePath()) ?? $this->getRecord()?->getOriginal($this->getName())), true)) {
             return false;
         }
 

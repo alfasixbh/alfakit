@@ -41,6 +41,7 @@ import {
   tableTotalsFailed,
   tableTotalsStore,
   withTableTotals,
+  escapeHtml,
 } from '@alfakit/core'
 import { Link, router } from '@inertiajs/vue3'
 import { createReusableTemplate } from '@vueuse/core'
@@ -63,6 +64,7 @@ import {
   usePanel,
   usePollComponent,
   useT,
+  useFormatter,
 } from '../../context'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -123,6 +125,7 @@ const VERTICAL_ALIGN: Record<string, string> = {
 const props = withDefaults(defineProps<DataTableProps>(), { component: 'table' })
 
 const t = useT()
+const formatter = useFormatter()
 const panel = usePanel()
 const page = usePageSchema()
 const runner = useActionRunner()
@@ -341,7 +344,8 @@ const finishReorder = async () => {
     showToast({
       id: 'alfakit-reorder-failed',
       title: t('table.reorder_failed', {}, "Couldn't save the new order"),
-      body: error instanceof Error ? error.message : String(error),
+      // Toast bodies are HTML: the server's text is shown as text.
+      body: escapeHtml(error instanceof Error ? error.message : String(error)),
       status: 'danger',
       format: 'alfakit',
     })
@@ -651,7 +655,9 @@ const [DefineSurface, ReuseSurface] = createReusableTemplate()
         size="sm"
         @click="selection.selectAll()"
       >
-        {{ t('table.select_all', {}, 'Select all') }} ({{ total }})
+        {{ t('table.select_all', {}, 'Select all') }} ({{
+          total === null ? '' : formatter.number(total)
+        }})
       </Button>
       <Button type="button" variant="link" size="sm" @click="selection.clear()">{{
         t('table.deselect_all', {}, 'Deselect all')

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TextInputColumnSchema } from '@alfakit/core'
+  import { isPlainEnter, type TextInputColumnSchema } from '@alfakit/core'
   import { untrack } from 'svelte'
   import { colorClass, textColorClasses } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
@@ -72,7 +72,7 @@
         )}
         onblur={() => value !== initial && void updater.update(value)}
         onkeydown={(event) =>
-          event.key === 'Enter' && (event.currentTarget as HTMLInputElement).blur()}
+          isPlainEnter(event) && (event.currentTarget as HTMLInputElement).blur()}
       />
       {#if schema.suffixIcon}
         <span

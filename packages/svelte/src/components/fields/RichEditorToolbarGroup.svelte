@@ -75,10 +75,10 @@
           size="sm"
           aria-label={group.label}
           title={group.label}
-          disabled={!editable}
           class={cn('h-8 gap-0.5 px-1.5', active && 'bg-accent text-accent-foreground')}
           onmousedown={(event: MouseEvent) => event.preventDefault()}
           {...props}
+          disabled={!editable}
         >
           {#if group.icon}
             <Icon name={group.icon} />

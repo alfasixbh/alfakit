@@ -123,6 +123,9 @@
   }
 
   const onSearchKeydown = (event: KeyboardEvent) => {
+    // The Enter that confirms an IME candidate (Japanese, Chinese) adds no block.
+    if (event.isComposing || event.keyCode === 229) return
+
     if (event.key === 'ArrowDown') {
       event.preventDefault()
       options()[0]?.focus()

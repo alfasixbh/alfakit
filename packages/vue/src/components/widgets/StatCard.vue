@@ -26,7 +26,11 @@ const props = defineProps<{ stat: StatSchema }>()
           : { href: props.stat.url }
         : {}
     "
-    class="contents"
+    :class="
+      props.stat.url
+        ? 'focus-visible:ring-ring/50 block rounded-xl outline-none focus-visible:ring-[3px]'
+        : 'contents'
+    "
   >
     <Card
       :class="

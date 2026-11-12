@@ -87,7 +87,7 @@ FileManagerPlugin::make()
 
 `$user->is_admin` stands for your own check: a new Laravel app's `users` table has no such column, so use a role, a gate or a column you add. The closure's `bool` return type is strict: SQLite returns `0`/`1` and a model created without the attribute holds `null`, so cast the column to `boolean` and give it a default, or return `(bool) $user->is_admin`.
 
-- `authorize()`: who may open the page, the picker and every action.
+- `authorize()`: who may open the page, the picker and every action. Without it every user of the panel may, and on a panel without tenancy the root is the whole `public` disk: set it (or narrow `can()`) before you add the plugin to a panel other people use.
 - `can()`: the abilities `upload`, `createFolder`, `rename`, `move`, `copy`, `delete`, `restore`, `download` and `share`. Closures receive `$ability`, `$disk`, `$path` (the item, or the target folder for uploads, folders, moves and copies), `$paths`, `$user` and `$tenant`.
 - `readOnly()`: browse, preview, download and share only.
 

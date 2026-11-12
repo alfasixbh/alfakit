@@ -8,6 +8,7 @@ use AlfaSix\AlfakitCms\CmsPlugin;
 use AlfaSix\AlfakitCms\Models\Page;
 use AlfaSix\AlfakitCms\Models\PageRevision;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 /**
  * Versions of a page: every save that changes a revisioned attribute (`Page::REVISIONED`)
@@ -35,21 +36,32 @@ final class PageRevisions
 
     public static function record(Page $page, ?string $note = null): PageRevision
     {
-        $number = ((int) PageRevision::query()->where('page_id', $page->getKey())->max('number')) + 1;
         $author = alfakit()->auth() ?? auth()->user();
 
-        $revision = new PageRevision([
-            'page_id' => $page->getKey(),
-            'number' => $number,
-            'data' => self::snapshot($page),
-            'note' => $note === null ? null : mb_substr($note, 0, 255),
-        ]);
+        // Two saves of one page at the same moment read the same highest number: the one
+        // that loses the unique `(page_id, number)` takes the next.
+        for ($attempt = 1; ; $attempt++) {
+            $revision = new PageRevision([
+                'page_id' => $page->getKey(),
+                'number' => ((int) PageRevision::query()->where('page_id', $page->getKey())->max('number')) + 1,
+                'data' => self::snapshot($page),
+                'note' => $note === null ? null : mb_substr($note, 0, 255),
+            ]);
 
-        if ($author instanceof Model) {
-            $revision->author()->associate($author);
+            if ($author instanceof Model) {
+                $revision->author()->associate($author);
+            }
+
+            try {
+                $revision->save();
+
+                break;
+            } catch (UniqueConstraintViolationException $exception) {
+                if ($attempt >= 3) {
+                    throw $exception;
+                }
+            }
         }
-
-        $revision->save();
 
         self::prune($page);
 
@@ -87,7 +99,7 @@ final class PageRevisions
 
         $parent = $data['parent_id'] ?? null;
 
-        if ($parent !== null && (! Page::query()->whereKey($parent)->exists() || in_array((int) $parent, $page->getSelfAndDescendantKeys(), true))) {
+        if ($parent !== null && (! Page::query()->sameSiteAs($page)->whereKey($parent)->exists() || in_array((int) $parent, $page->getSelfAndDescendantKeys(), true))) {
             $data['parent_id'] = null;
         }
 

@@ -1,4 +1,5 @@
 import type { FormStore, FormStoreOptions } from './form'
+import { buildQuery } from './http'
 import type {
   BuilderBlockSchema,
   BuilderItemState,
@@ -744,6 +745,33 @@ export function newlineWithIndent(
   }
 }
 
+/**
+ * Apply an edit that replaces the selection with text (a newline with its indent, one
+ * indent step) through the browser's own editing command, which keeps the textarea's undo
+ * history; setting the value from code clears it. Returns false when the edit is another
+ * kind (indenting several lines) or the command is not available: apply it by value then.
+ */
+export function applyTextEditNatively(
+  target: HTMLTextAreaElement,
+  value: string,
+  edit: TextEdit,
+): boolean {
+  const start = target.selectionStart
+  const end = target.selectionEnd
+
+  if (edit.selectionStart !== edit.selectionEnd || edit.selectionStart < start) return false
+
+  const inserted = edit.value.slice(start, edit.selectionStart)
+
+  if (edit.value !== value.slice(0, start) + inserted + value.slice(end)) return false
+
+  if (typeof document === 'undefined' || typeof document.execCommand !== 'function') return false
+
+  target.focus()
+
+  return document.execCommand('insertText', false, inserted) === true
+}
+
 // ---------------------------------------------------------------- ModalTableSelect
 
 /** Query parameters for the picker table, prefixed with the table state identifier. */
@@ -751,6 +779,14 @@ export function modalTableQuery(identifier: string, query: TableQuery): Record<s
   const params: Record<string, unknown> = {}
 
   for (const [name, value] of Object.entries(query) as [keyof TableQuery, unknown][]) {
+    // Cleared filters are sent as a marker (empty values are left out of the query string):
+    // without the `filters` key the server would apply the filters' `default()` again.
+    if (name === 'filters' && buildQuery({ filters: value }) === '') {
+      params[tableQueryKey(identifier, name)] = { _cleared: 1 }
+
+      continue
+    }
+
     if (value === null || value === undefined || value === '') continue
 
     params[tableQueryKey(identifier, name)] = value

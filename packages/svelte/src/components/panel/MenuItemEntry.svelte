@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { MenuItemSchema } from '@alfakit/core'
   import { menuActionContext } from '@alfakit/core'
-  import { router } from '@inertiajs/svelte'
+  import { Link, router } from '@inertiajs/svelte'
   import { useActionRunner, usePageSchema } from '../../context.svelte'
   import { colorClass as resolveColorClass, textColorClasses } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
@@ -30,16 +30,31 @@
       return
     }
 
-    if (!item.url) return
-
-    if (item.method === 'post') router.post(item.url)
-    else if (item.openInNewTab) window.open(item.url, '_blank', 'noopener')
-    else router.visit(item.url)
+    if (item.url && item.method === 'post') router.post(item.url)
   }
 </script>
 
-<DropdownMenuItem onSelect={select} disabled={item.action?.disabled} title={item.action?.tooltip}>
-  {#if item.icon}<Icon name={item.icon} class={colorClass} />{/if}
-  <span class={colorClass}>{item.label}</span>
-  {#if item.openInNewTab && item.method !== 'post' && !item.action}<NewTabHint />{/if}
-</DropdownMenuItem>
+{#if item.action || item.method === 'post'}
+  <DropdownMenuItem onSelect={select} disabled={item.action?.disabled} title={item.action?.tooltip}>
+    {#if item.icon}<Icon name={item.icon} class={colorClass} />{/if}
+    <span class={colorClass}>{item.label}</span>
+  </DropdownMenuItem>
+{:else}
+  <!-- A real link, as in React and Vue: middle-click, Cmd-click and "copy link" work. -->
+  <DropdownMenuItem>
+    {#snippet child({ props })}
+      {#if item.openInNewTab}
+        <a {...props} href={item.url} target="_blank" rel="noopener noreferrer">
+          {#if item.icon}<Icon name={item.icon} class={colorClass} />{/if}
+          <span class={colorClass}>{item.label}</span>
+          <NewTabHint />
+        </a>
+      {:else}
+        <Link {...props} href={item.url ?? '#'}>
+          {#if item.icon}<Icon name={item.icon} class={colorClass} />{/if}
+          <span class={colorClass}>{item.label}</span>
+        </Link>
+      {/if}
+    {/snippet}
+  </DropdownMenuItem>
+{/if}

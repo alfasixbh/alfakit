@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { router } from '@inertiajs/svelte'
+  import { Link, router } from '@inertiajs/svelte'
   import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down'
   import LogOutIcon from '@lucide/svelte/icons/log-out'
   import UserIcon from '@lucide/svelte/icons/user'
@@ -92,9 +92,13 @@
         {#if userMenu.profile}
           <MenuItemEntry item={userMenu.profile} />
         {:else if userMenu.profileUrl}
-          <DropdownMenuItem onSelect={() => router.visit(userMenu.profileUrl ?? '/')}>
-            <Icon name="alfakit::panels.user-menu.profile-item" fallback={UserIcon} />
-            {t('profile', {}, 'Profile')}
+          <DropdownMenuItem>
+            {#snippet child({ props })}
+              <Link {...props} href={userMenu.profileUrl ?? '/'}>
+                <Icon name="alfakit::panels.user-menu.profile-item" fallback={UserIcon} />
+                {t('profile', {}, 'Profile')}
+              </Link>
+            {/snippet}
           </DropdownMenuItem>
         {/if}
         <Slot name="user-menu.profile.after" />

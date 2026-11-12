@@ -153,6 +153,48 @@ describe('table summaries and grouping', () => {
     expect(screen.queryByRole('button', { name: /Collapse group/ })).not.toBeInTheDocument()
   })
 
+  it('collapses groups that arrive later when groups start collapsed', () => {
+    const collapsed = { ...grouped, grouping: { ...grouped.grouping!, collapsedByDefault: true } }
+    const { rerender } = render(
+      <Wrapper>
+        <DataTable table={collapsed} />
+      </Wrapper>,
+    )
+
+    // The user opens one group; it stays open when the next page arrives.
+    fireEvent.click(screen.getByRole('button', { name: 'Expand group: Status: draft' }))
+    expect(screen.getByText('Beta')).toBeInTheDocument()
+
+    rerender(
+      <Wrapper>
+        <DataTable
+          table={{
+            ...collapsed,
+            records: [
+              ...collapsed.records!,
+              {
+                key: 9,
+                group: 'archived',
+                cells: { title: { state: 'Omega' }, rating: { state: 2 } },
+              },
+            ],
+            recordGroups: [
+              ...collapsed.recordGroups!,
+              { key: 'archived', title: 'Status: archived' },
+            ],
+          }}
+        />
+      </Wrapper>,
+    )
+
+    expect(screen.getByText('Beta')).toBeInTheDocument()
+    expect(screen.queryByText('Omega')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Expand group: Status: archived' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
+  })
+
   it('offers the group-by menu', () => {
     render(
       <Wrapper>

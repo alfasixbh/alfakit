@@ -815,7 +815,14 @@ function RichEditorInput({
           className="sr-only"
           tabIndex={-1}
           aria-hidden="true"
-          onChange={(event) => event.target.files?.[0] && void uploadImage(event.target.files[0])}
+          onChange={(event) => {
+            const file = event.target.files?.[0]
+            // Emptied so that picking the same file again (after a failed upload, or after
+            // deleting the image) fires `change`.
+            event.target.value = ''
+
+            if (file) void uploadImage(file)
+          }}
         />
       </div>
     </FieldWrapper>

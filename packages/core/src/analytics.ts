@@ -63,6 +63,17 @@ export function analyticsAllowed(): boolean {
   )
 }
 
+/** `localhost`, a loopback address, or a development name (`shop.localhost`, `shop.test`). */
+export function isLocalHostname(hostname: string): boolean {
+  const host = hostname.toLowerCase()
+
+  return (
+    /^(localhost|127(\.\d{1,3}){3}|\[::1\]|::1)$/.test(host) ||
+    host.endsWith('.localhost') ||
+    host.endsWith('.test')
+  )
+}
+
 /**
  * A cookieless tracker for the app's public pages: it never reads or writes cookies or
  * storage and sends `{k, n, u, r, p}` to the collection endpoint with `sendBeacon` (as
@@ -70,8 +81,7 @@ export function analyticsAllowed(): boolean {
  */
 export function createAnalyticsTracker(options: AnalyticsTrackerOptions): AnalyticsTracker {
   const endpoint = options.endpoint ?? '/alfakit-analytics/event'
-  const local =
-    typeof location !== 'undefined' && /^(localhost|127\.|\[::1\])/.test(location.hostname)
+  const local = typeof location !== 'undefined' && isLocalHostname(location.hostname)
   const enabled =
     analyticsAllowed() && options.siteKey !== '' && (!local || !!options.trackLocalhost)
   let last: string | null = null

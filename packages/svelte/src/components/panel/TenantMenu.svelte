@@ -1,7 +1,7 @@
 <script lang="ts">
   import NavLabel from './NavLabel.svelte'
   import { filterTenants, initials, tenantNameText } from '@alfakit/core'
-  import { router } from '@inertiajs/svelte'
+  import { Link, router } from '@inertiajs/svelte'
   import CheckIcon from '@lucide/svelte/icons/check'
   import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down'
   import PlusIcon from '@lucide/svelte/icons/plus'
@@ -142,24 +142,32 @@
           {#if String(tenant.id) === String(current.id)}<CheckIcon class="size-4" />{/if}
         </DropdownMenuItem>
       {/each}
-      {#if hasSwitcher && (tenancy.registrationUrl || tenancy.profileUrl || tenancy.menu?.length)}<DropdownMenuSeparator
+      {#if hasSwitcher && (tenancy.registration || tenancy.profile || tenancy.registrationUrl || tenancy.profileUrl || tenancy.menu?.length)}<DropdownMenuSeparator
         />{/if}
       {#if tenancy.profile}
         <MenuItemEntry item={tenancy.profile} menu="tenantMenu" />
       {:else if tenancy.profileUrl}
-        <DropdownMenuItem onSelect={() => router.visit(tenancy.profileUrl ?? '/')}
-          ><Icon name="alfakit::panels.tenant-menu.profile-button" fallback={SettingsIcon} />
-          {tenancy.profileLabel ?? t('tenancy.profile', {}, 'Settings')}</DropdownMenuItem
-        >
+        <DropdownMenuItem>
+          {#snippet child({ props })}
+            <Link {...props} href={tenancy.profileUrl ?? '/'}>
+              <Icon name="alfakit::panels.tenant-menu.profile-button" fallback={SettingsIcon} />
+              {tenancy.profileLabel ?? t('tenancy.profile', {}, 'Settings')}
+            </Link>
+          {/snippet}
+        </DropdownMenuItem>
       {/if}
       {#if tenancy.menu}<MenuItemEntries items={tenancy.menu} menu="tenantMenu" />{/if}
       {#if tenancy.registration}
         <MenuItemEntry item={tenancy.registration} menu="tenantMenu" />
       {:else if tenancy.registrationUrl}
-        <DropdownMenuItem onSelect={() => router.visit(tenancy.registrationUrl ?? '/')}
-          ><Icon name="alfakit::panels.tenant-menu.registration-button" fallback={PlusIcon} />
-          {tenancy.registrationLabel ?? t('tenancy.register', {}, 'New')}</DropdownMenuItem
-        >
+        <DropdownMenuItem>
+          {#snippet child({ props })}
+            <Link {...props} href={tenancy.registrationUrl ?? '/'}>
+              <Icon name="alfakit::panels.tenant-menu.registration-button" fallback={PlusIcon} />
+              {tenancy.registrationLabel ?? t('tenancy.register', {}, 'New')}
+            </Link>
+          {/snippet}
+        </DropdownMenuItem>
       {/if}
     </DropdownMenuContent>
   </DropdownMenu>

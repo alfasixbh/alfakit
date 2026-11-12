@@ -125,7 +125,11 @@ export function contentGridClasses(grid: Breakpoints | undefined | null): string
     if (!value) continue
 
     const count = Math.min(Math.max(Math.trunc(value), 1), 12)
-    const at = widerBreakpoint(CONTENT_GRID_FROM[key] ?? null, CONTENT_GRID_MIN[count] ?? '@7xl')
+    const at = widerBreakpoint(
+      CONTENT_GRID_FROM[key] ?? null,
+      // One column needs no minimum width (`null`); only an unknown count waits for the widest size.
+      count in CONTENT_GRID_MIN ? (CONTENT_GRID_MIN[count] ?? null) : '@7xl',
+    )
     const cls = at ? CONTAINER_GRID_COLS[at]?.[String(count)] : undefined
 
     if (at && cls) classes.set(at, cls)

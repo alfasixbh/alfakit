@@ -113,7 +113,7 @@
           class="border-t align-top"
           {@attach virtual.item}
         >
-          {#each cells as cell, cellIndex (cell?.key ?? `empty-${cellIndex}`)}
+          {#each cells as cell, cellIndex (cellIndex)}
             <td
               class={cn(
                 compact ? 'px-1.5 py-1' : 'px-3 py-2',

@@ -35,7 +35,11 @@ let calendar: Calendar | null = null
 
 const environment = (): CalendarEnvironment => ({
   runner,
-  token: page.token,
+  // Read per request: the page hands out a new token with every response, and the one the
+  // calendar was created with expires.
+  get token() {
+    return page.token
+  },
   t,
   locale: localization.value?.tag ?? 'en',
   direction: direction.value,

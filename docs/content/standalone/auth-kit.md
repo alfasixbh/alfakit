@@ -10,7 +10,7 @@ Panels come with sign-in, registration and a profile page. The rest of your appl
 - sign in (with "remember me" and a rate limit), registration (optionally by invitation only), forgot password and reset password;
 - email verification, with the `verified` middleware working as in any Laravel app;
 - two-step verification after the password: authenticator app codes, emailed codes and recovery codes, entered with the six-digit `OneTimeCodeInput`;
-- an account page with profile information, password change, two-step verification set-up, browser sessions ("sign out other sessions") and account deletion.
+- an account page with profile information, password change, two-step verification set-up, browser sessions ("sign out other sessions": AuthKit pages and panels end a session whose password has changed on any session driver; the list of sessions needs the `database` driver, and your own routes outside a panel need Laravel's `AuthenticateSession` middleware to be signed out too) and account deletion.
 
 Everything runs on the server like the rest of AlfaKit: validation, rate limits, authorisation and second factors are PHP; your pages only render `<AlfakitComponent>`. Themes, dark mode, RTL and the 13 bundled languages work as for any [standalone component](overview).
 

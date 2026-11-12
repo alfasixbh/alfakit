@@ -36,3 +36,9 @@ export function forgetFieldMemory(owner: object, path?: string): void {
 
   memories.get(owner)?.delete(path)
 }
+
+/**
+ * The memory key of the files uploaded in this session, for the whole form. A FileUpload
+ * finds its files in it by key (see `fileUploadEntries()`), wherever a Repeater moved them.
+ */
+export const FILE_UPLOADS_MEMORY = 'file-uploads'

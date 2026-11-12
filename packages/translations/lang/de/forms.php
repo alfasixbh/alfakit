@@ -14,6 +14,7 @@ return [
         'loading' => 'Wird geladen…',
     ],
     'key_value' => [
+        'locked' => 'Die Zeilen von :attribute können so nicht geändert werden.',
         'key' => 'Schlüssel',
         'value' => 'Wert',
         'add' => 'Zeile hinzufügen',

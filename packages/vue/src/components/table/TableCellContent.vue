@@ -8,7 +8,7 @@ import {
 } from '@alfakit/core'
 import { CheckIcon } from '@lucide/vue'
 import { computed, ref } from 'vue'
-import { useRegistry, useT } from '../../context'
+import { useFormatter, useRegistry, useT } from '../../context'
 import { colorClass, iconSizeClasses, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -26,6 +26,7 @@ const custom = computed(() =>
   props.fromRegistry ? undefined : registry.resolve(columnRegistryKey(props.column)),
 )
 const t = useT()
+const format = useFormatter()
 // `ViewColumn`: the application component registered under the column's `view()` name.
 const viewName = computed(() => (props.column as { component?: string }).component ?? '')
 const view = computed(() =>
@@ -42,6 +43,7 @@ const imageSchema = computed(
       size?: number | string
       height?: number | string
       width?: string
+      imageWidth?: number | string
       stacked?: boolean
       limit?: number
       limitedRemainingText?: boolean
@@ -64,7 +66,8 @@ const imageStyle = computed(() => {
   return {
     height: toCss(imageSchema.value.height ?? size),
     width: toCss(
-      imageSchema.value.width ??
+      imageSchema.value.imageWidth ??
+        imageSchema.value.width ??
         (imageSchema.value.square || imageSchema.value.circular ? size : undefined),
     ),
   }
@@ -197,7 +200,7 @@ const descriptionPosition = computed(
             remainingTextSizeClass(imageSchema.limitedRemainingTextSize),
           )
         "
-        >+{{ imageUrls.length - imageLimit }}</span
+        >+{{ format.number(imageUrls.length - imageLimit) }}</span
       >
     </div>
   </template>
@@ -207,7 +210,7 @@ const descriptionPosition = computed(
       v-else
       :class="cn('flex items-center gap-1.5', colorSchema.wrap ? 'flex-wrap' : 'flex-nowrap')"
     >
-      <template v-for="color in colors" :key="color">
+      <template v-for="(color, colorIndex) in colors" :key="`${color}-${colorIndex}`">
         <!-- The cell may sit inside a link or a clickable row. -->
         <button
           v-if="colorSchema.copyable"

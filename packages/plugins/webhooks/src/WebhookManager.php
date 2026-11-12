@@ -158,8 +158,12 @@ class WebhookManager
         $data = ['object' => $object instanceof Arrayable ? $object->toArray() : (array) $object];
 
         if ($event === 'updated') {
-            $visible = array_diff($changes, $model->getHidden());
-            $data['previous_attributes'] = array_intersect_key($model->getPrevious(), array_flip($visible));
+            // The previous values as the model would serialise them: `$hidden` and `$visible`
+            // apply, and casts too (raw, an encrypted attribute was sent as ciphertext and
+            // JSON as a string, unlike in `object`).
+            $before = clone $model;
+            $before->setRawAttributes([...$model->getAttributes(), ...$model->getPrevious()]);
+            $data['previous_attributes'] = array_intersect_key($before->attributesToArray(), array_flip($changes));
         }
 
         return $this->dispatch($definition['prefix'].'.'.$event, $data, $this->resolveModelTenant($model, $definition['tenant']));

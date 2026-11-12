@@ -1,4 +1,5 @@
 import {
+  FILE_UPLOADS_MEMORY,
   FormStore,
   fieldMemory,
   type SchemaComponent,
@@ -266,7 +267,7 @@ describe('field memory', () => {
       { components: [upload], state: { items: [{ attachment: 'tmp:abc' }] } },
       { token: 't', component: 'form' },
     )
-    fieldMemory<UploadedFile[]>(store, 'items.0.attachment:uploaded', () => []).set([
+    fieldMemory<UploadedFile[]>(store, FILE_UPLOADS_MEMORY, () => []).set([
       { path: 'tmp:abc', name: 'photo.png', size: 2048, temporary: true, url: 'blob:preview' },
     ])
 

@@ -1,27 +1,20 @@
 import {
-  PREFETCH_CACHE_FOR,
-  flattenNavigationItems,
   hasActiveNavigationItem,
   navigationItemText,
   type NavigationGroupSchema,
   type NavigationItemSchema,
 } from '@alfakit/core'
-import { Link } from '@inertiajs/react'
 import { ChevronRightIcon } from 'lucide-react'
-import { useState, type ComponentProps, type ReactNode } from 'react'
+import { useState } from 'react'
 import { useDirection, usePanel, useT } from '../../context'
 import { extraProps } from '../../lib/attributes'
-import { badgeColorClasses, colorClass } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
-import { NewTabHint } from '../../lib/new-tab-hint'
 import { cn } from '../../lib/utils'
 import { NotificationsMenu } from '../notifications/notifications-menu'
-import { Badge } from '../ui/badge'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
@@ -44,75 +37,12 @@ import {
 import { Brand } from './brand'
 import { GlobalSearch } from './global-search'
 import { NavLabel } from './nav-label'
+import { NavBadge, NavLink, NavMenuItems } from './nav-link'
 import { Slot } from './slot'
 import { TenantMenu } from './tenant-menu'
 import { UserMenu } from './user-menu'
 
 export { Brand } from './brand'
-
-function NavBadge({ item }: { item: NavigationItemSchema }) {
-  const t = useT()
-
-  // `deferNavigationBadges()`: a placeholder until the deferred badges arrive.
-  if (item.badgePending) {
-    return (
-      <span
-        data-slot="badge"
-        aria-busy="true"
-        aria-label={t('loading', {}, 'Loading')}
-        className="bg-muted-foreground/20 ms-auto inline-block h-4 w-5 animate-pulse rounded-md"
-      />
-    )
-  }
-
-  if (item.badge === undefined || item.badge === null) return null
-
-  return (
-    <Badge
-      variant="outline"
-      className={cn('ms-auto px-1.5 py-0', colorClass(badgeColorClasses, item.badgeColor, 'gray'))}
-      title={item.badgeTooltip}
-    >
-      {item.badge}
-    </Badge>
-  )
-}
-
-/**
- * A navigation link: an Inertia link, or a plain anchor for `openUrlInNewTab()`. Used as an
- * `asChild` target, so it must pass on the classes, data attributes and handlers it receives.
- */
-function NavLink({
-  item,
-  children,
-  ...props
-}: { item: NavigationItemSchema; children: ReactNode } & Omit<
-  ComponentProps<'a'>,
-  'href' | 'children'
->) {
-  // `NavigationItem::extraAttributes()`; `class` is merged with the link's own.
-  const attributes = {
-    ...props,
-    ...extraProps(item.extraAttributes, props.className),
-  } as ComponentProps<'a'>
-
-  return item.openInNewTab ? (
-    <a {...attributes} href={item.url} target="_blank" rel="noopener noreferrer">
-      {children}
-      <NewTabHint />
-    </a>
-  ) : (
-    // Slot passes DOM props; Inertia's Link redefines a few event names, so pass them through untyped.
-    <Link
-      {...(attributes as Record<string, unknown>)}
-      href={item.url ?? '#'}
-      prefetch
-      cacheFor={PREFETCH_CACHE_FOR}
-    >
-      {children}
-    </Link>
-  )
-}
 
 /**
  * Open state of a collapsible menu entry: `defaultOpen` at first, and opened again when the
@@ -152,8 +82,8 @@ function NavSubItem({ item }: { item: NavigationItemSchema }) {
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
-              {item.children.map((child) => (
-                <NavSubItem key={child.url ?? child.label} item={child} />
+              {item.children.map((child, index) => (
+                <NavSubItem key={`${child.url ?? child.label}-${index}`} item={child} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>
@@ -196,8 +126,8 @@ function NavItem({ item }: { item: NavigationItemSchema }) {
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
-              {item.children.map((child) => (
-                <NavSubItem key={child.url ?? child.label} item={child} />
+              {item.children.map((child, index) => (
+                <NavSubItem key={`${child.url ?? child.label}-${index}`} item={child} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>
@@ -217,31 +147,6 @@ function NavItem({ item }: { item: NavigationItemSchema }) {
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
-}
-
-/** A group's items in its flyout menu, children indented under their parent. */
-function FlyoutItems({ items }: { items: NavigationItemSchema[] }) {
-  return flattenNavigationItems(items).map(({ item, depth }, index) => (
-    <DropdownMenuItem
-      key={`${depth}-${item.label}-${index}`}
-      asChild
-      data-active={item.active ? 'true' : undefined}
-    >
-      <NavLink
-        item={item}
-        aria-current={item.active ? 'page' : undefined}
-        className={cn(
-          'data-[active=true]:bg-accent data-[active=true]:font-medium',
-          depth === 1 && 'ps-6',
-          depth > 1 && 'ps-9',
-        )}
-      >
-        {item.icon && <Icon name={item.icon} />}
-        <NavLabel item={item} className="truncate" />
-        <NavBadge item={item} />
-      </NavLink>
-    </DropdownMenuItem>
-  ))
 }
 
 /**
@@ -268,7 +173,7 @@ function NavGroupFlyout({ group }: { group: NavigationGroupSchema }) {
             className="min-w-56"
           >
             <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
-            <FlyoutItems items={group.items} />
+            <NavMenuItems items={group.items} />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
@@ -286,8 +191,8 @@ function NavGroup({ group }: { group: NavigationGroupSchema }) {
   const content = (
     <SidebarGroupContent className={cn(flyout && 'group-data-[collapsible=icon]:hidden')}>
       <SidebarMenu>
-        {group.items.map((item) => (
-          <NavItem key={item.url ?? item.label} item={item} />
+        {group.items.map((item, index) => (
+          <NavItem key={`${item.url ?? item.label}-${index}`} item={item} />
         ))}
       </SidebarMenu>
     </SidebarGroupContent>

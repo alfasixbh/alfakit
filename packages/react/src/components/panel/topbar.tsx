@@ -34,8 +34,13 @@ export function Breadcrumbs({ items }: { items: BreadcrumbSchema[] }) {
           return (
             <Fragment key={`${item.label}-${index}`}>
               <BreadcrumbItem className={!last ? 'hidden md:inline-flex' : 'min-w-0'}>
-                {last || !item.url ? (
+                {last ? (
                   <BreadcrumbPage className="block truncate">{item.label}</BreadcrumbPage>
+                ) : !item.url ? (
+                  // Not the current page: plain text, without `aria-current`.
+                  <span data-slot="breadcrumb-text" className="block truncate">
+                    {item.label}
+                  </span>
                 ) : (
                   <BreadcrumbLink asChild>
                     <Link href={item.url}>{item.label}</Link>

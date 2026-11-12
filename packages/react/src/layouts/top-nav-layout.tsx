@@ -17,6 +17,7 @@ import { DebugPanelSlot } from '../components/panel/debug-panel-slot'
 import { GlobalSearch } from '../components/panel/global-search'
 import { TopbarLocaleSwitcher } from '../components/panel/locale-switcher'
 import { NavLabel } from '../components/panel/nav-label'
+import { NavMenuItems, NavSheetItems } from '../components/panel/nav-link'
 import { Slot } from '../components/panel/slot'
 import { TenantMenu } from '../components/panel/tenant-menu'
 import { ThemeToggle } from '../components/panel/theme-toggle'
@@ -26,7 +27,6 @@ import { Button } from '../components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../components/ui/sheet'
@@ -118,17 +118,7 @@ function TopNavMenu({
         <ChevronDownIcon className="opacity-60" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-48">
-        {items.map((item) => (
-          <DropdownMenuItem key={item.url ?? item.label} asChild>
-            <Link
-              {...extraProps(item.extraAttributes, cn('w-full', item.active && 'font-medium'))}
-              href={item.url ?? '#'}
-            >
-              {item.icon && <Icon name={item.icon} />}
-              <NavLabel item={item} />
-            </Link>
-          </DropdownMenuItem>
-        ))}
+        <NavMenuItems items={items} />
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -150,8 +140,8 @@ function TopNavGroup({ group }: { group: NavigationGroupSchema }) {
   if (!group.label) {
     return (
       <>
-        {group.items.map((item) => (
-          <TopNavLink key={item.url ?? item.label} item={item} />
+        {group.items.map((item, index) => (
+          <TopNavLink key={`${item.url ?? item.label}-${index}`} item={item} />
         ))}
       </>
     )
@@ -178,20 +168,7 @@ function MobileNav({ onNavigate }: { onNavigate: () => void }) {
           {group.label && (
             <p className="text-muted-foreground px-2 text-xs font-medium">{group.label}</p>
           )}
-          {group.items
-            .flatMap((item) => [item, ...(item.children ?? [])])
-            .map((item) => (
-              <Link
-                key={item.url ?? item.label}
-                href={item.url ?? '#'}
-                onClick={onNavigate}
-                data-active={item.active ? 'true' : undefined}
-                className="hover:bg-accent data-[active=true]:bg-accent flex items-center gap-2 rounded-md px-2 py-2 font-medium [&_svg]:size-4"
-              >
-                {item.icon && <Icon name={item.icon} />}
-                <NavLabel item={item} />
-              </Link>
-            ))}
+          <NavSheetItems items={group.items} onNavigate={onNavigate} />
         </div>
       ))}
     </nav>

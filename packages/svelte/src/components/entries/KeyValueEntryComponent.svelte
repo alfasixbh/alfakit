@@ -25,7 +25,11 @@
             <tr class="border-t">
               <td class="px-3 py-1.5 font-medium">{key}</td>
               <td class="px-3 py-1.5"
-                >{typeof value === 'object' ? JSON.stringify(value) : String(value)}</td
+                >{value === null || value === undefined
+                  ? ''
+                  : typeof value === 'object'
+                    ? JSON.stringify(value)
+                    : String(value)}</td
               >
             </tr>
           {/each}

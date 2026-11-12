@@ -328,8 +328,12 @@ function FormStateView({ form }: { form: FormStore }) {
       <header className="flex flex-wrap items-center gap-2 font-mono text-xs">
         <span className="font-semibold">{form.component}</span>
         {form.record !== null && <span className="text-muted-foreground">#{form.record}</span>}
-        {state.processing && <Badge variant="secondary">processing</Badge>}
-        {state.refreshing && <Badge variant="secondary">refreshing</Badge>}
+        {state.processing && (
+          <Badge variant="secondary">{t('debug.processing', {}, 'processing')}</Badge>
+        )}
+        {state.refreshing && (
+          <Badge variant="secondary">{t('debug.refreshing', {}, 'refreshing')}</Badge>
+        )}
       </header>
       <h4 className="text-muted-foreground text-xs font-medium">
         {t('debug.values', {}, 'Values')}

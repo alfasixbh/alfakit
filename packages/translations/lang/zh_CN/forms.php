@@ -14,6 +14,7 @@ return [
         'loading' => '加载中…',
     ],
     'key_value' => [
+        'locked' => ':attribute 的行不能这样更改。',
         'key' => '键',
         'value' => '值',
         'add' => '添加行',

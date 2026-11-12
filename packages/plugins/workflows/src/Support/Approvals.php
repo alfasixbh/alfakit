@@ -304,6 +304,14 @@ final class Approvals
             ]);
         }
 
+        // The record may have changed while the request was pending: the transition's own
+        // conditions must still hold when the last approval applies it.
+        $message = $transition->checkGuards($locked, Users::find($request->requester_type, $request->requester_id), $workflow, $request->data ?? []);
+
+        if ($message !== null) {
+            throw TransitionDenied::because(TransitionDenied::GUARD, $message);
+        }
+
         $request->forceFill(['status' => ApprovalRequest::APPROVED, 'completed_at' => now()])->save();
 
         Transitions::move($locked, $workflow, $transition, $state, (string) $transition->getTo(), $actor, $request->data ?? [], null, $request);

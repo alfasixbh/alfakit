@@ -393,3 +393,25 @@ it('reveals the translation link, layout and order with "Show advanced settings"
         ->assertFormFieldHidden('translation_of_id')
         ->assertFormFieldVisible('sort');
 });
+
+it('does not publish saved changes that the page form would refuse', function (): void {
+    actingAs(cmsUser());
+    $about = cmsPage('About', ['slug' => 'about', 'status' => PageStatus::Published]);
+    $page = cmsPage('Contact', ['slug' => 'contact', 'status' => PageStatus::Draft]);
+    $publish = fn (array $draft) => AlfaSix\AlfakitCms\Support\Publisher::publish($page->refresh()->forceFill(['draft' => $draft, 'draft_saved_at' => now()]));
+
+    // An autosave is not validated: a path another page has, no title, itself as parent.
+    expect(fn () => $publish(['slug' => 'about']))->toThrow(Illuminate\Validation\ValidationException::class)
+        ->and(fn () => $publish(['title' => '']))->toThrow(Illuminate\Validation\ValidationException::class)
+        ->and(fn () => $publish(['parent_id' => $page->getKey()]))->toThrow(Illuminate\Validation\ValidationException::class)
+        ->and($page->refresh()->slug)->toBe('contact')
+        ->and($page->getState())->not->toBe(PageState::Published)
+        ->and($about->refresh()->path)->toBe('about');
+
+    // Valid changes go live.
+    $publish(['title' => 'Contact us', 'slug' => 'contact-us']);
+
+    expect($page->refresh()->path)->toBe('contact-us')
+        ->and($page->title)->toBe('Contact us')
+        ->and($page->getState())->toBe(PageState::Published);
+});

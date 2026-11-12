@@ -381,6 +381,8 @@ return [
         'timings' => 'Süreler',
         'hidden' => 'gizli',
         'unauthorized' => 'yetkisiz',
+        'processing' => 'işleniyor',
+        'refreshing' => 'yenileniyor',
         'no_forms' => 'Bu sayfada form yok.',
         'no_requests' => 'Henüz iç istek yok.',
         'clear' => 'Temizle',

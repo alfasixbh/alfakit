@@ -42,9 +42,10 @@ export function matchesKeyBinding(
   binding: string | ParsedKeyBinding,
 ): boolean {
   const parsed = typeof binding === 'string' ? parseKeyBinding(binding) : binding
-  const key = event.key.toLowerCase()
+  // Autofill and some IMEs dispatch keydown events without `key` / `code`.
+  const key = (event.key ?? '').toLowerCase()
 
-  if (key !== parsed.key && event.code.toLowerCase() !== `key${parsed.key}`) {
+  if (key !== parsed.key && (event.code ?? '').toLowerCase() !== `key${parsed.key}`) {
     return false
   }
 

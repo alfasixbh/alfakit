@@ -1,5 +1,11 @@
 import type { CodeEditorSchema } from '@alfakit/core'
-import { countCodeLines, highlightCode, indentCode, newlineWithIndent } from '@alfakit/core'
+import {
+  applyTextEditNatively,
+  countCodeLines,
+  highlightCode,
+  indentCode,
+  newlineWithIndent,
+} from '@alfakit/core'
 import { useMemo, useRef, type KeyboardEvent } from 'react'
 import { useT } from '../../context'
 import { extraProps } from '../../lib/attributes'
@@ -28,13 +34,17 @@ export function CodeEditorField({ component }: { component: CodeEditorSchema }) 
   const locked = disabled || readOnly
 
   const apply = (target: HTMLTextAreaElement, edit: ReturnType<typeof indentCode>) => {
+    // The browser's own insert keeps the undo history; other edits set the value.
+    if (applyTextEditNatively(target, code, edit)) return
+
     setValue(edit.value)
     // Restore the caret once React has written the new value.
     requestAnimationFrame(() => target.setSelectionRange(edit.selectionStart, edit.selectionEnd))
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (locked) return
+    // The Enter that confirms an IME candidate (Japanese, Chinese) belongs to the IME.
+    if (locked || event.nativeEvent.isComposing || event.keyCode === 229) return
 
     const target = event.currentTarget
 

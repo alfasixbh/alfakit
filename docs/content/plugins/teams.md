@@ -245,7 +245,7 @@ Team settings gain an **E-mail domain** field (needs `team:update`). Users who r
 
 - The domain must be the domain of the admin's own verified address.
 - Public providers (gmail.com, outlook.com…) are refused; add yours with `->blockedAutoJoinDomains(['example.org'])`.
-- Users that implement `MustVerifyEmail` join only once verified.
+- Only verified addresses join: users that implement `MustVerifyEmail` once they verified, other user models when `email_verified_at` is filled (set it when single sign-on or another system verified the address). A user model that never verifies e-mail never auto-joins, since anyone can sign up with an address they don't own.
 
 Call `Teams::manager()->autoJoin($user)` from your own sign-up flow when you don't fire `Registered`.
 

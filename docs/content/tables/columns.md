@@ -98,7 +98,7 @@ ColorColumn::make('palette')->copyable()->copyMessage('Copied')->copyMessageDura
 ```
 
 - `IconColumn`: a list state (JSON array, collection, `tags.icon`) renders one icon per item; `icon()` / `color()` closures and `trueIcon()` / `falseIcon()` / `trueColor()` / `falseColor()` run once per item with `$state`. `wrap()` lets the icons wrap onto more lines.
-- `ImageColumn`: `circular()` / `square()`, `size()` / `height()` / `width()`, `visibility('public' | 'private')`, `limit()` with `limitedRemainingText(size: 'xs' | 'sm' | 'md' | 'lg')` for the "+N", `wrap()` for several rows, and `checkFileExistence()` (one `exists()` call per image, so leave it off for large tables on remote disks).
+- `ImageColumn`: `circular()` / `square()`, `size()` / `height()` / `width()` (`width()` is the column's width, which the image takes too; `imageWidth()` sizes the image alone), `visibility('public' | 'private')`, `limit()` with `limitedRemainingText(size: 'xs' | 'sm' | 'md' | 'lg')` for the "+N", `wrap()` for several rows, and `checkFileExistence()` (one `exists()` call per image, so leave it off for large tables on remote disks).
 - `ColorColumn`: `copyable()` turns each swatch into a copy button; the confirmation uses `copyMessage()` (default "Copied", read to screen readers) for `copyMessageDuration()` milliseconds (1500 by default). `wrap()` lets swatches wrap.
 
 `ImageColumn` (and `ImageEntry`) take `ring(0–8)` (pixels around stacked images, 2 by default), `overlap(0–8)` (quarter rems, 2 by default) and `extraImgAttributes(['loading' => 'lazy'])` for every `<img>` (`class` is merged; per record on columns).

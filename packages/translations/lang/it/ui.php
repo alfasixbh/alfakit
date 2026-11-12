@@ -381,6 +381,8 @@ return [
         'timings' => 'Tempi',
         'hidden' => 'nascosto',
         'unauthorized' => 'non autorizzato',
+        'processing' => 'elaborazione',
+        'refreshing' => 'aggiornamento',
         'no_forms' => 'Nessun modulo in questa pagina.',
         'no_requests' => 'Ancora nessuna richiesta interna.',
         'clear' => 'Pulisci',

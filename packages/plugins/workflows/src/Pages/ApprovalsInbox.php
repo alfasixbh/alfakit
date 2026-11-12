@@ -318,7 +318,7 @@ class ApprovalsInbox extends Page
             'step' => (string) ($this->step($approval)?->getLabel() ?? $approval->step_name),
         ]);
 
-        return $request->comment === null ? $summary : $summary.' “'.e($request->comment).'”';
+        return $request->comment === null ? $summary : $summary.' “'.$request->comment.'”';
     }
 
     protected function tenantOf(Approval $approval): ?Model

@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import type { CodeEditorSchema, TextEdit } from '@alfakit/core'
-import { countCodeLines, highlightCode, indentCode, newlineWithIndent } from '@alfakit/core'
-import { computed, nextTick } from 'vue'
+import {
+  applyTextEditNatively,
+  countCodeLines,
+  highlightCode,
+  indentCode,
+  newlineWithIndent,
+} from '@alfakit/core'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useT } from '../../context'
 import { cn } from '../../lib/utils'
 import { useField } from '../form/form-context'
@@ -43,14 +49,28 @@ const inputClass = computed(() =>
   ),
 )
 
+// `autofocus()`: browsers honour the bare attribute only on a full page load, not on a
+// page Inertia swaps in. Focus placed elsewhere (a modal) is left alone.
+const textarea = ref<HTMLTextAreaElement | null>(null)
+
+onMounted(() => {
+  if (props.component.autofocus && document.activeElement === document.body) {
+    textarea.value?.focus()
+  }
+})
+
 const apply = async (target: HTMLTextAreaElement, edit: TextEdit) => {
+  // The browser's own insert keeps the undo history; other edits set the value.
+  if (applyTextEditNatively(target, code.value, edit)) return
+
   setValue(edit.value)
   await nextTick()
   target.setSelectionRange(edit.selectionStart, edit.selectionEnd)
 }
 
 const onKeydown = (event: KeyboardEvent) => {
-  if (locked.value) return
+  // The Enter that confirms an IME candidate (Japanese, Chinese) belongs to the IME.
+  if (locked.value || event.isComposing || event.keyCode === 229) return
 
   const target = event.currentTarget as HTMLTextAreaElement
 
@@ -111,6 +131,7 @@ const onKeydown = (event: KeyboardEvent) => {
           :class="cn(layer, 'pointer-events-none')"
         ><template v-for="(token, index) in tokens" :key="index"><span v-if="token.kind !== 'plain'" :class="codeTokenClasses[token.kind]">{{ token.text }}</span><template v-else>{{ token.text }}</template></template>{{ '\n' }}</pre>
         <textarea
+          ref="textarea"
           :id="id"
           :name="props.component.name"
           :value="code"

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { StarterKitWidgets } from '@alfakit/core'
+  import { LocaleFormatter, unreadCountLabel, type StarterKitWidgets } from '@alfakit/core'
   import BellIcon from '@lucide/svelte/icons/bell'
 
   /** The bell and its unread count until the menu has loaded. */
@@ -7,6 +7,8 @@
 
   const notifications = $derived(source.widgets.notifications)
   const count = $derived(notifications?.unreadCount ?? 0)
+  // No panel context yet: the digits of the panel's language when it sends one.
+  const format = $derived(new LocaleFormatter(source.widgets.language?.current.tag ?? 'en'))
 </script>
 
 <button
@@ -20,7 +22,7 @@
     <span
       class="bg-primary text-primary-foreground absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium"
     >
-      {count > 99 ? '99+' : count}
+      {unreadCountLabel(count, (value) => format.number(value))}
     </span>
   {/if}
 </button>

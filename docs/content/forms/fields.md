@@ -551,7 +551,7 @@ A repeater with two default items and a limit of five:
 
 ## KeyValue
 
-`keyLabel()`, `valueLabel()`, `keyPlaceholder()`, `valuePlaceholder()` (placeholders of the key and value inputs), `addable()`, `deletable()`, `reorderable()`, `editableKeys()`, `editableValues()`. Stored as an associative array (use an `array` cast).
+`keyLabel()`, `valueLabel()`, `keyPlaceholder()`, `valuePlaceholder()` (placeholders of the key and value inputs), `addable()`, `deletable()`, `reorderable()`, `editableKeys()`, `editableValues()`. Stored as an associative array (use an `array` cast). `addable(false)`, `deletable(false)`, `editableKeys(false)` and `editableValues(false)` are enforced on the server: a request that adds, removes, renames or changes rows against them fails validation.
 
 The buttons are actions: `addAction()`, `deleteAction()` and `reorderAction()` take `fn (Action $action) => $action->…`. `$arguments['item']` is the row's position; a reorder gets `$arguments['items']`. As with repeaters, a customised action that needs the server (`requiresConfirmation()`, `action()`) runs there.
 

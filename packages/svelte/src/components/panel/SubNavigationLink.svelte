@@ -3,7 +3,9 @@
   import NavLabel from './NavLabel.svelte'
   import type { NavigationItemSchema } from '@alfakit/core'
   import { Link } from '@inertiajs/svelte'
+  import { badgeColorClasses, colorClass } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
+  import NewTabHint from '../../lib/NewTabHint.svelte'
   import { cn } from '../../lib/utils'
   import { Badge } from '../ui/badge'
 
@@ -24,7 +26,11 @@
   {#if item.icon}<Icon name={item.icon} />{/if}
   <NavLabel class="truncate" text={item.label} html={item.labelHtml} />
   {#if item.badge !== undefined && item.badge !== null}
-    <Badge variant="secondary" class="ms-auto px-1.5 py-0" title={item.badgeTooltip}>
+    <Badge
+      variant="outline"
+      class={cn('ms-auto px-1.5 py-0', colorClass(badgeColorClasses, item.badgeColor, 'gray'))}
+      title={item.badgeTooltip}
+    >
       {item.badge}
     </Badge>
   {/if}
@@ -39,7 +45,7 @@
     target="_blank"
     rel="noopener noreferrer"
   >
-    {@render content()}
+    {@render content()}<NewTabHint />
   </a>
 {:else}
   <Link

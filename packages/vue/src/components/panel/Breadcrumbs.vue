@@ -24,11 +24,13 @@ const t = useT()
         <BreadcrumbItem
           :class="index < props.items.length - 1 ? 'hidden md:inline-flex' : 'min-w-0'"
         >
-          <BreadcrumbPage
-            v-if="index === props.items.length - 1 || !item.url"
-            class="block truncate"
-            >{{ item.label }}</BreadcrumbPage
-          >
+          <BreadcrumbPage v-if="index === props.items.length - 1" class="block truncate">{{
+            item.label
+          }}</BreadcrumbPage>
+          <!-- Not the current page: plain text, without `aria-current`. -->
+          <span v-else-if="!item.url" data-slot="breadcrumb-text" class="block truncate">{{
+            item.label
+          }}</span>
           <BreadcrumbLink v-else as-child>
             <Link :href="item.url">{{ item.label }}</Link>
           </BreadcrumbLink>

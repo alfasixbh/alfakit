@@ -217,7 +217,8 @@ class Card
             'color' => $this->color,
             'badges' => array_map(static fn (CardBadge $badge): array => $badge->toSchema(), $this->badges) ?: null,
             'assignees' => array_map(static fn (CardAssignee $assignee): array => $assignee->toSchema(), $this->assignees) ?: null,
-            'dueDate' => $this->dueDate?->toIso8601String(),
+            // A date without a time is a calendar day, not a moment: it must not shift with the viewer's timezone.
+            'dueDate' => $this->dueDate === null ? null : ($this->dueDate->format('H:i:s.u') === '00:00:00.000000' ? $this->dueDate->format('Y-m-d') : $this->dueDate->toIso8601String()),
             'overdue' => $this->dueDate !== null && $this->isOverdue() ? true : null,
             'progress' => $this->progress,
             'coverImage' => $this->coverImage,

@@ -1,4 +1,10 @@
-import { fieldMemory, FormStore, type FileUploadSchema, type SchemaComponent } from '@alfakit/core'
+import {
+  fieldMemory,
+  FILE_UPLOADS_MEMORY,
+  FormStore,
+  type FileUploadSchema,
+  type SchemaComponent,
+} from '@alfakit/core'
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
 import FileUploadHarness from './FileUploadHarness.svelte'
 import FormHarness from './FormHarness.svelte'
@@ -230,7 +236,7 @@ describe('uploaded image previews', () => {
     )
     // This session's upload of `tmp:a` (its local preview) and the server's entry for the
     // same temporary key after a round trip, without a url (W-S2-02).
-    fieldMemory<FileUploadSchema['files']>(store, 'files:uploaded', () => []).set([
+    fieldMemory<FileUploadSchema['files']>(store, FILE_UPLOADS_MEMORY, () => []).set([
       { path: 'tmp:a', name: 'a.png', size: 3, temporary: true, url: 'blob:local-a' },
     ])
     const { container } = render(Wrapper, { props: { component: FormHarness, props: { store } } })

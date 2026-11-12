@@ -257,10 +257,23 @@ export function useCollapsedGroups(
   const [state, setState] = useState(() => ({
     groupId,
     collapsed: initialCollapsedGroups(table),
+    seen: initialCollapsedGroups(table),
   }))
+  // Groups that arrive later (another page, load more, a search) start collapsed as well.
+  const unseen = [...initialCollapsedGroups(table)].filter((key) => !state.seen.has(key))
 
   if (state.groupId !== groupId) {
-    setState({ groupId, collapsed: initialCollapsedGroups(table) })
+    setState({
+      groupId,
+      collapsed: initialCollapsedGroups(table),
+      seen: initialCollapsedGroups(table),
+    })
+  } else if (unseen.length > 0) {
+    setState({
+      groupId,
+      collapsed: new Set([...state.collapsed, ...unseen]),
+      seen: new Set([...state.seen, ...unseen]),
+    })
   }
 
   return [

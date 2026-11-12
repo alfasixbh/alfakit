@@ -381,6 +381,8 @@ return [
         'timings' => '処理時間',
         'hidden' => '非表示',
         'unauthorized' => '権限なし',
+        'processing' => '処理中',
+        'refreshing' => '更新中',
         'no_forms' => 'このページにフォームはありません。',
         'no_requests' => '内部リクエストはまだありません。',
         'clear' => 'クリア',

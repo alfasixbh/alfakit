@@ -3,12 +3,12 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 import { ImpersonationBanner } from '../components/panel/impersonation-banner'
 
 // The header components appear in both header layouts and next to each other: the first
-// one mounted shows the banner, the others render nothing.
-let owner: symbol | null = null
+// one mounted shows the banner, the others render nothing. When that one goes away (a
+// host that renders it conditionally), the next one takes over.
+const candidates: symbol[] = []
 const listeners = new Set<() => void>()
 
-function setOwner(next: symbol | null): void {
-  owner = next
+function notify(): void {
   listeners.forEach((listener) => listener())
 }
 
@@ -32,15 +32,17 @@ export default function StarterKitImpersonationBanner({
   // Claimed once mounted (effects never run on the server), so SSR and hydration skip it.
   const owns = useSyncExternalStore(
     subscribe,
-    () => owner === id,
+    () => candidates[0] === id,
     () => false,
   )
 
   useEffect(() => {
-    if (owner === null) setOwner(id)
+    candidates.push(id)
+    notify()
 
     return () => {
-      if (owner === id) setOwner(null)
+      candidates.splice(candidates.indexOf(id), 1)
+      notify()
     }
   }, [id])
 

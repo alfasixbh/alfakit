@@ -344,13 +344,16 @@ final class FailedJobRepository
 
         if (($search = trim((string) $search)) !== '') {
             $query->where(static function (Builder $query) use ($search): void {
-                $like = '%'.$search.'%';
+                $like = '%'.self::escapeLike($search).'%';
+                $match = static fn (string $column): array => ["{$column} like ? escape ?", [$like, '!']];
 
-                $query->where('uuid', 'like', $like)
-                    ->orWhere('queue', 'like', $like)
-                    ->orWhere('connection', 'like', $like)
-                    ->orWhere('exception', 'like', $like)
-                    ->orWhere('payload', 'like', $like);
+                $query->whereRaw(...$match('uuid'))
+                    ->orWhereRaw(...$match('queue'))
+                    ->orWhereRaw(...$match('connection'))
+                    // Not the payload: it holds the values the page redacts, and a search over
+                    // it would let a user probe them character by character. The "Job" filter
+                    // finds jobs by name.
+                    ->orWhereRaw(...$match('exception'));
             });
         }
 
@@ -366,7 +369,7 @@ final class FailedJobRepository
             // The payload's JSON has `"displayName":"App\\Jobs\\SendInvoice"`; `!` escapes
             // LIKE wildcards on every supported database.
             $needle = '"displayName":'.json_encode($job, JSON_UNESCAPED_UNICODE);
-            $query->whereRaw('payload like ? escape ?', ['%'.addcslashes($needle, '%_!').'%', '!']);
+            $query->whereRaw('payload like ? escape ?', ['%'.self::escapeLike($needle).'%', '!']);
         }
 
         [$from, $until] = self::dateRange($filters);
@@ -440,6 +443,14 @@ final class FailedJobRepository
     /**
      * @param  array<string, array<string, mixed>>  $filters
      */
+    /**
+     * Escape LIKE wildcards with `!`, the escape character these queries declare.
+     */
+    private static function escapeLike(string $value): string
+    {
+        return str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value);
+    }
+
     protected static function filterValue(array $filters, string $name): ?string
     {
         $value = $filters[$name]['value'] ?? null;

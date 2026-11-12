@@ -1,13 +1,16 @@
 <script lang="ts">
+import { shallowRef } from 'vue'
+
 // The header components appear in both header layouts and next to each other: the first
-// one mounted shows the banner, the others render nothing.
-let owner: symbol | null = null
+// one mounted shows the banner, the others render nothing. When that one goes away (a
+// host that renders it conditionally), the next one takes over.
+const candidates = shallowRef<symbol[]>([])
 </script>
 
 <script setup lang="ts">
 import { isAlfakitPage, type StarterKitWidgets } from '@alfakit/core'
 import { usePage } from '@inertiajs/vue3'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
 import ImpersonationBanner from '../../components/panel/ImpersonationBanner.vue'
 
 /**
@@ -17,13 +20,12 @@ import ImpersonationBanner from '../../components/panel/ImpersonationBanner.vue'
 const props = defineProps<{ source: StarterKitWidgets | null }>()
 const page = usePage()
 const id = Symbol('impersonation-banner')
-const owns = ref(false)
+const owns = computed(() => candidates.value[0] === id)
 const impersonation = computed(() => props.source?.widgets.impersonation)
 const active = computed(() => impersonation.value !== undefined && !isAlfakitPage(page.props))
 
 function release(): void {
-  if (owner === id) owner = null
-  owns.value = false
+  candidates.value = candidates.value.filter((candidate) => candidate !== id)
 }
 
 // Claimed once mounted, so the server render and hydration never include it.
@@ -33,14 +35,9 @@ onMounted(() => {
   stop = watch(
     active,
     (value) => {
-      if (!value) {
-        release()
+      release()
 
-        return
-      }
-
-      if (owner === null) owner = id
-      owns.value = owner === id
+      if (value) candidates.value = [...candidates.value, id]
     },
     { immediate: true },
   )

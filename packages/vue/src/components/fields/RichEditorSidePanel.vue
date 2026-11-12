@@ -76,6 +76,7 @@ const itemClass =
         :aria-label="t('editor.search_blocks', {}, 'Search blocks')"
         :placeholder="t('editor.search_blocks', {}, 'Search blocks')"
         class="h-8"
+        @keydown.enter.prevent
       />
       <template v-if="props.panel === 'customBlocks'">
         <p v-if="groups.length === 0" class="text-muted-foreground px-2 py-1.5 text-sm">

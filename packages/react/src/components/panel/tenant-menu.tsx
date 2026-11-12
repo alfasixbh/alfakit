@@ -141,9 +141,12 @@ export function TenantMenu({ variant = 'sidebar' }: { variant?: 'sidebar' | 'top
             {String(tenant.id) === String(current.id) && <CheckIcon className="size-4" />}
           </DropdownMenuItem>
         ))}
-        {hasSwitcher && (tenancy.registrationUrl || tenancy.profileUrl || tenancy.menu?.length) && (
-          <DropdownMenuSeparator />
-        )}
+        {hasSwitcher &&
+          (tenancy.registration ||
+            tenancy.profile ||
+            tenancy.registrationUrl ||
+            tenancy.profileUrl ||
+            tenancy.menu?.length) && <DropdownMenuSeparator />}
         {tenancy.profile ? (
           <MenuItemEntry item={tenancy.profile} menu="tenantMenu" />
         ) : (

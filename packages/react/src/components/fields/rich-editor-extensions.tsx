@@ -280,6 +280,8 @@ export function RichEditorSidePanel({
             placeholder={t('editor.search_blocks', {}, 'Search blocks')}
             className="h-8"
             onChange={(event) => setSearch(event.target.value)}
+            // Enter filters nothing more: it must not submit the form the editor is in.
+            onKeyDown={(event) => event.key === 'Enter' && event.preventDefault()}
           />
         )}
         {panel === 'customBlocks' ? (

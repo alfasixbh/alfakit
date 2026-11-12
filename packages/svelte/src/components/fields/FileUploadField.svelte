@@ -20,6 +20,7 @@
     editableImageName,
     fetchEditableImage,
     fieldMemory,
+    FILE_UPLOADS_MEMORY,
     fileUploadAccept,
     filesFromClipboard,
     fileManagerSize,
@@ -77,7 +78,9 @@
   const uploadingStore = fieldMemory<LocalFile[]>(store, `${statePath}:uploading`, () => [])
   const uploadedStore = fieldMemory<FileUploadSchema['files']>(
     store,
-    `${statePath}:uploaded`,
+    // Shared by the form's upload fields and looked up by file key, not by state path: a
+    // Repeater item that is moved or removed takes its files (names, previews) along.
+    FILE_UPLOADS_MEMORY,
     () => [],
   )
   const uploadingState = useStore(uploadingStore)
@@ -110,7 +113,7 @@
     })
   // Object URLs made for local image previews; released when the file is removed.
   // Not reactive state: nothing renders from it.
-  const objectUrls = fieldMemory<string[]>(store, `${statePath}:previews`, () => []).get()
+  const objectUrls = fieldMemory<string[]>(store, `${FILE_UPLOADS_MEMORY}:previews`, () => []).get()
 
   const releasePreview = (url: string | undefined) => {
     const index = url ? objectUrls.indexOf(url) : -1

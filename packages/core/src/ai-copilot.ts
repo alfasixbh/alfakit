@@ -136,7 +136,14 @@ export class CopilotController {
 
   // ---------------------------------------------------------------- Conversations
 
+  /**
+   * Bumped whenever another conversation is shown: an answer (or a conversation being
+   * opened) that arrives afterwards belongs to the one the user left, not to this one.
+   */
+  private shown = 0
+
   newConversation(): void {
+    this.shown++
     this.forget()
     this.store.update({ conversation: null, messages: [], view: 'chat', error: null })
   }
@@ -160,10 +167,15 @@ export class CopilotController {
   }
 
   async openConversation(id: number): Promise<void> {
+    const shown = ++this.shown
+
     this.store.update({ loading: true, view: 'chat', error: null })
 
     try {
       const response = await this.request<SendResponse>(this.url('conversation', id))
+
+      // Another conversation was opened meanwhile.
+      if (shown !== this.shown) return
 
       this.remember(response.conversation.id)
       this.store.update({
@@ -224,6 +236,7 @@ export class CopilotController {
       messages: [...state.messages, optimistic],
     }))
 
+    const shown = this.shown
     const body = {
       message,
       conversation: this.state.conversation?.id ?? undefined,
@@ -237,6 +250,14 @@ export class CopilotController {
 
       // Stopped: `cancel()` already put things back.
       if (response === null) return
+
+      // The user moved to another conversation while this one was answering: the answer
+      // is in its history, and must not be appended to what is shown now.
+      if (shown !== this.shown) {
+        this.store.update({ sending: false, streaming: null })
+
+        return
+      }
 
       this.remember(response.conversation.id)
       this.store.set((state) => ({

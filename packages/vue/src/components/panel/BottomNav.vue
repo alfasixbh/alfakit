@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import NavLabel from './NavLabel.vue'
+import NavSheetItems from './NavSheetItems.vue'
 import {
   PREFETCH_CACHE_FOR,
   bottomNavigationItems,
@@ -27,9 +28,6 @@ const t = useT()
 const open = ref(false)
 const items = computed(() => bottomNavigationItems(panel.value.navigation))
 const overflowActive = computed(() => items.value.overflow.some(isNavigationItemActive))
-const overflowLinks = computed(() =>
-  items.value.overflow.flatMap((item) => [item, ...(item.children ?? [])]),
-)
 const url = (item: NavigationItemSchema): string => navigationItemUrl(item) ?? '#'
 </script>
 
@@ -40,7 +38,10 @@ const url = (item: NavigationItemSchema): string => navigationItemUrl(item) ?? '
     :aria-label="t('navigation', {}, 'Navigation')"
     class="md:hidden"
   >
-    <template v-for="item in items.primary" :key="item.url ?? item.label">
+    <template
+      v-for="(item, itemIndex) in items.primary"
+      :key="`${item.url ?? item.label}-${itemIndex}`"
+    >
       <a
         v-if="item.openInNewTab"
         v-bind="item.extraAttributes ?? {}"
@@ -89,17 +90,11 @@ const url = (item: NavigationItemSchema): string => navigationItemUrl(item) ?? '
           :aria-label="t('navigation', {}, 'Navigation')"
           class="flex flex-col gap-1 p-3 text-sm"
         >
-          <Link
-            v-for="item in overflowLinks"
-            :key="item.url ?? item.label"
-            :href="url(item)"
-            :data-active="isNavigationItemActive(item) ? 'true' : undefined"
-            class="hover:bg-accent data-[active=true]:bg-accent flex min-h-11 items-center gap-3 rounded-md px-3 font-medium [&_svg]:size-4"
-            @click="open = false"
-          >
-            <Icon v-if="item.icon" :name="item.icon" />
-            <NavLabel :text="item.label" :html="item.labelHtml" />
-          </Link>
+          <NavSheetItems
+            :items="items.overflow"
+            item-class="min-h-11 gap-3 px-3 py-0"
+            @navigate="open = false"
+          />
         </nav>
       </SheetContent>
     </Sheet>

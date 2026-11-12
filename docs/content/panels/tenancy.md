@@ -207,7 +207,7 @@ class Team extends Model implements HasCurrentTenantLabel
 
 ## URL prefix
 
-`tenantRoutePrefix('team')` puts a segment before the tenant in tenant URLs: `/app/team/{tenant}/posts` instead of `/app/{tenant}/posts`. It has no effect with `tenantDomain()`.
+`tenantRoutePrefix('team')` puts a segment before the tenant in tenant URLs: `/app/team/{tenant}/posts` instead of `/app/{tenant}/posts`. It has no effect with `tenantDomain()`. Without a prefix the tenant shares the first URL segment with the panel's own pages, so a tenant whose slug is `login`, `register`, `profile`, `new` or `logout` can't be reached: refuse those slugs when tenants are created, or use a prefix.
 
 ## Accessing the tenant
 
@@ -261,7 +261,7 @@ $panel->tenant(Team::class)
     ->tenantBillingRouteSlug('billing');
 ```
 
-The panel registers `/{tenant}/billing` (route `tenant.billing`, `$panel->getTenantBillingUrl()`) running the provider's route action, and adds **Billing** to the tenant menu. With `requiresTenantSubscription()` the provider's middleware runs on every tenant route and on the internal requests of tenant pages, except the billing route itself; it should redirect unsubscribed tenants to `getTenantBillingUrl()`. `requiresTenantSubscription()` accepts a closure. `->authorizeTenantBilling(fn (User $user, Team $tenant): bool => $tenant->owner_id === $user->id)` hides the **Billing** entry from the other members (`$panel->canManageTenantBilling()`); a provider's routes should check it (the billing plugin's `authorize()` does both).
+The panel registers `/{tenant}/billing` (route `tenant.billing`, `$panel->getTenantBillingUrl()`) running the provider's route action, and adds **Billing** to the tenant menu. With `requiresTenantSubscription()` the provider's middleware runs on every tenant route and on the internal requests of tenant pages, except the billing route itself; it should redirect unsubscribed tenants to `getTenantBillingUrl()`. `requiresTenantSubscription(fn (?Team $tenant): bool => ! $tenant?->is_internal)` takes a closure that is asked on every request with the current tenant. `->authorizeTenantBilling(fn (User $user, Team $tenant): bool => $tenant->owner_id === $user->id)` hides the **Billing** entry from the other members and answers 403 on the billing route for them (`$panel->canManageTenantBilling()`); a provider's other routes should check it too (the billing plugin's `authorize()` does).
 
 Exempt a page or resource (or require a subscription on a panel that doesn't) by overriding `isTenantSubscriptionRequired()`; resource pages follow their resource:
 

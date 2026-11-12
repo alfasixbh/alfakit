@@ -78,9 +78,15 @@
         ((node.type === 'Panel' && Boolean(node.collapsible)) || hasCollapsible(node.schema)),
     )
   const collapsible = $derived(hasCollapsible(layout))
-  const startsOpen = $derived(
-    layout.some((node) => node.type === 'Panel' && node.collapsible && !node.collapsed),
-  )
+  // A collapsible panel at any depth that starts open (`collapsed(false)`).
+  const hasOpenCollapsible = (nodes: ColumnLayoutNode[]): boolean =>
+    nodes.some(
+      (node) =>
+        node.type !== 'Column' &&
+        ((node.type === 'Panel' && Boolean(node.collapsible) && !node.collapsed) ||
+          hasOpenCollapsible(node.schema)),
+    )
+  const startsOpen = $derived(hasOpenCollapsible(layout))
   // Collapsible panels at the top level go under the record's main row.
   const main = $derived(layout.filter((node) => !(node.type === 'Panel' && node.collapsible)))
   const details = $derived(layout.filter((node) => node.type === 'Panel' && node.collapsible))

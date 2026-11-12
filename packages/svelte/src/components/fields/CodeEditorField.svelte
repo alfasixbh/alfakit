@@ -1,6 +1,12 @@
 <script lang="ts">
   import type { CodeEditorSchema, TextEdit } from '@alfakit/core'
-  import { countCodeLines, highlightCode, indentCode, newlineWithIndent } from '@alfakit/core'
+  import {
+    applyTextEditNatively,
+    countCodeLines,
+    highlightCode,
+    indentCode,
+    newlineWithIndent,
+  } from '@alfakit/core'
   import { tick } from 'svelte'
   import { useT } from '../../context.svelte'
   import { extraProps } from '../../lib/attributes'
@@ -34,13 +40,17 @@
   const NEWLINE = '\n'
 
   const apply = async (target: HTMLTextAreaElement, edit: TextEdit) => {
+    // The browser's own insert keeps the undo history; other edits set the value.
+    if (applyTextEditNatively(target, code, edit)) return
+
     field.setValue(edit.value)
     await tick()
     target.setSelectionRange(edit.selectionStart, edit.selectionEnd)
   }
 
   const onkeydown = (event: KeyboardEvent & { currentTarget: HTMLTextAreaElement }) => {
-    if (locked) return
+    // The Enter that confirms an IME candidate (Japanese, Chinese) belongs to the IME.
+    if (locked || event.isComposing || event.keyCode === 229) return
 
     const target = event.currentTarget
 

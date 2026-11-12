@@ -9,6 +9,7 @@ import {
   SPREADSHEET_ISSUE_MESSAGES,
   SpreadsheetGrid,
   VIRTUAL_ESTIMATES,
+  escapeHtml,
   inertiaReload,
   saveSpreadsheetChanges,
   spreadsheetAnnouncement,
@@ -143,7 +144,8 @@ export function Spreadsheet({ table, token, component, onClose }: SpreadsheetPro
       showToast({
         id: 'alfakit-spreadsheet-failed',
         title: t('table.spreadsheet.request_failed', {}, "Couldn't save the changes"),
-        body: error instanceof Error ? error.message : String(error),
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: escapeHtml(error instanceof Error ? error.message : String(error)),
         status: 'danger',
         format: 'alfakit',
       })
@@ -166,6 +168,20 @@ export function Spreadsheet({ table, token, component, onClose }: SpreadsheetPro
       announce(spreadsheetAnnouncement('undo', result.saved.length))
 
       if (result.saved.length > 0) inertiaReload()
+
+      // Cells another user changed since the save are reported, not silently skipped.
+      if (result.errors.length > 0) {
+        announce(spreadsheetAnnouncement('failed', result.errors.length))
+      }
+    } catch (error) {
+      showToast({
+        id: 'alfakit-spreadsheet-failed',
+        title: t('table.spreadsheet.request_failed', {}, "Couldn't save the changes"),
+        // Toast bodies are HTML: the server's text is shown as text.
+        body: escapeHtml(error instanceof Error ? error.message : String(error)),
+        status: 'danger',
+        format: 'alfakit',
+      })
     } finally {
       grid.setSaving(false)
     }
@@ -242,12 +258,19 @@ export function Spreadsheet({ table, token, component, onClose }: SpreadsheetPro
       }),
       { dryRun: true },
     )
+      // Only for the paste that asked: a newer paste has its own check running.
       .then((result) =>
-        setPreview(
-          (current) => current && { ...current, errors: result.errors, validating: false },
+        setPreview((current) =>
+          current?.plan === plan
+            ? { ...current, errors: result.errors, validating: false }
+            : current,
         ),
       )
-      .catch(() => setPreview((current) => current && { ...current, validating: false }))
+      .catch(() =>
+        setPreview((current) =>
+          current?.plan === plan ? { ...current, validating: false } : current,
+        ),
+      )
   }
 
   const applyPaste = () => {
@@ -600,7 +623,7 @@ export function Spreadsheet({ table, token, component, onClose }: SpreadsheetPro
             </Button>
             <Button
               type="button"
-              disabled={!preview || preview.plan.changes.length === 0}
+              disabled={!preview || preview.validating || preview.plan.changes.length === 0}
               onClick={applyPaste}
             >
               {t('table.spreadsheet.paste_apply', {}, 'Apply')}

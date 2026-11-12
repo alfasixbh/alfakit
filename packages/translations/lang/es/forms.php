@@ -14,6 +14,7 @@ return [
         'loading' => 'Cargando…',
     ],
     'key_value' => [
+        'locked' => 'Las filas de :attribute no se pueden cambiar de esa forma.',
         'key' => 'Clave',
         'value' => 'Valor',
         'add' => 'Añadir fila',

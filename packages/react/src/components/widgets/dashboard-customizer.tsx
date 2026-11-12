@@ -46,9 +46,10 @@ export function CustomizableWidgetGrid({
   const helpId = useId()
   const editor = useMemo(
     () => new DashboardEditor(customize, { t, onSaved: () => router.reload() }),
-    // One editor per dashboard; `sync()` follows later schemas.
+    // One editor per dashboard; `sync()` follows later schemas (and their token: a new
+    // editor on every page response would leave edit mode and drop the draft).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [customize.endpoint, customize.token],
+    [customize.endpoint],
   )
 
   useEffect(() => editor.sync(customize), [editor, customize])

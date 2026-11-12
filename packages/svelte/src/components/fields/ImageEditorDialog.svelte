@@ -206,12 +206,16 @@
   const save = async () => {
     if (!request || !loaded) return
 
+    // Resolved on the request that was saved: a Cancel during the export moves the dialog
+    // on to the next file, which must not receive this image.
+    const current = request
+
     saving = true
 
     try {
-      finish(await loaded.editor.export(loaded.bitmap, request.file))
+      current.resolve(await loaded.editor.export(loaded.bitmap, current.file))
     } catch {
-      finish(request.file)
+      current.resolve(current.file)
     } finally {
       saving = false
     }

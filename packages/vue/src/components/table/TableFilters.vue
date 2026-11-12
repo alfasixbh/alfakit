@@ -15,7 +15,7 @@ import { ChevronDownIcon, FilterIcon } from '@lucide/vue'
 import { createReusableTemplate } from '@vueuse/core'
 import { computed, onScopeDispose, ref, watch } from 'vue'
 import { useStore } from '../../composables/use-store'
-import { usePageSchema, usePanel, useT } from '../../context'
+import { useFormatter, usePageSchema, usePanel, useT } from '../../context'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
 import { provideForm } from '../form/form-context'
@@ -40,6 +40,7 @@ import TableTriggerButton from './TableTriggerButton.vue'
  */
 const props = defineProps<{ table: TableSchema; component: string }>()
 const t = useT()
+const formatter = useFormatter()
 const panel = usePanel()
 const page = usePageSchema()
 const filters = computed(() => props.table.filters ?? [])
@@ -226,7 +227,9 @@ const [DefineForm, FiltersForm] = createReusableTemplate()
       >
         <FilterIcon class="size-4" />
         {{ t('table.filters', {}, 'Filters') }}
-        <Badge v-if="activeCount > 0" class="h-5 min-w-5 px-1">{{ activeCount }}</Badge>
+        <Badge v-if="activeCount > 0" class="h-5 min-w-5 px-1">{{
+          formatter.number(activeCount)
+        }}</Badge>
         <ChevronDownIcon :class="cn('ms-auto size-4 transition-transform', open && 'rotate-180')" />
       </button>
       <div v-else class="flex items-center gap-2 px-4 pt-4 text-sm font-medium">
@@ -246,7 +249,9 @@ const [DefineForm, FiltersForm] = createReusableTemplate()
       >
         <FilterIcon class="size-4" />
         {{ t('table.filters', {}, 'Filters') }}
-        <Badge v-if="activeCount > 0" class="h-5 min-w-5 px-1">{{ activeCount }}</Badge>
+        <Badge v-if="activeCount > 0" class="h-5 min-w-5 px-1">{{
+          formatter.number(activeCount)
+        }}</Badge>
         <ChevronDownIcon :class="cn('ms-auto size-4 transition-transform', open && 'rotate-180')" />
       </button>
       <div v-if="open" class="border-t p-4"><FiltersForm /></div>
