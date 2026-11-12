@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import type { SelectColumnSchema } from '@alfakit/core'
 import { isOptionGroup } from '@alfakit/core'
-import { computed, ref, useId } from 'vue'
+import { computed, useId } from 'vue'
 import { cn } from '../../lib/utils'
-import { useCellUpdate, type CellProps } from './cell-update'
+import { cellText, useCellState, useCellUpdate, type CellProps } from './cell-update'
 
 const props = defineProps<CellProps>()
 const schema = computed(() => props.column as SelectColumnSchema)
 const { update, saving, error } = useCellUpdate(props)
 const errorId = useId()
-const value = ref(
-  props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
-)
+const value = useCellState(() => cellText(props.cell.state))
 // `optionsRelationship(ignoreRecord: true)`: the record itself is not an option.
 const options = computed(() =>
   schema.value.options
@@ -21,7 +19,9 @@ const options = computed(() =>
 
 const onChange = (event: Event) => {
   value.value = (event.target as HTMLSelectElement).value
-  void update(value.value === '' ? null : value.value)
+  void update(value.value === '' ? null : value.value).then((saved) => {
+    if (saved === false) value.value = cellText(props.cell.state)
+  })
 }
 </script>
 

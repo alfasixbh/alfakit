@@ -498,8 +498,9 @@ export interface TableSchema {
   deferFilters?: boolean
   /**
    * Query-string keys kept in the session (`filters`, `search`, `columnSearch`, `sort`,
-   * `perPage`, `columns`, `group`):
-   * cleared values are sent as empty keys so the server stores them.
+   * `perPage`, `columns`, `group`), and `filters` when a filter has a default:
+   * cleared values are sent as empty keys so the server stores them (and doesn't apply
+   * the default again).
    */
   persistedState?: TablePersistedStateKey[]
   filtersFormColumns?: Breakpoints

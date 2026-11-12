@@ -6,6 +6,54 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed
+
+- A table filter's `default()` now applies only until the user changes the filters. Once the request (or the session, with `persistFiltersInSession()`) carries filter state, a filter missing from it counts as cleared. A link that sets some filters in the query string no longer gets the defaults of the others.
+- Vue: a disabled action's tooltip wrapper carries `data-slot="action-disabled-tooltip"` like React and Svelte (it was `data-disabled-tooltip`).
+- Shield: until `alfakit-shield:generate` has written `RolePolicy`, only holders of the super admin role see **Roles** (assign it with `alfakit-shield:super-admin`).
+- Helpdesk inbound mail: pass the email's headers (`"headers": {...}`) or `"auto_submitted": true` in the webhook payload so auto-replies are recognised.
+
+### Fixed
+
+- PostgreSQL: searching a table column that is not text (an id, a price, a date) no longer fails with `operator does not exist`; the column is cast to text. Global search, relationship selects, `MorphToSelect`, and the attach and associate actions now search case-insensitively on PostgreSQL too, like the table search (`AlfaSix\Alfakit\Support\SearchQuery::contains()`).
+- Clearing a filter that has a `default()` (the field, "Reset", or its indicator) no longer brings the default straight back, and the filter form shows the default while it applies.
+- Reordering or removing the items of a Repeater or Builder that hold a `FileUpload` with a stored file no longer fails the save with "This upload is no longer available".
+- `EditRecord::saveFormComponentOnly()` no longer stores the temporary uploads of fields outside the component (which made the next full save lose them). `Schema::getState(only: [...])` dehydrates only the given paths.
+- A modal `EditAction` no longer empties a model `$hidden` attribute whose field was left blank; a blank value keeps the stored one, as on the edit page.
+- Chunked bulk actions (`chunkSelectedRecords()`) that delete or change their records report the right totals: `$successCount`, `$totalCount` and the "skipped" count are taken while the records are read, not from a second query.
+- Guests of a tenant panel with `guestAccess()` can load `deferLoading()` components and `Tab::deferBadge()` badges.
+- An encrypted value that is not a context token sent as `token` answers 400 instead of 500, and a cursor made for another sort shows the first page instead of failing.
+- Two live fields changed in quick succession both run their `afterStateUpdated()`: the second refresh waits for the first instead of aborting it (which lost the first hook's `$set()` values).
+- Translated text keeps `$` in replacement values (`Save $$$ now`, `Bob$'s`); it was read as a replacement pattern.
+- Unticking a row after "Select all N" keeps the rows that were ticked before, instead of emptying the selection.
+- `useFormatter().date('2026-11-20')` shows that day in every timezone (it showed the day before west of UTC), and `parseNumber()` reads the minus sign of formatted numbers (`−5`).
+- A nested modal whose action has the same name as its parent's (a select's "create option" form holding another such select) no longer closes or resolves the parent's modal.
+- Tables: text typed in two column search boxes within one pause is applied together; text typed while the answer to an older search arrives is no longer overwritten. React: a column search box follows a search the server changed (a saved view, Back).
+- Vue: `autofocus()` focuses the field on pages reached by an Inertia visit, not only on a full page load; a form reached for another record starts fresh (failed uploads, in-flight requests and wizard progress of the previous record are dropped); a searchable select no longer asks again for a label the server cannot give and cancels its pending search when it closes; with `persistTab()`, the tab opened for its validation errors wins over the stored one.
+- Vue and Svelte: the kanban board's loading spinner is announced as "Loading board". Svelte: `extraProps` is exported from `@alfakit/svelte`.
+- Docs: `disabled()->saved()` / `disabled()->dehydrated()` save the posted (validated) value, not "the server value"; use `readOnly()` for a value the browser must not change.
+- Inline-editable table cells (`ToggleColumn`, `CheckboxColumn`, `SelectColumn`, `TextInputColumn`) follow a value the server changed (an action, a poll, another user) instead of showing the one they were mounted with; a text cell no longer writes its stale value back over a newer one, and a refused update puts the stored value back and shows the error (the toggle showed none).
+- A stored notification that AlfaKit did not write (a plain Laravel database notification, a row left by another package) has its body sanitised before it is shown; it was trusted as HTML.
+- `Section::collapsed(fn (Get $get) => …)` follows a live field in Vue and Svelte too; `CheckboxList` "Select all" / "Deselect all" keep selected options that are disabled; a `badge()` text entry or column draws an icon placed after the text in its `iconColor()` and shows the `copyable()` button.
+- Wizards: with `persistStepInQueryString()` the server renders the step the browser starts on (it rendered the first step), and a step hidden by a live field no longer leaves the wizard past its last step. React: the theme switcher reads the stored choice after hydration.
+- An import or export whose chunk job fails as a whole (a timeout, a lost worker, a deleted tenant) still completes: the chunk's rows are counted (as failed rows for an import) and the user is notified.
+- CSV import: quoted headers after a byte order mark (`\xEF\xBB\xBF"Full Name",…`) are read without their quotes.
+- Changing the password on the panel's profile page no longer signs the user out when `AuthenticateSession` is in the panel's middleware.
+- `alfakit:migrate-from-filament` leaves the methods of chains that are not components alone: `Bus::batch([...])->dispatch()` lost its `dispatch()` and `Order::query()->lazy()` became `->live(onBlur: true)`.
+- Helpdesk inbox: refreshing the list keeps the pages loaded with "Load more"; text typed while a reply (or a chat message) is being sent is kept; a chat poll no longer puts back the conversation from before a message was sent. Translation manager: a refresh keeps the cell being edited.
+- Vue and Svelte: kanban, tree, file manager, translation manager and helpdesk screens read the page's current token for each request (after a day open they answered "This page has expired").
+
+### Fixed (plugins)
+
+- **Shield:** without a generated `RolePolicy` the Roles resource was open to every panel user, who could give a role they hold every permission; it is now limited to holders of the super admin role until the policy exists. The super admin role can only be changed or deleted by its holders, and no one else can create or rename a role to its name. The tenant set as spatie's team is cleared after each request and before queued jobs (Octane, queue workers).
+- **API:** `PUT` / `PATCH` no longer puts a model's `$hidden` attributes into the form, where a hashing `dehydrateStateUsing()` hashed the stored password hash again; left out of the request they keep the stored value. Filter defaults still apply to list requests.
+- **AI:** `update_record` (copilot and MCP) keeps `$hidden` attributes the input doesn't name instead of saving them blank; record search is case-insensitive on PostgreSQL and no longer fails on non-text attributes; confirming a proposed action twice at once runs it once.
+- **Billing:** `BillingPlugin::authorize()` (and `Panel::authorizeTenantBilling()`) limits who may open the billing portal, the plans page and a checkout; on tenancy panels every member could.
+- **Tree:** saving the order no longer detaches nodes whose parent is not in the tree (trashed, or outside the page's query).
+- **Forms:** Markdown a visitor types in an answer (links, images, headings) is shown as text in the notification email; a slug used by another tenant is refused by validation instead of failing on the unique index.
+- **Comments:** mentioned users who may not view the record (by its policy) are not notified; a mention marker with an id that cannot be a user key is ignored (it broke the thread on PostgreSQL); mention names of users outside the tenant are not looked up.
+- **Helpdesk:** auto-replies and bounces received by email are filed without sending a confirmation, and helpdesk emails say `Auto-Submitted: auto-generated`, so an out-of-office reply cannot loop; a guest chat ticket no longer merges with another guest ticket of the same typed email address.
+
 ## [0.2.5] - 2026-10-29
 
 ### Upgrading from 0.2.4

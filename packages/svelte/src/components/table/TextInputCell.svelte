@@ -5,22 +5,20 @@
   import Icon from '../../lib/Icon.svelte'
   import { cn } from '../../lib/utils'
   import { Input } from '../ui/input'
-  import { useCellUpdate, type CellProps } from './cell-update.svelte'
+  import { cellText, followCellState, useCellUpdate, type CellProps } from './cell-update.svelte'
 
   let props: CellProps = $props()
 
   const schema = $derived(props.column as TextInputColumnSchema)
   const updater = useCellUpdate(() => props)
   const errorId = $props.id()
-  const initial = $derived(
-    props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
-  )
+  const initial = $derived(cellText(props.cell.state))
   // `prefix()` / `suffix()`: text affixes around the input, like the TextInput field.
   const grouped = $derived(Boolean(props.cell.prefix || props.cell.suffix))
-  let value = $state(
-    untrack(() =>
-      props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
-    ),
+  let value = $state(untrack(() => cellText(props.cell.state)))
+  followCellState(
+    () => cellText(props.cell.state),
+    (next) => (value = next),
   )
 </script>
 

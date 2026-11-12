@@ -10,14 +10,14 @@
    * alias, so an app replaces it everywhere with `Icons::register()` (or a `panel:icon`
    * component).
    */
-  let { class: className, ...rest }: LucideProps = $props()
+  let { class: className, 'aria-label': ariaLabel, ...rest }: LucideProps = $props()
 
   const t = useT()
 </script>
 
 <span
   role="status"
-  aria-label={t('loading', {}, 'Loading')}
+  aria-label={ariaLabel ?? t('loading', {}, 'Loading')}
   data-slot="spinner"
   class="inline-flex shrink-0"
 >

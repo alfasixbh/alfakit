@@ -126,6 +126,12 @@ final class TreeStructure
                 $parentValue = $parent === null ? null : $records[$parent]->getKey();
                 $current = $record->getAttribute($parentColumn);
 
+                // A node shown at the root because its parent is not in the tree (trashed,
+                // or outside the page's query) keeps that parent: only its order is saved.
+                if ($parent === null && $current !== null && ! isset($records[(string) $current])) {
+                    $parentValue = $current;
+                }
+
                 $sameParent = $current === null ? $parentValue === null : $parentValue !== null && (string) $current === (string) $parentValue;
 
                 if ($sameParent && (int) $record->getAttribute($orderColumn) === $positions[$key]) {

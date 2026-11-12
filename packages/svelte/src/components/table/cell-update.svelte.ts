@@ -1,6 +1,7 @@
 import type { CellSchema, ColumnSchema, RecordKey } from '@alfakit/core'
 import { resolvePartialProps, updateTableCell } from '@alfakit/core'
 import { router } from '@inertiajs/svelte'
+import { untrack } from 'svelte'
 import { usePanel } from '../../context.svelte'
 
 export interface CellProps {
@@ -43,9 +44,13 @@ export function useCellUpdate(
         state,
       )
       router.reload({ only: resolvePartialProps(['page']) })
+
+      return true
     } catch (caught) {
       const errors = (caught as { errors?: Record<string, string[]> }).errors
       error = errors?.state?.[0] ?? (caught as Error).message
+
+      return false
     } finally {
       saving = false
     }
@@ -61,3 +66,24 @@ export function useCellUpdate(
     },
   }
 }
+
+/**
+ * Keep an editable cell's local value in step with the server: `apply` runs when the
+ * server's value changes. The row (keyed by its record) outlives reloads, so a value changed
+ * by an action, a poll or another user must replace the local one.
+ */
+export function followCellState<T>(server: () => T, apply: (value: T) => void): void {
+  let seen = untrack(server)
+
+  $effect.pre(() => {
+    const next = server()
+
+    if (!Object.is(next, seen)) {
+      seen = next
+      apply(next)
+    }
+  })
+}
+
+export const cellText = (state: unknown): string =>
+  state === null || state === undefined ? '' : String(state)

@@ -65,7 +65,7 @@ php artisan alfakit-shield:generate --panel=admin
 php artisan alfakit-shield:super-admin --user=1 --panel=admin
 ```
 
-Until policies exist, AlfaKit allows every action on a resource (unless the panel uses `strictAuthorization()`), so run `generate` before giving people access.
+Until policies exist, AlfaKit allows every action on a resource (unless the panel uses `strictAuthorization()`), so run `generate` before giving people access. The **Roles** resource is the exception: without a `RolePolicy` only holders of the super admin role can open it, so a fresh install never lets every user grant themselves permissions. The super admin role itself can only be edited, renamed or deleted by its holders, and nobody else can create a role with its name.
 
 Policies cover resources. Pages and widgets are only guarded when they use `HasPageShield` / `HasWidgetShield` (see [Pages and widgets](#pages-and-widgets)), and plugin pages have their own switch: a user without any permission still sees **Backups**, **Health**, **Activity log** and settings pages until you set the plugin's `authorize()` (Backup, Health, Activity log) or add `HasPageShield` to your settings pages.
 

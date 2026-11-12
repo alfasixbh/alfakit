@@ -159,7 +159,24 @@ const t = useT()
           <Icon
             v-if="itemIcon(index) && props.schema.iconPosition === 'after'"
             :name="itemIcon(index)!"
+            :class="cn(props.schema.iconColor && textColorClasses[props.schema.iconColor])"
           />
+          <button
+            v-if="props.schema.copyable"
+            type="button"
+            class="shrink-0 opacity-70 hover:opacity-100"
+            :aria-label="t('copy', {}, 'Copy')"
+            @click.prevent.stop="copy(String(item))"
+          >
+            <CheckIcon v-if="copied" class="size-3.5" />
+            <CopyIcon v-else class="size-3.5" />
+          </button>
+          <span
+            v-if="props.schema.copyable && copied"
+            role="status"
+            :class="cn('text-xs', !props.schema.copyMessage && 'sr-only')"
+            >{{ props.schema.copyMessage ?? t('copied', {}, 'Copied') }}</span
+          >
         </Badge>
         <span v-else :class="listItemClasses(index)">
           <Icon
@@ -241,7 +258,24 @@ const t = useT()
       <Icon
         v-if="props.schema.icon && props.schema.iconPosition === 'after'"
         :name="props.schema.icon"
+        :class="cn(props.schema.iconColor && textColorClasses[props.schema.iconColor])"
       />
+      <button
+        v-if="props.schema.copyable"
+        type="button"
+        class="shrink-0 opacity-70 hover:opacity-100"
+        :aria-label="t('copy', {}, 'Copy')"
+        @click.prevent.stop="copy(String(items[0]))"
+      >
+        <CheckIcon v-if="copied" class="size-3.5" />
+        <CopyIcon v-else class="size-3.5" />
+      </button>
+      <span
+        v-if="props.schema.copyable && copied"
+        role="status"
+        :class="cn('text-xs', !props.schema.copyMessage && 'sr-only')"
+        >{{ props.schema.copyMessage ?? t('copied', {}, 'Copied') }}</span
+      >
     </Badge>
     <span v-else :class="itemClasses">
       <Icon

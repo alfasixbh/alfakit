@@ -2,6 +2,7 @@ import { hasThemeSwitcher, panelAppearance, setAppearance, type Appearance } fro
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
 import { useState } from 'react'
 import { usePanel, useT } from '../../context'
+import { useHydrated } from '../../hooks/use-hydrated'
 import { Icon } from '../../lib/icons'
 import { Button } from '../ui/button'
 import {
@@ -15,9 +16,12 @@ import {
 export function ThemeToggle() {
   const t = useT()
   const panel = usePanel()
-  const [appearance, setLocal] = useState<Appearance>(() =>
-    typeof window === 'undefined' ? (panel.darkMode.default ?? 'system') : panelAppearance(panel),
-  )
+  // The stored choice is read only after hydration, so the server render and hydration
+  // both draw the panel default.
+  const hydrated = useHydrated()
+  const [chosen, setLocal] = useState<Appearance | null>(null)
+  const appearance: Appearance =
+    chosen ?? (hydrated ? panelAppearance(panel) : (panel.darkMode.default ?? 'system'))
 
   // `themeSwitcher(false)` keeps dark mode but hides the switcher.
   if (!hasThemeSwitcher(panel)) {

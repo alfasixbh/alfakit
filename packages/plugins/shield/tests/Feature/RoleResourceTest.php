@@ -189,3 +189,24 @@ it('protects the role resource with the generated role policy', function (): voi
     $this->inertiaGet('/shield/shield/roles')->assertOk();
     $this->inertiaGet('/shield/shield/roles/create')->assertForbidden();
 });
+
+it('keeps the super admin role out of reach of users who only manage roles', function (): void {
+    $this->generateAndRegisterPolicies();
+    $superAdmin = Role::create(['name' => 'super_admin', 'guard_name' => 'web']);
+    $editor = Role::create(['name' => 'editor', 'guard_name' => 'web']);
+
+    $this->actingAs($this->makeUser(['role_manager' => ['view_any_role', 'view_role', 'create_role', 'update_role', 'delete_role']]));
+
+    // Their own role permissions still work on other roles.
+    $this->inertiaGet("/shield/shield/roles/{$editor->getKey()}/edit")->assertOk();
+    $this->inertiaGet("/shield/shield/roles/{$superAdmin->getKey()}/edit")->assertForbidden();
+
+    // No role may be renamed to (or created as) the super admin role.
+    $superAdmin->delete();
+    $token = $this->inertiaProps('/shield/shield/roles/create')['page']['token'];
+
+    $this->runAction('/shield/_alfakit/actions', ['token' => $token, 'action' => 'create', 'data' => ['name' => 'super_admin', 'guard_name' => 'web']])
+        ->assertJsonValidationErrors(['name']);
+
+    expect(Role::query()->where('name', 'super_admin')->exists())->toBeFalse();
+});

@@ -3,17 +3,17 @@
   import { isOptionGroup } from '@alfakit/core'
   import { untrack } from 'svelte'
   import { cn } from '../../lib/utils'
-  import { useCellUpdate, type CellProps } from './cell-update.svelte'
+  import { cellText, followCellState, useCellUpdate, type CellProps } from './cell-update.svelte'
 
   let props: CellProps = $props()
 
   const schema = $derived(props.column as SelectColumnSchema)
   const updater = useCellUpdate(() => props)
   const errorId = $props.id()
-  let value = $state(
-    untrack(() =>
-      props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
-    ),
+  let value = $state(untrack(() => cellText(props.cell.state)))
+  followCellState(
+    () => cellText(props.cell.state),
+    (next) => (value = next),
   )
   // `ignoreRecord()`: the record itself is not an option (e.g. a parent of itself).
   const options = $derived(
@@ -28,7 +28,10 @@
   <select
     bind:value
     disabled={Boolean(props.cell.disabled) || updater.saving}
-    onchange={() => void updater.update(value === '' ? null : value)}
+    onchange={() =>
+      void updater.update(value === '' ? null : value).then((saved) => {
+        if (saved === false) value = cellText(props.cell.state)
+      })}
     aria-label={props.column.label || props.column.name}
     aria-invalid={updater.error ? true : undefined}
     aria-describedby={updater.error ? errorId : undefined}

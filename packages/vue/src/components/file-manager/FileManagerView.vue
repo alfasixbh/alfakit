@@ -108,7 +108,11 @@ const tt = (key: string, replacements: Record<string, string | number> = {}, fal
 
 const environment = (): FileManagerEnvironment => ({
   runner,
-  token: page.token,
+  // Read per request: the page hands out a new token with every response, and the
+  // one this screen opened with expires.
+  get token() {
+    return page.token
+  },
   uploadEndpoint: panel.value.endpoints.upload,
   uploadChunkEndpoint: panel.value.endpoints.uploadChunks,
   uploadChunkSize: panel.value.uploadChunkSize,

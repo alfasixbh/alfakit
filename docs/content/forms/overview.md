@@ -30,11 +30,11 @@ public static function form(Schema $schema): Schema
 
 ```php
 TextInput::make('password_confirmation')->password()->required()->saved(false);
-TextInput::make('code')->disabled()->saved();               // save the server value of a disabled field
+TextInput::make('code')->disabled()->saved();               // save a disabled field (the posted value is validated)
 TextInput::make('notes')->dehydrated(false)->validatedWhenNotDehydrated(false);
 ```
 
-- `saved(false)` keeps the field validated and its value in the form state (`$get()`, live updates), but leaves it out of `getState()` and does not save its relationship. `disabled()->saved()` saves a disabled field's server value, like `disabled()->dehydrated()`.
+- `saved(false)` keeps the field validated and its value in the form state (`$get()`, live updates), but leaves it out of `getState()` and does not save its relationship. `disabled()->saved()` saves a disabled field, like `disabled()->dehydrated()`: the posted value is validated and saved, so a value `$set()` wrote during a live update is kept. For a value the browser must not be able to change, use `readOnly()`, which always keeps the server value.
 - Fields that are not dehydrated (`dehydrated(false)`, `saved(false)`) are still validated; `validatedWhenNotDehydrated(false)` skips their rules.
 - `saveRelationshipsWhenHidden()` marks a relationship field (BelongsToMany `Select` or `CheckboxList`) to be saved even while it is hidden (`shouldSaveRelationships()`).
 

@@ -671,14 +671,33 @@ export class FormStore {
 
   private refreshInFlight: Promise<void> | null = null
 
+  /** The refresh request on the wire: the path it was sent for and when it is over. */
+  private activeRefresh: { path: string | undefined; done: Promise<void> } | null = null
+
+  private destroyed = false
+
   private async sendRefresh(path?: string): Promise<void> {
     if (!this.options.refreshUrl) {
+      return
+    }
+
+    // The server runs `afterStateUpdated` for the one path of a request, so a refresh for
+    // another field waits for the one in flight instead of aborting it (its hook's result
+    // would be lost). The same field's newer refresh still replaces its older one.
+    while (this.activeRefresh && this.activeRefresh.path !== path) {
+      await this.activeRefresh.done
+    }
+
+    if (this.destroyed) {
       return
     }
 
     this.refreshController?.abort()
     const controller = new AbortController()
     this.refreshController = controller
+    let finish!: () => void
+    const active = { path, done: new Promise<void>((resolve) => (finish = resolve)) }
+    this.activeRefresh = active
     // The request carries the current state, so only edits made from now on are newer
     // than what the server sees.
     const edits = new Set<string>()
@@ -730,6 +749,9 @@ export class FormStore {
       this.store.update({ refreshing: false })
       // Without an `onError`, the panel's error notification for the status is shown.
       ;(this.options.onError ?? reportRequestError)(error)
+    } finally {
+      if (this.activeRefresh === active) this.activeRefresh = null
+      finish()
     }
   }
 
@@ -910,6 +932,7 @@ export class FormStore {
 
   destroy(): void {
     debugRecorder.unregisterForm(this)
+    this.destroyed = true
     this.refreshController?.abort()
 
     for (const debounced of this.liveDebouncers.values()) {

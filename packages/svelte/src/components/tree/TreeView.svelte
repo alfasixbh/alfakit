@@ -41,7 +41,11 @@
 
   const environment = (): TreeEnvironment => ({
     runner,
-    token: page.token,
+    // Read per request: the page hands out a new token with every response, and the
+    // one this screen opened with expires.
+    get token() {
+      return page.token
+    },
     t,
     notify: (notifications) => notifications.forEach((notification) => showToast(notification)),
     error: (message) => showToast(clientErrorNotification('tree', message)),

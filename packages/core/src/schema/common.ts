@@ -108,4 +108,23 @@ export function isOptionGroup(option: OptionOrGroup): option is OptionGroup {
   return 'options' in option && Array.isArray(option.options)
 }
 
+/**
+ * The value of a multi-choice field after "Select all" (`select: true`) or "Deselect all":
+ * every enabled option, or none. Selected options the user can't change (disabled ones: a
+ * value the record holds that `disableOptionWhen()` locks) stay selected either way.
+ */
+export function bulkSelectOptions(
+  options: Option[],
+  selected: string[],
+  select: boolean,
+): string[] {
+  const locked = options
+    .filter((option) => option.disabled && selected.includes(option.value))
+    .map((option) => option.value)
+
+  if (!select) return locked
+
+  return [...locked, ...options.filter((option) => !option.disabled).map((option) => option.value)]
+}
+
 export type Attributes = Record<string, unknown>

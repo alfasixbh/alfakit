@@ -23,7 +23,7 @@
   } from '../ui/command'
   import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
   import { Spinner } from '../ui/spinner'
-  import { useCellUpdate, type CellProps } from './cell-update.svelte'
+  import { cellText, followCellState, useCellUpdate, type CellProps } from './cell-update.svelte'
 
   /**
    * `SelectColumn::native(false)`: a combobox, searchable with `searchableOptions()`. Options
@@ -35,12 +35,16 @@
   const panel = usePanel()
   const schema = $derived(props.column as SelectColumnSchema)
   const updater = useCellUpdate(() => props)
-  let value = $state(
-    untrack(() =>
-      props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
-    ),
+  let value = $state(untrack(() => cellText(props.cell.state)))
+  followCellState(
+    () => cellText(props.cell.state),
+    (next) => (value = next),
   )
   let label = $state<string | undefined>(untrack(() => props.cell.optionLabel))
+  followCellState(
+    () => props.cell.optionLabel,
+    (next) => (label = next),
+  )
   let open = $state(false)
   let search = $state('')
   let loading = $state(false)
@@ -100,7 +104,12 @@
     value = next
     label = nextLabel
     open = false
-    void updater.update(next === '' ? null : next)
+    void updater.update(next === '' ? null : next).then((saved) => {
+      if (saved === false) {
+        value = cellText(props.cell.state)
+        label = props.cell.optionLabel
+      }
+    })
   }
 </script>
 

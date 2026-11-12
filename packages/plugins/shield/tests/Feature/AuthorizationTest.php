@@ -38,6 +38,19 @@ it('grants access through the permissions of the user roles', function (): void 
         ->and(array_intersect(['Categories', 'Roles'], $labels))->toBe([]);
 });
 
+it('keeps the roles resource closed to everyone but super admins until its policy exists', function (): void {
+    // No `alfakit-shield:generate` yet: there is no RolePolicy.
+    $this->actingAs($this->makeUser(['editor' => []]));
+
+    $this->inertiaGet('/shield/shield/roles')->assertForbidden();
+    $this->inertiaGet('/shield/shield/roles/create')->assertForbidden();
+    expect(shieldNavigationLabels($this->inertiaProps('/shield')))->not->toContain('Roles');
+
+    $this->actingAs($this->makeUser(['super_admin' => []], 'admin@example.com'));
+
+    $this->inertiaGet('/shield/shield/roles')->assertOk();
+});
+
 it('denies actions through the internal endpoint without the permission', function (): void {
     $this->generateAndRegisterPolicies();
     $post = Post::query()->create(['title' => 'Hello', 'slug' => 'hello']);

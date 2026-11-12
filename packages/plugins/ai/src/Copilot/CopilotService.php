@@ -20,6 +20,7 @@ use AlfaSix\AlfakitAi\Support\PromptData;
 use AlfaSix\AlfakitAi\Support\ToolAudit;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\Ai\Messages\AssistantMessage;
 use Laravel\Ai\Messages\UserMessage;
@@ -169,6 +170,9 @@ class CopilotService
 
         abort_if($gateway === null, 404);
         abort_unless($proposal->getRole() === Message::ACTION && ($meta['status'] ?? null) === Message::PENDING, 409);
+        // A double click or a retried request: only the first confirmation runs the action
+        // (the status is saved once it has run, which is too late to stop a second one).
+        abort_unless(Cache::add('alfakit-ai:confirm:'.$proposal->getKey(), true, now()->addMinutes(10)), 409);
 
         $resource = $gateway->resource((string) ($meta['resource'] ?? ''));
         $record = $resource === null ? null : $gateway->find($resource, $meta['key'] ?? null);

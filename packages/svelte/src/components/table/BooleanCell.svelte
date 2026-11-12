@@ -11,18 +11,25 @@
   import { cn } from '../../lib/utils'
   import { Checkbox } from '../ui/checkbox'
   import { Switch } from '../ui/switch'
-  import { useCellUpdate, type CellProps } from './cell-update.svelte'
+  import { followCellState, useCellUpdate, type CellProps } from './cell-update.svelte'
 
   let props: CellProps = $props()
 
   const updater = useCellUpdate(() => props)
   let checked = $state(untrack(() => Boolean(props.cell.state)))
+  followCellState(
+    () => Boolean(props.cell.state),
+    (next) => (checked = next),
+  )
   const disabled = $derived(Boolean(props.cell.disabled) || updater.saving)
   const toggle = $derived(props.column as ToggleColumnSchema)
 
   const onChange = (next: boolean) => {
     checked = next
-    void updater.update(next)
+    // A refused update (validation, authorisation) puts the stored value back.
+    void updater.update(next).then((saved) => {
+      if (saved === false) checked = Boolean(props.cell.state)
+    })
   }
 </script>
 
@@ -34,6 +41,7 @@
     onCheckedChange={(value) => onChange(value === true)}
     onclick={(event: MouseEvent) => event.stopPropagation()}
   />
+  {#if updater.error}<span class="text-destructive block text-xs">{updater.error}</span>{/if}
 {:else}
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <span class="inline-flex items-center gap-2" onclick={(event) => event.stopPropagation()}>
@@ -51,5 +59,6 @@
         name={checked ? toggle.onIcon : toggle.offIcon}
         class={colorClass(textColorClasses, checked ? toggle.onColor : toggle.offColor, 'gray')}
       />{/if}
+    {#if updater.error}<span class="text-destructive block text-xs">{updater.error}</span>{/if}
   </span>
 {/if}

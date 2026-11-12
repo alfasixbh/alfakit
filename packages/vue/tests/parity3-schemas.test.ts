@@ -280,6 +280,25 @@ describe('schema layout parity (round 3)', () => {
     wrapper.unmount()
   })
 
+  it('offers the copy button inside a badge too', () => {
+    const wrapper = mountWithAlfakit(() =>
+      h(TextEntryComponent, {
+        component: {
+          type: 'TextEntry',
+          key: 'code',
+          name: 'code',
+          label: 'Code',
+          state: 'ABC-9',
+          badge: true,
+          copyable: true,
+        } as TextEntrySchema,
+      }),
+    )
+
+    expect(wrapper.find('[data-slot="badge"] button[aria-label="Copy"]').exists()).toBe(true)
+    wrapper.unmount()
+  })
+
   it('breaks a long copyable value inside its column, keeping the copy button beside it', () => {
     const wrapper = mountWithAlfakit(() =>
       h(TextEntryComponent, {

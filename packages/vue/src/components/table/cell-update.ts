@@ -1,7 +1,7 @@
 import type { CellSchema, ColumnSchema, RecordKey } from '@alfakit/core'
 import { resolvePartialProps, updateTableCell } from '@alfakit/core'
 import { router } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { ref, watch, type Ref } from 'vue'
 import { usePanel } from '../../context'
 
 export interface CellProps {
@@ -39,9 +39,13 @@ export function useCellUpdate(props: CellProps) {
         state,
       )
       router.reload({ only: resolvePartialProps(['page']) })
+
+      return true
     } catch (caught) {
       const errors = (caught as { errors?: Record<string, string[]> }).errors
       error.value = errors?.state?.[0] ?? (caught as Error).message
+
+      return false
     } finally {
       saving.value = false
     }
@@ -49,3 +53,21 @@ export function useCellUpdate(props: CellProps) {
 
   return { update, saving, error }
 }
+
+/**
+ * An editable cell's value: what the user picked, until the server sends another one. The
+ * row (keyed by its record) outlives reloads, so a value changed by an action, a poll or
+ * another user must replace the local one.
+ */
+export function useCellState<T>(server: () => T): Ref<T> {
+  const value = ref(server()) as Ref<T>
+
+  watch(server, (next) => {
+    value.value = next
+  })
+
+  return value
+}
+
+export const cellText = (state: unknown): string =>
+  state === null || state === undefined ? '' : String(state)

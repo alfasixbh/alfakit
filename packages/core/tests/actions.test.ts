@@ -43,6 +43,36 @@ describe('ActionRunner', () => {
     calls.length = 0
   })
 
+  it('closes only the innermost of two nested modals that share an action name', () => {
+    const runner = new ActionRunner({ endpoints: { action: '/actions', modal: '/modal' } })
+    const createOption: ActionSchema = { type: 'Action', name: 'createOption', hasAction: true }
+    const outer = vi.fn()
+    const inner = vi.fn()
+    const open = (resolve: (result: unknown) => void, parents?: string[]) => ({
+      action: createOption,
+      context: { token: 't', parents },
+      modal: { heading: 'Create' },
+      errors: {},
+      processing: false,
+      resolve,
+    })
+
+    runner.store.update({
+      modals: [open(outer), open(inner, ['createOption'])] as never,
+    })
+
+    runner.closeModal('createOption')
+
+    expect(runner.state.modals).toHaveLength(1)
+    expect(inner).toHaveBeenCalledWith(undefined)
+    expect(outer).not.toHaveBeenCalled()
+
+    runner.closeModal('createOption')
+
+    expect(runner.state.modals).toHaveLength(0)
+    expect(outer).toHaveBeenCalledWith(undefined)
+  })
+
   it('ignores a second submit while the first is in flight', () => {
     const runner = new ActionRunner({ endpoints: { action: '/actions', modal: '/modal' } })
     const context = { token: 't' }

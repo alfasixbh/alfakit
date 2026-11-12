@@ -44,6 +44,24 @@ export function initialWizardStep(
   return clamp(startStep)
 }
 
+/**
+ * The query string a wizard reads its persisted step from: the browser's, or on the server
+ * the page URL's, so the server renders the step the browser will start on.
+ */
+export function wizardSearch(pageUrl: string | null | undefined): string {
+  if (typeof window !== 'undefined') return window.location.search
+
+  const url = pageUrl ?? ''
+  const index = url.indexOf('?')
+
+  return index === -1 ? '' : url.slice(index)
+}
+
+/** The step a wizard shows when steps were hidden since: never past the last one. */
+export function clampWizardStep(current: number, stepCount: number): number {
+  return Math.min(current, Math.max(0, stepCount - 1))
+}
+
 /** Write the current step (0-based) into the query string without a visit. */
 export function persistWizardStep(index: number, key: string = WIZARD_STEP_QUERY_KEY): void {
   if (typeof window === 'undefined') return

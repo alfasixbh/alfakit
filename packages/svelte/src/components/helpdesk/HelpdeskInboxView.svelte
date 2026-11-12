@@ -25,7 +25,15 @@
   const t = useT()
   const formatter = useFormatter()
   const initial = untrack(() => $state.snapshot(schema) as HelpdeskInboxSchema)
-  const controller = new HelpdeskInboxController(initial, { runner, token: page.token, t })
+  const controller = new HelpdeskInboxController(initial, {
+    runner,
+    // Read per request: the page hands out a new token with every response, and the one
+    // this screen opened with expires.
+    get token() {
+      return page.token
+    },
+    t,
+  })
   const inbox = useStore(controller.store)
   let searchInput = $state<HTMLInputElement | null>(null)
   let list = $state<HTMLUListElement | null>(null)

@@ -261,7 +261,7 @@ $panel->tenant(Team::class)
     ->tenantBillingRouteSlug('billing');
 ```
 
-The panel registers `/{tenant}/billing` (route `tenant.billing`, `$panel->getTenantBillingUrl()`) running the provider's route action, and adds **Billing** to the tenant menu. With `requiresTenantSubscription()` the provider's middleware runs on every tenant route and on the internal requests of tenant pages, except the billing route itself; it should redirect unsubscribed tenants to `getTenantBillingUrl()`. `requiresTenantSubscription()` accepts a closure.
+The panel registers `/{tenant}/billing` (route `tenant.billing`, `$panel->getTenantBillingUrl()`) running the provider's route action, and adds **Billing** to the tenant menu. With `requiresTenantSubscription()` the provider's middleware runs on every tenant route and on the internal requests of tenant pages, except the billing route itself; it should redirect unsubscribed tenants to `getTenantBillingUrl()`. `requiresTenantSubscription()` accepts a closure. `->authorizeTenantBilling(fn (User $user, Team $tenant): bool => $tenant->owner_id === $user->id)` hides the **Billing** entry from the other members (`$panel->canManageTenantBilling()`); a provider's routes should check it (the billing plugin's `authorize()` does both).
 
 Exempt a page or resource (or require a subscription on a panel that doesn't) by overriding `isTenantSubscriptionRequired()`; resource pages follow their resource:
 

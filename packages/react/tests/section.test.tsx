@@ -58,4 +58,35 @@ describe('section', () => {
     expect(screen.getByText('Section body')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Toggle section' })).toBeNull()
   })
+  it('follows collapsed() when the server changes it (a live field), also after a click', () => {
+    const { rerender } = render(
+      <Wrapper>
+        <SectionComponent component={section({ collapsible: true, collapsed: true })} />
+      </Wrapper>,
+    )
+    const toggle = screen.getByRole('button', { name: 'Toggle section' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+
+    rerender(
+      <Wrapper>
+        <SectionComponent component={section({ collapsible: true, collapsed: false })} />
+      </Wrapper>,
+    )
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+
+    rerender(
+      <Wrapper>
+        <SectionComponent component={section({ collapsible: true, collapsed: true })} />
+      </Wrapper>,
+    )
+    rerender(
+      <Wrapper>
+        <SectionComponent component={section({ collapsible: true, collapsed: false })} />
+      </Wrapper>,
+    )
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  })
 })

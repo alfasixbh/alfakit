@@ -1,9 +1,14 @@
+<script lang="ts">
+/** Column searches typed but not yet shown by the server, per table. */
+const typedColumnSearches = new Map<string, Record<string, string>>()
+</script>
+
 <script setup lang="ts">
 import type { ColumnSchema, TableSchema } from '@alfakit/core'
 import { ariaSort, columnVisibilityClasses, debounce, visitTable } from '@alfakit/core'
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from '@lucide/vue'
 import { createReusableTemplate } from '@vueuse/core'
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 import { useT } from '../../context'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
@@ -48,17 +53,47 @@ const sort = () => {
 }
 
 // The column search applies after the same pause as the table search; Enter applies at once.
-const pushColumnSearch = debounce(
-  (value: string) =>
+// What was typed and the server doesn't show yet is shared by the table's column headers, so
+// text typed in two columns within one pause is sent together.
+const typedKey = `${props.component}\u0000${props.table.identifier ?? ''}`
+const typed = (): Record<string, string> => {
+  let entry = typedColumnSearches.get(typedKey)
+
+  if (!entry) {
+    entry = {}
+    typedColumnSearches.set(typedKey, entry)
+  }
+
+  return entry
+}
+const sendColumnSearch = debounce(
+  () =>
     visitTable(
       props.table.identifier,
-      { columnSearch: { ...(props.table.columnSearches ?? {}), [props.column.name]: value } },
+      { columnSearch: { ...(props.table.columnSearches ?? {}), ...typed() } },
       ['page'],
     ),
   props.table.searchDebounce,
 )
+const pushColumnSearch = Object.assign(
+  (value: string) => {
+    typed()[props.column.name] = value
+    sendColumnSearch()
+  },
+  { flush: () => sendColumnSearch.flush(), cancel: () => sendColumnSearch.cancel() },
+)
 
-onBeforeUnmount(() => pushColumnSearch.cancel())
+// The server's answer replaces what was typed (also when a saved view or Back changed it).
+// Compared by content: a poll brings a new object with the same searches.
+watch(
+  () => JSON.stringify(props.table.columnSearches ?? {}),
+  () => typedColumnSearches.delete(typedKey),
+)
+
+onBeforeUnmount(() => {
+  pushColumnSearch.cancel()
+  delete typedColumnSearches.get(typedKey)?.[props.column.name]
+})
 
 const onColumnSearchInput = (value: string) => {
   if (!props.table.searchOnBlur) pushColumnSearch(value)

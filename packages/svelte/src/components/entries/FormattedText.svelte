@@ -115,6 +115,29 @@
       >
     {/if}
   {/snippet}
+  <!-- The copy button and its "Copied" status, after the text or inside the badge. -->
+  {#snippet copyControls(className: string)}
+    {#if schema.copyable}
+      <button
+        type="button"
+        class={className}
+        onclick={(event) => {
+          // The entry may sit inside a link or a clickable table row.
+          event.preventDefault()
+          event.stopPropagation()
+          copy(text)
+        }}
+        aria-label={t('copy', {}, 'Copy')}
+      >
+        {#if copied}<CheckIcon class="size-3.5" />{:else}<CopyIcon class="size-3.5" />{/if}
+      </button>
+      {#if copied}
+        <span role="status" class={cn('text-xs', !schema.copyMessage && 'sr-only')}
+          >{schema.copyMessage ?? t('copied', {}, 'Copied')}</span
+        >
+      {/if}
+    {/if}
+  {/snippet}
   {#if schema.badge}
     <Badge variant="outline" class={colorClass(badgeColorClasses, color, 'gray')}>
       {#if icon && schema.iconPosition !== 'after'}<Icon
@@ -122,7 +145,11 @@
           class={cn(schema.iconColor && textColorClasses[schema.iconColor])}
         />{/if}
       {@render inner()}
-      {#if icon && schema.iconPosition === 'after'}<Icon name={icon} />{/if}
+      {#if icon && schema.iconPosition === 'after'}<Icon
+          name={icon}
+          class={cn(schema.iconColor && textColorClasses[schema.iconColor])}
+        />{/if}
+      {@render copyControls('shrink-0 opacity-70 hover:opacity-100')}
     </Badge>
   {:else}
     <span
@@ -143,26 +170,7 @@
           name={icon}
           class={cn(schema.iconColor && textColorClasses[schema.iconColor])}
         />{/if}
-      {#if schema.copyable}
-        <button
-          type="button"
-          class="text-muted-foreground hover:text-foreground shrink-0"
-          onclick={(event) => {
-            // The entry may sit inside a link or a clickable table row.
-            event.preventDefault()
-            event.stopPropagation()
-            copy(text)
-          }}
-          aria-label={t('copy', {}, 'Copy')}
-        >
-          {#if copied}<CheckIcon class="size-3.5" />{:else}<CopyIcon class="size-3.5" />{/if}
-        </button>
-        {#if copied}
-          <span role="status" class={cn('text-xs', !schema.copyMessage && 'sr-only')}
-            >{schema.copyMessage ?? t('copied', {}, 'Copied')}</span
-          >
-        {/if}
-      {/if}
+      {@render copyControls('text-muted-foreground hover:text-foreground shrink-0')}
     </span>
   {/if}
 {/snippet}

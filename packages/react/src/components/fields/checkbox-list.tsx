@@ -1,5 +1,11 @@
 import type { CheckboxListSchema } from '@alfakit/core'
-import { fieldIds, gridColumnsClasses, htmlLabelToText, isOptionGroup } from '@alfakit/core'
+import {
+  bulkSelectOptions,
+  fieldIds,
+  gridColumnsClasses,
+  htmlLabelToText,
+  isOptionGroup,
+} from '@alfakit/core'
 import { useEffect, useMemo, useState } from 'react'
 import { useT } from '../../context'
 import { textColorClasses } from '../../lib/colors'
@@ -85,11 +91,7 @@ export function CheckboxListField({ component }: { component: CheckboxListSchema
                     size="sm"
                     data-slot="select-all"
                     disabled={disabled}
-                    onClick={() =>
-                      setValue(
-                        options.filter((option) => !option.disabled).map((option) => option.value),
-                      )
-                    }
+                    onClick={() => setValue(bulkSelectOptions(options, selected, true))}
                   >
                     {selectAll?.icon && <Icon name={selectAll.icon} />}
                     {selectAll?.label ?? t('table.select_all', {}, 'Select all')}
@@ -102,7 +104,7 @@ export function CheckboxListField({ component }: { component: CheckboxListSchema
                     size="sm"
                     data-slot="deselect-all"
                     disabled={disabled}
-                    onClick={() => setValue([])}
+                    onClick={() => setValue(bulkSelectOptions(options, selected, false))}
                   >
                     {deselectAll?.icon && <Icon name={deselectAll.icon} />}
                     {deselectAll?.label ?? t('table.deselect_all', {}, 'Deselect all')}

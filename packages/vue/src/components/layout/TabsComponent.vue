@@ -44,10 +44,13 @@ const active = ref<string>(
 
 // `persistTab()`: restored after mounting (the server can't read browser storage); a tab
 // named in the query string wins.
+// A tab opened for its validation errors (below, before mounting) wins too.
+let revealed = false
+
 onMounted(() => {
   const persist = props.component.persistTab
 
-  if (!persist || fromQuery) return
+  if (!persist || fromQuery || revealed) return
 
   const stored = readPersisted(persist.key, persist.storage)
 
@@ -79,7 +82,10 @@ watch(
   (next, previous) => {
     const reveal = tabToReveal(tabs.value, active.value, previous ?? {}, next)
 
-    if (reveal !== null) active.value = reveal
+    if (reveal !== null) {
+      active.value = reveal
+      revealed = true
+    }
   },
   { immediate: true },
 )

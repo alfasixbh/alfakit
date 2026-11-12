@@ -70,6 +70,19 @@ describe('interpolate', () => {
 })
 
 describe('LocaleFormatter', () => {
+  it('parses the minus sign of formatted numbers', () => {
+    expect(new LocaleFormatter('en').parseNumber('\u22125')).toBe(-5)
+    expect(new LocaleFormatter('de').parseNumber('\u22121.234,5')).toBe(-1234.5)
+  })
+
+  it('shows a date without a time as that calendar day in every timezone', () => {
+    const west = new LocaleFormatter('en', 'USD', 'America/New_York')
+
+    expect(west.date('2026-11-20')).toBe('Nov 20, 2026')
+    // A moment in time still follows the timezone.
+    expect(west.date('2026-11-20T02:00:00Z')).toBe('Nov 19, 2026')
+  })
+
   it('formats money with the currency precision', () => {
     const en = new LocaleFormatter('en', 'BHD')
 

@@ -21,7 +21,7 @@ import Popover from '../ui/Popover.vue'
 import PopoverContent from '../ui/PopoverContent.vue'
 import PopoverTrigger from '../ui/PopoverTrigger.vue'
 import Spinner from '../ui/Spinner.vue'
-import { useCellUpdate, type CellProps } from './cell-update'
+import { cellText, useCellState, useCellUpdate, type CellProps } from './cell-update'
 
 /**
  * `SelectColumn::native(false)`: a combobox, searchable with `searchableOptions()`. Options
@@ -32,10 +32,8 @@ const t = useT()
 const panel = usePanel()
 const schema = computed(() => props.column as SelectColumnSchema)
 const { update, saving, error } = useCellUpdate(props)
-const value = ref(
-  props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
-)
-const label = ref<string | undefined>(props.cell.optionLabel)
+const value = useCellState(() => cellText(props.cell.state))
+const label = useCellState<string | undefined>(() => props.cell.optionLabel)
 const open = ref(false)
 const search = ref('')
 const loading = ref(false)
@@ -110,7 +108,12 @@ const choose = (next: string, nextLabel?: string) => {
   value.value = next
   label.value = nextLabel
   onOpenChange(false)
-  void update(next === '' ? null : next)
+  void update(next === '' ? null : next).then((saved) => {
+    if (saved === false) {
+      value.value = cellText(props.cell.state)
+      label.value = props.cell.optionLabel
+    }
+  })
 }
 </script>
 

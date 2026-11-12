@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import type { WizardSchema } from '@alfakit/core'
 import {
+  clampWizardStep,
   collectFields,
   completedStepIcon,
   initialWizardStep,
   persistWizardStep,
   reportWizardProgress,
   wizardRequestedStepIndex,
+  wizardSearch,
   wizardStepFieldPaths,
   wizardStepQueryKey,
   wizardStepToReveal,
   schemaGapClass,
 } from '@alfakit/core'
+import { usePage } from '@inertiajs/vue3'
 import { CheckIcon } from '@lucide/vue'
 import { computed, ref, watch } from 'vue'
 import { useStoreSelector } from '../../composables/use-store'
@@ -39,7 +42,16 @@ const current = ref(
     steps.value.length,
     props.component.startStep,
     props.component.persistStepInQueryString,
+    wizardSearch(usePage().url),
   ),
+)
+
+// A step hidden by a live field can leave the index past the last step.
+watch(
+  () => steps.value.length,
+  (count) => {
+    current.value = clampWizardStep(current.value, count)
+  },
 )
 
 const stepQueryKey = computed(() => wizardStepQueryKey(props.component.persistStepInQueryString))

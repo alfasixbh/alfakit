@@ -284,6 +284,29 @@ describe('schema layout parity (round 3)', () => {
     expect(await screen.findByText('Copied!')).toBeInTheDocument()
   })
 
+  it('offers the copy button inside a badge too', () => {
+    const { container } = render(
+      <Wrapper>
+        <TextEntryComponent
+          component={
+            {
+              type: 'TextEntry',
+              key: 'code',
+              name: 'code',
+              label: 'Code',
+              state: 'ABC-9',
+              badge: true,
+              copyable: true,
+            } as TextEntrySchema
+          }
+        />
+      </Wrapper>,
+    )
+
+    const badge = container.querySelector('[data-slot="badge"]')!
+    expect(badge.querySelector('button[aria-label="Copy"]')).not.toBeNull()
+  })
+
   it('breaks a long copyable value inside its column, keeping the copy button beside it', () => {
     const { container } = render(
       <Wrapper>

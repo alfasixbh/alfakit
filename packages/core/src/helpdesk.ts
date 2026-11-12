@@ -177,9 +177,54 @@ export class HelpdeskInboxController {
     }, delay)
   }
 
-  /** Fetch the first page of the view again. */
+  /**
+   * Fetch the view again: every page loaded so far ("Load more"), so the list doesn't jump
+   * back to its first page (and lose the open ticket) when a reply or a broadcast refreshes it.
+   */
   async refreshList(): Promise<void> {
-    await this.fetchList(1, false)
+    const pages = Math.max(1, this.state.list.page)
+
+    if (pages === 1) {
+      await this.fetchList(1, false)
+
+      return
+    }
+
+    const id = ++this.listRequest
+    const { view, search } = this.state
+
+    this.store.update({ loadingList: true })
+
+    try {
+      let list: ListResult['list'] | undefined
+      const tickets: NonNullable<ListResult['list']>['tickets'] = []
+
+      for (let page = 1; page <= pages; page++) {
+        const result = await this.env.runner.executeJson<ListResult>(
+          action(this.schema.listAction),
+          {
+            token: this.env.token,
+            component: this.schema.actionComponent,
+            arguments: { [this.schema.argumentsKey]: { view, search, page } },
+          },
+        )
+
+        if (id !== this.listRequest) return
+
+        if (!result?.list) break
+
+        list = result.list
+        tickets.push(...result.list.tickets)
+
+        if (!result.list.hasMore) break
+      }
+
+      if (list) this.store.update({ list: { ...list, tickets } })
+
+      this.store.update({ loadingList: false })
+    } catch {
+      if (id === this.listRequest) this.store.update({ loadingList: false })
+    }
   }
 
   async loadMore(): Promise<void> {
@@ -322,10 +367,21 @@ export class HelpdeskInboxController {
         },
       )
 
+      // Still on the ticket the reply was for: clear the composer, unless the agent has typed
+      // the next message meanwhile. On another ticket the composer is that ticket's.
+      const sameTicket = selected === this.state.selected
+      const typed = this.state.composer.text
+
       this.store.update({
-        ticket:
-          result?.ticket && selected === this.state.selected ? result.ticket : this.state.ticket,
-        composer: { mode: composer.mode, text: '', sending: false, error: null },
+        ticket: result?.ticket && sameTicket ? result.ticket : this.state.ticket,
+        composer: sameTicket
+          ? {
+              mode: composer.mode,
+              text: typed === composer.text ? '' : typed,
+              sending: false,
+              error: null,
+            }
+          : { ...this.state.composer, sending: false },
         announcement:
           composer.mode === 'note'
             ? this.env.t('helpdesk.add_note', {}, 'Add note')
@@ -344,8 +400,12 @@ export class HelpdeskInboxController {
         composer: {
           ...this.state.composer,
           sending: false,
+          // The error belongs to the ticket the reply was for.
           error:
-            message ?? this.env.t('helpdesk.send_failed', {}, 'The message could not be sent.'),
+            selected === this.state.selected
+              ? (message ??
+                this.env.t('helpdesk.send_failed', {}, 'The message could not be sent.'))
+              : this.state.composer.error,
         },
       })
 
@@ -779,8 +839,14 @@ export class HelpdeskChatClient {
         },
       )
 
+      // A poll sent before this message must not put the older conversation back.
+      this.pollGeneration++
       this.receive(result.conversation)
-      this.store.update({ draft: '', sending: false })
+      // Text typed while the message was on its way stays.
+      this.store.update({
+        draft: this.state.draft.trim() === message ? '' : this.state.draft,
+        sending: false,
+      })
       this.schedule()
 
       return true
@@ -876,11 +942,15 @@ export class HelpdeskChatClient {
     }, seconds * 1000)
   }
 
+  private pollGeneration = 0
+
   private async poll(): Promise<void> {
+    const generation = this.pollGeneration
+
     try {
       const result = await this.request<HelpdeskChatResponse>(this.endpoint)
 
-      this.receive(result.conversation)
+      if (generation === this.pollGeneration) this.receive(result.conversation)
     } catch {
       // Try again on the next tick.
     }

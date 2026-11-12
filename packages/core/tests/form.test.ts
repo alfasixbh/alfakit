@@ -396,6 +396,59 @@ describe('FormStore', () => {
     expect(form.state.refreshing).toBe(false)
   })
 
+  it('lets a refresh for another field wait for the one in flight, so both hooks run', async () => {
+    const releases: (() => void)[] = []
+    const paths: (string | undefined)[] = []
+
+    const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body)) as {
+        state: Record<string, unknown>
+        path?: string
+      }
+      paths.push(body.path)
+      await new Promise<void>((resolve) => {
+        releases.push(resolve)
+      })
+
+      return new Response(
+        JSON.stringify({
+          components,
+          // The `title` hook writes the slug; the `email` request echoes what it was sent.
+          state: body.path === 'title' ? { ...body.state, slug: 'from-title-hook' } : body.state,
+        }),
+        { status: 200 },
+      )
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const form = new FormStore(
+      { components, state: { title: '', slug: null, email: null } },
+      { token: 't', component: 'form', refreshUrl: '/refresh' },
+    )
+
+    form.setValue('title', 'Hello', { silent: true })
+    const first = form.refresh('title')
+    await vi.waitFor(() => expect(releases).toHaveLength(1))
+
+    form.setValue('email', 'a@b.c', { silent: true })
+    const second = form.refresh('email')
+
+    // The second request is not sent (and the first not aborted) until the first is back.
+    await Promise.resolve()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+
+    releases[0]?.()
+    await first
+    await vi.waitFor(() => expect(releases).toHaveLength(2))
+    releases[1]?.()
+    await second
+
+    expect(paths).toEqual(['title', 'email'])
+    expect(form.getValue('slug')).toBe('from-title-hook')
+    expect(form.getValue('email')).toBe('a@b.c')
+    expect(form.state.refreshing).toBe(false)
+  })
+
   it('sends the value the server last saw as `old` with a refresh', async () => {
     const bodies: Array<{ path?: string; old?: unknown }> = []
     const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {

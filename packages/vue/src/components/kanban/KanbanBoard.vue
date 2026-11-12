@@ -47,7 +47,11 @@ const instructionsId = useId()
 
 const environment = (): KanbanEnvironment => ({
   runner,
-  token: page.token,
+  // Read per request: the page hands out a new token with every response, and the
+  // one this screen opened with expires.
+  get token() {
+    return page.token
+  },
   t,
   notify: (notifications) => notifications.forEach((notification) => showToast(notification)),
   error: (message) => showToast(clientErrorNotification('kanban', message)),
@@ -189,7 +193,11 @@ const laneCount = (lane: string) =>
       }}</CardTitle>
       <span v-else :id="labelId" class="sr-only">{{ t('kanban.label', {}, 'Kanban board') }}</span>
       <div class="ms-auto flex w-full flex-wrap items-center gap-2 sm:w-auto">
-        <Spinner v-if="state.loading" class="size-4" />
+        <Spinner
+          v-if="state.loading"
+          class="size-4"
+          :aria-label="t('kanban.loading', {}, 'Loading board')"
+        />
         <div v-if="schema.searchable" class="relative w-full sm:w-64">
           <SearchIcon
             class="text-muted-foreground pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2"

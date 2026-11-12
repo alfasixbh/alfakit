@@ -29,6 +29,9 @@ class ArticleResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    /** @var array<int, mixed> */
+    public static array $dehydratedSecretNotes = [];
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -38,7 +41,12 @@ class ArticleResource extends Resource
             Toggle::make('is_featured'),
             Toggle::make('is_private'),
             DateTimePicker::make('published_at'),
-            TextInput::make('secret_note'),
+            // Records what its dehydration hook is given (a password field hashes there).
+            TextInput::make('secret_note')->dehydrateStateUsing(static function (mixed $state): mixed {
+                static::$dehydratedSecretNotes[] = $state;
+
+                return $state;
+            }),
             FileUpload::make('attachment'),
         ]);
     }

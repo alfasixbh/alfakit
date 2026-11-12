@@ -2,16 +2,19 @@
   import { uniqueKey } from '../../lib/keys'
   import type { WizardSchema } from '@alfakit/core'
   import {
+    clampWizardStep,
     collectFields,
     completedStepIcon,
     initialWizardStep,
     persistWizardStep,
     reportWizardProgress,
     wizardRequestedStepIndex,
+    wizardSearch,
     wizardStepFieldPaths,
     wizardStepQueryKey,
     wizardStepToReveal,
   } from '@alfakit/core'
+  import { page } from '@inertiajs/svelte'
   import CheckIcon from '@lucide/svelte/icons/check'
   import { untrack } from 'svelte'
   import { useT } from '../../context.svelte'
@@ -42,9 +45,20 @@
         (component.schema ?? []).length,
         component.startStep,
         component.persistStepInQueryString,
+        wizardSearch(page.url),
       ),
     ),
   )
+
+  // A step hidden by a live field can leave the index past the last step.
+  $effect.pre(() => {
+    const clamped = clampWizardStep(
+      untrack(() => current),
+      steps.length,
+    )
+
+    if (clamped !== untrack(() => current)) current = clamped
+  })
 
   const stepQueryKey = $derived(wizardStepQueryKey(component.persistStepInQueryString))
   const actionContext = usePageActionContext()

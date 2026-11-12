@@ -430,7 +430,9 @@ export class TableSelection {
   selectAll(): void {
     if (typeof this.limits.max === 'number' || this.limits.groupsOnly) return
 
-    this.store.set({ selected: new Set(), allSelected: true })
+    // The ticked rows stay as the fallback: unticking one row afterwards leaves the
+    // "all records" mode with them (minus that row) instead of an empty selection.
+    this.store.set((state) => ({ selected: new Set(state.selected), allSelected: true }))
   }
 
   clear(): void {

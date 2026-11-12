@@ -156,6 +156,50 @@ describe('form block keyboard submit', () => {
   })
 })
 
+describe('form block of another record', () => {
+  it('starts from the server state when the form identity changes', async () => {
+    const { default: FormBlock } = await import('../src/components/form/FormBlock.vue')
+    const { setPageProps } = await import('./mocks')
+    const block = (name: string, operation = 'edit'): FormBlockSchema => ({
+      type: 'Form',
+      key: 'form',
+      component: 'form',
+      components: [
+        {
+          type: 'TextInput',
+          key: 'name',
+          name: 'name',
+          statePath: 'name',
+          label: 'Name',
+          inputType: 'text',
+        } as SchemaComponent,
+      ],
+      state: { name },
+      actions: [{ type: 'Action', name: 'save', label: 'Save', hasAction: true }],
+      operation,
+    })
+
+    setPageProps({
+      page: { class: 'EditPage', layout: 'auth', title: 'Edit', content: [], token: 't' },
+    })
+    const current = shallowRef(block('First'))
+    const wrapper = mountWithAlfakit(() => h(FormBlock, { block: current.value }))
+
+    await wrapper.find('input#alfakit-name').setValue('Typed')
+
+    // The same form reloaded (polling, a table action): what was typed stays.
+    current.value = block('First')
+    await nextTick()
+    expect(wrapper.find<HTMLInputElement>('input#alfakit-name').element.value).toBe('Typed')
+
+    // Another form identity (here the operation; in a panel usually the record): a new form.
+    current.value = block('Second', 'create')
+    await nextTick()
+    await nextTick()
+    expect(wrapper.find<HTMLInputElement>('input#alfakit-name').element.value).toBe('Second')
+  })
+})
+
 describe('form block after another action', () => {
   const block = (label: string): FormBlockSchema => ({
     type: 'Form',

@@ -94,7 +94,7 @@ class PostResource extends Resource implements HasShieldPermissions
 
 ### Policies
 
-`alfakit-shield:generate` writes `app/Policies/{Model}Policy.php` for each resource model, one method per prefix (`viewAny()` checks `view_any_post`…). Existing policies are skipped unless you pass `--force`. `--option=permissions|policies|policies_and_permissions` chooses what to generate, `--resource=PostResource` limits it to some resources.
+Until `RolePolicy` exists only holders of the super admin role can open **Roles**. `alfakit-shield:generate` writes `app/Policies/{Model}Policy.php` for each resource model, one method per prefix (`viewAny()` checks `view_any_post`…). Existing policies are skipped unless you pass `--force`. `--option=permissions|policies|policies_and_permissions` chooses what to generate, `--resource=PostResource` limits it to some resources.
 
 ### Pages and widgets
 

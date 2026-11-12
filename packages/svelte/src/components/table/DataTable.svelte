@@ -169,7 +169,10 @@
 
     if (next !== syncedSearch) {
       syncedSearch = next
-      search = next ?? ''
+
+      // Text typed since the search was sent is waiting to be sent: the answer to that older
+      // search must not replace it. A search changed elsewhere (a saved view, Back) still does.
+      if (!(pushSearch.pending && (next ?? null) === sentSearch)) search = next ?? ''
     }
   })
   // A reload in reorder mode (`?reordering=1`) comes back still reordering.
@@ -209,22 +212,45 @@
     Boolean(table.grouping?.groupsOnly) && (table.recordGroups?.length ?? 0) > 0,
   )
 
+  // The search last sent to the server: its answer is an echo, not a change.
+  let sentSearch: string | null | undefined
   const pushSearch = debounce(
-    (value: string) => visitTable(table.identifier, { search: value || null }, ['page']),
+    (value: string) => {
+      sentSearch = value || null
+      visitTable(table.identifier, { search: value || null }, ['page'])
+    },
     untrack(() => table.searchDebounce),
   )
 
   // Column searches (`searchable(isIndividual: true)`) apply after the same pause as the table
-  // search; Enter applies at once. `table` is read when the search runs, for the other columns.
-  const pushColumnSearch = debounce(
-    (name: string, value: string) =>
+  // search; Enter applies at once. What was typed and the server doesn't show yet is kept, so
+  // text typed in two columns within one pause is sent together.
+  let typedColumnSearches: Record<string, string> = {}
+  const sendColumnSearch = debounce(
+    () =>
       visitTable(
         table.identifier,
-        { columnSearch: { ...(table.columnSearches ?? {}), [name]: value } },
+        { columnSearch: { ...(table.columnSearches ?? {}), ...typedColumnSearches } },
         ['page'],
       ),
     untrack(() => table.searchDebounce),
   )
+  const pushColumnSearch = Object.assign(
+    (name: string, value: string) => {
+      typedColumnSearches[name] = value
+      sendColumnSearch()
+    },
+    { flush: () => sendColumnSearch.flush(), cancel: () => sendColumnSearch.cancel() },
+  )
+
+  // The server's answer replaces what was typed (also when a saved view or Back changed it).
+  // Compared by content: a poll brings a new object with the same searches.
+  const serverColumnSearches = $derived(JSON.stringify(table.columnSearches ?? {}))
+
+  $effect(() => {
+    void serverColumnSearches
+    typedColumnSearches = {}
+  })
 
   // Polls refresh only this table (a partial reload of its own schema), share one request
   // with other components on the same interval and pause while the tab is hidden. Derived

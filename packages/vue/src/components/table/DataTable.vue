@@ -243,14 +243,18 @@ const showsGroupsOnly = computed(
 watch(
   () => table.value.search,
   (value) => {
-    search.value = value ?? ''
+    // Text typed since the search was sent is waiting to be sent: the answer to that older
+    // search must not replace it. A search changed elsewhere (a saved view, Back) still does.
+    if (!(pushSearch.pending && (value ?? null) === sentSearch)) search.value = value ?? ''
   },
 )
 
-const pushSearch = debounce(
-  (value: string) => visitTable(table.value.identifier, { search: value || null }, ['page']),
-  table.value.searchDebounce,
-)
+// The search last sent to the server: its answer is an echo, not a change.
+let sentSearch: string | null | undefined
+const pushSearch = debounce((value: string) => {
+  sentSearch = value || null
+  visitTable(table.value.identifier, { search: value || null }, ['page'])
+}, table.value.searchDebounce)
 
 // Polls refresh only this table (a partial reload of its own schema), share one request
 // with other components on the same interval and pause while the tab is hidden.

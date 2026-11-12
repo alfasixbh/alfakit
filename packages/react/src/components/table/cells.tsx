@@ -340,9 +340,13 @@ function useCellUpdate({ recordKey, column, token, component }: CellProps) {
         state,
       )
       router.reload({ only: resolvePartialProps(['page']) })
+
+      return true
     } catch (caught) {
       const errors = (caught as { errors?: Record<string, string[]> }).errors
       setError(errors?.state?.[0] ?? (caught as Error).message)
+
+      return false
     } finally {
       setSaving(false)
     }
@@ -351,27 +355,55 @@ function useCellUpdate({ recordKey, column, token, component }: CellProps) {
   return { update, saving, error }
 }
 
+/**
+ * An editable cell's value: what the user picked, until the server sends another one. The
+ * row (keyed by its record) outlives reloads, so a value changed by an action, a poll or
+ * another user must replace the local one.
+ */
+function useCellState<T>(server: T): [T, (value: T) => void] {
+  const [value, setValue] = useState(server)
+  const [seen, setSeen] = useState(server)
+
+  if (!Object.is(seen, server)) {
+    setSeen(server)
+    setValue(server)
+  }
+
+  return [value, setValue]
+}
+
+const cellText = (state: unknown): string =>
+  state === null || state === undefined ? '' : String(state)
+
 function BooleanCell(props: CellProps) {
   const { column, cell } = props
-  const { update, saving } = useCellUpdate(props)
-  const [checked, setChecked] = useState(Boolean(cell.state))
+  const { update, saving, error } = useCellUpdate(props)
+  const [checked, setChecked] = useCellState(Boolean(cell.state))
   const disabled = Boolean(cell.disabled) || saving
   const toggle = column as ToggleColumnSchema
 
   const onChange = (next: boolean) => {
     setChecked(next)
-    void update(next)
+    // A refused update (validation, authorisation) puts the stored value back.
+    void update(next).then((saved) => {
+      if (saved === false) setChecked(Boolean(cell.state))
+    })
   }
+
+  const errorText = error && <span className="text-destructive block text-xs">{error}</span>
 
   if (column.type === 'CheckboxColumn') {
     return (
-      <Checkbox
-        checked={checked}
-        disabled={disabled}
-        aria-label={column.label || column.name}
-        onCheckedChange={(value) => onChange(value === true)}
-        onClick={(event) => event.stopPropagation()}
-      />
+      <>
+        <Checkbox
+          checked={checked}
+          disabled={disabled}
+          aria-label={column.label || column.name}
+          onCheckedChange={(value) => onChange(value === true)}
+          onClick={(event) => event.stopPropagation()}
+        />
+        {errorText}
+      </>
     )
   }
 
@@ -395,6 +427,7 @@ function BooleanCell(props: CellProps) {
           )}
         />
       )}
+      {errorText}
     </span>
   )
 }
@@ -446,10 +479,8 @@ function SelectComboboxCell(props: CellProps) {
   const t = useT()
   const panel = usePanel()
   const { update, saving, error } = useCellUpdate(props)
-  const [value, setValue] = useState(
-    cell.state === null || cell.state === undefined ? '' : String(cell.state),
-  )
-  const [label, setLabel] = useState(cell.optionLabel)
+  const [value, setValue] = useCellState(cellText(cell.state))
+  const [label, setLabel] = useCellState(cell.optionLabel)
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
@@ -496,7 +527,12 @@ function SelectComboboxCell(props: CellProps) {
     setValue(next)
     setLabel(nextLabel)
     setOpen(false)
-    void update(next === '' ? null : next)
+    void update(next === '' ? null : next).then((saved) => {
+      if (saved === false) {
+        setValue(cellText(cell.state))
+        setLabel(cell.optionLabel)
+      }
+    })
   }
 
   return (
@@ -594,9 +630,7 @@ function NativeSelectCell(props: CellProps) {
   const { column, cell } = props
   const schema = column as SelectColumnSchema
   const { update, saving, error } = useCellUpdate(props)
-  const [value, setValue] = useState(
-    cell.state === null || cell.state === undefined ? '' : String(cell.state),
-  )
+  const [value, setValue] = useCellState(cellText(cell.state))
 
   const errorId = useId()
 
@@ -607,7 +641,9 @@ function NativeSelectCell(props: CellProps) {
         disabled={Boolean(cell.disabled) || saving}
         onChange={(event) => {
           setValue(event.target.value)
-          void update(event.target.value === '' ? null : event.target.value)
+          void update(event.target.value === '' ? null : event.target.value).then((saved) => {
+            if (saved === false) setValue(cellText(cell.state))
+          })
         }}
         aria-label={column.label || column.name}
         aria-invalid={error ? true : undefined}
@@ -639,10 +675,8 @@ function TextInputCell(props: CellProps) {
   const { column, cell } = props
   const schema = column as TextInputColumnSchema
   const { update, saving, error } = useCellUpdate(props)
-  const [value, setValue] = useState(
-    cell.state === null || cell.state === undefined ? '' : String(cell.state),
-  )
-  const initial = cell.state === null || cell.state === undefined ? '' : String(cell.state)
+  const [value, setValue] = useCellState(cellText(cell.state))
+  const initial = cellText(cell.state)
   // `prefix()` / `suffix()`: text affixes around the input, like the TextInput field.
   const grouped = Boolean(cell.prefix || cell.suffix)
   const errorId = useId()

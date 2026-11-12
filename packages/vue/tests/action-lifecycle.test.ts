@@ -66,7 +66,7 @@ describe('authorisation feedback', () => {
       }),
     )
 
-    const trigger = wrapper.find('[data-disabled-tooltip]')
+    const trigger = wrapper.find('[data-slot="action-disabled-tooltip"]')
     expect(trigger.exists()).toBe(true)
     expect(trigger.attributes('tabindex')).toBe('0')
     expect(trigger.element.tagName).toBe('SPAN')
@@ -82,7 +82,7 @@ describe('authorisation feedback', () => {
       }),
     )
 
-    expect(wrapper.find('[data-disabled-tooltip]').exists()).toBe(false)
+    expect(wrapper.find('[data-slot="action-disabled-tooltip"]').exists()).toBe(false)
     wrapper.unmount()
   })
 })

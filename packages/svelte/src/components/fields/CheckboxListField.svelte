@@ -1,6 +1,12 @@
 <script lang="ts">
   import type { CheckboxListSchema } from '@alfakit/core'
-  import { fieldIds, gridColumnsClasses, htmlLabelToText, isOptionGroup } from '@alfakit/core'
+  import {
+    bulkSelectOptions,
+    fieldIds,
+    gridColumnsClasses,
+    htmlLabelToText,
+    isOptionGroup,
+  } from '@alfakit/core'
   import { useT } from '../../context.svelte'
   import { textColorClasses } from '../../lib/colors'
   import Icon from '../../lib/Icon.svelte'
@@ -88,10 +94,7 @@
                 size="sm"
                 data-slot="select-all"
                 disabled={field.disabled}
-                onclick={() =>
-                  field.setValue(
-                    options.filter((option) => !option.disabled).map((option) => option.value),
-                  )}
+                onclick={() => field.setValue(bulkSelectOptions(options, selected, true))}
               >
                 {#if component.selectAllAction?.icon}<Icon
                     name={component.selectAllAction.icon}
@@ -106,7 +109,7 @@
                 size="sm"
                 data-slot="deselect-all"
                 disabled={field.disabled}
-                onclick={() => field.setValue([])}
+                onclick={() => field.setValue(bulkSelectOptions(options, selected, false))}
               >
                 {#if component.deselectAllAction?.icon}<Icon
                     name={component.deselectAllAction.icon}

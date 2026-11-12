@@ -26,6 +26,13 @@ import { MixedContent } from './mixed-content'
 export function SectionComponent({ component }: { component: SectionSchema }) {
   const t = useT()
   const [choice, setChoice] = useState<boolean | null>(null)
+  // `collapsed(fn (Get $get) => …)`: a value a live field changed wins over an earlier click.
+  const [seenCollapsed, setSeenCollapsed] = useState(Boolean(component.collapsed))
+
+  if (seenCollapsed !== Boolean(component.collapsed)) {
+    setSeenCollapsed(Boolean(component.collapsed))
+    setChoice(null)
+  }
   // Inside a form the section's actions run as field actions, so `$get` / `$set` work.
   const form = useOptionalFormStore()
   const pageContext = usePageActionContext()

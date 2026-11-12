@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import type { CheckboxListSchema } from '@alfakit/core'
-import { fieldIds, gridColumnsClasses, htmlLabelToText, isOptionGroup } from '@alfakit/core'
+import {
+  bulkSelectOptions,
+  fieldIds,
+  gridColumnsClasses,
+  htmlLabelToText,
+  isOptionGroup,
+} from '@alfakit/core'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useT } from '../../context'
 import { textColorClasses } from '../../lib/colors'
@@ -90,9 +96,7 @@ const toggle = (key: string, checked: boolean) => {
             size="sm"
             data-slot="select-all"
             :disabled="disabled"
-            @click="
-              setValue(options.filter((option) => !option.disabled).map((option) => option.value))
-            "
+            @click="setValue(bulkSelectOptions(options, selected, true))"
           >
             <Icon
               v-if="props.component.selectAllAction?.icon"
@@ -107,7 +111,7 @@ const toggle = (key: string, checked: boolean) => {
             size="sm"
             data-slot="deselect-all"
             :disabled="disabled"
-            @click="setValue([])"
+            @click="setValue(bulkSelectOptions(options, selected, false))"
           >
             <Icon
               v-if="props.component.deselectAllAction?.icon"

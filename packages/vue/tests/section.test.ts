@@ -1,5 +1,5 @@
 import type { SchemaComponent, SectionSchema } from '@alfakit/core'
-import { h } from 'vue'
+import { h, nextTick, shallowRef } from 'vue'
 import SectionComponent from '../src/components/layout/SectionComponent.vue'
 import { flush, mountWithAlfakit } from './mocks'
 
@@ -57,5 +57,16 @@ describe('Section', () => {
     expect(wrapper.text()).toContain('Section body')
     expect(wrapper.find('button[aria-label="Toggle section"]').exists()).toBe(false)
     wrapper.unmount()
+  })
+  it('follows collapsed() when the server changes it (a live field)', async () => {
+    const current = shallowRef(section({ collapsible: true, collapsed: true }))
+    const wrapper = mountWithAlfakit(() => h(SectionComponent, { component: current.value }))
+    const toggle = wrapper.find('button[aria-label="Toggle section"]')
+    expect(toggle.attributes('aria-expanded')).toBe('false')
+
+    current.value = section({ collapsible: true, collapsed: false })
+    await nextTick()
+    await flush()
+    expect(toggle.attributes('aria-expanded')).toBe('true')
   })
 })

@@ -1,5 +1,6 @@
 import type { SchemaComponent, SectionSchema } from '@alfakit/core'
 import { fireEvent, render, screen } from '@testing-library/svelte'
+import { tick } from 'svelte'
 import SectionComponent from '../src/components/layout/SectionComponent.svelte'
 import Wrapper from './Wrapper.svelte'
 
@@ -57,5 +58,24 @@ describe('Section', () => {
 
     expect(screen.getByText('Section body')).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Toggle section' })).toBeNull()
+  })
+  it('follows collapsed() when the server changes it (a live field)', async () => {
+    const { rerender } = render(Wrapper, {
+      props: {
+        component: SectionComponent,
+        props: { component: section({ collapsible: true, collapsed: true }) },
+      },
+    })
+    const toggle = screen.getByRole('button', { name: 'Toggle section' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+
+    await rerender({
+      props: {
+        component: SectionComponent,
+        props: { component: section({ collapsible: true, collapsed: false }) },
+      },
+    })
+    await tick()
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
   })
 })

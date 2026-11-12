@@ -5,6 +5,7 @@ declare(strict_types=1);
 use AlfaSix\AlfakitApi\ApiPlugin;
 use AlfaSix\AlfakitApi\Models\ApiToken;
 use AlfaSix\AlfakitApi\Tests\Fixtures\Models\Article;
+use AlfaSix\AlfakitApi\Tests\Fixtures\Resources\ArticleResource;
 
 use function AlfaSix\AlfakitApi\Tests\api;
 use function AlfaSix\AlfakitApi\Tests\apiToken;
@@ -148,9 +149,13 @@ it('keeps a hidden attribute an update leaves out, and never returns it', functi
     $token = apiToken($user, ['*']);
     $article = article(['secret_note' => 'keep', 'author_id' => $user->getKey()]);
 
+    ArticleResource::$dehydratedSecretNotes = [];
     $response = api('PATCH', '/api/v1/articles/'.$article->getKey(), $token, ['title' => 'T2'])->assertOk();
 
-    expect($article->refresh()->title)->toBe('T2')
+    // The stored value never passes through the field's hooks (a password field would hash
+    // the stored hash again).
+    expect(ArticleResource::$dehydratedSecretNotes)->not->toContain('keep')
+        ->and($article->refresh()->title)->toBe('T2')
         ->and($article->secret_note)->toBe('keep')
         ->and($response->getContent())->not->toContain('keep')->not->toContain('secret_note');
 

@@ -109,7 +109,11 @@
 
   const environment = (): FileManagerEnvironment => ({
     runner,
-    token: page.token,
+    // Read per request: the page hands out a new token with every response, and the
+    // one this screen opened with expires.
+    get token() {
+      return page.token
+    },
     uploadEndpoint: panel.endpoints.upload,
     uploadChunkEndpoint: panel.endpoints.uploadChunks,
     uploadChunkSize: panel.uploadChunkSize,

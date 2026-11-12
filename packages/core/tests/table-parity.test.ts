@@ -18,6 +18,19 @@ import {
 const record = (key: number, group?: string): TableRecordSchema => ({ key, cells: {}, group })
 
 describe('selection limits', () => {
+  it('keeps the ticked rows when one is unticked after "select all"', () => {
+    const selection = new TableSelection()
+
+    selection.selectPage([record(1), record(2), record(3)])
+    selection.selectAll()
+    expect(selection.state.allSelected).toBe(true)
+    expect(selection.isSelected(99)).toBe(true)
+
+    selection.toggle(2, false)
+    expect(selection.state.allSelected).toBe(false)
+    expect(selection.keys).toEqual(['1', '3'])
+  })
+
   it('stops at maxSelectableRecords and refuses "select all"', () => {
     const selection = new TableSelection()
     selection.configure({ maxSelectableRecords: 2 })

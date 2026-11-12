@@ -187,7 +187,7 @@ const disabledTooltip = computed(() => Boolean(props.action.disabled && tooltip.
       :as="disabledTooltip ? 'span' : undefined"
       :tabindex="disabledTooltip ? 0 : undefined"
       :class="disabledTooltip ? 'inline-flex' : undefined"
-      :data-disabled-tooltip="disabledTooltip ? '' : undefined"
+      :data-slot="disabledTooltip ? 'action-disabled-tooltip' : undefined"
     >
       <Button
         v-if="isPlainLink && (props.action.download || props.action.openUrlInNewTab)"

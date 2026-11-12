@@ -186,21 +186,28 @@ export function DataTable({
 
   useTablePersistence(table)
 
+  // The search last sent to the server: its answer is an echo, not a change.
+  const [sentSearch, setSentSearch] = useState<string | null | undefined>(undefined)
+  const pushSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSentSearch(value || null)
+        visitTable(table.identifier, { search: value || null }, ['page'])
+      }, table.searchDebounce),
+    [table.identifier, table.searchDebounce],
+  )
+
   const [syncedSearch, setSyncedSearch] = useState(table.search)
 
   if (syncedSearch !== table.search) {
     setSyncedSearch(table.search)
-    setSearch(table.search ?? '')
-  }
 
-  const pushSearch = useMemo(
-    () =>
-      debounce(
-        (value: string) => visitTable(table.identifier, { search: value || null }, ['page']),
-        table.searchDebounce,
-      ),
-    [table.identifier, table.searchDebounce],
-  )
+    // Text typed since the search was sent is waiting to be sent: the answer to that older
+    // search must not replace it. A search changed elsewhere (a saved view, Back) still does.
+    if (!(pushSearch.pending && (table.search ?? null) === sentSearch)) {
+      setSearch(table.search ?? '')
+    }
+  }
 
   // Column searches (`searchable(isIndividual: true)`) apply after the same pause as the table
   // search; Enter applies at once. Callers pass every column's search (the others unchanged).
@@ -213,8 +220,26 @@ export function DataTable({
       ),
     [table.identifier, table.searchDebounce],
   )
-  const searchColumn = (name: string, value: string) =>
-    pushColumnSearch({ ...(table.columnSearches ?? {}), [name]: value })
+  // What the column search boxes show: the server's searches (they change with a saved view
+  // or Back) plus what is being typed, so text typed in two columns within one pause is
+  // sent together.
+  const serverColumnSearches = JSON.stringify(table.columnSearches ?? {})
+  const [syncedColumnSearches, setSyncedColumnSearches] = useState(serverColumnSearches)
+  const [columnSearches, setColumnSearches] = useState<Record<string, string>>(
+    table.columnSearches ?? {},
+  )
+
+  if (syncedColumnSearches !== serverColumnSearches) {
+    setSyncedColumnSearches(serverColumnSearches)
+    setColumnSearches(table.columnSearches ?? {})
+  }
+
+  const typeColumnSearch = (name: string, value: string) => {
+    const next = { ...columnSearches, [name]: value }
+    setColumnSearches(next)
+
+    return next
+  }
 
   // Polls refresh only this table (a partial reload of its own schema), share one request
   // with other components on the same interval and pause while the tab is hidden.
@@ -629,20 +654,20 @@ export function DataTable({
           {column.searchable && (
             <Input
               type="search"
-              defaultValue={table.columnSearches?.[column.name] ?? ''}
+              value={columnSearches[column.name] ?? ''}
               placeholder={t('search', {}, 'Search')}
               aria-label={`${t('search', {}, 'Search')} ${column.label}`}
               className="h-7 text-xs font-normal"
               onChange={(event) => {
-                if (!table.searchOnBlur) searchColumn(column.name, event.target.value)
+                const next = typeColumnSearch(column.name, event.target.value)
+
+                if (!table.searchOnBlur) pushColumnSearch(next)
               }}
-              onBlur={(event) =>
-                table.searchOnBlur && searchColumn(column.name, event.target.value)
-              }
+              onBlur={() => table.searchOnBlur && pushColumnSearch(columnSearches)}
               onKeyDown={(event) => {
                 if (event.key !== 'Enter') return
 
-                searchColumn(column.name, (event.target as HTMLInputElement).value)
+                pushColumnSearch(columnSearches)
                 pushColumnSearch.flush()
               }}
             />

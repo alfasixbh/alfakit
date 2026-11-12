@@ -19,6 +19,7 @@ use AlfaSix\Alfakit\Schemas\Components\Tabs\Tab;
 use AlfaSix\Alfakit\Schemas\Components\Utilities\Get;
 use AlfaSix\Alfakit\Schemas\Components\Utilities\Set;
 use AlfaSix\Alfakit\Schemas\Schema;
+use AlfaSix\Alfakit\Support\Authorization;
 use AlfaSix\Alfakit\Tables\Columns\TextColumn;
 use AlfaSix\Alfakit\Tables\Table;
 use AlfaSix\AlfakitShield\Resources\RoleResource\Pages;
@@ -28,6 +29,7 @@ use AlfaSix\AlfakitShield\Support\PermissionModels;
 use AlfaSix\AlfakitShield\Support\PermissionRegistry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Spatie\Permission\Models\Role;
 use UnitEnum;
@@ -47,6 +49,47 @@ class RoleResource extends Resource
     public static function getModel(): string
     {
         return PermissionModels::role();
+    }
+
+    /**
+     * The resource is authorised by the role model's policy (`alfakit-shield:generate`
+     * writes `RolePolicy`). Without one AlfaKit allows everything, which here would let
+     * every panel user grant themselves any permission: until the policy exists only
+     * holders of the super admin role may manage roles.
+     */
+    public static function can(string $action, ?Model $record = null): bool
+    {
+        if (static::$shouldSkipAuthorization) {
+            return true;
+        }
+
+        if (Authorization::policyFor(static::getModel()) === null) {
+            return static::actorHoldsSuperAdminRole();
+        }
+
+        // The super admin role itself (it passes every check) is only changed or deleted
+        // by its holders, whatever role permissions another user has.
+        if ($record !== null && ! in_array($action, ['viewAny', 'view'], true) && $record->getAttribute('name') === static::getSuperAdminRoleName() && ! static::actorHoldsSuperAdminRole()) {
+            return false;
+        }
+
+        return parent::can($action, $record);
+    }
+
+    protected static function getSuperAdminRoleName(): ?string
+    {
+        $plugin = ShieldPlugin::get(alfakit()->getCurrentOrDefaultPanel());
+
+        return $plugin?->isSuperAdminEnabled() ? $plugin->getSuperAdminRole() : null;
+    }
+
+    protected static function actorHoldsSuperAdminRole(): bool
+    {
+        $panel = alfakit()->getCurrentOrDefaultPanel();
+        $user = $panel->auth()->user();
+        $role = ShieldPlugin::get($panel)?->getSuperAdminRole();
+
+        return $user !== null && $role !== null && method_exists($user, 'hasRole') && (bool) $user->hasRole($role);
     }
 
     public static function getModelLabel(): string
@@ -123,6 +166,9 @@ class RoleResource extends Resource
                         ->label(__('alfakit-shield::shield.fields.name'))
                         ->required()
                         ->maxLength(255)
+                        // A role may not be created as, or renamed to, the super admin role
+                        // (its holders pass every check) by someone who doesn't hold it.
+                        ->rule(static fn (): mixed => Rule::notIn(array_filter([static::getSuperAdminRoleName()])), static fn (): bool => ! static::actorHoldsSuperAdminRole())
                         ->unique(ignoreRecord: true, modifyRuleUsing: static function (Unique $rule, Get $get) use ($registry): Unique {
                             $rule->where('guard_name', $get('guard_name') ?? $registry->getGuard());
 

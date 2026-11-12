@@ -23,7 +23,8 @@ it('registers the plugin and the role resource on the panel', function (): void 
 });
 
 it('places the role resource in the configured navigation group', function (): void {
-    $this->actingAs($this->makeUser());
+    // Without a generated RolePolicy only super admins see the resource.
+    $this->actingAs($this->makeUser(['super_admin' => []]));
 
     $navigation = $this->inertiaProps('/shield')['alfakit']['navigation'];
     $settings = collect($navigation)->firstWhere('label', 'Settings');

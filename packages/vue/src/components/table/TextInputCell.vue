@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { TextInputColumnSchema } from '@alfakit/core'
-import { computed, ref, useId } from 'vue'
+import { computed, useId } from 'vue'
 import { colorClass, textColorClasses } from '../../lib/colors'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
 import Input from '../ui/Input.vue'
-import { useCellUpdate, type CellProps } from './cell-update'
+import { cellText, useCellState, useCellUpdate, type CellProps } from './cell-update'
 
 const props = defineProps<CellProps>()
 const schema = computed(() => props.column as TextInputColumnSchema)
@@ -13,10 +13,8 @@ const { update, saving, error } = useCellUpdate(props)
 const errorId = useId()
 // The saved value: follows the cell after the table reloads, so changing the input back to
 // an earlier value is saved too.
-const initial = computed(() =>
-  props.cell.state === null || props.cell.state === undefined ? '' : String(props.cell.state),
-)
-const value = ref(initial.value)
+const initial = computed(() => cellText(props.cell.state))
+const value = useCellState(() => initial.value)
 // `prefix()` / `suffix()`: text affixes around the input, like the TextInput field.
 const grouped = computed(() => Boolean(props.cell.prefix || props.cell.suffix))
 </script>

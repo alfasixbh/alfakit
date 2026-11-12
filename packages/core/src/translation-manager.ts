@@ -277,6 +277,8 @@ export class TranslationManagerController {
 
       const active =
         this.state.active && result.rows.some((row) => row.id === this.state.active?.row)
+      const stillEditing =
+        this.state.editing !== null && result.rows.some((row) => row.id === this.state.editing?.row)
 
       this.store.update({
         rows: result.rows,
@@ -286,8 +288,9 @@ export class TranslationManagerController {
         progress: result.progress ?? this.state.progress,
         loading: false,
         active: active ? this.state.active : null,
-        editing: null,
-        draftForms: null,
+        // A cell being edited stays open (with what was typed) while its row is still listed.
+        editing: stillEditing ? this.state.editing : null,
+        draftForms: stillEditing ? this.state.draftForms : null,
         error: null,
         announcement: this.env.t(
           'translation-manager.pagination',

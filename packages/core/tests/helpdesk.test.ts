@@ -125,6 +125,64 @@ describe('HelpdeskInboxController', () => {
     )
   })
 
+  it('keeps the loaded pages when the list refreshes', async () => {
+    const executeJson = vi.fn()
+    const env = environment(executeJson)
+    const page = (number: number, keys: string[], hasMore: boolean) => ({
+      list: { view: 'mine', page: number, views: [], tickets: keys.map(summary), hasMore },
+    })
+    const inbox = new HelpdeskInboxController(
+      schema({ list: { ...schema().list, hasMore: true } }),
+      env,
+    )
+
+    executeJson.mockImplementation(
+      async (_action: unknown, context: { arguments: { helpdesk: { page: number } } }) =>
+        context.arguments.helpdesk.page === 1
+          ? page(1, ['1', '2', '3'], true)
+          : page(2, ['4', '5'], false),
+    )
+
+    await inbox.loadMore()
+    expect(inbox.state.list.tickets.map((item) => item.key)).toEqual(['1', '2', '3', '4', '5'])
+
+    await inbox.refreshList()
+    expect(inbox.state.list.tickets.map((item) => item.key)).toEqual(['1', '2', '3', '4', '5'])
+    expect(inbox.state.list.page).toBe(2)
+  })
+
+  it('keeps text typed while a reply is being sent', async () => {
+    let release: (() => void) | undefined
+    const executeJson = vi.fn()
+    const env = environment(executeJson)
+    const inbox = new HelpdeskInboxController(schema(), env)
+
+    await inbox.select('1')
+    executeJson.mockImplementation(
+      async (action: { name: string }, context: { record?: string }) => {
+        if (action.name === 'helpdeskQuickReply') {
+          await new Promise<void>((resolve) => {
+            release = resolve
+          })
+
+          return { ticket: ticket(String(context.record)) }
+        }
+
+        return { list: schema().list }
+      },
+    )
+
+    inbox.setText('First')
+    const sending = inbox.send()
+    await vi.waitFor(() => expect(release).toBeDefined())
+    inbox.setText('Second')
+    release?.()
+    await sending
+
+    expect(inbox.state.composer.text).toBe('Second')
+    expect(inbox.state.composer.sending).toBe(false)
+  })
+
   it('appends the next page', async () => {
     const executeJson = vi.fn()
     const env = environment(executeJson)

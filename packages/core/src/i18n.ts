@@ -176,9 +176,12 @@ export class LocaleFormatter {
 
     if (Number.isNaN(date.getTime())) return String(value)
 
-    return new Intl.DateTimeFormat(this.locale, { timeZone: this.timeZone, ...options }).format(
-      date,
-    )
+    // A date without a time (`2026-11-20`) is a calendar day, parsed as UTC midnight: shown
+    // in a timezone west of UTC it would become the day before.
+    const timeZone =
+      typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? 'UTC' : this.timeZone
+
+    return new Intl.DateTimeFormat(this.locale, { timeZone, ...options }).format(date)
   }
 
   dateTime(value: Date | string | number): string {
@@ -253,6 +256,8 @@ export class LocaleFormatter {
     const { decimal } = this.separators()
     let value = toAsciiDigits(input)
       .replace(/[\s\u00a0\u202f'’]/g, '')
+      // The minus sign formatted numbers carry (pasted back from the page).
+      .replace(/[\u2212\u2012\u2013]/g, '-')
       .replace(/٫/g, decimal)
       .replace(/[٬،]/g, decimal === ',' ? '.' : ',')
 

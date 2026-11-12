@@ -126,6 +126,31 @@ export function FormattedText({
       </bdi>
     )
 
+    // The copy button and its "Copied" status, after the text or inside the badge.
+    const copyControls = (className: string) =>
+      schema.copyable && (
+        <>
+          <button
+            type="button"
+            className={className}
+            onClick={(event) => {
+              // The entry may sit inside a link or a clickable table row.
+              event.preventDefault()
+              event.stopPropagation()
+              copy(text)
+            }}
+            aria-label={t('copy', {}, 'Copy')}
+          >
+            {copied ? <CheckIcon className="size-3.5" /> : <CopyIcon className="size-3.5" />}
+          </button>
+          {copied && (
+            <span role="status" className={cn('text-xs', !schema.copyMessage && 'sr-only')}>
+              {schema.copyMessage ?? t('copied', {}, 'Copied')}
+            </span>
+          )}
+        </>
+      )
+
     if (schema.badge) {
       return (
         <Badge
@@ -140,7 +165,13 @@ export function FormattedText({
             />
           )}
           {inner}
-          {icon && schema.iconPosition === 'after' && <Icon name={icon} />}
+          {icon && schema.iconPosition === 'after' && (
+            <Icon
+              name={icon}
+              className={cn(schema.iconColor && textColorClasses[schema.iconColor])}
+            />
+          )}
+          {copyControls('shrink-0 opacity-70 hover:opacity-100')}
         </Badge>
       )
     }
@@ -169,26 +200,7 @@ export function FormattedText({
             className={cn(schema.iconColor && textColorClasses[schema.iconColor])}
           />
         )}
-        {schema.copyable && (
-          <button
-            type="button"
-            className="text-muted-foreground hover:text-foreground shrink-0"
-            onClick={(event) => {
-              // The entry may sit inside a link or a clickable table row.
-              event.preventDefault()
-              event.stopPropagation()
-              copy(text)
-            }}
-            aria-label={t('copy', {}, 'Copy')}
-          >
-            {copied ? <CheckIcon className="size-3.5" /> : <CopyIcon className="size-3.5" />}
-          </button>
-        )}
-        {schema.copyable && copied && (
-          <span role="status" className={cn('text-xs', !schema.copyMessage && 'sr-only')}>
-            {schema.copyMessage ?? t('copied', {}, 'Copied')}
-          </span>
-        )}
+        {copyControls('text-muted-foreground hover:text-foreground shrink-0')}
       </span>
     )
   }

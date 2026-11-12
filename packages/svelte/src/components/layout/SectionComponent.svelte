@@ -26,6 +26,17 @@
   let { component }: { component: SectionSchema } = $props()
 
   let open = $state(untrack(() => !component.collapsed))
+  // `collapsed(fn (Get $get) => …)`: the section follows the value when a live field changes it.
+  let seenCollapsed = untrack(() => Boolean(component.collapsed))
+
+  $effect.pre(() => {
+    const collapsed = Boolean(component.collapsed)
+
+    if (collapsed !== seenCollapsed) {
+      seenCollapsed = collapsed
+      open = !collapsed
+    }
+  })
   // Inside a form the section's actions run as field actions, so `$get` / `$set` work.
   const sectionForm = useOptionalFormStore()
   const pageContext = usePageActionContext()

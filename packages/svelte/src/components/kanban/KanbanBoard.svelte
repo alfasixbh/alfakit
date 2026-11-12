@@ -45,7 +45,11 @@
 
   const environment = (): KanbanEnvironment => ({
     runner,
-    token: page.token,
+    // Read per request: the page hands out a new token with every response, and the
+    // one this screen opened with expires.
+    get token() {
+      return page.token
+    },
     t,
     notify: (notifications) => notifications.forEach((notification) => showToast(notification)),
     error: (message) => showToast(clientErrorNotification('kanban', message)),
@@ -189,7 +193,10 @@
         <span id={labelId} class="sr-only">{t('kanban.label', {}, 'Kanban board')}</span>
       {/if}
       <div class="ms-auto flex w-full flex-wrap items-center gap-2 sm:w-auto">
-        {#if kanban.current.loading}<Spinner class="size-4" />{/if}
+        {#if kanban.current.loading}<Spinner
+            class="size-4"
+            aria-label={t('kanban.loading', {}, 'Loading board')}
+          />{/if}
         {#if schema.searchable}
           <div class="relative w-full sm:w-64">
             <SearchIcon

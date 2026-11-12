@@ -110,6 +110,17 @@ Visits from the panel (Inertia) are answered with a full page redirect, so the h
 | `requiresSubscription(bool\|Closure $condition = true)` | Send billables without an active subscription to the plans page. Off by default. |
 | `checkoutPage(string $page)`                            | Use your own plans page, a subclass of `AlfaSix\AlfakitBilling\Pages\Checkout`.  |
 | `userMenuItem(bool\|Closure $condition = true)`         | The **Billing** user menu entry on panels without tenancy (on by default).       |
+| `authorize(bool\|Closure\|null $callback = true)`       | Who may open the portal, the plans page and a checkout. Everyone by default.     |
+
+On a tenancy panel every member of the tenant can open the billing portal (and cancel the subscription there) unless you say who may:
+
+```php
+BillingPlugin::make()
+    ->provider($provider)
+    ->authorize(fn (User $user, ?Team $tenant): bool => $tenant?->owner_id === $user->id)
+```
+
+The others get a 403 on the billing route and the plans page, and don't see **Billing** in the tenant menu.
 
 `BillingPlugin::get($panel)` returns the registered plugin.
 

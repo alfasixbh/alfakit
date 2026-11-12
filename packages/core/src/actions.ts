@@ -342,7 +342,7 @@ export class ActionRunner {
    * `cancelParentActionsOnClose()` its parents close too.
    */
   cancelModal(name: string): void {
-    const open = this.state.modals.find((modal) => modal.action.name === name)
+    const open = this.topmostModal(name)
     const cancel = open?.modal.cancelParentActionsOnClose
 
     this.closeModal(name)
@@ -453,7 +453,7 @@ export class ActionRunner {
    * server's defaults, keeping the `preserveFormData` fields from the values just sent.
    */
   async resetModal(name: string, previous: Record<string, unknown> = {}): Promise<void> {
-    const open = this.state.modals.find((modal) => modal.action.name === name)
+    const open = this.topmostModal(name)
 
     if (!open) {
       return
@@ -478,10 +478,13 @@ export class ActionRunner {
         }
       }
 
+      // The entry may have been replaced while the modal was fetched (its processing state).
+      const current = this.topmostModal(name)
+
       this.store.set((state) => ({
         ...state,
         modals: state.modals.map((entry) =>
-          entry === open || entry.action.name === name
+          entry === current
             ? { ...entry, modal, errors: {}, refocus: (entry.refocus ?? 0) + 1 }
             : entry,
         ),
@@ -496,11 +499,25 @@ export class ActionRunner {
     return this.running.has(runKey(action, context))
   }
 
+  /**
+   * The open modal of the action `name` nearest the top: modals are addressed by action
+   * name, and a nested action may share its parent's (a select's "create option" form
+   * holding another such select), so only the innermost one is meant.
+   */
+  private topmostModal(name: string): OpenModal | undefined {
+    const modals = this.state.modals
+
+    for (let index = modals.length - 1; index >= 0; index--) {
+      if (modals[index]?.action.name === name) return modals[index]
+    }
+
+    return undefined
+  }
+
   closeModal(name?: string): void {
     const modals = this.state.modals
-    const remaining = name
-      ? modals.filter((modal) => modal.action.name !== name)
-      : modals.slice(0, -1)
+    const closing = name ? this.topmostModal(name) : modals[modals.length - 1]
+    const remaining = modals.filter((modal) => modal !== closing)
 
     this.store.set((state) => ({ ...state, modals: remaining }))
 
@@ -743,7 +760,7 @@ export class ActionRunner {
       }
 
       if (response.status === 'success') {
-        const modal = this.state.modals.find((open) => open.action.name === action.name)
+        const modal = this.topmostModal(action.name)
         modal?.resolve?.(response.result)
       }
 
@@ -785,12 +802,12 @@ export class ActionRunner {
   }
 
   private setProcessing(name: string, processing: boolean): void {
+    const target = this.topmostModal(name)
+
     this.store.set((state) => ({
       ...state,
       modals: state.modals.map((modal) =>
-        modal.action.name === name
-          ? { ...modal, processing, errors: processing ? {} : modal.errors }
-          : modal,
+        modal === target ? { ...modal, processing, errors: processing ? {} : modal.errors } : modal,
       ),
     }))
   }
@@ -802,10 +819,12 @@ export class ActionRunner {
       normalized[key] = [message]
     }
 
+    const target = this.topmostModal(name)
+
     this.store.set((state) => ({
       ...state,
       modals: state.modals.map((modal) =>
-        modal.action.name === name ? { ...modal, errors: normalized } : modal,
+        modal === target ? { ...modal, errors: normalized } : modal,
       ),
     }))
   }

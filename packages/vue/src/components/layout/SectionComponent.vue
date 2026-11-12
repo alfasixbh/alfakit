@@ -8,7 +8,7 @@ import {
   writePersisted,
 } from '@alfakit/core'
 import { ChevronDownIcon } from '@lucide/vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { Icon } from '../../lib/icons'
 import { cn } from '../../lib/utils'
 import { usePageActionContext } from '../actions/action-context'
@@ -26,6 +26,13 @@ import MixedContent from './MixedContent.vue'
 
 const props = defineProps<{ component: SectionSchema }>()
 const open = ref(!props.component.collapsed)
+// `collapsed(fn (Get $get) => …)`: the section follows the value when a live field changes it.
+watch(
+  () => props.component.collapsed,
+  (collapsed) => {
+    open.value = !collapsed
+  },
+)
 // Inside a form the section's actions run as field actions, so `$get` / `$set` work.
 const sectionForm = useOptionalFormStore()
 const pageContext = usePageActionContext()

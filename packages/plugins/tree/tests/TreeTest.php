@@ -307,3 +307,23 @@ it('scopes the tree, its actions and saving to the current tenant', function ():
     expect($theirs->refresh()->parent_id)->toBeNull()
         ->and(Category::query()->find($theirs->id))->not->toBeNull();
 });
+
+it('keeps the parent of nodes whose parent is outside the tree query', function (): void {
+    $c = treeCategories();
+
+    // The tree shows everything but "Electronics" (trashed, or filtered out by the page's
+    // query): its children are drawn as roots and posted with no parent.
+    $query = Category::query()->whereKeyNot($c['electronics']->id);
+
+    TreeStructure::save($query, [
+        ['key' => $c['books']->id, 'parent' => null],
+        ['key' => $c['laptops']->id, 'parent' => null],
+        ['key' => $c['phones']->id, 'parent' => null],
+        ['key' => $c['android']->id, 'parent' => $c['phones']->id],
+    ], 'parent_id', 'order');
+
+    expect($c['laptops']->refresh()->parent_id)->toBe($c['electronics']->id)
+        ->and($c['phones']->refresh()->parent_id)->toBe($c['electronics']->id)
+        ->and($c['android']->refresh()->parent_id)->toBe($c['phones']->id)
+        ->and($c['books']->refresh()->parent_id)->toBeNull();
+});

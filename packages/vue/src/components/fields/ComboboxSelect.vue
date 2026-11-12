@@ -2,7 +2,7 @@
 import type { FieldAriaAttributes, Option, OptionOrGroup, SelectSchema } from '@alfakit/core'
 import { debounce, htmlLabelToText, isOptionGroup } from '@alfakit/core'
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from '@lucide/vue'
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useT } from '../../context'
 import { cn } from '../../lib/utils'
 import { useFormStore } from '../form/form-context'
@@ -92,20 +92,35 @@ const runSearch = debounce((term: string) => {
 watch([open, search], ([isOpen, term]) => {
   if (isOpen && isRemote.value) {
     runSearch(term)
+  } else {
+    runSearch.cancel()
   }
 })
+
+onBeforeUnmount(() => runSearch.cancel())
+
+// Values whose label was asked for once: the server may never return one (a deleted
+// record, stale state), and asking again on every selection change would not help.
+const requestedLabels = new Set<string>()
 
 // Resolve labels for values we have not seen yet (e.g. after a server refresh).
 watch(
   selected,
   (keys) => {
     const missing = keys.filter(
-      (key) => !labels.value[key] && !staticOptions.value.some((option) => option.value === key),
+      (key) =>
+        !labels.value[key] &&
+        !requestedLabels.has(key) &&
+        !staticOptions.value.some((option) => option.value === key),
     )
 
     // Labels are fetched from the browser only, never during a server render.
     if (missing.length === 0 || !isRemote.value || typeof window === 'undefined') {
       return
+    }
+
+    for (const key of missing) {
+      requestedLabels.add(key)
     }
 
     void store.optionLabels(props.component.statePath, missing).then((resolved) => {

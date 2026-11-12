@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
+import { ref, type HTMLAttributes } from 'vue'
+import { useAutofocus } from '../../lib/autofocus'
 import { cn } from '../../lib/utils'
 
 const props = defineProps<{ class?: HTMLAttributes['class']; modelValue?: string | null }>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 defineOptions({ inheritAttrs: false })
+
+const element = ref<HTMLTextAreaElement | null>(null)
+useAutofocus(element)
 </script>
 
 <template>
   <textarea
+    ref="element"
     v-bind="$attrs"
     data-slot="textarea"
     :value="props.modelValue ?? ''"

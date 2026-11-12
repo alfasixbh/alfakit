@@ -1,11 +1,13 @@
 import { buildQuery } from '../src/http'
 import { Translator } from '../src/i18n'
+import { bulkSelectOptions } from '../src/schema/common'
 import { columnSpanClasses, columnStartClasses, gridColumnsClasses } from '../src/utils/breakpoints'
 import { wallClockNow } from '../src/utils/datetime'
 import { formatBytes, initials, interpolate, parseInterval } from '../src/utils/format'
 import { imageGeometry, parseAspectRatio } from '../src/utils/image'
 import { formatKeyBinding, matchesKeyBinding, parseKeyBinding } from '../src/utils/keybindings'
 import { applyMask } from '../src/utils/mask'
+import { clampWizardStep } from '../src/wizard'
 
 describe('format utils', () => {
   it('formats bytes, intervals, initials and placeholders', () => {
@@ -16,6 +18,10 @@ describe('format utils', () => {
     expect(parseInterval(null)).toBeNull()
     expect(initials('Ada Lovelace King')).toBe('AL')
     expect(interpolate('Showing :first to :last', { first: 1, last: 10 })).toBe('Showing 1 to 10')
+    // `$` sequences in a value are text, not replacement patterns.
+    expect(interpolate('Delete :label?', { label: "Save $$$ now & Bob$'s" })).toBe(
+      "Delete Save $$$ now & Bob$'s?",
+    )
   })
 })
 
@@ -137,5 +143,28 @@ describe('image crop and resize geometry', () => {
     })
     expect(imageGeometry(400, 200, { width: 200 })).toMatchObject({ width: 200, height: 100 })
     expect(imageGeometry(400, 200, {})).toBeNull()
+  })
+})
+
+describe('bulkSelectOptions', () => {
+  const options = [
+    { value: 'draft', label: 'Draft' },
+    { value: 'live', label: 'Live' },
+    { value: 'archived', label: 'Archived', disabled: true },
+    { value: 'banned', label: 'Banned', disabled: true },
+  ]
+
+  it('keeps selected options the user cannot change, in both directions', () => {
+    expect(bulkSelectOptions(options, ['archived'], true)).toEqual(['archived', 'draft', 'live'])
+    expect(bulkSelectOptions(options, ['archived', 'draft'], false)).toEqual(['archived'])
+    expect(bulkSelectOptions(options, [], true)).toEqual(['draft', 'live'])
+  })
+})
+
+describe('wizard step helpers', () => {
+  it('never leaves the step past the last one', () => {
+    expect(clampWizardStep(3, 2)).toBe(1)
+    expect(clampWizardStep(1, 4)).toBe(1)
+    expect(clampWizardStep(2, 0)).toBe(0)
   })
 })

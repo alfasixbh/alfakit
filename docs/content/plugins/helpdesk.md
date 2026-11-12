@@ -31,6 +31,8 @@ php artisan migrate
 php artisan alfakit-helpdesk:pages   # the Inertia page of the portal and contact form
 ```
 
+The tables store agents, requesters and assignees in unsigned big integer columns, so the user model needs an integer key. For UUID or ULID users, change those columns (`agent_id`, `requester_id`, `assignee_id`, `owner_id`) to strings in the published migration before you run it.
+
 Register the plugin:
 
 ```php
@@ -98,7 +100,7 @@ The customer side runs outside panels and uses the plugin options of `config('al
 A ticket has a subject, a requester (a user, or a guest's email and name), a status (`open`, `pending`, `solved`, `closed`), a priority (`low`, `normal`, `high`, `urgent`), a type (`question`, `incident`, `problem`, `task`), a channel, tags, an assignee and a group, and its conversation: **public replies**, **internal notes** (agents only) and **events** ("Dana assigned the ticket to Riley").
 
 - A requester's reply reopens a pending or solved ticket. Closed (and merged) tickets are final: their portal shows "open a new ticket", emailed replies open a follow-up.
-- Merging moves the conversation to the other ticket and closes this one. Only tickets of the **same requester and tenant** merge, so no requester ever sees another one's conversation.
+- Merging moves the conversation to the other ticket and closes this one. Only tickets of the **same requester and tenant** merge, so no requester ever sees another one's conversation. A guest chat ticket never merges with another guest ticket: the visitor typed that email address and nobody verified it.
 - Solving emails the requester a signed link to a 1–5 satisfaction survey.
 
 Change tickets from your own code through `Tickets`, so the SLA clock, events, emails and broadcasts stay consistent:
@@ -246,7 +248,7 @@ Reply by email (`inbound.enabled`): emails get a signed Reply-To address `{local
     $this->app->bind(InboundMailVerifier::class, PostmarkSignatureVerifier::class);
     ```
 
-2. `InboundMailParser` turns the request into an `InboundMessage`. The default `JsonInboundMailParser` reads `{"from": {"email", "name"}, "to": [], "subject", "text", "html", "message_id"}`; adapt your provider's payload in your own parser. AlfaKit ships no provider-specific parsing.
+2. `InboundMailParser` turns the request into an `InboundMessage`. The default `JsonInboundMailParser` reads `{"from": {"email", "name"}, "to": [], "subject", "text", "html", "message_id", "headers": {}}`; adapt your provider's payload in your own parser. AlfaKit ships no provider-specific parsing.
 3. A message sent to a ticket's signed address **by its requester** is added as a reply (quoted text stripped); anything else opens a new ticket. Repeated `message_id`s are ignored.
 
 ## Reports
@@ -283,6 +285,7 @@ With `realtime()`, every change dispatches `TicketActivity` (`broadcastAs()` = `
 - Canned reply placeholders are never evaluated; values are escaped and the result sanitised.
 - Guest chat tokens are signed and only a hash of their secret is stored; guest ticket links in emails are signed and expire after 60 days.
 - The inbound webhook refuses every request until you configure a verifier secret.
+- Emails sent by machines are filed but never answered, so an out-of-office reply or a bounce cannot start a loop of confirmations: pass the email's headers to the parser (`"headers": {"Auto-Submitted": "auto-replied"}`, or `"auto_submitted": true`). `Auto-Submitted`, `Precedence: bulk|junk|list|auto_reply`, `X-Autoreply`, `X-Autorespond` and senders such as `mailer-daemon@` and `postmaster@` are recognised; in your own parser set `InboundMessage::$autoSubmitted` (`InboundMessage::isAutoSubmitted($headers, $from)`). Helpdesk emails carry `Auto-Submitted: auto-generated`.
 - Broadcasts carry keys only.
 
 ## "Powered by" credit

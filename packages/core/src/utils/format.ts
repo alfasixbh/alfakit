@@ -24,10 +24,14 @@ export function interpolate(
     const value = String(replacements[key])
     const upperFirst = key.charAt(0).toUpperCase() + key.slice(1)
 
+    // Function replacements: a `$` in the value (a price, `Bob$'s`) is not a pattern.
     return result
-      .replace(new RegExp(`:${key.toUpperCase()}\\b`, 'g'), value.toUpperCase())
-      .replace(new RegExp(`:${upperFirst}\\b`, 'g'), value.charAt(0).toUpperCase() + value.slice(1))
-      .replace(new RegExp(`:${key}\\b`, 'g'), value)
+      .replace(new RegExp(`:${key.toUpperCase()}\\b`, 'g'), () => value.toUpperCase())
+      .replace(
+        new RegExp(`:${upperFirst}\\b`, 'g'),
+        () => value.charAt(0).toUpperCase() + value.slice(1),
+      )
+      .replace(new RegExp(`:${key}\\b`, 'g'), () => value)
   }, template)
 }
 

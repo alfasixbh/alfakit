@@ -1,5 +1,6 @@
 import type { WizardSchema } from '@alfakit/core'
 import {
+  clampWizardStep,
   collectFields,
   completedStepIcon,
   initialWizardStep,
@@ -7,10 +8,12 @@ import {
   reportWizardProgress,
   schemaGapClass,
   wizardRequestedStepIndex,
+  wizardSearch,
   wizardStepFieldPaths,
   wizardStepQueryKey,
   wizardStepToReveal,
 } from '@alfakit/core'
+import { usePage } from '@inertiajs/react'
 import { CheckIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useT } from '../../context'
@@ -42,9 +45,20 @@ const NO_FORM_STORE = {
 export function WizardComponent({ component }: { component: WizardSchema }) {
   const t = useT()
   const steps = component.schema ?? []
+  const pageUrl = usePage().url
   const [current, setCurrent] = useState(() =>
-    initialWizardStep(steps.length, component.startStep, component.persistStepInQueryString),
+    initialWizardStep(
+      steps.length,
+      component.startStep,
+      component.persistStepInQueryString,
+      wizardSearch(pageUrl),
+    ),
   )
+
+  // A step hidden by a live field can leave the index past the last step.
+  if (current !== clampWizardStep(current, steps.length)) {
+    setCurrent(clampWizardStep(current, steps.length))
+  }
 
   const stepQueryKey = wizardStepQueryKey(component.persistStepInQueryString)
   const actionContext = usePageActionContext()

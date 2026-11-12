@@ -125,17 +125,18 @@ final class ListQuery
     private static function parseFilters(Request $request, ?Table $table): array
     {
         $input = $request->query('filter');
+        $filters = $table?->getFilters() ?? [];
+        // The API has no "cleared" state: a filter the request doesn't name keeps its
+        // `default()`, as the docs promise.
+        $state = array_filter(array_map(static fn (BaseFilter $filter): ?array => $filter->getDefaultState(), $filters), static fn (?array $default): bool => $default !== null);
 
         if ($input === null || $input === '') {
-            return [];
+            return $state;
         }
 
         if (! is_array($input)) {
             throw self::invalid('filter', (string) __('alfakit-api::api.problems.invalid_filter'));
         }
-
-        $filters = $table?->getFilters() ?? [];
-        $state = [];
 
         foreach ($input as $name => $value) {
             $filter = is_string($name) ? ($filters[$name] ?? null) : null;

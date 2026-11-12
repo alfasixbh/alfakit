@@ -10,12 +10,19 @@ use AlfaSix\AlfakitShield\Commands\InstallCommand;
 use AlfaSix\AlfakitShield\Commands\SuperAdminCommand;
 use AlfaSix\AlfakitShield\Support\PermissionModels;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Http\Events\RequestHandled;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AlfakitShieldServiceProvider extends ServiceProvider
 {
+    /**
+     * Whether this request set spatie's team, so it is cleared afterwards.
+     */
+    protected static bool $teamWasSet = false;
+
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/alfakit-shield.php', 'alfakit-shield');
@@ -71,11 +78,24 @@ class AlfakitShieldServiceProvider extends ServiceProvider
             }
 
             setPermissionsTeamId($event->tenant->getKey());
+            static::$teamWasSet = true;
 
             if ($event->user !== null && method_exists($event->user, 'unsetRelation')) {
                 $event->user->unsetRelation('roles')->unsetRelation('permissions');
             }
         });
+
+        // spatie keeps the team on a singleton: on a long-lived worker (Octane, a queue
+        // worker) the next request or job must not inherit this request's tenant.
+        $reset = static function (): void {
+            if (static::$teamWasSet) {
+                setPermissionsTeamId(null);
+                static::$teamWasSet = false;
+            }
+        };
+
+        Event::listen(RequestHandled::class, $reset);
+        Event::listen(JobProcessing::class, $reset);
     }
 
     protected function registerRolePolicy(): void

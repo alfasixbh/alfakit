@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
+import { ref, type HTMLAttributes } from 'vue'
+import { useAutofocus } from '../../lib/autofocus'
 import { cn } from '../../lib/utils'
 
 const props = defineProps<{
@@ -9,10 +10,14 @@ const props = defineProps<{
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 defineOptions({ inheritAttrs: false })
+
+const element = ref<HTMLInputElement | null>(null)
+useAutofocus(element)
 </script>
 
 <template>
   <input
+    ref="element"
     v-bind="$attrs"
     data-slot="input"
     :value="props.modelValue ?? ''"

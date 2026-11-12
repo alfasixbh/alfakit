@@ -184,26 +184,6 @@ class ResourceController
         });
     }
 
-    /**
-     * The record's values of form fields that map to `$hidden` attributes. They stay on the
-     * server: they only keep their value when the request leaves them out.
-     *
-     * @return array<string, mixed>
-     */
-    protected function hiddenAttributeState(Schema $form, Model $model): array
-    {
-        $hidden = $model->getHidden();
-
-        if ($hidden === []) {
-            return [];
-        }
-
-        $names = array_map(static fn (string $path): string => explode('.', $path)[0], array_keys($form->getFlatFields(withHidden: true)));
-        $attributes = (clone $model)->makeVisible($hidden)->attributesToArray();
-
-        return array_intersect_key($attributes, array_flip(array_intersect($hidden, $names)));
-    }
-
     public function update(Request $request): JsonResponse
     {
         [$panel, $plugin, $api, $resource] = $this->context($request, Abilities::UPDATE);
@@ -220,10 +200,9 @@ class ResourceController
         $page = ResourcePages::edit($panel, $resource, $model);
         $form = $page->getForm() ?? throw ProblemException::make(405, (string) __('alfakit-api::api.problems.no_form'), 'no-form');
 
-        // Fields the request leaves out keep the record's values (PUT behaves like PATCH),
-        // including attributes the model `$hidden`s (the form is filled without them, so they
-        // never reach a browser; saved without them they were wiped).
-        $form->applyClientState([...$form->getRawState(), ...$this->hiddenAttributeState($form, $model), ...$this->input($request, $form, $api)]);
+        // Fields the request leaves out keep the record's values (PUT behaves like PATCH).
+        $input = $this->input($request, $form, $api);
+        $form->applyClientState([...$form->getRawState(), ...$input]);
 
         ResourcePages::call($page, 'callHook', ['beforeValidate']);
         $data = $form->validate();
@@ -231,6 +210,16 @@ class ResourceController
 
         ResourcePages::call($page, 'callHook', ['beforeSave', [$data]]);
         $data = ResourcePages::call($page, 'mutateFormDataBeforeSave', [$data]);
+
+        // Attributes the model `$hidden`s are not in the form's state (it is filled without
+        // them): left out of the request they keep the stored value instead of being saved
+        // blank. They are not put into the form either, where a `dehydrateStateUsing()` hook
+        // would run on the stored value (hashing a password hash again).
+        foreach ($model->getHidden() as $hidden) {
+            if (! array_key_exists($hidden, $input)) {
+                unset($data[$hidden]);
+            }
+        }
 
         $updated = DB::transaction(static function () use ($page, $form, $model, $data): Model {
             $updated = ResourcePages::call($page, 'handleRecordUpdate', [$model, $data]);

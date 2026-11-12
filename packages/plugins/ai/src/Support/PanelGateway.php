@@ -17,6 +17,7 @@ use AlfaSix\Alfakit\Resources\Pages\ListRecords;
 use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\Alfakit\Schemas\Schema;
 use AlfaSix\Alfakit\Support\SchemaContext;
+use AlfaSix\Alfakit\Support\SearchQuery;
 use AlfaSix\AlfakitAi\AiPlugin;
 use AlfaSix\AlfakitAi\Bridge\AiCreateRecord;
 use AlfaSix\AlfakitAi\Bridge\AiEditRecord;
@@ -158,9 +159,11 @@ class PanelGateway
                             if (str_contains($attribute, '.')) {
                                 $relation = substr($attribute, 0, (int) strrpos($attribute, '.'));
                                 $column = substr($attribute, (int) strrpos($attribute, '.') + 1);
-                                $builder->orWhereHas($relation, static fn (Builder $related) => $related->where($related->qualifyColumn($column), 'like', '%'.$word.'%'));
+                                $builder->orWhereHas($relation, static function (Builder $related) use ($column, $word): void {
+                                    SearchQuery::contains($related, $related->qualifyColumn($column), $word);
+                                });
                             } else {
-                                $builder->orWhere($builder->qualifyColumn($attribute), 'like', '%'.$word.'%');
+                                SearchQuery::contains($builder, $builder->qualifyColumn($attribute), $word, or: true);
                             }
                         }
                     });
@@ -447,6 +450,17 @@ class PanelGateway
         $call('callHook', ['afterValidate']);
         $call('callHook', ['beforeSave', [$data]]);
         $data = $call('mutateFormDataBeforeSave', [$data]);
+
+        // Attributes the model `$hidden`s are not in the form's state (it is filled without
+        // them): unless the input names them they keep the stored value instead of being
+        // saved blank.
+        $given = $this->writable($form, $input);
+
+        foreach ($record->getHidden() as $hidden) {
+            if (! array_key_exists($hidden, $given)) {
+                unset($data[$hidden]);
+            }
+        }
 
         $updated = DB::transaction(static function () use ($call, $page, $form, $record, $data): Model {
             $updated = $call('handleRecordUpdate', [$record, $data]);
