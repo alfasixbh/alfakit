@@ -1,5 +1,15 @@
 # @alfakit/vue
 
+## 0.2.6
+
+### Patch Changes
+
+- Tables: text typed in two column search boxes is sent together; text typed while an older search answer arrives is kept; inline-editable cells follow the server and roll back a refused update.
+- Forms: `autofocus()` works after Inertia visits; a form reached for another record starts fresh (`FormBlock` remounts per form identity); the searchable select asks once for a label and cancels a pending search when it closes; with `persistTab()` the tab with validation errors wins.
+- Wizards render the persisted step on the server and never run past the last step; `Section::collapsed()` follows a live field; `CheckboxList` bulk toggles keep locked options; badges draw the after-icon colour and the copy button.
+- Kanban, tree, file manager, translation manager and helpdesk screens read the page's current token per request.
+- A disabled action's tooltip wrapper carries `data-slot="action-disabled-tooltip"` (was `data-disabled-tooltip`); the kanban spinner is announced as "Loading board".
+
 ## 0.2.5
 
 ### Patch Changes

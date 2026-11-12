@@ -6,6 +6,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-11-12
+
+### Upgrading from 0.2.5
+
+- `composer update "alfasix/*"`, `npm install @alfakit/react@^0.2.6` (or `@alfakit/vue`, `@alfakit/svelte`), then `npm run build`. The npm packages changed in this release: update them together with the Composer packages.
+- **Shield:** until `php artisan alfakit-shield:generate` has written `RolePolicy`, only holders of the super admin role see **Roles**. On a new install run `generate`, then `alfakit-shield:super-admin --user=…`.
+- **Table filters:** a filter's `default()` applies only until the user changes the filters. A link that sets some filters in the query string no longer gets the other filters' defaults; add them to the link if you relied on that.
+- **Helpdesk inbound mail:** send the email's headers (`"headers": {…}`) or `"auto_submitted": true` in the webhook payload, so out-of-office replies and bounces are recognised and not answered.
+- **Billing on tenancy panels:** every member can open the billing portal, as before. Limit it with `BillingPlugin::make()->authorize(fn (User $user, ?Team $tenant): bool => …)`.
+- **Themes (Vue):** CSS that targeted `[data-disabled-tooltip]` should target `[data-slot='action-disabled-tooltip']`.
+
 ### Changed
 
 - A table filter's `default()` now applies only until the user changes the filters. Once the request (or the session, with `persistFiltersInSession()`) carries filter state, a filter missing from it counts as cleared. A link that sets some filters in the query string no longer gets the defaults of the others.
@@ -1565,7 +1576,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/alfasixbh/alfakit/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/alfasixbh/alfakit/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/alfasixbh/alfakit/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/alfasixbh/alfakit/compare/v0.2.2...v0.2.3

@@ -1,5 +1,16 @@
 # @alfakit/core
 
+## 0.2.6
+
+### Patch Changes
+
+- Live refreshes of two fields no longer cancel each other: the second waits for the first, so both `afterStateUpdated()` hooks apply.
+- `interpolate()` keeps `$` in replacement values; `LocaleFormatter.date()` shows a date without a time as that day in every timezone; `parseNumber()` reads the minus sign of formatted numbers.
+- `TableSelection.selectAll()` keeps the ticked rows as the fallback when a row is unticked afterwards; nested modals that share an action name are addressed by the innermost one.
+- Table URLs send an empty `filters` key when the filters are cleared and one has a default.
+- New helpers: `bulkSelectOptions()`, `wizardSearch()`, `clampWizardStep()`.
+- Helpdesk: the inbox refresh keeps the pages loaded with "Load more", text typed during a send is kept, and a chat poll no longer overwrites a just-sent message. Translation manager: a refresh keeps the cell being edited.
+
 ## 0.2.5
 
 ### Patch Changes

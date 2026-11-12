@@ -1,5 +1,13 @@
 # @alfakit/react
 
+## 0.2.6
+
+### Patch Changes
+
+- Tables: column search boxes follow a search the server changed and send text typed in two columns together; text typed while an older search answer arrives is kept; inline-editable cells follow the server and roll back a refused update.
+- Wizards render the persisted step on the server and never run past the last step; `Section::collapsed()` closures win over an earlier click; `CheckboxList` bulk toggles keep locked options; badges draw the after-icon colour and the copy button.
+- The theme switcher reads the stored choice after hydration.
+
 ## 0.2.5
 
 ### Patch Changes

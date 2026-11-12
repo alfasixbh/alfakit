@@ -1,5 +1,14 @@
 # @alfakit/svelte
 
+## 0.2.6
+
+### Patch Changes
+
+- Tables: text typed in two column search boxes is sent together; text typed while an older search answer arrives is kept; inline-editable cells follow the server and roll back a refused update.
+- Wizards render the persisted step on the server and never run past the last step; `Section::collapsed()` follows a live field; `CheckboxList` bulk toggles keep locked options; badges draw the after-icon colour and the copy button.
+- Kanban, tree, file manager, translation manager and helpdesk screens read the page's current token per request.
+- `extraProps` is exported; `Spinner` accepts an `aria-label`; the kanban spinner is announced as "Loading board".
+
 ## 0.2.5
 
 ### Patch Changes
