@@ -1,5 +1,15 @@
 # @alfakit/core
 
+## 0.2.7
+
+### Patch Changes
+
+- Forms: `isField()` recognises custom fields, so a `live()` custom field refreshes and wizards, tabs and fused groups see its error. `contentGridClasses()` no longer adds a one-column class on wide containers.
+- Markdown editor: nested lists, ordered list starts, code languages, hard breaks, escaped typed characters and table cells survive the conversion; clearing a link inside the link removes it.
+- CMS autosave saves edits made during a running save before `flush()` resolves. The colour parser reads `#rrggbbaa`, space-separated `rgb()` and `hsla()`.
+- Spreadsheet, key bindings, masks (Arabic and Persian digits), push subscriptions, the image editor's export and IME handling fixed; see the main changelog.
+- New: `escapeHtml()`, `applyTextEditNatively()`, `FILE_UPLOADS_MEMORY`, `isLocalHostname()`, `isPlainEnter()`, `unreadCountLabel()`.
+
 ## 0.2.6
 
 ### Patch Changes

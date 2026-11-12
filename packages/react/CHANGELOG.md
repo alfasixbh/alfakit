@@ -1,5 +1,13 @@
 # @alfakit/react
 
+## 0.2.7
+
+### Patch Changes
+
+- Navigation: new-tab items, badges, the current page and every nested level work in the top navigation's dropdowns and the phone sheets; a parent without a URL is a heading.
+- Tables: groups that arrive later stay collapsed with `collapsedGroupsByDefault()`; editable text cells leave the IME's Enter alone; the image column takes `imageWidth`; toasts show server text as text.
+- Fields: dragging inside a nested list no longer drags the outer row; table-repeater moves are announced; chart filters reload once on Reset; the dashboard stays in edit mode when the page token changes.
+
 ## 0.2.6
 
 ### Patch Changes

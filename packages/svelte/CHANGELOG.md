@@ -1,5 +1,13 @@
 # @alfakit/svelte
 
+## 0.2.7
+
+### Patch Changes
+
+- Navigation: dropdown, user-menu and tenant-menu entries are real links; new-tab items, badges, the current page and every nested level work in the top navigation and the phone sheets; a parent without a URL is a heading.
+- Tables: groups that arrive later stay collapsed with `collapsedGroupsByDefault()`; editable text cells leave the IME's Enter alone; the image column takes `imageWidth`.
+- Fields: dragging inside a nested list no longer drags the outer row; the drag handle uses a customised `reorderAction()`; duplicate list keys and a date picker crash on `disabledDates()` fixed; the debug panel's Form tab follows the page.
+
 ## 0.2.6
 
 ### Patch Changes

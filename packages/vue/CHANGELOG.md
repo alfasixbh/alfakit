@@ -1,5 +1,13 @@
 # @alfakit/vue
 
+## 0.2.7
+
+### Patch Changes
+
+- Navigation: new-tab items, badges, the current page and every nested level work in the top navigation's dropdowns and the phone sheets; a parent without a URL is a heading; stat card links show keyboard focus.
+- Tables: groups that arrive later stay collapsed with `collapsedGroupsByDefault()`; editable text cells leave the IME's Enter alone; the image column takes `imageWidth`; a paste or reload can't be applied to a newer request.
+- Fields: dragging inside a nested list no longer drags the outer row; the drag handle uses a customised `reorderAction()`; the debug panel's Form tab follows the page.
+
 ## 0.2.6
 
 ### Patch Changes

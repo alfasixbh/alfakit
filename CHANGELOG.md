@@ -6,6 +6,108 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-11-12
+
+### Upgrading from 0.2.6
+
+- `composer update "alfasix/*"`, `npm install @alfakit/react@^0.2.7` (or `@alfakit/vue`, `@alfakit/svelte`), then `npm run build`. The npm packages changed in this release: update them together with the PHP packages.
+- **Money in relationship repeaters:** if a form has `MoneyInput::make(...)->minorUnits()` inside a `Repeater::make(...)->relationship()` (the invoices plugin's lines do), records saved through their **edit** page on an earlier version had those amounts multiplied by 100 (1,000 for three-decimal currencies) on every save. Check invoices that were edited after they were created, and correct their line prices.
+- **Sessions:** a session is signed out of a panel once its user's password changes. The session that changes it stays signed in when the user model is saved; code that writes the password with a query-builder `update()` (no model events) calls `AlfaSix\Alfakit\Http\Middleware\AuthenticateSession::remember(request(), $panel, $user)` afterwards.
+- **Tenant billing:** `authorizeTenantBilling()` now really limits the Billing entry and route; a `requiresTenantSubscription()` closure now receives the tenant of each request.
+- **KeyValue:** `addable(false)`, `deletable(false)`, `editableKeys(false)` and `editableValues(false)` are validated on submit.
+- **Comments on MySQL / MariaDB:** publish and run the new migration: `php artisan vendor:publish --tag=alfakit-comments-migrations` then `php artisan migrate`.
+- **Helpdesk on tenancy panels:** the requester select lists the tenant's members and its existing requesters. Set `HelpdeskPlugin::make()->requesters(fn (?Model $tenant) => …)` to offer your customers. Agents who open a ticket for a requester now send them its first message.
+- **Realtime:** following a model that has no resource in the panel needs a policy with `viewAny`.
+- **Teams:** domain auto-join needs a verified e-mail address. **Shield:** generated policies for models outside `App\Models` are now enforced. **CMS:** "Publish" validates the saved changes.
+
+### Changed
+
+- **Teams:** domain auto-join needs a verified e-mail address on every user model. A model that doesn't implement `MustVerifyEmail` joins only when `email_verified_at` is filled (it joined at once before, with an address nobody had verified).
+- **Shield:** a policy `alfakit-shield:generate` wrote for a model outside `App\Models` (a plugin's model, a module) is now registered and enforced. Its permissions were listed in the role form and never checked.
+- **CMS:** "Publish" refuses saved changes the page form would refuse (no title, a path another page has, an invalid parent). They are an autosave and were made live unchecked.
+- Searches (`SearchQuery::contains()`, table and global search, relationship selects) treat `%` and `_` as text, not wildcards.
+- Exports write a `date`-cast attribute as `Y-m-d` (it was a date-time, moved to the panel's timezone).
+- `DatePicker::disabledDates()` is checked on submit, not only greyed out in the calendar.
+- Single-key shortcuts (`g d`, `/`, `?`) don't fire while a select list, a menu or a dialog has focus.
+- Ops: the failed-jobs search no longer looks inside the payload (it holds the values the page redacts); the "Job" filter finds jobs by name.
+- Signing out other sessions works on every session driver: panels run their own `AuthenticateSession` middleware on the panel's guard, which ends a session once the password it signed in with has changed ("Log out other sessions", a new password, a reset). It runs on the internal endpoints and the AuthKit pages as well. The session that makes the change stays signed in, wherever it saves the user model (a panel page, the application's own settings page); only a password written without the model (a query-builder `update()`) needs `AlfaSix\Alfakit\Http\Middleware\AuthenticateSession::remember()` afterwards. Pages of the application outside a panel still need Laravel's own middleware. A "remember me" cookie issued before the change no longer signs a device back in. Until now this needed the `database` session driver or Laravel's middleware on the default guard, and the page reported success either way.
+- `KeyValue`: `addable(false)`, `deletable(false)`, `editableKeys(false)` and `editableValues(false)` are checked on submit (they only changed the editor); a row whose key is not text is dropped. `TagsInput` drops members that are not text; `ColorPicker` refuses `rgb()`, `rgba()` and `hsl()` values outside the range a picker produces (`rgb(999, 0, 0)` passed).
+- Realtime: a model the panel has no resource for can only be followed when its policy defines `viewAny` (without a policy any panel user could subscribe to its change events).
+- Navigation: a parent item without a URL is a heading in the top navigation's dropdowns, the collapsed sidebar's flyout and the phone sheets (it linked to `#`, or to its first child in the "More" sheet); every nested level is listed under it.
+- **Helpdesk:** on a tenancy panel the requester select offers the tenant's members and the people who already have a ticket with that tenant, not every user (set `requesters()` to choose); reopening a closed ticket starts its resolution clock again; an agent who opens a ticket for a requester sends them the first message.
+- **Invoices:** an issued invoice and a credit note keep the tax rates they were issued with when a tax is edited or deleted later (an edit re-read the tax table); an invoice whose credit notes already cover its total can't be credited again.
+- **Workflows:** the last approval applies the transition only if its guards still pass. **Kanban:** with `getTransitions()`, a record whose status is not a column of the board can't be moved onto it.
+
+### Added
+
+- The test suite runs on MariaDB, MySQL or PostgreSQL: `ALFAKIT_TEST_DB=pgsql ALFAKIT_TEST_DB_DATABASE=… composer test` (see `packages/alfakit/tests/TestCase.php`).
+- `AlfaSix\Alfakit\Support\ModelKey::isComparable()` and `DateOnly::is()`; `SearchQuery::contains()` accepts a query builder and `SearchQuery::escape()`.
+- `@alfakit/core`: `escapeHtml()`, `applyTextEditNatively()`, `FILE_UPLOADS_MEMORY`.
+- `ImageColumn::imageWidth()` (and `imageHeight()`): size the image without fixing the column's width (`width()` set both).
+- **Helpdesk:** `HelpdeskPlugin::requesters(fn (?Model $tenant) => …)` chooses who agents can pick as a ticket's requester.
+- `make:alfakit-user` reads the password from `ALFAKIT_USER_PASSWORD` when `--password` is not given (`alfakit:setup` passes it that way, off the process list).
+- `@alfakit/core`: `isLocalHostname()`, `isPlainEnter()`, `unreadCountLabel()`; `isField()` recognises custom fields.
+
+### Fixed
+
+- PostgreSQL: a record URL, an imported relationship cell, a kanban lane or a helpdesk agent key that cannot be the model's integer key is "not found" instead of a database error; MySQL no longer matches `12abc` to record 12. Six plugin searches (team members, CMS media picker, ops batches, invoice customers, feature-flag scopes) are case-insensitive on PostgreSQL like the rest.
+- `alfakit:migrate-from-filament` keeps a `public $data` property the class reads or writes itself (it removed the property and left `$this->data`), and only renames `'Filament/…'` strings passed to `app_path()` / `base_path()` / `resource_path()`.
+- Table groups show a `date`-cast column as that day in every panel timezone.
+- Reordering a table is all-or-nothing (a transaction), and a posted key that is not a listed record's key answers 404.
+- A select filter ignores nested arrays in the query string; XLSX exports keep cells with invalid UTF-8 (they came out empty) and cut cells over Excel's 32,767 characters; the MFA challenge clears its attempt counter after a correct code; `Slider::pipsDensity(0)` no longer divides by zero.
+- JSON rich content: a code block no longer renders a blank line after every line.
+- Markdown editor: nested lists stay nested, an ordered list keeps its first number, a code block keeps its language, Shift+Enter is a hard line break, and characters the user typed (`*`, `_`, `[`, a leading `#` or `-`) are saved as text.
+- Code editor: Enter and Tab keep the browser's undo history; the Enter that confirms an IME candidate (Japanese, Chinese) is left to the IME, as in the tags input and on implicit form submits (Safari).
+- Spreadsheet mode: Tab leaves the grid at its edges (a keyboard user was trapped), a reload no longer closes the cell being edited, "Undo last save" reports a failed request and conflicting cells, and a paste can't be applied before its check has returned.
+- Toasts made in the browser for a failed table request show the server's text as text (it was inserted as HTML).
+- Builder: block previews and summaries follow an item that was moved, cloned or removed. FileUpload: the names and previews of files uploaded in this session follow a Repeater item that is moved or removed.
+- A picker table (`ModalTableSelect`) and a chart widget's filters can clear a filter that has a default.
+- Date pickers read a format with escaped characters (`Y-m-d\TH:i`); Svelte no longer fails to render a field whose `disabledDates()` are in another format (they are now sent in the field's format to all three renderers).
+- Image editor: a large photo no longer exports blank on browsers with a canvas size limit (the crop is painted directly).
+- Masked inputs accept digits typed on Arabic and Persian keyboards; key bindings ignore keydown events without a key; `usePageMethod` undoes its optimistic change when the method halts.
+- Push notifications: a browser's subscription is taken over by the user who signs in next, instead of delivering the previous user's notifications.
+- The notifications menu drops a notification deleted elsewhere when it refreshes after "Load more"; the copilot no longer appends an answer to a conversation the user has left; an open modal isn't opened a second time by its key binding.
+- React: the dashboard stays in edit mode when the page's token changes; the notifications menu is no longer rebuilt when the unread count changes. Vue and Svelte: standalone components and the calendar widget (React too) read the page's current token; the picker uses the table's `searchDebounce()`. Vue: `CodeEditor::autofocus()` works after Inertia visits.
+- "Select all (N)" and the filter count are written in the panel's digits; a key-value entry shows an empty cell for `null`.
+- **Relationship repeaters on edit pages:** the fields of existing items are hydrated like any other field. They were read a second time after the fill and left with the stored values, so `MoneyInput::minorUnits()` showed the minor units as the amount and saved them multiplied (an invoice line of 50.000 became 50000.000 when the invoice was saved), and dates and `formatStateUsing()` were not applied.
+- A section's own "Save" button (`saveFormComponentOnly()`) runs `mutateFormDataBeforeSave()` and keeps a `$hidden` attribute the form showed blank, as a full save does.
+- `authorizeTenantBilling()` is applied: the Billing entry is hidden from, and the billing route refused to, users it turns away (nothing called it). `requiresTenantSubscription(fn (?Model $tenant) => …)` is asked on every request with the tenant (it was evaluated once, without a tenant, when routes were registered).
+- Two panels that each register an asset under the same id keep their own; a `collapsibleNavigationGroups()` closure is asked on every request in long-lived workers; a panel works with a signed-in user that is not an Eloquent model; a guest opening a tenant URL that can't be a key is sent to sign in on PostgreSQL (it was a database error).
+- The notifications list no longer fails on a database notification another package wrote with other types under `id`, `title`, `date` or `actions`.
+- A nested resource whose inverse `BelongsTo` uses a custom owner key lists its records; AuthKit registration refuses an address that differs from an existing one only in case, on every database.
+- `alfakit:eject` copies the lazily loaded part of a component (`RichEditor`, `MarkdownEditor`, `CodeEditor`, the calendar, kanban and others): the ejected wrapper pointed at a file that was not there.
+- `alfakit:migrate-from-filament`: `Color::Amber[500]` becomes the colour's value (it became `'#d97706'[500]`); with `--rector`, a `$data` property the class uses is kept, only `'Filament/…'` paths in `app_path()` / `base_path()` / `resource_path()` are renamed, and notes are no longer counted as manual steps. `alfakit:install` leaves a Vite `input` list with a spread or variable alone; `alfakit:setup` leaves a model with a trait conflict block alone (both report it).
+- A custom field (`make:alfakit-field`) with `live()` refreshes the form, and wizards, tabs and fused groups see its validation error (the form store only knew the built-in field types).
+- `contentGrid(3)` no longer falls back to one column on very wide tables.
+- A `CreateAction` in a modal on a nested resource's list attaches the new record to the parent record, as the create page does.
+- The panel root finds the user's first tenant when `getTenants()` returns a keyed or filtered collection (it sent them to tenant registration).
+- `Stat::chart()` accepts keyed arrays (`['Jan' => 3, 'Feb' => 7]`): the sparkline was missing.
+- `alfakit:migrate-from-filament`: `Form` / `Infolist` are imported as `AlfakitSchema` when the file already imports another `Schema` (the result was a fatal error); `$table->toolbarActions([...])` and `$table->bulkActions([...])` are rewritten when they are the first call on the table; a toolbar action is a bulk action by its class, not because its name contains "Bulk"; trait uses after a conflict-resolution block are cleaned.
+- `alfakit:install` keeps the indentation, Unicode text and empty objects (`"config": {}`) of `composer.json` and `package.json`; `alfakit:setup` writes a logo path or font name with a quote or backslash as a valid PHP string.
+- CMS live preview: edits made while a save was running are saved before the preview closes.
+- Analytics script: `shop.localhost` and `shop.test` count as local, `localhost-shop.com` does not. The colour picker reads `#rrggbbaa`, `rgb(1 2 3 / 50%)` and `hsla()` values. YAML highlighting no longer colours the digits in `v1`.
+- Navigation: items with `openUrlInNewTab()` open a new tab from the top navigation's dropdowns and the phone sheets too, which also show badges and the current page; nested levels below the second are reachable in the top navigation and on phones; Svelte dropdown items are real links (middle-click, copy link).
+- Grouped tables with `collapsedGroupsByDefault()` keep groups collapsed when they arrive with the next page, a search or a filter; a collapsible panel nested in a `Split` or `Stack` starts open unless `collapsed()`.
+- Sub-navigation badges use `badgeColor` and show their tooltip; breadcrumbs announce only the last crumb as the current page; the image column's "+N" is written in the panel's digits; a Vue stat card link shows keyboard focus.
+- Repeater, Builder and KeyValue: dragging inside a nested list (or selected text in an input) no longer drags the outer row; moves in the table layout are announced to screen readers; Vue and Svelte use a customised `reorderAction()` icon and label on the drag handle.
+- Markdown editor: every paragraph of a table cell is escaped; clearing a link's URL with the caret inside the link removes the link. Editable text cells (`TextInputColumn`) leave the Enter that confirms an IME candidate to the IME.
+- React: resetting a chart's filters reloads once. Vue and Svelte: the debug panel's Form tab follows the page. Svelte: user and tenant menu entries are real links (middle-click, copy link).
+- Starter kit: the impersonation banner stays when the component that showed it unmounts; unread counts are written in the panel's digits; the tenant menu shows its separator before the profile and registration entries; the debug panel's "processing" and "refreshing" badges are translated.
+
+### Fixed (plugins)
+
+- **Comments:** on MySQL and MariaDB a second, different emoji reaction by the same person removed the first one instead of being added (those databases compare all emoji as equal by default). New installs compare reactions exactly; existing ones need the new migration (see Upgrading).
+- **AI, Analytics, Translation manager:** their migrations run on MySQL and MariaDB. Each created one index whose generated name was longer than the 64 characters those databases allow, so `php artisan migrate` stopped with "Identifier name … is too long". The indexes now have short names (existing SQLite and PostgreSQL installs keep the index they have).
+- **Analytics:** the period and filter links on an expiring shared dashboard expire with it (they were valid for decades); two simultaneous first hits of one visitor are retried on MySQL instead of losing one.
+- **Helpdesk:** business hours stay on the clock on the days daylight saving starts or ends.
+- **Ops:** the failed-jobs "Job" filter finds job names containing `_`, `%` or `!`.
+- **Forms:** searching submissions works on PostgreSQL and finds answers in Arabic or with accents (new submissions are stored unescaped).
+- **File manager:** the picker field applies the plugin's `authorize()` when saving. **Activity log:** attributes cast as `encrypted` or `hashed` are left out of logged changes.
+- **Webhooks:** `previous_attributes` honours `$visible` and the model's casts. **CMS:** restoring a revision only accepts a parent of the same site, and two simultaneous saves no longer collide on the revision number.
+- **Helpdesk:** the chat widget on one tenant's site no longer continues the customer's chat with another tenant; a subject or message someone typed is text in every helpdesk mail (Markdown in it made links and remote images, also in the "ticket received" mail sent to the address a stranger entered); the inbox list no longer runs one query per ticket.
+- **Invoices:** two simultaneous "Send" or "Convert" requests take turns (no burned number, no second invoice from one quote). **Calendar:** dropping an all-day event on a time keeps its length instead of clearing its end. **Kanban:** a due date without a time shows the same day in every timezone. **Workflows:** a request comment with `&` or `<` is no longer escaped twice in the approve and reject dialogs.
+- **AI (MCP):** `create_record` / `update_record` need the resource to have a create / edit page. **Activity log:** the timeline entry and subject labels honour the plugin's `authorize()` and the subject's `view` permission. **Translation manager:** the code scan is not offered on tenant-scoped panels. **CMS:** a section block's summary only names sections of the current tenant. **Tags:** suggestions are capped at 500. **Forms:** a number question can't have a maximum below its minimum.
+
 ## [0.2.6] - 2026-11-12
 
 ### Upgrading from 0.2.5
@@ -1576,7 +1678,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.6...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.7...HEAD
+[0.2.7]: https://github.com/alfasixbh/alfakit/compare/v0.2.6...v0.2.7
 [0.2.6]: https://github.com/alfasixbh/alfakit/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/alfasixbh/alfakit/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/alfasixbh/alfakit/compare/v0.2.3...v0.2.4
