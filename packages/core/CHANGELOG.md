@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.2.8
+
+### Patch Changes
+
+- `setRequestTimeout()`, `RequestTimeoutError` and the `timeout` option of `requestJson()`; `installExpiredPageNotice()`, `setExpiredPageGuard()` and `hasUnsavedWork()`.
+
 ## 0.2.7
 
 ### Patch Changes

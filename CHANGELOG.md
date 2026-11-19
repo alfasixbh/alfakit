@@ -6,6 +6,34 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.8] - 2026-11-19
+
+### Upgrading from 0.2.7
+
+- `composer update "alfasix/*"`, `npm install @alfakit/react@^0.2.8` (or `@alfakit/vue`, `@alfakit/svelte`), then `npm run build`. The npm packages changed in this release: update them together with the PHP packages.
+
+### Changed
+
+- An expired page (419) is no longer reloaded on its own while a form on screen has unsaved changes. The user sees a notice with a **Reload** button instead, so what they typed can be copied first. Pages without unsaved changes reload as before.
+- A table reload (a search still settling, polling) waits while an action is being posted. It used to cancel the action's visit: the server had run the action, but the modal stayed open and no notification arrived.
+- A page button whose form is the page's own fields (`->form(fn () => $this->getForm()->getComponents())`) starts from what the page filled them with, so stored files and the add / delete locks of a Repeater or KeyValue are compared with the page's rows instead of an empty form.
+
+### Added
+
+- `Panel::requestTimeout(60)`: a background request of the panel (a live field, a table reload, a modal, a search, a field action) that takes longer is given up in the browser, and the user is told it took too long. There is no limit by default; page visits, actions and file uploads are never limited.
+- `@alfakit/core`: `setRequestTimeout()`, `RequestTimeoutError`, the `timeout` option of `requestJson()`, `installExpiredPageNotice()`, `setExpiredPageGuard()`, `hasUnsavedWork()`.
+
+### Fixed
+
+- **React:** a form's live fields stopped refreshing once React had re-run the form's effects: always in development (`StrictMode`), and in production when a lazily loaded editor arrived under the same Suspense boundary. The form store now works again when it is rendered after `destroy()`. In released code since 0.2.6.
+- **React, Vue:** text in the part of the shell that stays mounted (the sidebar toggle's label) follows a language switch without a reload.
+- The column manager: toggling a second column before the first answer arrived undid the first toggle.
+- `FileUpload::avatar()`: the remove and edit buttons on the circle can be clicked with the mouse (the item clipped them).
+- Accessibility, same in all three renderers now: the sidebar marks the current page (`aria-current`), the chart canvas is a named image in Svelte, the notifications panel is a dialog named "Notifications", the command palette input is a combobox in Vue, the date picker's popover is a dialog in Svelte, and the Vue date button's name no longer starts with a space.
+- **Analytics:** the chart's heading follows the chosen metric.
+- A notification an action flashed is no longer dropped when a background reload (deferred props, a lazy widget, navigation badges) that started before the action finishes after it.
+- **AI (Svelte):** the copilot reads "You: …" to screen readers with the space the other renderers have.
+
 ## [0.2.7] - 2026-11-12
 
 ### Upgrading from 0.2.6
@@ -1678,7 +1706,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.7...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.8...HEAD
+[0.2.8]: https://github.com/alfasixbh/alfakit/compare/v0.2.7...v0.2.8
 [0.2.7]: https://github.com/alfasixbh/alfakit/compare/v0.2.6...v0.2.7
 [0.2.6]: https://github.com/alfasixbh/alfakit/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/alfasixbh/alfakit/compare/v0.2.4...v0.2.5

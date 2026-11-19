@@ -1,5 +1,11 @@
 # @alfakit/vue
 
+## 0.2.8
+
+### Patch Changes
+
+- An expired page shows a notice with a Reload button instead of reloading while a form has unsaved changes; `Panel::requestTimeout()` limits background requests.
+
 ## 0.2.7
 
 ### Patch Changes
