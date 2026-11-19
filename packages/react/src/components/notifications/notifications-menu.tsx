@@ -179,6 +179,7 @@ export function NotificationsMenu({ variant = 'topbar' }: NotificationsMenuProps
         align={variant === 'sidebar' ? 'start' : 'end'}
         side={variant === 'sidebar' ? (direction === 'rtl' ? 'left' : 'right') : 'bottom'}
         className="w-80 p-0 sm:w-96"
+        aria-label={t('notifications', {}, 'Notifications')}
       >
         <div className="flex items-center justify-between border-b px-3 py-2">
           <span className="text-sm font-semibold">{t('notifications', {}, 'Notifications')}</span>

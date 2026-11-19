@@ -82,6 +82,7 @@ const badgeClass = computed(() =>
     <SidebarMenuSubButton v-else as-child :is-active="props.item.active">
       <a
         v-if="props.item.openInNewTab"
+        :aria-current="props.item.active ? 'page' : undefined"
         v-bind="props.item.extraAttributes ?? {}"
         :href="props.item.url"
         target="_blank"
@@ -107,6 +108,7 @@ const badgeClass = computed(() =>
       </a>
       <Link
         v-else
+        :aria-current="props.item.active ? 'page' : undefined"
         v-bind="props.item.extraAttributes ?? {}"
         :href="props.item.url ?? '#'"
         prefetch

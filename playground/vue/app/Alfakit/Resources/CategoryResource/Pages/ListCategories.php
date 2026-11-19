@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Alfakit\Resources\CategoryResource\Pages;
 
-use App\Alfakit\Resources\CategoryResource;
 use AlfaSix\Alfakit\Actions\Action;
 use AlfaSix\Alfakit\Actions\CreateAction;
 use AlfaSix\Alfakit\Resources\Pages\ListRecords;
+use App\Alfakit\Resources\CategoryResource;
 
 class ListCategories extends ListRecords
 {

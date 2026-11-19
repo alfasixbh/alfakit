@@ -3,6 +3,7 @@ import {
   ComponentRegistry,
   FlashNotificationTracker,
   Translator,
+  installExpiredPageNotice,
   installPrefetchInvalidation,
   reloadOnExpiredPage,
   resolveRequestErrorNotification,
@@ -28,6 +29,12 @@ export function ensureStandaloneRuntime(): void {
 
   browserReady = true
   reloadOnExpiredPage()
+  // With unsaved changes on screen the user is told instead, and reloads when ready.
+  installExpiredPageNotice(
+    (notification) => showToast(notification),
+    (key, replacements, fallback) =>
+      (browserTranslator ?? new Translator()).t(key, replacements, fallback),
+  )
   // Pages restored by Back after a change are reloaded; shared with a surrounding panel.
   installPrefetchInvalidation()
 }

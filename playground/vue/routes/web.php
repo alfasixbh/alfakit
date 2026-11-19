@@ -35,3 +35,6 @@ require __DIR__.'/settings.php';
 if (app()->environment('local')) {
     require __DIR__.'/benchmark.php';
 }
+
+// alfakit:auth (AlfaKit's sign-in, registration, password reset and account pages)
+\AlfaSix\Alfakit\AuthKit\AuthKit::routes();

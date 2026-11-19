@@ -11,6 +11,7 @@ import {
   effectiveErrorNotifications,
   initializeAppearance,
   installErrorNotifications,
+  installExpiredPageNotice,
   installPrefetchInvalidation,
   installSpaUrlExceptions,
   overlayPlacementDirection,
@@ -20,6 +21,7 @@ import {
   resolveToastPosition,
   setIconAliases,
   setRequestErrorReporter,
+  setRequestTimeout,
   whenIdle,
   type AlfakitOptions,
   type AlfakitPageProps,
@@ -220,6 +222,7 @@ export function bootAlfakit(
     if (context === browserContext) {
       currentPanel = panel
       currentErrorNotifications = effectiveErrorNotifications(panel, props.page)
+      setRequestTimeout(panel.requestTimeout)
     }
 
     context.translator.setTranslations(panel.translations ?? {})
@@ -240,6 +243,11 @@ export function bootAlfakit(
   if (browserContext) {
     router.on('navigate', (event) => sync(browserContext, event.detail.page, true))
     reloadOnExpiredPage()
+    // With unsaved changes on screen the user is told instead, and reloads when ready.
+    installExpiredPageNotice(
+      (notification) => showToast(notification),
+      (key, replacements, fallback) => browserContext.translator.t(key, replacements, fallback),
+    )
     // Prefetched pages and deferred table totals are dropped after every mutation.
     installPrefetchInvalidation()
     installSpaUrlExceptions(() => currentPanel)

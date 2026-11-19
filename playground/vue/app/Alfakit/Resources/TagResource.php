@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace App\Alfakit\Resources;
 
-use App\Alfakit\Resources\TagResource\Pages;
-use App\Models\Tag;
 use AlfaSix\Alfakit\Actions\DeleteAction;
 use AlfaSix\Alfakit\Actions\DeleteBulkAction;
 use AlfaSix\Alfakit\Actions\EditAction;
 use AlfaSix\Alfakit\Forms\Components\TextInput;
-
 use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\Alfakit\Schemas\Schema;
 use AlfaSix\Alfakit\Tables\Columns\TextColumn;
 use AlfaSix\Alfakit\Tables\Table;
+use App\Alfakit\Resources\TagResource\Pages;
+use App\Models\Tag;
 
 class TagResource extends Resource
 {

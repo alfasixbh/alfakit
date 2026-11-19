@@ -191,6 +191,8 @@
       align={variant === 'sidebar' ? 'start' : 'end'}
       side={variant === 'sidebar' ? (direction === 'rtl' ? 'left' : 'right') : 'bottom'}
       class="w-80 p-0 sm:w-96"
+      role="dialog"
+      aria-label={t('notifications', {}, 'Notifications')}
     >
       <div class="flex items-center justify-between border-b px-3 py-2">
         <span class="text-sm font-semibold">{t('notifications', {}, 'Notifications')}</span>

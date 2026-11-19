@@ -72,6 +72,9 @@ describe('ChartWidget', () => {
 
     expect(created).toHaveLength(1)
     expect(created[0]?.data.datasets[0]?.data).toEqual([1, 2])
+    // An image with a name for assistive technology, as in React and Vue.
+    expect(document.querySelector('canvas')?.getAttribute('role')).toBe('img')
+    expect(document.querySelector('canvas')?.getAttribute('aria-label')).toBeTruthy()
 
     await fireEvent.click(screen.getByText('poll'))
 

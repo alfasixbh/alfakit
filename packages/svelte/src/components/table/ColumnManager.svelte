@@ -104,7 +104,12 @@
 
     seenColumns = current
   })
-  const visible = $derived(draft ?? table.visibleColumns)
+  // Sent but not answered yet: a second toggle builds on it, not on the list the server
+  // last sent (which would undo the first). It lapses when the server's list changes.
+  let pending = $state<{ base: string; list: string[] } | null>(null)
+  const serverColumns = $derived(table.visibleColumns.join('|'))
+  const sent = $derived(pending !== null && pending.base === serverColumns ? pending.list : null)
+  const visible = $derived(draft ?? sent ?? table.visibleColumns)
 
   const trigger = $derived(
     triggerButtonView(table, 'columnManager', {
@@ -136,6 +141,7 @@
     if (deferred) {
       draft = next
     } else {
+      pending = { base: serverColumns, list: next }
       visitTable(table.identifier, { columns: next }, ['page'])
     }
   }

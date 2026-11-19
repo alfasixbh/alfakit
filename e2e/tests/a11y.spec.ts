@@ -1,7 +1,8 @@
-import { expect, test, type Page } from '@playwright/test'
+import { type Page } from '@playwright/test'
 import type axeCore from 'axe-core'
 import { fileURLToPath } from 'node:url'
 import { credentials } from '../fixtures/credentials'
+import { expect, test } from '../fixtures/test'
 
 /**
  * axe-core in a real browser: the WCAG 2.1 A/AA rule set including `color-contrast`, which

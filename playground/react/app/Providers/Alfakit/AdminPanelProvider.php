@@ -224,8 +224,10 @@ class AdminPanelProvider extends PanelProvider
                     ->authorize(fn (User $user): bool => $user->hasRole('super_admin'))
                     ->editableLocales(['ar', 'fr', 'de', 'ja'])
                     ->navigationGroup(fn (): string => __('playground.nav.groups.system')),
-                // Copilot and MCP stay off: they need a provider key (php artisan alfakit:ai-setup).
-                AiPlugin::make()->streaming()->navigationGroup(fn (): string => __('playground.nav.groups.system')),
+                // No provider key in the playground: the copilot, the writing assistant and the AI
+                // actions answer with the plugin's labelled sample answers (`demoResponses()`),
+                // made on the server without a network call. MCP stays off.
+                AiPlugin::make()->streaming()->copilot()->demoResponses()->navigationGroup(fn (): string => __('playground.nav.groups.system')),
                 WorkflowsPlugin::make()->navigationGroup(fn (): string => __('playground.nav.groups.work')),
                 InvoicesPlugin::make()
                     ->customers(fn () => User::query(), titleAttribute: 'name', searchColumns: ['name', 'email'])

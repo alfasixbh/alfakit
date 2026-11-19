@@ -57,6 +57,7 @@ return [
     ],
     'chart' => [
         'heading' => 'Visiteurs dans le temps',
+        'heading_for' => ':metric dans le temps',
         'previous' => ':metric (période précédente)',
     ],
     'panels' => [

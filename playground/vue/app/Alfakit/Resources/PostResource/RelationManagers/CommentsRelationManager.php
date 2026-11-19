@@ -16,10 +16,14 @@ use AlfaSix\Alfakit\Schemas\Schema;
 use AlfaSix\Alfakit\Tables\Columns\TextColumn;
 use AlfaSix\Alfakit\Tables\Columns\ToggleColumn;
 use AlfaSix\Alfakit\Tables\Table;
+use App\Alfakit\Showcase\Resources\CommentResource;
 
 class CommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
+
+    /** Showcase: create and edit go to the nested CommentResource pages instead of modals. */
+    protected static ?string $relatedResource = CommentResource::class;
 
     protected static ?string $recordTitleAttribute = 'body';
 

@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test'
 import { fileURLToPath } from 'node:url'
 import { expectToast, pickOption, uniqueTitle } from '../fixtures/panel'
+import { expect, test } from '../fixtures/test'
 
 const cover = fileURLToPath(new URL('../fixtures/cover.png', import.meta.url))
 

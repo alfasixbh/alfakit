@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test'
 import { createPost, expectToast, rowWith, uniqueTitle } from '../fixtures/panel'
+import { expect, test } from '../fixtures/test'
 
 test.describe('actions', () => {
   test('runs a record action behind a confirmation modal', async ({ page }) => {

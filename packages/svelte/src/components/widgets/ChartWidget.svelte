@@ -179,6 +179,7 @@
         >
           <canvas
             bind:this={canvas}
+            role="img"
             aria-label={widget.heading ?? t('chart', {}, 'Chart')}
             aria-describedby={widget.assistiveContent ? `${bodyId}-assistive` : undefined}
           ></canvas>

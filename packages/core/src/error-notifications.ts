@@ -1,4 +1,12 @@
-import { HttpError, PAGE_EXPIRED_STATUS, router } from './http'
+import {
+  hasUnsavedWork,
+  HttpError,
+  PAGE_EXPIRED_STATUS,
+  reloadExpiredPage,
+  RequestTimeoutError,
+  router,
+  setExpiredPageGuard,
+} from './http'
 import type { NotificationSchema } from './schema/notifications'
 import type { ErrorNotificationsSchema, PageSchema, PanelSchema } from './schema/panel'
 
@@ -31,6 +39,17 @@ export function resolveRequestErrorNotification(
     const configured = outcome === 'show' ? resolveErrorNotification(status, config) : null
 
     if (configured) return configured
+  }
+
+  // `Panel::requestTimeout()`: the request was given up, the server may still be working.
+  if (error instanceof RequestTimeoutError) {
+    return {
+      id: 'alfakit-request-timeout',
+      title: t('request_timeout', {}, 'The request took too long.'),
+      body: escapeHtml(t('request_timeout_body', {}, 'Check your connection and try again.')),
+      status: 'warning',
+      format: 'alfakit',
+    }
   }
 
   const message = error instanceof HttpError ? error.message : null
@@ -164,4 +183,58 @@ export function installErrorNotifications(
     event.preventDefault()
     show(notification)
   })
+}
+
+// ---------------------------------------------------------------- Expired pages
+
+/** Window event the "Reload" button of the expired-page notice dispatches. */
+export const RELOAD_EXPIRED_PAGE_EVENT = 'alfakit:reload-expired-page'
+
+/**
+ * An expired page (419) is reloaded on its own, unless a form on screen holds unsaved
+ * changes: then the user is told and reloads when they are ready (after copying what they
+ * typed), instead of losing it. Returns a function that removes the guard.
+ */
+export function installExpiredPageNotice(
+  show: (notification: NotificationSchema) => void,
+  t: (key: string, replacements?: Record<string, string | number>, fallback?: string) => string,
+): () => void {
+  if (typeof window === 'undefined') return () => {}
+
+  const reload = () => reloadExpiredPage(true)
+  window.addEventListener(RELOAD_EXPIRED_PAGE_EVENT, reload)
+
+  const removeGuard = setExpiredPageGuard(() => {
+    if (!hasUnsavedWork()) return false
+
+    show({
+      id: 'alfakit-page-expired',
+      title: t('page_expired', {}, 'This page has expired.'),
+      body: escapeHtml(
+        t(
+          'page_expired_body',
+          {},
+          'Your changes are not saved. Copy what you need, then reload the page to continue.',
+        ),
+      ),
+      status: 'warning',
+      duration: 'persistent',
+      actions: [
+        {
+          name: 'reload',
+          label: t('page_expired_reload', {}, 'Reload'),
+          variant: 'button',
+          dispatch: { event: RELOAD_EXPIRED_PAGE_EVENT, data: {} },
+        },
+      ],
+      format: 'alfakit',
+    })
+
+    return true
+  })
+
+  return () => {
+    window.removeEventListener(RELOAD_EXPIRED_PAGE_EVENT, reload)
+    removeGuard()
+  }
 }

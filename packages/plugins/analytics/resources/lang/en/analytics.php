@@ -65,6 +65,7 @@ return [
 
     'chart' => [
         'heading' => 'Visitors over time',
+        'heading_for' => ':metric over time',
         'previous' => ':metric (previous period)',
     ],
 

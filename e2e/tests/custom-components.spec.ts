@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '../fixtures/test'
 
 test.describe('auto-registered custom components', () => {
   test('renders and binds the SwatchPicker field from resources/js/alfakit/fields', async ({

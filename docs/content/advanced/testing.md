@@ -158,6 +158,7 @@ The monorepo ships a Playwright suite in `e2e/` that drives the three playground
 
 ```bash
 pnpm e2e                       # all renderers, against the Herd playground sites
+scripts/e2e-local.sh           # the same, served on local ports with the built assets
 E2E_RENDERERS=react pnpm e2e   # one renderer
 ```
 

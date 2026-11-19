@@ -23,6 +23,14 @@ export class HttpError extends Error {
   }
 }
 
+/** A background request that took longer than `Panel::requestTimeout()` and was given up. */
+export class RequestTimeoutError extends HttpError {
+  constructor(public readonly seconds: number) {
+    super(408, null, 'The request took too long.')
+    this.name = 'RequestTimeoutError'
+  }
+}
+
 /**
  * The CSRF header for a request. Prefers the `XSRF-TOKEN` cookie, which Laravel refreshes
  * on every response (so it survives login and session regeneration), over the meta tag
@@ -49,16 +57,64 @@ export const PAGE_EXPIRED_STATUS = 419
 
 let reloading = false
 
+let expiredPageGuard: (() => boolean) | null = null
+
+/**
+ * Ask before an expired page is reloaded on its own. The guard answers true when it has
+ * taken over (it told the user and offers the reload itself, see
+ * `installExpiredPageNotice()`). Returns a function that removes it.
+ */
+export function setExpiredPageGuard(guard: (() => boolean) | null): () => void {
+  expiredPageGuard = guard
+
+  return () => {
+    if (expiredPageGuard === guard) expiredPageGuard = null
+  }
+}
+
 /**
  * Reload the page to get fresh tokens. Called when an internal endpoint answers 419.
+ * With `force` the guard is not asked (the user chose to reload).
  */
-export function reloadExpiredPage(): void {
+export function reloadExpiredPage(force = false): void {
   if (reloading || typeof window === 'undefined') {
+    return
+  }
+
+  if (!force && expiredPageGuard?.()) {
     return
   }
 
   reloading = true
   window.location.reload()
+}
+
+/**
+ * What is on screen and may hold changes the user has not saved (form stores add
+ * themselves while something renders them).
+ */
+export const unsavedWork = new Set<{ readonly isDirty: boolean }>()
+
+export function hasUnsavedWork(): boolean {
+  for (const item of unsavedWork) {
+    if (item.isDirty) return true
+  }
+
+  return false
+}
+
+let requestTimeout: number | null = null
+
+/**
+ * `Panel::requestTimeout()`: how many seconds a background request (`requestJson()`) may
+ * take before it is given up with a `RequestTimeoutError`; null for no limit.
+ */
+export function setRequestTimeout(seconds: number | null | undefined): void {
+  requestTimeout = typeof seconds === 'number' && seconds > 0 ? seconds : null
+}
+
+export function getRequestTimeout(): number | null {
+  return requestTimeout
 }
 
 /**
@@ -80,6 +136,8 @@ export interface JsonRequestOptions {
   query?: Record<string, unknown>
   signal?: AbortSignal
   headers?: Record<string, string>
+  /** Seconds before the request is given up; `false` for no limit. Default: the panel's `requestTimeout()`. */
+  timeout?: number | false
 }
 
 export function buildQuery(params: Record<string, unknown>, prefix = ''): string {
@@ -154,7 +212,28 @@ export async function requestJson<T>(url: string, options: JsonRequestOptions = 
   // Recorded for the developer debug panel only while it is enabled on the page.
   const record = debugRecorder.begin(method, target, options.body)
 
+  // A file being sent takes as long as it takes: only JSON requests are limited.
+  const limit =
+    options.timeout === false || options.body instanceof FormData
+      ? null
+      : (options.timeout ?? requestTimeout)
+  const controller = limit ? new AbortController() : null
+  let timedOut = false
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const forwardAbort = () => controller?.abort()
+
+  if (controller && limit) {
+    timer = setTimeout(() => {
+      timedOut = true
+      controller.abort()
+    }, limit * 1000)
+
+    if (options.signal?.aborted) controller.abort()
+    else options.signal?.addEventListener('abort', forwardAbort, { once: true })
+  }
+
   let response: Response
+  let text: string
 
   try {
     response = await fetch(target, {
@@ -162,15 +241,21 @@ export async function requestJson<T>(url: string, options: JsonRequestOptions = 
       headers,
       body,
       credentials: 'same-origin',
-      signal: options.signal,
+      signal: controller?.signal ?? options.signal,
     })
+    // The limit covers the answer's body too, not only its headers.
+    text = await response.text()
   } catch (error) {
-    record({ status: 0, response: error instanceof Error ? error.message : String(error) })
+    const failure = timedOut ? new RequestTimeoutError(limit ?? 0) : error
 
-    throw error
+    record({ status: 0, response: failure instanceof Error ? failure.message : String(failure) })
+
+    throw failure
+  } finally {
+    clearTimeout(timer)
+    options.signal?.removeEventListener('abort', forwardAbort)
   }
 
-  const text = await response.text()
   const data = text ? safeParse(text) : null
 
   record({
@@ -213,10 +298,18 @@ export function inertiaPost(
 ): void {
   const socket = realtimeHeaders()
 
+  postsInFlight++
+
   router.post(url, data as never, {
     preserveScroll: true,
     preserveState: true,
     ...options,
+    onFinish: (visit) => {
+      options.onFinish?.(visit)
+      postsInFlight = Math.max(0, postsInFlight - 1)
+
+      if (postsInFlight === 0) runHeldVisits()
+    },
     // `X-Socket-ID`: broadcasts caused by this request skip this tab (`toOthers()`).
     ...(socket['X-Socket-ID'] ? { headers: { ...socket, ...options.headers } } : {}),
   })
@@ -227,11 +320,34 @@ export function inertiaPost(
  * components ask for is replaced by the standalone components' own props.
  */
 export function inertiaVisit(url: string, options: VisitOptions = {}): void {
-  router.visit(url, { preserveScroll: true, ...withPartialProps(options) })
+  holdWhilePosting(() => router.visit(url, { preserveScroll: true, ...withPartialProps(options) }))
 }
 
 export function inertiaReload(options: Parameters<typeof router.reload>[0] = {}): void {
-  router.reload(withPartialProps(options))
+  holdWhilePosting(() => router.reload(withPartialProps(options)))
+}
+
+let postsInFlight = 0
+
+let heldVisits: Array<() => void> = []
+
+/**
+ * A new Inertia visit cancels the one in flight. For an action that is fine the other way
+ * round, but a table reload (a search still settling, polling) that starts while an action
+ * is being posted would cancel the action's visit: the server has run it, and the browser
+ * never hears the result (the modal stays open, no notification). Reloads wait for it.
+ */
+function holdWhilePosting(visit: () => void): void {
+  if (postsInFlight > 0) heldVisits.push(visit)
+  else visit()
+}
+
+function runHeldVisits(): void {
+  const visits = heldVisits
+
+  heldVisits = []
+
+  for (const visit of visits) visit()
 }
 
 function withPartialProps<T extends { only?: string[] }>(options: T): T {

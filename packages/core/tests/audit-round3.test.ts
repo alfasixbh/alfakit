@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { isImplicitSubmit } from '../src/implicit-submit'
 import { isEditableTarget } from '../src/shortcuts'
 import { matchesKeyBinding } from '../src/utils/keybindings'
@@ -144,5 +144,194 @@ describe('second reading pass', () => {
     expect(unreadCountLabel(7, String)).toBe('7')
     expect(unreadCountLabel(120, String)).toBe('99+')
     expect(unreadCountLabel(120, arabic)).toBe('٩٩+')
+  })
+})
+
+describe('0.2.8: expired pages and request time limits', () => {
+  it('gives a background request up after the panel time limit', async () => {
+    const { requestJson, setRequestTimeout, RequestTimeoutError } = await import('../src/http')
+    const { resolveRequestErrorNotification } = await import('../src/error-notifications')
+    const original = globalThis.fetch
+
+    globalThis.fetch = ((_url: string, init?: RequestInit) =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () =>
+          reject(new DOMException('Aborted', 'AbortError')),
+        )
+      })) as typeof fetch
+
+    try {
+      setRequestTimeout(0.05)
+      const error = await requestJson('/slow').catch((failure: unknown) => failure)
+
+      expect(error).toBeInstanceOf(RequestTimeoutError)
+      expect(
+        resolveRequestErrorNotification(
+          error,
+          undefined,
+          (_key, _replacements, fallback) => fallback ?? '',
+        )?.title,
+      ).toBe('The request took too long.')
+
+      // No limit: by default, when asked for one request, and for a file being sent.
+      setRequestTimeout(null)
+      const controller = new AbortController()
+      const pending = requestJson('/slow', { signal: controller.signal }).catch(
+        (failure: unknown) => failure,
+      )
+      await new Promise((resolve) => setTimeout(resolve, 120))
+      controller.abort()
+
+      expect(await pending).not.toBeInstanceOf(RequestTimeoutError)
+    } finally {
+      setRequestTimeout(null)
+      globalThis.fetch = original
+    }
+  })
+
+  it('asks before reloading an expired page only while a form on screen has unsaved changes', async () => {
+    const { reloadExpiredPage, unsavedWork } = await import('../src/http')
+    const { installExpiredPageNotice, RELOAD_EXPIRED_PAGE_EVENT } =
+      await import('../src/error-notifications')
+    const shown: Array<{ id: string; actions?: Array<{ dispatch?: { event: string } }> }> = []
+    const form = { isDirty: true }
+    const remove = installExpiredPageNotice(
+      (notification) => shown.push(notification),
+      (_key, _replacements, fallback) => fallback ?? '',
+    )
+
+    try {
+      unsavedWork.add(form)
+      reloadExpiredPage()
+
+      expect(shown).toHaveLength(1)
+      expect(shown[0]?.id).toBe('alfakit-page-expired')
+      expect(shown[0]?.actions?.[0]?.dispatch?.event).toBe(RELOAD_EXPIRED_PAGE_EVENT)
+    } finally {
+      unsavedWork.delete(form)
+      remove()
+    }
+  })
+
+  it('counts a form as on screen only while something renders it', async () => {
+    const { FormStore } = await import('../src/form')
+    const { hasUnsavedWork } = await import('../src/http')
+    const form = new FormStore({ components: [], state: { title: '' } } as never, {} as never)
+
+    form.setValue('title', 'Draft')
+    expect(hasUnsavedWork()).toBe(false)
+
+    const stop = form.subscribe(() => undefined)
+    expect(hasUnsavedWork()).toBe(true)
+
+    stop()
+    expect(hasUnsavedWork()).toBe(false)
+  })
+})
+
+describe('translator', () => {
+  it('tells its listeners when the language changes, and only then', async () => {
+    const { Translator } = await import('../src/i18n')
+    const translator = new Translator({ hello: 'Hello' }, 'en')
+    let calls = 0
+    const stop = translator.subscribe(() => calls++)
+
+    translator.setTranslations({ hello: 'Hello' })
+    translator.setLocale('en')
+    expect(calls).toBe(0)
+
+    translator.setTranslations({ hello: 'مرحبا' })
+    translator.setLocale('ar')
+    expect(calls).toBe(1)
+    expect(translator.getVersion()).toBe(1)
+    expect(translator.t('hello')).toBe('مرحبا')
+
+    stop()
+    translator.setLocale('en')
+    expect(calls).toBe(1)
+  })
+})
+
+describe('form store lifecycle', () => {
+  it('works again when it is rendered after destroy()', async () => {
+    const { FormStore } = await import('../src/form')
+    const original = globalThis.fetch
+    const calls: string[] = []
+
+    globalThis.fetch = (async (url: string) => {
+      calls.push(String(url))
+
+      return new Response(JSON.stringify({ components: [], state: { title: 'A' } }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }) as typeof fetch
+
+    try {
+      const field = {
+        type: 'TextInput',
+        name: 'title',
+        statePath: 'title',
+        live: { onBlur: true, debounce: null },
+      }
+      const form = new FormStore(
+        { components: [field], state: { title: '' } } as never,
+        {
+          token: 't',
+          component: 'form',
+          refreshUrl: '/refresh',
+        } as never,
+      )
+
+      let stop = form.subscribe(() => undefined)
+      // The form is hidden for a moment: listeners go, effect cleanups run.
+      stop()
+      form.destroy()
+      // And shown again with the same store.
+      stop = form.subscribe(() => undefined)
+
+      form.setValue('title', 'A')
+      form.blur('title')
+      await new Promise((resolve) => setTimeout(resolve, 20))
+
+      expect(calls).toEqual(['/refresh'])
+      stop()
+    } finally {
+      globalThis.fetch = original
+    }
+  })
+})
+
+describe('visits while an action is posted', () => {
+  it('holds a reload until the action visit has finished', async () => {
+    const http = await import('../src/http')
+    const calls: string[] = []
+    let finish: (() => void) | undefined
+    const post = vi.spyOn(http.router, 'post').mockImplementation(((
+      _url: string,
+      _data: unknown,
+      options: { onFinish?: (visit: never) => void },
+    ) => {
+      calls.push('post')
+      finish = () => options.onFinish?.({} as never)
+    }) as never)
+    const visit = vi.spyOn(http.router, 'visit').mockImplementation((() => {
+      calls.push('visit')
+    }) as never)
+
+    try {
+      http.inertiaPost('/action', {})
+      http.inertiaVisit('/table?search=a')
+      expect(calls).toEqual(['post'])
+
+      finish?.()
+      expect(calls).toEqual(['post', 'visit'])
+
+      http.inertiaVisit('/table?search=b')
+      expect(calls).toEqual(['post', 'visit', 'visit'])
+    } finally {
+      post.mockRestore()
+      visit.mockRestore()
+    }
   })
 })

@@ -109,7 +109,14 @@ watch(
     if (!deferred.value) orderDraft.value = null
   },
 )
-const visible = computed(() => draft.value ?? props.table.visibleColumns)
+// Sent but not answered yet: a second toggle builds on it, not on the list the server
+// last sent (which would undo the first). It lapses when the server's list changes.
+const pending = ref<{ base: string; list: string[] } | null>(null)
+const serverColumns = computed(() => props.table.visibleColumns.join('|'))
+const sent = computed(() =>
+  pending.value !== null && pending.value.base === serverColumns.value ? pending.value.list : null,
+)
+const visible = computed(() => draft.value ?? sent.value ?? props.table.visibleColumns)
 
 const trigger = computed(() =>
   triggerButtonView(props.table, 'columnManager', {
@@ -144,6 +151,7 @@ const toggle = (name: string) => {
   if (deferred.value) {
     draft.value = next
   } else {
+    pending.value = { base: serverColumns.value, list: next }
     visitTable(props.table.identifier, { columns: next }, ['page'])
   }
 }

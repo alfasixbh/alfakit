@@ -11,7 +11,11 @@ export interface Store<T> {
   subscribe: (listener: Listener<T>) => () => void
 }
 
-export function createStore<T>(initial: T): Store<T> {
+export function createStore<T>(
+  initial: T,
+  /** Told how many listeners there are whenever one is added or removed. */
+  onListeners?: (count: number) => void,
+): Store<T> {
   let state = initial
   const listeners = new Set<Listener<T>>()
 
@@ -34,9 +38,11 @@ export function createStore<T>(initial: T): Store<T> {
     update: (patch) => set((current) => ({ ...current, ...patch })),
     subscribe: (listener) => {
       listeners.add(listener)
+      onListeners?.(listeners.size)
 
       return () => {
         listeners.delete(listener)
+        onListeners?.(listeners.size)
       }
     },
   }

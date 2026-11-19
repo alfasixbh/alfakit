@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '../fixtures/test'
 
 test.describe('dashboard', () => {
   test('renders the panel shell, widgets and the sidebar navigation', async ({ page }) => {

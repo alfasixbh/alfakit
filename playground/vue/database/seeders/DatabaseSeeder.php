@@ -37,5 +37,8 @@ class DatabaseSeeder extends Seeder
 
         // Kanban, forms, CMS, API, webhooks, workflows, invoices, files, helpdesk, analytics, teams…
         $this->call(WavePluginsSeeder::class);
+
+        // The customer portal (/portal): customer@example.com / password and their orders.
+        $this->call(PortalSeeder::class);
     }
 }

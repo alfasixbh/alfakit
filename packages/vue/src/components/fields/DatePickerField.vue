@@ -241,11 +241,12 @@ const weekStartsOn = computed(
             "
           >
             <CalendarIcon class="size-4" />
-            {{
+            <!-- In an element of its own: as bare text the button's name began with a space. -->
+            <span>{{
               selectedDate
                 ? display(selectedDate)
                 : (props.component.placeholder ?? t('form.pick_date', {}, 'Pick a date'))
-            }}
+            }}</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent class="w-auto p-0" align="start">

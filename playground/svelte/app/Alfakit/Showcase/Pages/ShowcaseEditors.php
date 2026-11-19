@@ -14,7 +14,6 @@ use AlfaSix\Alfakit\Forms\Components\RichEditor\ToolbarButtonGroup;
 use AlfaSix\Alfakit\Notifications\Notification;
 use AlfaSix\Alfakit\Pages\Page;
 use AlfaSix\Alfakit\Schemas\Components\Section;
-use AlfaSix\Alfakit\Schemas\Components\Utilities\Get;
 use AlfaSix\Alfakit\Schemas\Schema;
 use App\Alfakit\Showcase\Blocks\CallToActionBlock;
 use App\Alfakit\Showcase\Blocks\DividerBlock;

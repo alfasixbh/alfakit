@@ -1,7 +1,7 @@
 import { modalTableQuery } from './advanced-fields'
 import { debugRecorder } from './debug'
 import { reportRequestError } from './error-notifications'
-import { HttpError, requestJson } from './http'
+import { HttpError, requestJson, unsavedWork } from './http'
 import { currentPageQuery } from './page-query'
 import { mergeRefreshResponse } from './partial'
 import type { ModalTableSelectResponse } from './schema/advanced-fields'
@@ -321,15 +321,32 @@ export class FormStore {
   ) {
     this.serverValues = payload.state ?? {}
     this.fingerprints = payload.fingerprints
-    this.store = createStore<FormState>({
-      components: payload.components,
-      values: payload.state ?? {},
-      errors: {},
-      dirty: new Set(),
-      processing: false,
-      refreshing: false,
-      columns: payload.columns,
-    })
+    this.store = createStore<FormState>(
+      {
+        components: payload.components,
+        values: payload.state ?? {},
+        errors: {},
+        dirty: new Set(),
+        processing: false,
+        refreshing: false,
+        columns: payload.columns,
+      },
+      // On screen while something renders it (see `hasUnsavedWork()`).
+      (listeners) => {
+        if (listeners > 0) {
+          unsavedWork.add(this)
+          // Rendered again after `destroy()`: React runs a component's effect cleanups
+          // while it hides the form (a lazily loaded editor arriving under the same
+          // Suspense boundary) and keeps the store, which must work again when shown.
+          if (this.destroyed) {
+            this.destroyed = false
+            debugRecorder.registerForm(this)
+          }
+        } else {
+          unsavedWork.delete(this)
+        }
+      },
+    )
 
     // Listed by the developer debug panel while it is enabled; a no-op otherwise.
     debugRecorder.registerForm(this)

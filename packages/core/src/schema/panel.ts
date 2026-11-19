@@ -393,6 +393,8 @@ export interface PanelSchema {
   maxContentWidth?: Width | string
   breadcrumbs: boolean
   unsavedChangesAlerts?: boolean
+  /** `requestTimeout()`: seconds a background request may take before it is given up. */
+  requestTimeout?: number
   /** `false` when `collapsibleNavigationGroups(false)`: groups never collapse. */
   collapsibleNavigationGroups?: false
   /** CSS lengths for the open and icon-only sidebar (`--sidebar-width`, `--sidebar-width-icon`). */

@@ -104,6 +104,13 @@ describe('command palette', () => {
     await wrapper.find('button').trigger('click')
     await until(() => document.body.textContent?.includes('Order #7') ?? false)
 
+    // The input is the combobox of the named result list, as in React and Svelte.
+    const listbox = document.querySelector('[role="dialog"] [role="listbox"]')
+    expect(input()?.getAttribute('role')).toBe('combobox')
+    expect(listbox?.id).toBeTruthy()
+    expect(input()?.getAttribute('aria-controls')).toBe(listbox?.id)
+    expect(listbox?.getAttribute('aria-label')).toBe('Search results')
+
     for (const text of [
       'Recent',
       'Actions',

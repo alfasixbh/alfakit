@@ -70,6 +70,9 @@ export function ColumnManager({
   const [dropTarget, setDropTarget] = useState<string | null>(null)
   // Toggles of a deferred column manager wait here until "Apply".
   const [draft, setDraft] = useState<string[] | null>(null)
+  // Sent but not answered yet: a second toggle builds on it, not on the list the server
+  // last sent (which would undo the first). It lapses when the server's list changes.
+  const [pending, setPending] = useState<{ base: string; list: string[] } | null>(null)
   // A moved column order: the draft of a deferred column manager, or shown at once
   // while it is saved.
   // It belongs to the columns it was made from: the server's next order replaces the
@@ -94,7 +97,9 @@ export function ColumnManager({
     reorderable ? table.columns : table.columns.filter((column) => column.toggleable),
     orderDraft,
   )
-  const visible = draft ?? table.visibleColumns
+  const serverColumns = table.visibleColumns.join('|')
+  const sent = pending !== null && pending.base === serverColumns ? pending.list : null
+  const visible = draft ?? sent ?? table.visibleColumns
 
   if (!toggleable && !reorderable) return null
 
@@ -111,6 +116,7 @@ export function ColumnManager({
     if (deferred) {
       setDraft(next)
     } else {
+      setPending({ base: serverColumns, list: next })
       visitTable(table.identifier, { columns: next }, ['page'])
     }
   }

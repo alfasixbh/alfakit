@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Alfakit\Resources\PostResource\Pages;
 
-use App\Alfakit\Resources\PostResource;
 use AlfaSix\Alfakit\Actions\EditAction;
 use AlfaSix\Alfakit\Resources\Pages\ViewRecord;
+use App\Alfakit\Resources\PostResource;
 
 class ViewPost extends ViewRecord
 {

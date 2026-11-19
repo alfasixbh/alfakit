@@ -238,7 +238,7 @@
             </Button>
           {/snippet}
         </PopoverTrigger>
-        <PopoverContent class="w-auto p-0" align="start">
+        <PopoverContent class="w-auto p-0" align="start" role="dialog">
           <Lazy
             loader={calendar}
             props={{

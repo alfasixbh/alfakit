@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test'
 import { createPost, uniqueTitle } from '../fixtures/panel'
+import { expect, test } from '../fixtures/test'
 
 test.describe('posts table', () => {
   test('searches, sorts and paginates', async ({ page }) => {

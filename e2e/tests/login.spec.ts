@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test'
 import { credentials } from '../fixtures/credentials'
+import { expect, test } from '../fixtures/test'
 
 // Runs without the stored session: the login page must work from a clean browser.
 test.use({ storageState: { cookies: [], origins: [] } })

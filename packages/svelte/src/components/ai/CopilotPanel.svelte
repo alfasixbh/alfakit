@@ -223,7 +223,7 @@
                 <p
                   class="bg-primary text-primary-foreground max-w-[85%] rounded-2xl rounded-ee-sm px-3 py-2 text-sm whitespace-pre-wrap"
                 >
-                  <span class="sr-only">{t('ai.you', {}, 'You')}: </span>{message.content}
+                  <span class="sr-only">{`${t('ai.you', {}, 'You')}: `}</span>{message.content}
                 </p>
               </div>
             {:else if message.role === 'error'}

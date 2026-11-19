@@ -30,11 +30,10 @@ class Post extends Model implements HasMedia
 
     // alfasix/alfakit-activity-log: changes show in the Activity log and on the post.
     use LogsActivity;
+    use SoftDeletes;
 
     /** @var array<int, string> */
     protected array $versionExclude = ['views'];
-
-    use SoftDeletes;
 
     protected $guarded = [];
 

@@ -90,6 +90,7 @@
       external={item.openInNewTab}
       prefetch={!item.openInNewTab}
       isActive={item.active}
+      aria-current={item.active ? 'page' : undefined}
       tooltip={navigationItemText(item)}
     >
       {#if item.icon}<Icon name={item.icon} />{/if}

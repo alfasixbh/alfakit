@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test'
+import { type Page } from '@playwright/test'
+import { expect, test } from '../fixtures/test'
 
 /** Opens the user menu, then its "Language" submenu, and picks the locale with `lang`. */
 async function switchLocale(page: Page, lang: string) {

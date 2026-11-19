@@ -5,6 +5,7 @@ namespace App\Providers;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Health\Checks\Checks\CacheCheck;
@@ -29,6 +30,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // End-to-end runs (`ALFAKIT_BUILT_ASSETS=1 php artisan serve`) test the built assets,
+        // whatever Vite dev server happens to be running beside them.
+        if (env('ALFAKIT_BUILT_ASSETS')) {
+            Vite::useHotFile(storage_path('framework/no-vite-hot'));
+        }
+
         $this->configureDefaults();
 
         // alfasix/alfakit-health: cheap checks shown on System › Health (debug mode and the

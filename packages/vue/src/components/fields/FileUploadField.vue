@@ -495,7 +495,7 @@ function cssLength(value: number | string): string {
             cn(
               dragPath === file.path && 'opacity-50',
               'bg-muted/30 relative flex min-w-0 items-center gap-3 overflow-hidden rounded-md border p-2 text-sm',
-              circle && 'size-28 justify-center rounded-full border-0 p-0',
+              circle && 'size-28 justify-center overflow-visible rounded-full border-0 p-0',
               file.error && 'border-destructive',
             )
           "

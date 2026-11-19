@@ -57,6 +57,7 @@ return [
     ],
     'chart' => [
         'heading' => '访客趋势',
+        'heading_for' => ':metric趋势',
         'previous' => ':metric（上一周期）',
     ],
     'panels' => [

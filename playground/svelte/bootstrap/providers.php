@@ -10,4 +10,6 @@ return [
     App\Providers\Alfakit\TeamPanelProvider::class,
     // The lean benchmark panel (/bench), see scripts/bench/big.mjs.
     App\Providers\Alfakit\BenchPanelProvider::class,
+    App\Providers\Alfakit\PortalPanelProvider::class,
+    App\Providers\AuthKitServiceProvider::class,
 ];

@@ -57,6 +57,7 @@ return [
     ],
     'chart' => [
         'heading' => 'الزوار عبر الزمن',
+        'heading_for' => ':metric عبر الزمن',
         'previous' => ':metric (الفترة السابقة)',
     ],
     'panels' => [

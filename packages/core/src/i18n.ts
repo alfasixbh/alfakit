@@ -16,6 +16,10 @@ type Replacements = Record<string, string | number>
 export class Translator {
   private pluralRules: Intl.PluralRules | null = null
 
+  private version = 0
+
+  private readonly listeners = new Set<() => void>()
+
   constructor(
     private translations: Record<string, unknown> = {},
     private locale = 'en',
@@ -25,13 +29,31 @@ export class Translator {
     this.translations = translations
   }
 
-  /** BCP 47 tag used for plural rules. */
+  /** BCP 47 tag used for plural rules. Set it after `setTranslations()`: it tells the listeners. */
   setLocale(locale: string): void {
     if (locale !== this.locale) {
       this.locale = locale
       this.pluralRules = null
+      this.version++
+
+      for (const listener of this.listeners) listener()
     }
   }
+
+  /**
+   * Told when the language changes, so text that is already on screen (the part of the
+   * shell that stays mounted across pages) is written again in the new language.
+   */
+  subscribe = (listener: () => void): (() => void) => {
+    this.listeners.add(listener)
+
+    return () => {
+      this.listeners.delete(listener)
+    }
+  }
+
+  /** Grows with every language change. */
+  getVersion = (): number => this.version
 
   getLocale(): string {
     return this.locale

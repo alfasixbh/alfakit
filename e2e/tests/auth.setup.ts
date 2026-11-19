@@ -1,6 +1,6 @@
-import { expect, test as setup } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
 import { credentials } from '../fixtures/credentials'
+import { expect, test as setup } from '../fixtures/test'
 
 /** Signs in once per renderer and stores the session for the other specs. */
 setup('sign in to the panel', async ({ page }, testInfo) => {

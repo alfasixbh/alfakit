@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test'
 import { expectToast, pickOption } from '../fixtures/panel'
+import { expect, test } from '../fixtures/test'
 
 // A public page outside the panel: no stored session needed.
 test.use({ storageState: { cookies: [], origins: [] } })

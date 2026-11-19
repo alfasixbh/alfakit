@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers\Alfakit;
 
+use AlfaSix\Alfakit\Auth\MultiFactor\App\AppAuthentication;
+use AlfaSix\Alfakit\Auth\MultiFactor\Email\EmailAuthentication;
 use AlfaSix\Alfakit\CommandPalette\Command;
 use AlfaSix\Alfakit\Navigation\NavigationItem;
 use AlfaSix\Alfakit\Notifications\Notification;
@@ -47,6 +49,7 @@ use App\Alfakit\Plugins\Pages\Calendar;
 use App\Alfakit\Plugins\Pages\ManageGeneralSettings;
 use App\Alfakit\Resources\CategoryResource;
 use App\Alfakit\Resources\PostResource;
+use App\Alfakit\Showcase\Pages\ShowcaseCards;
 use App\Alfakit\Widgets\BlogStats;
 use App\Models\Post;
 use App\Models\User;
@@ -68,11 +71,21 @@ class AdminPanelProvider extends PanelProvider
             ->deferNavigationBadges()
             ->passwordReset()
             ->profile()
+            // Second factors and email-change verification, set up on the profile page.
+            ->multiFactorAuthentication([AppAuthentication::make()->recoverable(), EmailAuthentication::make()])
+            ->multiFactorAuthenticationRememberDevice(30)
+            ->emailChangeVerification()
             ->discoverResources(in: app_path('Alfakit/Resources'), for: 'App\\Alfakit\\Resources')
             ->discoverPages(in: app_path('Alfakit/Pages'), for: 'App\\Alfakit\\Pages')
-            // Feature showcase pages (copied from playground/react; see its Showcase namespace).
+            // Feature showcase (clusters, nested resource, impersonation, every field and table option).
             ->discoverClusters(in: app_path('Alfakit/Showcase/Clusters'), for: 'App\\Alfakit\\Showcase\\Clusters')
             ->discoverPages(in: app_path('Alfakit/Showcase/Pages'), for: 'App\\Alfakit\\Showcase\\Pages')
+            ->discoverResources(in: app_path('Alfakit/Showcase/Resources'), for: 'App\\Alfakit\\Showcase\\Resources')
+            // Per-page design closure: the cards showcase uses the top bar layout, everything else the sidebar.
+            ->layout(fn (?string $page): string => $page === ShowcaseCards::class ? 'topbar' : 'sidebar')
+            // Mobile preset (bottom navigation on phones) for the showcase pages only.
+            ->design(mobile: fn (?string $page): string => str_starts_with((string) $page, 'App\\Alfakit\\Showcase\\') ? 'bottom' : 'drawer')
+            ->debugPanel()
             ->pages([
                 Dashboard::class,
                 // Every AlfaKit email with sample data, light/dark and LTR/RTL (local/debug only).
@@ -211,8 +224,10 @@ class AdminPanelProvider extends PanelProvider
                     ->authorize(fn (User $user): bool => $user->hasRole('super_admin'))
                     ->editableLocales(['ar', 'fr', 'de', 'ja'])
                     ->navigationGroup(fn (): string => __('playground.nav.groups.system')),
-                // Copilot and MCP stay off: they need a provider key (php artisan alfakit:ai-setup).
-                AiPlugin::make()->streaming()->navigationGroup(fn (): string => __('playground.nav.groups.system')),
+                // No provider key in the playground: the copilot, the writing assistant and the AI
+                // actions answer with the plugin's labelled sample answers (`demoResponses()`),
+                // made on the server without a network call. MCP stays off.
+                AiPlugin::make()->streaming()->copilot()->demoResponses()->navigationGroup(fn (): string => __('playground.nav.groups.system')),
                 WorkflowsPlugin::make()->navigationGroup(fn (): string => __('playground.nav.groups.work')),
                 InvoicesPlugin::make()
                     ->customers(fn () => User::query(), titleAttribute: 'name', searchColumns: ['name', 'email'])
@@ -224,11 +239,16 @@ class AdminPanelProvider extends PanelProvider
                     ->authorize(fn (User $user): bool => $user->hasRole('super_admin'))
                     ->navigationGroup(fn (): string => __('playground.nav.groups.marketing')),
             ])
+            // Localization: any number of languages, RTL included. Strings come from
+            // alfasix/alfakit-translations; the choice is saved on the user.
             ->locales(['en', 'ar', 'de', 'es', 'fa', 'fr', 'it', 'ja', 'nl', 'pt_BR', 'ru', 'tr', 'zh_CN'])
             ->languageSwitcher('both')
             // The playground's own strings (lang/<locale>/playground.php); the custom components in
             // resources/js/alfakit read the `frontend` part with t('playground.…').
             ->frontendTranslations(['playground' => 'playground.frontend'])
+            ->persistLocaleUsing(fn (User $user, string $locale) => $user->update(['locale' => $locale]))
+            ->currency('USD')
+            ->timezone(fn (): ?string => auth()->user()?->timezone)
             // Design: pick any built-in theme (neutral, alfakit, minimal, soft, corporate,
             // filament). The playground lets you switch from the top bar.
             ->brandName('AlfaKit')

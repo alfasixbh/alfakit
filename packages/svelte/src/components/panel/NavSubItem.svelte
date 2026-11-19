@@ -85,6 +85,7 @@
       href={item.url ?? '#'}
       external={item.openInNewTab}
       isActive={item.active}
+      aria-current={item.active ? 'page' : undefined}
     >
       {#if item.icon}<Icon name={item.icon} />{/if}
       <NavLabel text={item.label} html={item.labelHtml} />

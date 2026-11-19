@@ -95,7 +95,7 @@ function NavSubItem({ item }: { item: NavigationItemSchema }) {
   return (
     <SidebarMenuSubItem>
       <SidebarMenuSubButton asChild isActive={item.active}>
-        <NavLink item={item}>
+        <NavLink item={item} aria-current={item.active ? 'page' : undefined}>
           {item.icon && <Icon name={item.icon} />}
           <NavLabel item={item} />
           <NavBadge item={item} />
@@ -139,7 +139,7 @@ function NavItem({ item }: { item: NavigationItemSchema }) {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={item.active} tooltip={navigationItemText(item)}>
-        <NavLink item={item}>
+        <NavLink item={item} aria-current={item.active ? 'page' : undefined}>
           {item.icon && <Icon name={item.icon} />}
           <NavLabel item={item} />
           <NavBadge item={item} />

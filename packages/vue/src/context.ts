@@ -16,10 +16,12 @@ import {
   computed,
   inject,
   provide,
+  shallowRef,
   type Component,
   type ComputedRef,
   type InjectionKey,
   type Ref,
+  type ShallowRef,
 } from 'vue'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -130,18 +132,50 @@ function useTranslator(): Translator {
   return inject(ALFAKIT_KEY, null)?.translator ?? globalTranslator
 }
 
+const translatorVersions = new WeakMap<Translator, ShallowRef<number>>()
+
+/**
+ * A ref that changes with the translator's language. Reading it while rendering makes the
+ * text follow a language switch, also in the part of the shell that stays mounted.
+ */
+function translatorVersion(translator: Translator): ShallowRef<number> {
+  let version = translatorVersions.get(translator)
+
+  if (!version) {
+    const created = shallowRef(translator.getVersion())
+
+    translator.subscribe(() => {
+      created.value = translator.getVersion()
+    })
+    translatorVersions.set(translator, created)
+    version = created
+  }
+
+  return version
+}
+
 /** `t('table.showing', { first: 1, last: 10, total: 42 }, 'Fallback')` */
 export function useT(): Translator['t'] {
   const translator = useTranslator()
+  const version = translatorVersion(translator)
 
-  return translator.t.bind(translator)
+  return (key, replacements, fallback) => {
+    void version.value
+
+    return translator.t(key, replacements, fallback)
+  }
 }
 
 /** Plural-aware lines: `choice('table.selected', 3)` (Laravel `trans_choice` syntax). */
 export function useChoice(): Translator['choice'] {
   const translator = useTranslator()
+  const version = translatorVersion(translator)
 
-  return translator.choice.bind(translator)
+  return (key, count, replacements, fallback) => {
+    void version.value
+
+    return translator.choice(key, count, replacements, fallback)
+  }
 }
 
 /** The page's Inertia props; undefined when rendered outside an Inertia app (tests). */

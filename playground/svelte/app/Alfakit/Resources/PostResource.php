@@ -15,6 +15,7 @@ use AlfaSix\Alfakit\Actions\ViewAction;
 use AlfaSix\Alfakit\Forms\Components\DateTimePicker;
 use AlfaSix\Alfakit\Forms\Components\FileUpload;
 use AlfaSix\Alfakit\Forms\Components\KeyValue;
+use AlfaSix\Alfakit\Forms\Components\MoneyInput;
 use AlfaSix\Alfakit\Forms\Components\RichEditor;
 use AlfaSix\Alfakit\Forms\Components\Select;
 use AlfaSix\Alfakit\Forms\Components\Textarea;
@@ -22,9 +23,11 @@ use AlfaSix\Alfakit\Forms\Components\TextInput;
 use AlfaSix\Alfakit\Forms\Components\Toggle;
 use AlfaSix\Alfakit\Infolists\Components\IconEntry;
 use AlfaSix\Alfakit\Infolists\Components\TextEntry;
+use AlfaSix\Alfakit\Resources\Pages\Page;
 use AlfaSix\Alfakit\Resources\Resource;
 use AlfaSix\Alfakit\Schemas\Components\Group;
 use AlfaSix\Alfakit\Schemas\Components\Section;
+use AlfaSix\Alfakit\Schemas\Components\Utilities\Get;
 use AlfaSix\Alfakit\Schemas\Components\Utilities\Set;
 use AlfaSix\Alfakit\Schemas\Schema;
 use AlfaSix\Alfakit\Tables\Columns\TextColumn;
@@ -100,6 +103,14 @@ class PostResource extends Resource
                     SpatieMediaLibraryFileUpload::make('gallery')->label(__('playground.fields.gallery'))->collection('gallery')->multiple()->reorderable()->image(),
                     TextInput::make('rating')->label(__('playground.fields.rating'))->numeric()->minValue(0)->maxValue(5)->step(0.1),
                 ])->columns(1),
+                Section::make(__('playground.sections.sponsorship'))->schema([
+                    Select::make('currency')->label(__('playground.fields.currency'))->currencies()->searchable()->default('USD')->required()->live(),
+                    MoneyInput::make('sponsorship_fee')
+                        ->label(__('playground.fields.sponsorship_fee'))
+                        ->currency(fn (Get $get): string => $get('currency') ?: 'USD')
+                        ->minorUnits()
+                        ->minValue(0),
+                ])->columns(1),
             ])->columnSpan(['default' => 1, 'lg' => 1]),
         ])->columns(3);
     }
@@ -122,6 +133,7 @@ class PostResource extends Resource
                 TextEntry::make('published_at')->label(__('playground.fields.published_at'))->dateTime(),
                 TextEntry::make('views')->label(__('playground.fields.views'))->numeric(),
                 TextEntry::make('rating')->label(__('playground.fields.rating'))->numeric(decimalPlaces: 1)->suffix(' / 5'),
+                TextEntry::make('sponsorship_fee')->label(__('playground.fields.sponsorship_fee'))->money(fn (Post $record): string => $record->currency, inMinorUnits: true),
                 TextEntry::make('content')->label(__('playground.fields.content'))->html()->prose()->columnSpanFull(),
                 SpatieMediaLibraryImageEntry::make('gallery')->label(__('playground.fields.gallery'))->collection('gallery')->stacked()->columnSpanFull(),
             ])->columns(3),
@@ -148,6 +160,7 @@ class PostResource extends Resource
                 }),
                 ToggleColumn::make('is_featured')->label(__('playground.fields.featured')),
                 TextColumn::make('views')->label(__('playground.fields.views'))->editable()->rules(['integer', 'min:0'])->numeric()->sortable()->alignEnd(),
+                TextColumn::make('sponsorship_fee')->label(__('playground.fields.sponsorship'))->money(fn (Post $record): string => $record->currency, inMinorUnits: true)->sortable()->alignEnd()->toggleable(),
                 TextColumn::make('published_at')->label(__('playground.fields.published_at'))->since()->sortable()->toggleable(),
                 TextColumn::make('created_at')->label(__('playground.fields.created_at'))->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -209,6 +222,15 @@ class PostResource extends Resource
             'view' => Pages\ViewPost::route('/{record}'),
             'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
+    }
+
+    /** Record sub-navigation: view and edit link to each other. */
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewPost::class,
+            Pages\EditPost::class,
+        ]);
     }
 
     public static function getEloquentQuery(): Builder

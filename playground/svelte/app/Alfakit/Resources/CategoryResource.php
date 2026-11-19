@@ -7,6 +7,9 @@ namespace App\Alfakit\Resources;
 use AlfaSix\Alfakit\Actions\DeleteAction;
 use AlfaSix\Alfakit\Actions\DeleteBulkAction;
 use AlfaSix\Alfakit\Actions\EditAction;
+use AlfaSix\Alfakit\Actions\ExportAction;
+use AlfaSix\Alfakit\Actions\ExportBulkAction;
+use AlfaSix\Alfakit\Actions\ImportAction;
 use AlfaSix\Alfakit\Forms\Components\ColorPicker;
 use AlfaSix\Alfakit\Forms\Components\IconPicker;
 use AlfaSix\Alfakit\Forms\Components\Select;
@@ -17,6 +20,8 @@ use AlfaSix\Alfakit\Tables\Columns\ColorColumn;
 use AlfaSix\Alfakit\Tables\Columns\IconColumn;
 use AlfaSix\Alfakit\Tables\Columns\TextColumn;
 use AlfaSix\Alfakit\Tables\Table;
+use App\Alfakit\Exports\CategoryExporter;
+use App\Alfakit\Imports\CategoryImporter;
 use App\Alfakit\Resources\CategoryResource\Pages;
 use App\Models\Category;
 
@@ -76,7 +81,12 @@ class CategoryResource extends Resource
                 EditAction::make(),
                 DeleteAction::make(),
             ])
+            ->headerActions([
+                ImportAction::make()->importer(CategoryImporter::class),
+                ExportAction::make()->exporter(CategoryExporter::class),
+            ])
             ->bulkActions([
+                ExportBulkAction::make()->exporter(CategoryExporter::class),
                 DeleteBulkAction::make(),
             ]);
     }

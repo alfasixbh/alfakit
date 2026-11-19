@@ -57,6 +57,7 @@ return [
     ],
     'chart' => [
         'heading' => 'بازدیدکنندگان در طول زمان',
+        'heading_for' => ':metric در طول زمان',
         'previous' => ':metric (دورهٔ قبل)',
     ],
     'panels' => [

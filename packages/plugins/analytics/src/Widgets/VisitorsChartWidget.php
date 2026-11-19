@@ -34,7 +34,12 @@ class VisitorsChartWidget extends ChartWidget
 
     protected function getHeading(): ?string
     {
-        return (string) __('alfakit-analytics::analytics.chart.heading');
+        $metric = $this->getFilter() ?? 'visitors';
+
+        // The heading names what the chart shows: it follows the metric filter.
+        return $metric === 'visitors'
+            ? (string) __('alfakit-analytics::analytics.chart.heading')
+            : (string) __('alfakit-analytics::analytics.chart.heading_for', ['metric' => Report::metricLabel($metric)]);
     }
 
     /**

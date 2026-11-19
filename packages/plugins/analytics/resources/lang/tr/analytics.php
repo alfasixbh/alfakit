@@ -57,6 +57,7 @@ return [
     ],
     'chart' => [
         'heading' => 'Zaman içinde ziyaretçiler',
+        'heading_for' => 'Zaman içinde :metric',
         'previous' => ':metric (önceki dönem)',
     ],
     'panels' => [

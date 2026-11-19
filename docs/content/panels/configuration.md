@@ -136,6 +136,7 @@ Colours accept any CSS colour and override the theme's (`--primary`, `--destruct
 | `subNavigationPosition(SubNavigationPosition::Top)`       | Default sub-navigation position (`Start`, `End`, `Top`) for pages, clusters and resources that don't set `$subNavigationPosition`                                                                                                              |
 | `userMenu(position: UserMenuPosition::Topbar)`            | Show the user menu in the top bar instead of the sidebar footer (sidebar layouts; `userMenuPosition()` alone sets just the position)                                                                                                           |
 | `unsavedChangesAlerts()`                                  | Warn before leaving a dirty form                                                                                                                                                                                                               |
+| `requestTimeout(60)`                                      | Seconds a background request (live field, table, modal, search) may take before the user is told it took too long; no limit by default. Page visits, actions and uploads are not limited                                                       |
 | `sidebarWidth('18rem')` / `collapsedSidebarWidth('4rem')` | Width of the open sidebar and of the icon-only sidebar (CSS lengths: `px`, `rem`, `em`, `ch`, `vw`, `%`; anything else is ignored)                                                                                                             |
 | `collapsibleNavigationGroups(false)`                      | Keep every navigation group open, without toggles                                                                                                                                                                                              |
 | `simplePageMaxContentWidth(Width::Large)`                 | Width of login, registration and other `auth` layout pages (default `md`)                                                                                                                                                                      |
@@ -373,3 +374,15 @@ Panel::configureUsing(function (Panel $panel): void {
 ```
 
 Because they run last, callbacks can also override settings made in `panel()`. Register them in a service provider's `register()` method, or anywhere that runs before the panel providers register.
+
+## Expired pages and slow requests
+
+A page left open past the session lifetime answers its next request with 419. The panel then reloads the page to get fresh tokens. When a form on screen has unsaved changes it does not reload on its own: it shows a notice with a **Reload** button, so the user can copy what they typed first.
+
+Background requests have no time limit unless you set one:
+
+```php
+$panel->requestTimeout(60); // seconds; a closure is accepted
+```
+
+A request that takes longer is given up in the browser and the user sees "The request took too long." (the server may still finish it). The limit covers the panel's JSON requests: live fields, table reloads, modals, searches and field actions. Page visits, actions that run through a visit (imports and exports included) and file uploads are never limited.

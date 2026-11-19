@@ -21,7 +21,7 @@ import {
   shortcuts,
 } from '@alfakit/core'
 import { router } from '@inertiajs/vue3'
-import { computed, onBeforeUnmount, onMounted, onScopeDispose, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onScopeDispose, ref, useId, watch } from 'vue'
 import { useStore } from '../../composables/use-store'
 import { useActionRunner, useChoice, usePageSchema, usePanel, useT } from '../../context'
 import Button from '../ui/Button.vue'
@@ -52,6 +52,8 @@ const open = defineModel<boolean>('open', { default: false })
 const TRAILING_GROUPS = new Set(['theme', 'help'])
 
 const t = useT()
+// The input is the combobox of the result list (as cmdk and bits-ui do in React and Svelte).
+const listId = `alfakit-palette-${useId()}`
 const choice = useChoice()
 const panel = usePanel()
 const page = usePageSchema()
@@ -272,11 +274,12 @@ const hasResults = computed(() => groups.value.length > 0 || local.value.length 
     <Slot name="global-search.start" />
     <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">{{ status }}</div>
     <CommandInput
+      :list-id="listId"
       :placeholder="placeholder"
       :model-value="query"
       @update:model-value="query = $event"
     />
-    <CommandList>
+    <CommandList :id="listId" :label="t('palette.groups.search', {}, 'Search results')">
       <CommandAutoHighlight :items="[groups, local, leading]" />
       <CommandEmpty v-if="!loading && !hasResults">{{
         query ? t('no_results', {}, 'No results.') : placeholder

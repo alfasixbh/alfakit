@@ -86,6 +86,7 @@ const t = useT()
     >
       <a
         v-if="props.item.openInNewTab"
+        :aria-current="props.item.active ? 'page' : undefined"
         v-bind="props.item.extraAttributes ?? {}"
         :href="props.item.url"
         target="_blank"
@@ -113,6 +114,7 @@ const t = useT()
       </a>
       <Link
         v-else
+        :aria-current="props.item.active ? 'page' : undefined"
         v-bind="props.item.extraAttributes ?? {}"
         :href="props.item.url ?? '#'"
         prefetch

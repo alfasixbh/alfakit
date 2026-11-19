@@ -57,6 +57,7 @@ return [
     ],
     'chart' => [
         'heading' => '訪問者の推移',
+        'heading_for' => ':metricの推移',
         'previous' => ':metric（前の期間）',
     ],
     'panels' => [

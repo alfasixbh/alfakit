@@ -1,0 +1,22 @@
+<script setup lang="ts">
+import { AlfakitComponent, type StandaloneComponentSchema } from '@alfakit/vue';
+import { Head } from '@inertiajs/vue3';
+
+/**
+ * AlfaKit's account page (`AuthKit::routes()`): profile, password, two-step verification,
+ * browser sessions and account deletion, each a standalone component in `sections`.
+ */
+defineProps<{
+    sections: Record<string, StandaloneComponentSchema>;
+    authKit: { title: string };
+}>();
+</script>
+
+<template>
+    <Head :title="authKit.title" />
+    <AlfakitComponent
+        v-for="(section, key) in sections"
+        :key="key"
+        :component="section"
+    />
+</template>

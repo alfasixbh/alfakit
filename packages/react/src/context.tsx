@@ -18,6 +18,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useSyncExternalStore,
   type ComponentType,
   type ReactNode,
 } from 'react'
@@ -194,15 +195,28 @@ function useTranslator(): Translator {
 /** `t('table.showing', { first: 1, last: 10, total: 42 }, 'Fallback')` */
 export function useT(): Translator['t'] {
   const translator = useTranslator()
+  // Re-render when the language changes: the shell stays mounted across the switch.
+  const version = useSyncExternalStore(
+    translator.subscribe,
+    translator.getVersion,
+    translator.getVersion,
+  )
 
-  return translator.t.bind(translator)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- a new function per language
+  return useMemo(() => translator.t.bind(translator), [translator, version])
 }
 
 /** Plural-aware lines: `choice('table.selected', 3)` (Laravel `trans_choice` syntax). */
 export function useChoice(): Translator['choice'] {
   const translator = useTranslator()
+  const version = useSyncExternalStore(
+    translator.subscribe,
+    translator.getVersion,
+    translator.getVersion,
+  )
 
-  return translator.choice.bind(translator)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- a new function per language
+  return useMemo(() => translator.choice.bind(translator), [translator, version])
 }
 
 /** The current language, direction, currency, timezone and language list. */
