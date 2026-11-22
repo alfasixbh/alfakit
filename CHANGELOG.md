@@ -6,6 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.10] - 2026-11-22
+
+### Upgrading from 0.2.9
+
+- `composer update "alfasix/*"` and `npm install @alfakit/react@^0.2.10` (or `@alfakit/vue`, `@alfakit/svelte`). Nothing to change in your code. Only `@alfakit/svelte` has a code change.
+
+### Fixed
+
+- Dashboard filters kept in the URL (`persistsFiltersInSession()` false) with `HasFiltersAction`: **Reset** inside the filter slide-over cleared the filters but left the slide-over open with the old values. An action that answers with a redirect of its own now still reports its result to the page it lands on, so `cancelParentActions()`, `deselectRecordsAfterCompletion()` and `closeModal` apply to it too.
+- Svelte: a modal form with unsaved changes (`unsavedChangesAlert()`, or the panel's `unsavedChangesAlerts()`) disappeared when the question "Close anyway?" was answered with staying, and when a close was attempted while it was submitting. The dialog now stays open, as in React and Vue.
+
+### Tests
+
+- The browser suite now also covers: a dashboard with a filter form (applied and `live()` fields, session and reset), filters in a header action kept in the URL, a table widget with a modal, a direct and a bulk action; e-mail codes as second factor and "trust this device"; the unsaved-changes question on modal forms; and, on sites with `APP_DEBUG=false` (`E2E_DEBUG_OFF=1 scripts/e2e-local.sh debug-off`), the error notifications for a failing action and a missing record.
+- The fresh-install harness reports each failed step as an error annotation on its GitHub Actions job.
+
 ## [0.2.9] - 2026-11-22
 
 ### Upgrading from 0.2.8
@@ -1726,7 +1742,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.9...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.10...HEAD
+[0.2.10]: https://github.com/alfasixbh/alfakit/compare/v0.2.9...v0.2.10
 [0.2.9]: https://github.com/alfasixbh/alfakit/compare/v0.2.8...v0.2.9
 [0.2.8]: https://github.com/alfasixbh/alfakit/compare/v0.2.7...v0.2.8
 [0.2.7]: https://github.com/alfasixbh/alfakit/compare/v0.2.6...v0.2.7

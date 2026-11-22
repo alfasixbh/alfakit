@@ -1,5 +1,11 @@
 # @alfakit/core
 
+## 0.2.10
+
+### Patch Changes
+
+- No changes; released together with the PHP packages.
+
 ## 0.2.9
 
 ### Patch Changes

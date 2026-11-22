@@ -1,5 +1,11 @@
 # @alfakit/svelte
 
+## 0.2.10
+
+### Patch Changes
+
+- A modal form with unsaved changes stays open when the question "Close anyway?" is answered with staying, and when a close is attempted while it is submitting.
+
 ## 0.2.9
 
 ### Patch Changes
