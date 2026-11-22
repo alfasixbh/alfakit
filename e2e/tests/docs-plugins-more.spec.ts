@@ -321,7 +321,9 @@ test.describe('AI with sample answers (docs: plugins/ai)', () => {
     await expect(copilot.getByText("Sample answer — AI isn't configured").first()).toBeVisible()
     await copilot
       .getByRole('textbox', { name: /Ask about your data/ })
-      .fill('search Copilot target')
+      // Its own title, not the words every run of this test shares: posts left behind by a
+      // run that failed must not push this one out of the answer.
+      .fill(`search ${post.title}`)
     await copilot.getByRole('button', { name: 'Send', exact: true }).click()
 
     const messages = copilot.getByRole('log', { name: 'Messages' })

@@ -77,10 +77,12 @@ scripts/e2e-local.sh docs-forms      # one spec
 E2E_SSR=1 scripts/e2e-local.sh ssr   # the server-side rendering check
 E2E_REALTIME=1 scripts/e2e-local.sh realtime   # real-time (starts Reverb and queue workers)
 E2E_DEBUG_OFF=1 scripts/e2e-local.sh debug-off # error notifications as in production (APP_DEBUG=false)
+E2E_BILLING=1 scripts/e2e-local.sh billing     # Stripe checkout, webhook and portal against a local stand-in for Stripe
 ```
 
 `ALFAKIT_BUILT_ASSETS=1` makes the playground ignore a `public/hot` file. Two runs at the same
 time need their own output folder (`--output=test-results-<name>`), or they delete each other's
-traces. `E2E_LOCALES=1` adds the pass over every language (it changes the signed-in user's
+traces, and their own sign-in (`E2E_AUTH_DIR=.auth-<name>`), or they share one session and take
+each other's toasts and validation errors. `E2E_LOCALES=1` adds the pass over every language (it changes the signed-in user's
 language while it runs) and `E2E_SSR=1` the server-side rendering check, which needs
 `pnpm run build:ssr` and `php artisan inertia:start-ssr` in each playground.

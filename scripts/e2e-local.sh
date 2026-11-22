@@ -10,6 +10,7 @@
 #   E2E_SSR=1 scripts/e2e-local.sh ssr   # with the SSR check (builds and starts the SSR servers)
 #   E2E_REALTIME=1 scripts/e2e-local.sh realtime   # real-time: Reverb and a queue worker per playground
 #   E2E_DEBUG_OFF=1 scripts/e2e-local.sh debug-off # as in production: sites of their own with APP_DEBUG=false
+#   E2E_BILLING=1 scripts/e2e-local.sh billing     # Stripe checkout and portal against a stand-in for Stripe's API
 set -u
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -22,6 +23,13 @@ if [ "${E2E_DEBUG_OFF:-}" = "1" ]; then
   # Sites of their own (8121-8123), so the ones a normal run reuses keep debug mode.
   first_port=8121
   debug=(APP_DEBUG=false)
+fi
+
+if [ "${E2E_BILLING:-}" = "1" ]; then
+  # Sites of their own (8131-8133) whose Cashier talks to the stand-in the spec starts on
+  # 8140. The key and the webhook secret are made up: nothing reaches Stripe.
+  first_port=8131
+  debug=(STRIPE_API_BASE=http://127.0.0.1:8140 STRIPE_KEY=pk_test_standin STRIPE_SECRET=sk_test_standin STRIPE_WEBHOOK_SECRET=whsec_standin)
 fi
 
 port=${first_port}
@@ -74,7 +82,7 @@ sleep 3
 cd "${root}/e2e" &&
   E2E_REACT_URL="http://127.0.0.1:${first_port}" E2E_VUE_URL="http://127.0.0.1:$((first_port + 1))" \
     E2E_SVELTE_URL="http://127.0.0.1:$((first_port + 2))" \
-    E2E_LOCALES="${E2E_LOCALES:-1}" E2E_REALTIME="${E2E_REALTIME:-}" E2E_DEBUG_OFF="${E2E_DEBUG_OFF:-}" \
+    E2E_LOCALES="${E2E_LOCALES:-1}" E2E_REALTIME="${E2E_REALTIME:-}" E2E_DEBUG_OFF="${E2E_DEBUG_OFF:-}" E2E_BILLING="${E2E_BILLING:-}" \
     pnpm exec playwright test "$@"
 status=$?
 

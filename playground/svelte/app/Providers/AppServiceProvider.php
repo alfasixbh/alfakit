@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Cashier\Cashier;
 use Spatie\Health\Checks\Checks\CacheCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
@@ -34,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
         // whatever Vite dev server happens to be running beside them.
         if (env('ALFAKIT_BUILT_ASSETS')) {
             Vite::useHotFile(storage_path('framework/no-vite-hot'));
+        }
+
+        // The billing browser tests (`E2E_BILLING=1 scripts/e2e-local.sh billing`) answer
+        // Stripe's API themselves: Cashier is pointed at their stand-in on this machine.
+        if (is_string($stripe = env('STRIPE_API_BASE')) && $stripe !== '') {
+            Cashier::$apiBaseUrl = $stripe;
         }
 
         $this->configureDefaults();

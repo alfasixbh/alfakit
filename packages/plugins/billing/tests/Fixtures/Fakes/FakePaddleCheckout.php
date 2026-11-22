@@ -31,7 +31,13 @@ class FakePaddleCheckout
         return [
             'items' => array_map(static fn (string $price): array => ['priceId' => $price, 'quantity' => 1], $this->prices),
             'customData' => ['subscription_type' => $this->type],
-            'settings' => ['successUrl' => $this->returnTo],
+            // As `Laravel\Paddle\Checkout::options()`: made for Cashier's inline frame.
+            'settings' => array_filter([
+                'displayMode' => 'inline',
+                'frameStyle' => 'width: 100%; background-color: transparent; border: none;',
+                'successUrl' => $this->returnTo,
+                'allowLogout' => false,
+            ]),
         ];
     }
 }

@@ -89,6 +89,9 @@ it('checks Paddle subscriptions and opens the Paddle checkout', function (): voi
         ->toContain('Paddle.Checkout.open(')
         ->toContain('"priceId":"pri_pro"')
         ->toContain('"successUrl":"http:\/\/localhost\/paddle\/beta"')
+        // The page has no frame for Cashier's inline checkout: Paddle opens its overlay.
+        ->toContain('"displayMode":"overlay"')
+        ->not->toContain('frameStyle')
         ->toContain('href="http://localhost/paddle/beta/billing/plans"')
         ->toContain('dir="ltr"');
 });
@@ -105,6 +108,39 @@ it('opens the Paddle customer portal for subscribed tenants', function (): void 
         'uri' => 'customers/ctm_123/portal-sessions',
         'payload' => ['subscription_ids' => ['sub_alpha']],
     ]]);
+});
+
+it('stands in for Cashier Paddle with the methods and options the real package has', function (): void {
+    // The tests above use stand-ins; this keeps them honest against the installed package.
+    foreach (['subscribe', 'subscribed', 'customer', 'subscriptions'] as $method) {
+        expect(method_exists(PaddleBillingProvider::BILLABLE_TRAIT, $method))->toBeTrue("Billable::{$method}()");
+    }
+
+    expect((new ReflectionMethod(Laravel\Paddle\Cashier::class, 'api'))->isStatic())->toBeTrue();
+
+    $real = Laravel\Paddle\Checkout::guest(['pri_pro'])->returnTo('https://example.com/done')->options();
+    $fake = (new AlfaSix\AlfakitBilling\Tests\Fixtures\Fakes\FakePaddleCheckout(['pri_pro'], 'default'))->returnTo('https://example.com/done')->options();
+
+    expect($real['settings'])->toBe($fake['settings'])
+        ->and($real['settings']['displayMode'])->toBe('inline')
+        ->and($real)->toHaveKey('items');
+});
+
+it('opens a Paddle portal session through the real Cashier Paddle client', function (): void {
+    config(['cashier.api_key' => 'pdl_test_made_up', 'cashier.sandbox' => true]);
+    Illuminate\Support\Facades\Http::fake([
+        'sandbox-api.paddle.com/customers/ctm_123/portal-sessions' => Illuminate\Support\Facades\Http::response(['data' => ['urls' => ['general' => ['overview' => 'https://sandbox-customer-portal.paddle.com/cpl_real']]]]),
+    ]);
+
+    fakeBillingPanel('paddle', PaddleBillingProvider::make()->plans([Plan::make('pro')->price('pri_pro')]));
+
+    TestCase::current()->get('/paddle/alpha/billing')->assertRedirect('https://sandbox-customer-portal.paddle.com/cpl_real');
+
+    Illuminate\Support\Facades\Http::assertSent(fn (Illuminate\Http\Client\Request $request): bool => $request->method() === 'POST'
+        && $request->url() === 'https://sandbox-api.paddle.com/customers/ctm_123/portal-sessions'
+        && $request->hasHeader('Authorization', 'Bearer pdl_test_made_up')
+        && $request['subscription_ids'] === ['sub_alpha']);
+    Illuminate\Support\Facades\Http::assertSentCount(1);
 });
 
 // ---------------------------------------------------------------- Spark

@@ -13,6 +13,9 @@ export const baseUrlFor = (renderer: Renderer): string =>
 
 const only = process.env.E2E_RENDERERS?.split(',').map((name) => name.trim()) ?? RENDERERS
 
+/** Where the sign-in of each renderer is kept; a second run beside this one needs its own. */
+export const AUTH_DIR = process.env.E2E_AUTH_DIR ?? '.auth'
+
 const projects: Project[] = []
 
 for (const renderer of RENDERERS) {
@@ -36,7 +39,7 @@ for (const renderer of RENDERERS) {
       name: renderer,
       dependencies: [`${renderer}-setup`],
       testIgnore: /auth\.setup\.ts/,
-      use: { ...use, storageState: `.auth/${renderer}.json` },
+      use: { ...use, storageState: `${AUTH_DIR}/${renderer}.json` },
     },
   )
 }

@@ -1,6 +1,7 @@
 import { mkdirSync } from 'node:fs'
 import { credentials } from '../fixtures/credentials'
 import { expect, test as setup } from '../fixtures/test'
+import { AUTH_DIR } from '../playwright.config'
 
 /** Signs in once per renderer and stores the session for the other specs. */
 setup('sign in to the panel', async ({ page }, testInfo) => {
@@ -13,6 +14,6 @@ setup('sign in to the panel', async ({ page }, testInfo) => {
 
   await expect(page).toHaveURL(/\/admin(\/)?$/)
 
-  mkdirSync('.auth', { recursive: true })
-  await page.context().storageState({ path: `.auth/${renderer}.json` })
+  mkdirSync(AUTH_DIR, { recursive: true })
+  await page.context().storageState({ path: `${AUTH_DIR}/${renderer}.json` })
 })

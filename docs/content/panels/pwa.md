@@ -96,7 +96,7 @@ The service worker has no dependencies and is generated per panel. It:
 - loads **pages network-first** and never stores them, since they hold the user's data. Offline, a full page load shows the offline page, and an Inertia visit redirects there. The offline page retries as soon as the connection is back;
 - **never touches internal endpoints** (`/_alfakit/*`), so actions, tables, uploads and notifications always go to the server.
 
-The cache name contains a hash of the Vite manifest, so every `npm run build` ships a new worker. The new worker waits until the user clicks **Reload** in the toast, so a page is never served half from an old build and half from a new one. Old caches are deleted when the new worker takes over. Open tabs check for a new build every hour.
+The cache name contains a hash of the Vite manifest, so every `npm run build` ships a new worker. The new worker waits until the user clicks **Reload** in the toast, so a page is never served half from an old build and half from a new one. Old caches are deleted when the new worker takes over. Open tabs check for a new build every hour. The worker is the same file in every language, so switching the language never counts as a new version.
 
 While the Vite dev server runs (`public/hot` exists) nothing is precached.
 
@@ -145,7 +145,7 @@ PushNotifications::send($user, [
 ]);
 ```
 
-`PushNotifications::send()` returns how many devices accepted the message. To use another sender, bind your own subclass of `AlfaSix\Alfakit\Pwa\WebPush` in the container.
+`PushNotifications::send()` returns how many devices accepted the message. The message is shown in the language it is sent in (the current locale, or a `'lang' => 'ar'` key), with that language's direction. To use another sender, bind your own subclass of `AlfaSix\Alfakit\Pwa\WebPush` in the container.
 
 ## Requirements and limits
 

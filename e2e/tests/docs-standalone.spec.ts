@@ -215,6 +215,17 @@ test.describe('languages (docs: localization)', () => {
         page.removeAllListeners('console')
         page.removeAllListeners('response')
       }
+
+      // A language switch is not a new version of the app: the service worker is the same
+      // file in every language, so none is left waiting behind a "Reload" notice.
+      const waiting = await page.evaluate(async () =>
+        'serviceWorker' in navigator
+          ? (await navigator.serviceWorker.getRegistrations()).filter((entry) => entry.waiting)
+              .length
+          : 0,
+      )
+
+      if (waiting > 0) failures.worker = [`${waiting} service worker(s) waiting to take over`]
     } finally {
       await setLocale('en')
       await page.goto('/admin')

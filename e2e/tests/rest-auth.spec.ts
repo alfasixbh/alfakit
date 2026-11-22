@@ -473,3 +473,123 @@ test.describe('unsaved changes in a modal form (docs: panels/configuration)', ()
     expect(questions).toEqual([])
   })
 })
+
+test.describe('a new email code at sign-in (docs: panels/multi-factor-authentication)', () => {
+  test('"Send a new code" is limited to one a minute and replaces the earlier code', async ({
+    browser,
+    baseURL,
+  }, info) => {
+    test.setTimeout(180_000)
+
+    const renderer = info.project.name
+    const token = Date.now().toString(36)
+    const email = `resend-${token}@example.com`
+    const toast = (text: string) =>
+      page.locator('[data-sonner-toast]').filter({ hasText: text }).first()
+
+    createUser(renderer, `Rana Resend ${token}`, email)
+
+    const context = await guestContext(browser, baseURL)
+    const page = await context.newPage()
+
+    try {
+      await signIn(page, email)
+      await expect(page).toHaveURL(HOME)
+      await setUpEmailCodes(page, renderer, email)
+      await signOut(page, /Rana Resend/)
+
+      const before = mailedCodes(renderer, email).length
+
+      await signIn(page, email)
+      await expect(page).toHaveURL(CHALLENGE)
+
+      const first = await newCode(renderer, email, before)
+      const resend = page.getByRole('button', { name: 'Send a new code', exact: true })
+
+      // Straight away: refused with a notice, and no second mail.
+      await resend.click()
+      await expect(toast('Please wait a minute before requesting another code.')).toBeVisible()
+      expect(mailedCodes(renderer, email)).toHaveLength(before + 1)
+
+      // The minute is over (the limiter is cleared instead of waiting it out).
+      tinker(
+        renderer,
+        `\\Illuminate\\Support\\Facades\\RateLimiter::clear('alfakit-mfa-email|'.\\App\\Models\\User::query()->where('email', '${email}')->value('id'));`,
+      )
+      await resend.click()
+      await expect(toast('A new code has been sent.')).toBeVisible()
+
+      const second = await newCode(renderer, email, before + 1)
+
+      expect(second).toMatch(/^\d{6}$/)
+      await expect(page).toHaveURL(CHALLENGE)
+
+      // Only the newest code counts (one time in a million both are the same number).
+      if (second !== first) {
+        await enterCode(page, first, 'Verify')
+        await expect(page.locator('[aria-invalid="true"]').first()).toBeVisible()
+        await expect(page).toHaveURL(CHALLENGE)
+      }
+
+      await enterCode(page, second, 'Verify')
+      await expect(page).toHaveURL(HOME)
+    } finally {
+      await context.close()
+      deleteUser(renderer, email)
+    }
+  })
+})
+
+test.describe('reloading with a changed modal form (docs: panels/configuration)', () => {
+  test('the browser asks before the page is left, and not for an unchanged modal', async ({
+    page,
+  }) => {
+    const prompts: string[] = []
+    let answer: 'accept' | 'dismiss' = 'dismiss'
+
+    page.on('dialog', (prompt) => {
+      prompts.push(prompt.type())
+      void (answer === 'accept' ? prompt.accept() : prompt.dismiss())
+    })
+
+    const modal = page.getByRole('dialog').last()
+    const name = modal.getByRole('textbox', { name: 'Name' })
+    const open = async (): Promise<void> => {
+      await page.goto('/alerts/tags')
+      await page.waitForLoadState('networkidle')
+      await page
+        .locator('[data-slot="page-header"]')
+        .getByRole('button', { name: /new tag|create/i })
+        .first()
+        .click()
+      await expect(name).toBeVisible()
+    }
+
+    // The page reloads itself, as F5 does (Playwright's own reload does not come back
+    // from a prompt that was answered with staying).
+    const reload = () => page.evaluate(() => void setTimeout(() => window.location.reload(), 0))
+
+    // Unchanged: the reload just happens.
+    await open()
+    await Promise.all([page.waitForEvent('load'), reload()])
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    expect(prompts).toEqual([])
+
+    // Changed (typed with the keyboard: the browser only asks after a real interaction):
+    // the browser's own "Leave site?" prompt comes up; staying keeps the modal and the text.
+    await open()
+    await name.click()
+    await page.keyboard.type('Unsaved on reload')
+    await reload()
+    await expect.poll(() => prompts).toEqual(['beforeunload'])
+    await expect(name).toBeVisible()
+    await expect(name).toHaveValue('Unsaved on reload')
+
+    // Leaving anyway reloads, and nothing was saved.
+    answer = 'accept'
+    await Promise.all([page.waitForEvent('load'), reload()])
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    expect(prompts).toEqual(['beforeunload', 'beforeunload'])
+    await expect(page.getByRole('cell', { name: 'Unsaved on reload', exact: true })).toHaveCount(0)
+  })
+})

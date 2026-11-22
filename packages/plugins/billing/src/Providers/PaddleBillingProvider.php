@@ -96,6 +96,15 @@ class PaddleBillingProvider extends AbstractBillingProvider
             default => [],
         };
 
+        // Cashier builds these options for its inline component, a frame inside your own
+        // page (`displayMode: inline` with a `frameTarget`). This page has no such frame:
+        // Paddle opens its overlay on top of it.
+        if ($options !== []) {
+            $settings = (array) ($options['settings'] ?? []);
+            unset($settings['frameStyle'], $settings['frameTarget'], $settings['frameInitialHeight']);
+            $options['settings'] = [...$settings, 'displayMode' => 'overlay'];
+        }
+
         $locale = app()->getLocale();
 
         return response()->view('alfakit-billing::paddle-checkout', [

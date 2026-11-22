@@ -200,7 +200,7 @@ PaddleBillingProvider::make()->plans([Plan::make('pro')->price('pri_01h...')]);
 Requires `composer require laravel/cashier-paddle` and the `Laravel\Paddle\Billable` trait on the billable. Cashier Paddle requires Guzzle 7. Laravel 13 supports Guzzle 7 and 8, so if Composer refuses, run `composer require laravel/cashier-paddle -W` to switch Guzzle to 7. Until the package is installed, every billing request through Paddle throws a `BillingPackageMissing` exception explaining how to install it.
 
 - Subscribed means `$billable->subscribed($type)`.
-- Checkout renders a small page that loads Paddle.js (`@paddleJS`) and opens the overlay with `$billable->subscribe($prices, $type)->returnTo($successUrl)->options()`. Trials are configured on the Paddle price, so `trialDays()` does not apply.
+- Checkout renders a small page that loads Paddle.js (`@paddleJS`) and opens the overlay with `$billable->subscribe($prices, $type)->returnTo($successUrl)->options()` (Cashier's options are for its inline frame; the page sets `displayMode: 'overlay'`). Trials are configured on the Paddle price, so `trialDays()` does not apply.
 - The portal opens a Paddle customer portal session (`POST /customers/{id}/portal-sessions` through `Laravel\Paddle\Cashier::api()`); billables that are not yet Paddle customers go to the plans page.
 
 ### Spark
