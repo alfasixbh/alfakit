@@ -6,6 +6,25 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.11] - 2026-11-22
+
+### Upgrading from 0.2.10
+
+- `composer update "alfasix/*"` and `npm install @alfakit/react@^0.2.11` (or `@alfakit/vue`, `@alfakit/svelte`). The npm packages are unchanged.
+- Panels with `pwa()`: browsers pick up the new service worker on their own. Users see "A new version is available" once, as after any update.
+
+### Fixed
+
+- `pwa()`: a page sometimes stayed blank until it was reloaded. Once more than 150 built files had been cached, the service worker deleted cached scripts while a page was loading them. It now keeps up to 1,000 and tidies up only after things have been quiet, one pass at a time.
+- `pwa()`: switching the language installed a new service worker and showed "A new version is available", because the worker's script contained the language. The worker is now the same file in every language; a push message carries its own language and direction (`PushNotifications::send($user, [..., 'lang' => 'ar'])`, the current locale by default).
+- Billing with Paddle: the checkout page passed Cashier's options for an inline frame to Paddle.js, but the page has no frame. It now asks for Paddle's overlay (`displayMode: 'overlay'`). Checked against the classes of `laravel/cashier-paddle`, not against Paddle itself.
+
+### Tests
+
+- The browser suite now also covers Stripe billing from the plans page to the billing portal (a cancelled checkout, a paid one with its signed webhook, a refusal from Stripe, a forged webhook) against a stand-in for Stripe's API on this machine (`E2E_BILLING=1 scripts/e2e-local.sh billing`), "Send a new code" at the sign-in challenge, and the browser's "Leave site?" prompt with a changed modal form.
+- The Paddle provider is tested against the real `laravel/cashier-paddle` classes with the HTTP calls faked.
+- `E2E_AUTH_DIR` gives a browser run its own sign-in, so two runs side by side do not share a session.
+
 ## [0.2.10] - 2026-11-22
 
 ### Upgrading from 0.2.9
@@ -1742,7 +1761,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.10...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.11...HEAD
+[0.2.11]: https://github.com/alfasixbh/alfakit/compare/v0.2.10...v0.2.11
 [0.2.10]: https://github.com/alfasixbh/alfakit/compare/v0.2.9...v0.2.10
 [0.2.9]: https://github.com/alfasixbh/alfakit/compare/v0.2.8...v0.2.9
 [0.2.8]: https://github.com/alfasixbh/alfakit/compare/v0.2.7...v0.2.8
