@@ -188,11 +188,27 @@ export class App {
         })
     }
 
-    /** Restarts `php artisan serve` (it caches nothing, but .env changes need a new process). */
+    /**
+     * Restarts `php artisan serve` (it caches nothing, but .env changes need a new process)
+     * and waits until it answers. The old server has to be gone first: while it still holds
+     * the port, `artisan serve` quietly moves to the next one and the app's URL answers
+     * nothing; and the browser must not start before the new server listens.
+     */
     async restart() {
         if (!this.server) return
         killGroup(this.server)
-        await sleep(500)
+
+        const answers = async () => {
+            try {
+                await fetch(`${this.url}/up`, { signal: AbortSignal.timeout(2_000) })
+                return true
+            } catch {
+                return false
+            }
+        }
+
+        for (let waited = 0; waited < 15_000 && (await answers()); waited += 250) await sleep(250)
+
         const port = new URL(this.url).port
         this.server = startProcess(
             'php',
@@ -202,6 +218,13 @@ export class App {
                 env: {},
             },
         )
+
+        for (let waited = 0; waited < 90_000; waited += 500) {
+            if (await answers()) return
+            await sleep(500)
+        }
+
+        throw new Error(`${this.url} did not come back within 90s after the restart`)
     }
 
     /** Waits until the site answers (Herd link or the dev server starting). */
