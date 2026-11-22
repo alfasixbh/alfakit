@@ -47,3 +47,5 @@ scripts/acceptance/reports/
 
 # Written by the Vite dev server (laravel-vite-plugin fonts), git-ignored.
 **/public/fonts-manifest*.json
+# Per-run Playwright output folders (`--output=test-results-<name>`).
+e2e/test-results-*/

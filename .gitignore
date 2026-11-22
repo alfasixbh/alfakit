@@ -102,3 +102,5 @@ qa-evidence/
 
 # Fresh-install acceptance harness output (see scripts/acceptance/README.md)
 scripts/acceptance/reports/
+# Per-run Playwright output folders (`--output=test-results-<name>`).
+e2e/test-results-*/

@@ -7,6 +7,9 @@ import { CmsPage, createAlfakit } from '@alfakit/react'
  * components, custom widgets, or overrides for built-in renderers.
  */
 void createAlfakit({
+    // Laravel Echo for `->realtime()` panels (`php artisan alfakit:realtime`); it connects only
+    // on pages whose panel has realtime on.
+    echo: () => import('./echo').then((module) => module.default()),
     // Components in ./fields, ./columns, ./entries, ./widgets, ./pages, ./components and
     // ./blocks register themselves under their file name (fields/SwatchPicker.tsx).
     discover: import.meta.glob(

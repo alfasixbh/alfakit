@@ -35,25 +35,26 @@ Environment variables: `E2E_REACT_URL`, `E2E_VUE_URL`, `E2E_SVELTE_URL` (base UR
 
 ## What is covered
 
-| Spec                      | Flow                                                                                            |
-| ------------------------- | ----------------------------------------------------------------------------------------------- |
-| `login.spec.ts`           | Wrong credentials show an error; right ones sign in; guests are redirected                      |
-| `dashboard.spec.ts`       | Panel shell, widgets, sidebar navigation landmark                                               |
-| `posts-table.spec.ts`     | Search, sort (`aria-sort` and URL), pagination                                                  |
-| `posts-form.spec.ts`      | Create with a validation error then success; edit with a `live()` field; file upload            |
-| `actions.spec.ts`         | Record action with confirmation modal (focus, Escape, confirm); bulk action on selected rows    |
-| `theme.spec.ts`           | Theme switch (playground picker) and dark mode toggle                                           |
-| `locale.spec.ts`          | Switch to Arabic (RTL, `dir="rtl"`) and back                                                    |
-| `contact.spec.ts`         | Standalone `/contact` form outside the panel: validation, live field, submit                    |
-| `a11y.spec.ts`            | axe-core WCAG 2.1 A/AA (with colour contrast) on the main pages                                 |
-| `every-page.spec.ts`      | Every sidebar page and each resource's create, edit and view page opens with no browser error   |
-| `docs-forms.spec.ts`      | Field types, repeaters, builders, editors, uploads and validation from the forms docs           |
-| `docs-tables.spec.ts`     | Search, sort, filters, grouping, summaries, column manager, views, inline edits, infolists      |
-| `docs-panels.spec.ts`     | Actions, notifications, widgets, navigation, tenancy, resources, impersonation, the portal      |
-| `docs-plugins.spec.ts`    | The main flow of each plugin page (kanban, calendar, CMS, forms, helpdesk, invoices, …)         |
-| `docs-gallery.spec.ts`    | Wizard, tabs, pickers, masks, locks, editable columns, slide-over and grouped actions           |
-| `docs-standalone.spec.ts` | Standalone table, AuthKit pages, every theme (light, dark); every language with `E2E_LOCALES=1` |
-| `ssr.spec.ts`             | With `E2E_SSR=1`: pages arrive server-rendered and hydrate without a mismatch                   |
+| Spec                      | Flow                                                                                                            |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `login.spec.ts`           | Wrong credentials show an error; right ones sign in; guests are redirected                                      |
+| `dashboard.spec.ts`       | Panel shell, widgets, sidebar navigation landmark                                                               |
+| `posts-table.spec.ts`     | Search, sort (`aria-sort` and URL), pagination                                                                  |
+| `posts-form.spec.ts`      | Create with a validation error then success; edit with a `live()` field; file upload                            |
+| `actions.spec.ts`         | Record action with confirmation modal (focus, Escape, confirm); bulk action on selected rows                    |
+| `theme.spec.ts`           | Theme switch (playground picker) and dark mode toggle                                                           |
+| `locale.spec.ts`          | Switch to Arabic (RTL, `dir="rtl"`) and back                                                                    |
+| `contact.spec.ts`         | Standalone `/contact` form outside the panel: validation, live field, submit                                    |
+| `a11y.spec.ts`            | axe-core WCAG 2.1 A/AA (with colour contrast) on the main pages                                                 |
+| `every-page.spec.ts`      | Every sidebar page and each resource's create, edit and view page opens with no browser error                   |
+| `docs-forms.spec.ts`      | Field types, repeaters, builders, editors, uploads and validation from the forms docs                           |
+| `docs-tables.spec.ts`     | Search, sort, filters, grouping, summaries, column manager, views, inline edits, infolists                      |
+| `docs-panels.spec.ts`     | Actions, notifications, widgets, navigation, tenancy, resources, impersonation, the portal                      |
+| `docs-plugins.spec.ts`    | The main flow of each plugin page (kanban, calendar, CMS, forms, helpdesk, invoices, …)                         |
+| `docs-gallery.spec.ts`    | Wizard, tabs, pickers, masks, locks, editable columns, slide-over and grouped actions                           |
+| `docs-standalone.spec.ts` | Standalone table, AuthKit pages, every theme (light, dark); every language with `E2E_LOCALES=1`                 |
+| `ssr.spec.ts`             | With `E2E_SSR=1`: pages arrive server-rendered and hydrate without a mismatch                                   |
+| `realtime.spec.ts`        | With `E2E_REALTIME=1`: live tables, presence, the conflict banner, instant notifications, channel authorisation |
 
 Tests create their own records (titles prefixed with a unique token) and restore shared state
 they change (theme, locale), so the suite can run repeatedly against the same database.
@@ -74,6 +75,7 @@ playground on a port of its own with the built assets, runs the suite and stops 
 scripts/e2e-local.sh                 # every spec, three renderers, all languages
 scripts/e2e-local.sh docs-forms      # one spec
 E2E_SSR=1 scripts/e2e-local.sh ssr   # the server-side rendering check
+E2E_REALTIME=1 scripts/e2e-local.sh realtime   # real-time (starts Reverb and queue workers)
 ```
 
 `ALFAKIT_BUILT_ASSETS=1` makes the playground ignore a `public/hot` file. Two runs at the same

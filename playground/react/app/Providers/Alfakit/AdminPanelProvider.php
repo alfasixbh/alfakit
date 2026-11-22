@@ -65,6 +65,11 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            // Presence, live tables, conflict banners and instant notifications over Reverb
+            // (`php artisan alfakit:realtime`). Opt-in, so the playground also runs without a
+            // WebSocket server: start it with ALFAKIT_REALTIME=1 and BROADCAST_CONNECTION=reverb,
+            // `php artisan reverb:start` and a queue worker.
+            ->realtime(fn (): bool => (bool) env('ALFAKIT_REALTIME', false))
             ->path('admin')
             ->login()
             // Navigation badge counts load after the page, so they never slow down a visit.

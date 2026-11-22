@@ -68,7 +68,9 @@ test.describe('comments (docs: plugins/comments)', () => {
     await expect(thread.getByText('Looks good to me')).toBeVisible()
     await expect(thread.getByRole('button', { name: /1/ }).first()).toBeVisible()
 
-    // Edit: the new text replaces the old one and is marked as edited.
+    // Edit: the new text replaces the old one and is marked as edited. A comment only counts
+    // as edited when it changes more than a second after it was posted.
+    await page.waitForTimeout(2200)
     await thread.getByRole('button', { name: 'Comment actions', exact: true }).first().click()
     await page.getByRole('menuitem', { name: 'Edit', exact: true }).click()
 

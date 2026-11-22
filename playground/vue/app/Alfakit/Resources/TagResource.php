@@ -42,6 +42,9 @@ class TagResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            // Follows changes other users make (with `->realtime()` on the panel; it polls every
+            // 30 seconds without).
+            ->live()
             ->columns([
                 TextColumn::make('name')
                     ->label(__('playground.fields.name'))

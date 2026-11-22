@@ -13,6 +13,8 @@ export default tseslint.config(
       '**/dist/**',
       '**/vendor/**',
       '**/coverage/**',
+      // Playwright output (traces hold copies of built scripts).
+      'e2e/test-results*/**',
       '**/public/build/**',
       '**/bootstrap/ssr/**',
       '**/storage/**',
