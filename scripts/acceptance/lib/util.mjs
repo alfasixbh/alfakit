@@ -25,6 +25,22 @@ function logOutput(text) {
  * Runs a command synchronously and captures its output. Never throws on a non-zero exit;
  * callers decide (see `mustRun`). Output is written to the run log, not the console.
  */
+/**
+ * On GitHub Actions, a failed step also becomes an error annotation on the job, so the cause
+ * can be read on the run's summary page (and through the API) without opening the log.
+ */
+export function annotateFailure(title, detail) {
+    if (!process.env.GITHUB_ACTIONS) return
+
+    const escape = (text) =>
+        String(text).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A')
+    const head = String(detail).split('\n').slice(0, 12).join('\n')
+
+    console.log(
+        `::error title=${escape(title).replace(/,/g, '%2C').replace(/:/g, '%3A')}::${escape(head)}`,
+    )
+}
+
 export function run(command, args, { cwd, env, timeout = 600_000, input } = {}) {
     const printable = [command, ...args]
         .map((a) => (/[\s"'$]/.test(a) ? JSON.stringify(a) : a))

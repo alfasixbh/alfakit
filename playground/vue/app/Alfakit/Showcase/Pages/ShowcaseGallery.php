@@ -12,6 +12,7 @@ use AlfaSix\Alfakit\Forms\Components\CheckboxList;
 use AlfaSix\Alfakit\Forms\Components\ColorPicker;
 use AlfaSix\Alfakit\Forms\Components\DatePicker;
 use AlfaSix\Alfakit\Forms\Components\DateTimePicker;
+use AlfaSix\Alfakit\Forms\Components\FileUpload;
 use AlfaSix\Alfakit\Forms\Components\KeyValue;
 use AlfaSix\Alfakit\Forms\Components\Radio;
 use AlfaSix\Alfakit\Forms\Components\Repeater;
@@ -89,6 +90,7 @@ class ShowcaseGallery extends Page
             'reference' => 'REF-0001',
             'locked' => 'Cannot be changed',
             'emails' => ['first@example.com'],
+            'steps' => [['label' => 'First'], ['label' => 'Second'], ['label' => 'Third']],
             'settings' => ['theme' => 'light', 'density' => 'compact'],
         ];
     }
@@ -162,6 +164,20 @@ class ShowcaseGallery extends Page
                     ->simple(TextInput::make('email')->email()->required())
                     ->minItems(1)
                     ->maxItems(3),
+                // Reordered by dragging an item's handle (or with its arrows).
+                Repeater::make('steps')
+                    ->label(__('playground.showcase.gallery.steps'))
+                    ->schema([TextInput::make('label')->label(__('playground.fields.name'))->required()])
+                    ->addable(false)
+                    ->deletable(false),
+                // Several files, reordered by dragging one onto another (or with its arrows).
+                FileUpload::make('attachments')
+                    ->label(__('playground.showcase.gallery.attachments'))
+                    ->multiple()
+                    ->reorderable()
+                    ->preserveFilenames()
+                    ->maxFiles(3)
+                    ->directory('showcase'),
                 KeyValue::make('settings')->label(__('playground.showcase.gallery.settings'))->addable(false),
             ]),
         ]);
@@ -310,6 +326,8 @@ class ShowcaseGallery extends Page
                             'reference' => $data['reference'] ?? null,
                             'locked' => $data['locked'] ?? null,
                             'emails' => $data['emails'] ?? null,
+                            'steps' => array_column($data['steps'] ?? [], 'label'),
+                            'attachments' => array_map(basename(...), array_values((array) ($data['attachments'] ?? []))),
                             'settings' => $data['settings'] ?? null,
                         ], JSON_UNESCAPED_SLASHES))
                         ->success()

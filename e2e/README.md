@@ -76,6 +76,7 @@ scripts/e2e-local.sh                 # every spec, three renderers, all language
 scripts/e2e-local.sh docs-forms      # one spec
 E2E_SSR=1 scripts/e2e-local.sh ssr   # the server-side rendering check
 E2E_REALTIME=1 scripts/e2e-local.sh realtime   # real-time (starts Reverb and queue workers)
+E2E_DEBUG_OFF=1 scripts/e2e-local.sh debug-off # error notifications as in production (APP_DEBUG=false)
 ```
 
 `ALFAKIT_BUILT_ASSETS=1` makes the playground ignore a `public/hot` file. Two runs at the same

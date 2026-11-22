@@ -240,7 +240,11 @@
     Boolean(schema.content || form || schema.contentFooter || schema.passwordConfirmation),
   )
 
-  const onOpenChange = (open: boolean) => {
+  // The dialog is open for as long as the runner says so: bound with a getter and a setter,
+  // so a close that is refused (the unsaved-changes question answered with "stay", or a
+  // submit in flight) leaves it open instead of hiding it with the modal still mounted.
+  const isOpen = () => !hidden
+  const setOpen = (open: boolean) => {
     if (!open && !modal.processing) {
       requestClose()
     }
@@ -404,7 +408,7 @@
 {/snippet}
 
 {#if schema.slideOver}
-  <Sheet open={!hidden} {onOpenChange}>
+  <Sheet bind:open={isOpen, setOpen}>
     <SheetContent
       bind:ref={content}
       {...windowAttributes}
@@ -430,7 +434,7 @@
     </SheetContent>
   </Sheet>
 {:else}
-  <Dialog open={!hidden} {onOpenChange}>
+  <Dialog bind:open={isOpen, setOpen}>
     <DialogContent
       bind:ref={content}
       {...windowAttributes}

@@ -225,6 +225,8 @@ return [
             'mirror' => 'Mirror',
             'lists' => 'Lists',
             'emails' => 'Notification emails',
+            'steps' => 'Checklist',
+            'attachments' => 'Attachments',
             'settings' => 'Settings',
             'entries' => 'Entries',
             'specs' => 'Specifications',

@@ -12,7 +12,7 @@ import { loadPlaywright, openSession } from './lib/browser.mjs'
 import { lintImports, missingDocumentedCommands, widgetExample } from './lib/docs.mjs'
 import { crawl, runJourneys } from './lib/journeys.mjs'
 import { Report, skip } from './lib/report.mjs'
-import { log, mustRun, run, setLogFile, shortId, tail } from './lib/util.mjs'
+import { annotateFailure, log, mustRun, run, setLogFile, shortId, tail } from './lib/util.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const REPO = resolve(HERE, '../..')
@@ -83,6 +83,7 @@ const record = async (id, title, fn) => {
     } catch (error) {
         entry.status = 'FAIL'
         entry.detail = String(error.message ?? error)
+        annotateFailure(`${id} ${title}`, entry.detail)
     }
     log(`${entry.status} ${id} ${title}${entry.status === 'FAIL' ? `\n${entry.detail}` : ''}`)
     global.push(entry)

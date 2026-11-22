@@ -1,7 +1,7 @@
 // Records PASS / FAIL / SKIP per step and writes the Markdown report.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
-import { log } from './util.mjs'
+import { annotateFailure, log } from './util.mjs'
 
 export class SkipError extends Error {}
 
@@ -75,6 +75,7 @@ export class Report {
 
         step.ms = Date.now() - step.started
         if (step.status === 'FAIL' && blocks) this.blockers.set(blocks, `${id} failed`)
+        if (step.status === 'FAIL') annotateFailure(`${id} ${title}`, step.detail)
         log(
             `${step.status} ${id} ${title}${step.status !== 'PASS' ? `\n${indent(step.detail)}` : ''}`,
         )
