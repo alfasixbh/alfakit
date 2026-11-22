@@ -6,6 +6,26 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.9] - 2026-11-22
+
+### Upgrading from 0.2.8
+
+- `composer update "alfasix/*"` and `npm install @alfakit/react@^0.2.9` (or `@alfakit/vue`, `@alfakit/svelte`). The npm packages are unchanged.
+
+### Changed
+
+- `config/alfakit.php` lists `tables.views_table` (the table of saved table views, `alfakit_table_views`). The key was read and documented, but a published config file did not show it.
+- Docs: `make:alfakit-related-records-page` takes `--panel`, and every `make:alfakit-*` generator skips a file that exists unless `--force` is passed.
+
+### Fixed
+
+- A choice stored in the session right after a page loaded (a theme, a language without `persistLocaleUsing()`, the intended URL) was sometimes lost: the page's own background requests, which had started earlier, saved their older copy of the session over it. Assets the browser fetches on its own (the `pwa()` icons, manifest, service worker and offline page) no longer save the session, and an internal request or partial reload that changed nothing takes over what was stored meanwhile before it saves.
+
+### Tests
+
+- The browser suite now also covers: mouse drag in the kanban board, calendar, tree, builder, column manager and reorderable tables; the expired-page notice and the request time limit; comment mentions and their notification; media reordering; team invitations by e-mail link and tenant registration; two-factor set-up with recovery codes; the unsaved-changes alert; comments, tags, media library, teams, the billing plans page and the AI copilot; and, with a local Reverb server (`E2E_REALTIME=1 scripts/e2e-local.sh realtime`), live tables, presence and edit conflicts, live notifications and channel authorisation.
+- Every command, option, config key, test helper, frontend hook, component prop, theme hook and CSS variable the docs name is checked against the code.
+
 ## [0.2.8] - 2026-11-19
 
 ### Upgrading from 0.2.7
@@ -1706,7 +1726,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.8...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.9...HEAD
+[0.2.9]: https://github.com/alfasixbh/alfakit/compare/v0.2.8...v0.2.9
 [0.2.8]: https://github.com/alfasixbh/alfakit/compare/v0.2.7...v0.2.8
 [0.2.7]: https://github.com/alfasixbh/alfakit/compare/v0.2.6...v0.2.7
 [0.2.6]: https://github.com/alfasixbh/alfakit/compare/v0.2.5...v0.2.6
