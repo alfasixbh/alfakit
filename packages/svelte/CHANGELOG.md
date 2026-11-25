@@ -1,5 +1,11 @@
 # @alfakit/svelte
 
+## 0.2.12
+
+### Patch Changes
+
+- No changes; released together with the PHP packages.
+
 ## 0.2.11
 
 ### Patch Changes

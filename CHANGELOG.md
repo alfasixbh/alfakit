@@ -6,6 +6,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.12] - 2026-11-25
+
+### Upgrading from 0.2.11
+
+- `composer update "alfasix/*" -W` and `npm install @alfakit/react@^0.2.12` (or `@alfakit/vue`, `@alfakit/svelte`). `-W` lets Composer move `symfony/html-sanitizer` to a patched version. The npm packages are unchanged.
+- Then run `composer update` and `composer audit` for the rest of your app: the Laravel and Symfony fixes below are in your app's own dependencies.
+
+### Security
+
+- `alfasix/alfakit` now requires a patched `symfony/html-sanitizer` (`^7.4.23|^8.1.11`). Earlier versions let `srcset` and `imagesrcset` through without checking their URLs and had gaps in the link and media host rules (CVE-2026-121949, CVE-2026-118517, CVE-2026-121373); AlfaKit sanitises rich content and `html()` columns and entries with it.
+- Laravel itself: run `composer update` in your app. `laravel/framework` before 13.40.0 has CVE-2026-128083 (the process driver of `Concurrency`, rated low; AlfaKit does not use it), and Symfony's HTTP, routing and YAML components had fixes in the same weeks. AlfaKit's own playgrounds, demo and docs are on Laravel 13.44.
+
 ## [0.2.11] - 2026-11-22
 
 ### Upgrading from 0.2.10
@@ -1761,7 +1773,8 @@ First public beta.
 - Svelte: chart widgets threw on mount (reactive proxies passed to Chart.js), and repeated values (colours, nav labels, options, file names) crashed keyed lists.
 - Renderer strings that were hardcoded in English (screen-reader labels, rich editor toolbar, date placeholder, password toggle) are now translatable.
 
-[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.11...HEAD
+[Unreleased]: https://github.com/alfasixbh/alfakit/compare/v0.2.12...HEAD
+[0.2.12]: https://github.com/alfasixbh/alfakit/compare/v0.2.11...v0.2.12
 [0.2.11]: https://github.com/alfasixbh/alfakit/compare/v0.2.10...v0.2.11
 [0.2.10]: https://github.com/alfasixbh/alfakit/compare/v0.2.9...v0.2.10
 [0.2.9]: https://github.com/alfasixbh/alfakit/compare/v0.2.8...v0.2.9
