@@ -29,6 +29,11 @@ parameters:
         - identifier: argument.templateType
         - identifier: arrayValues.list
         - message: '#Parameter \#1 \$values of method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::update\(\)#'
+        # Attributes that come from a form, a relationship or configuration are not known by name.
+        - message: '#Parameter \#1 \$attributes of method Illuminate\\Database\\Eloquent\\Model::(fill|forceFill)\(\) expects array<model property of [^,]+, mixed>, array(<string, mixed>)? given#'
+        # The guard is for versions of laravel/ai whose response was not array-accessible yet.
+        - identifier: instanceof.alwaysTrue
+          path: packages/plugins/translation-manager/src/Ai/LaravelAiTranslator.php
         # Traits for the application's classes (User model, dashboards, widgets); nothing inside the package uses them.
         - identifier: trait.unused
           paths:
